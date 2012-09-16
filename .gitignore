@@ -1,0 +1,13 @@
+*.tar.gz
+Build
+_build/
+blib/
+todo/
+screencasts/
+divers_examples/
+Changes
+Version.pm
+_test.asciio
+html/
+errors/
+

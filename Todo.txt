@@ -1,0 +1,762 @@
+#----------------------#
+# This is the todo.txt #
+#----------------------#
+
+use json as file format
+
+diagonal text is kinky, Ian's request
+
+auto connection using A* module http://search.cpan.org/~acdalton/AI-Pathfinding-AStar-0.10/
+	- orthogonal or orthogonal and diagonal arrows
+	- add get_cost_map to base Asciio
+		- get_cost_map can also be implemented in draw in sub classes
+	- connectors and elements could have different costs
+
+
+Optimize the connection optimizer
+	- no optimization needed for unchanged objects
+		- asciio must keep track of changed objects
+			- but we must not be intruisive
+				- md5 ??
+
+re-parsable asciio output with minimal data
+
+read
+	http://www-cs-students.stanford.edu/~amitp/gameprog.html
+	Path finding, see ISBN 2550-0124977820
+
+add actions:
+	- select all elements connected to currently selected element(s)
+	- select all elemet connected to the element under the pointer
+	- expend selection level with '+', also implement '-', '*', ...
+
+	- optimize current arrow (A* pathfinder)
+	- click + key on arrow adds a 'flex' point
+
+what's new section
+
+night colors don't change the ruler colors
+
+? generate "nice looking" graph
+	- interface to ditaa
+	- HTML document?!
+
+copy to clipboard removes empty lines at the begining of the buffer
+
+two section arrow middle connector keeps horizontal with linked element
+	this would reduce the amount of changes that need to be done manually
+
+Curses UI
+
+tutorial
+
+add offset input to multiple element creation window
+
+slide mode
+	accept a directory as input
+		show slides based on sort order or order.slide.txt
+	allow saving of modified slides
+	allow deletion and insertion of slides
+		what if the slides are under git control?
+	extra window to show slide order and modify it (and the slides maybe)
+	extra slide menu (through actions)
+		open
+		save
+		insert
+		delete
+	
+arrow menu not working
+
+document what ascii_events should contain
+	links to gtk doc
+	should the content itself be defined in the derived class?
+
+split into two distributions?
+	=> easier for those who want to build another interface
+
+setup/actions manipulating asciio object directely move to asciio
+
+transparent background for cmd output
+	width > spaces == transparent
+	spaces => transparent
+	0 => transparent
+	
+merge arrows and split arrow
+
+arrow merge object
+	like a single character text but nicer to use with  arrows
+	or merge arrow connections directely (weld them together)
+	
+multi-ended connectors
+	add remove end from multi ended connectors
+
+start and end connectors should have different colors
+
+copy elements to the system clipboard to allow copies between instances
+
+handle multiple versions with one of the following mechanisms:
+	- embed git::PurePerl 
+	- use PAR 
+	- multiple directories
+
+Display version somewhere
+
+connected, non auto-connect, arrows loose their connection if the connectee is resized
+	=> this is because resize doesn't keep the connection. The 
+		canonizer reconnects elements but non auto-connect objects are not handled by the canonizer
+		
+		=> make canonizer re connect to the same place instead for changing the connector
+		
+magnet object for ESD
+
+reload color options after loading file
+	display_grid + element_backgound_color
+	
+search for stripe class in the setup directory
+	or list the directories in the setup
+	or add the directory as setup data and 'use lib'
+	
+let actions load stencils
+
+forward KB + mouse events to stripes objects
+	
+table object
+	bulleted lists and otherwise formatted text
+
+record box object
+
+save as pdf and printing
+
+more than one resize handle
+
+zoom on pointer
+	#not ctl to zoom
+	panning
+	scrollbars
+	
+autosave
+
+connector grouping
+
+cancel button in editing windows
+
+handle unicode (remove write_file)
+
+now arrow can match inside a box, moving an arrow around has become more tricky
+	=> do not connect if both ends are unconnected and arrow is being moved
+
+move action constants to module
+
+optimize do_stack serialization
+	# use bzip2
+	=> diff + compress
+		# tests done
+		must have a reverse diff that can patch both ways or it's not worth it
+		
+Management mode
+	=> make ascii look like not ascii
+		=> use ANSI X3.64
+		
+connections connected to a start and an end connector are displayed with warning color
+	move to display plugins
+	=> how do we handle double pointed arrows?
+
+#------------------- done ----------------------------
+
+#insertion from context menu doesn't select inserted element while shortcut does
+
+# color scheme
+	#linux => black
+	#systmem => white
+	
+	# flashing connection color is user setable
+	!change name extra_point to resize_handle_color
+	
+	#error asciio_ui.asciio doesn't display  properly in unix color scheme
+		=> not an error, color was specificaly set
+	
+# autoshrink is default
+
+# multi element creation keep the element selected
+
+# insert section in middle of multi wirl arrow
+
+# inserted diagrams have weird connections that do not move in synch with mouse
+
+# implement inset diagram in slides
+
+# separate gtk parts from asciio
+	Asciio.pm and Asciio::GTK.pm
+	move gtk dialog from stripe classes
+
+# save window size in file
+
+# convert asciio stencil to new format
+	also needed because changes to code is not reflected in stencil
+	
+# let user query which keyboard shortcut is still free
+	generate a list instead (with links to existing actions and their files)
+	=> display keyboard mapping in unsorted.pl;  shortcut 'k'.
+	
+# error: changing arrow type changed the directions of sections
+
+# option to disable auto linking on box element (only possible on arrow right now)
+
+# Error: add boxes, undo all, redo all, exit => no confirmation asked!
+
+# Error: previously saved files (network) do not load new stencils
+
+# resize the selected element if any not the top most 
+	temporary_move_selected_element_to_front may be a less surprising way to achieve the same result
+
+# shift + click should deselect the object under the cursor
+	=> only works when one single element
+	
+# insert template diagrams not only elements
+	=> control + i
+
+#angled-up arrow
+
+                                            .---- N::B::T::T::UDP
+                                           /
+                      .-------- N::B::T::Tracker
+                     /                     \
+                    /   .-- N::B::T::File   `--- N::B::T::T::HTTP
+                   /   /
+            .---- Net::BitTorrent::Torrent
+           /
+          /   .--- Net::BitTorrent::DHT
+         /   /           \
+  Net::BitTorrent         `---- N::B::D::Node
+         \
+          `---- Net::BitTorrent::Peer
+	  
+# multiple box insert command should not insert boxes without text
+	this allows us to have many more separators in the default list
+	=> accept \n as separator
+	
+#auto resize after text changes?
+	auto resize as an attribute to the box
+
+# selection that doesn't take arrows
+	
+! move to
+	row column
+	named ruler
+
+#save stencil one by one
+	=> give name to objects => save selected to stencils
+
+#stencil directory
+	#if a directory is listed in the stencil section of the setup file,
+		all the stencils in that directory are loaded
+		
+	#directory name should be added to the element name
+	
+	#ASCII in the context menue should be replaced by stencils or whatever directory is the root
+
+#network stencils
+	missing small wireless
+
+#auto stencil
+	stencils are 'run' this means that they can be created from other data
+	
+#remove section at the begining of the arrow
+	
+#add section at the begining of the arrow
+	=> auto connection works but moving the connected object -> error
+
+#dialogs
+	#button missing icons
+	!assign ctl + enter as OK in edit boxes
+		=> alt + C
+
+#vertical text
+	
+!signing objects and diagrams?
+
+#toggle grid
+
+#text object should be resized to the text size when created
+
+#allow non auto-connect to be one character around the object instead for _on_ the object
+	=> this could be handled by the box object
+		- the box object is asked to match a connector
+		- the box object can dynamically create a connector
+		- if the box object is resized, the connectors can be moved
+			the connectors can remember their position if the
+			box object is resized again
+		- new connection should connect new connectors
+			=> we need to know who we are connecting to
+
+	=> or this could be done by the asciio object
+		- asciio asks the box to add a connection
+			this let ascioo decide where they should be placed instead for 
+			deciding it's around the box
+		- the user can add connectors with the same mechanism
+		- the connector must be handled when resizing the box object
+			by the box object or by the connector itself
+
+#Box added via 'B' shortcut should be selected
+
+#reselect elements after quick link
+
+#select text an focus in text editing window
+
+#error: title has frame when text doesn't
+
+#link to camel box
+
+#background color, grid color
+
+#save file in exit dialog
+
+#continuation _from_ diagonal is not correct
+
+!allow diagonals in setup
+
+#diagonal lines
+	#error: connector character is wrong
+	#dynamically choose if the arrow allows diagonal or not (keyboard)
+
+#handle error when running external command
+	Can't exec "dsq": No such file or directory at '/devel/perl_modules/App/Asciio/blib/lib/App/Asciio/setup//actions/unsorted.pl' line 365.
+	Use of uninitialized value in split at /devel/perl_modules/App/Asciio/blib/lib/App/Asciio/stripes/editable_box2.pm line 50.
+
+#paste at the mouse position
+	
+#per arrow autoconnect
+
+#dynamically add connectors
+
+#copy selected elements to clipboard
+	
+#move ruler line definition to the setup
+	allow removal of rulers
+	allow specific location of rulers
+
+#dynamically generate GROUP_COLORS
+
+#figlet support
+	Done via external command 
+	Emanuel Haupt <ehaupt@freebsd.org>
+	Useless use of a constant in void context at /usr/lib64/perl5/site_perl/5.8.8/Text/FIGlet.pm line 177.
+	
+	hundreds of :
+	Use of uninitialized value in substitution (s///) at /usr/lib64/perl5/site_perl/5.8.8/Text/FIGlet.pm line 93.
+	Use of uninitialized value in concatenation (.) or string at /usr/lib64/perl5/site_perl/5.8.8/Text/FIGlet.pm line 95.
+	Use of uninitialized value in string ne at /usr/lib64/perl5/site_perl/5.8.8/Text/FIGlet.pm line 154.
+	Use of uninitialized value in string eq at /usr/lib64/perl5/site_perl/5.8.8/Text/FIGlet.pm line 163.
+	Use of uninitialized value in string ne at /usr/lib64/perl5/site_perl/5.8.8/Text/FIGlet.pm line 200.
+	
+#non connecting section wirl arrows
+
+#external command output
+	Emanuel Haupt <ehaupt@freebsd.org>
+
+#screencast demo
+
+#remove section
+
+#export png
+
+#possibility to close the application from a script
+
+#return edits the currently selected box
+
+#error: targets are not opened
+
+#register_action_handlers return own data not the evaled package
+
+#script to generate a list of the actions available
+
+#error: |------------>
+
+#error: moving connectors on each other bugs the connector size
+	only when end connector is backed over start connector
+
+#error: multi wirl inter-sections overlays should be taken from the arrow definition
+     #      .####
+     |      #
+     #####-##
+
+#direction change should work on any arrow section
+
+#error: Add section keeps connection
+#error: Add section doesn't connect
+
+# multi wirl extension as if we were drawing the arrow
+	when the mouse takes a turn, a wirl point is added
+	=> or add section when clicked
+	
+#Add section to cursor position
+
+#add easy way, through a shortcut,  to:
+	#change arrow type
+		dots, equal, star, ...
+	!make an arrow a muti wirl arow
+		=> use only multi wirl arrow
+	#box a text
+	#change box type
+
+# keep selection mode
+	selected ==  index not boolean
+	
+#display action definition file
+
+#Remove single wirl arrow object
+	#=> a connection error occures when using a multiple wirl object with a single wirl
+		write a test where two boxes are connected with one type of arrow
+		and two other boxes with the other type of arrow, move the boxes around and 
+		compare the display
+		
+	# flip broken
+	#change direction broken
+	
+	#test scripting lib
+
+#scripting lib difficult to locate
+	=> -Mblib broken too
+		ADDED: option parsing
+		
+#multi level action do not work anymore
+
+#contex menu box has errors
+	Use of uninitialized value in numeric lt (<) at '/devel/perl_modules/App/Asciio/blib/lib/App/Asciio/setup//actions/context_menu_box.pl' line 118.
+	Use of uninitialized value in array element at '/devel/perl_modules/App/Asciio/blib/lib/App/Asciio/setup//actions/context_menu_box.pl' line 120.
+
+#parse switches
+
+#setup path
+
+#file name is not remembered on, first Save As
+	! not kept in the undo buffer
+	be carefull to not override SaveAs file name
+		=> don't go to previous file name if it was saved As
+	
+#flip start and end of arrows
+
+#action can register themselves so they can add entries in context menues
+
+#CREATE_BACKUP is saved and restored with the files!
+
+#arrow pointing in both direction
+	#wirl
+	#multi wirl
+
+	#quick insert short cut for both
+
+#do pod saving and loading without external commands and files
+
+#remove the cp command call and other backticks
+
+#connected box.pl with 3 boxes doesn't canonize the links properly
+	note that we are giving a missleading hint to start with
+	=> connections are right
+	
+!record gpad with do_stack and add a play_gpad script
+	=> better to save screenshots that are taken when using a keyboard shortcut
+	=> we can also record snippets, by recording at each create_undo_snapshot
+
+	=> use screencast
+	
+#exporting an imported pod generates a slightly different base64
+	check a gpade dump
+	=> Dumper had different order
+	
+#error when copying element that has connections
+	appeared after quick link implementation
+	connection seems to be wrong as it moves with the copied element but is not connected
+	difficult to reproduce
+	
+#shortcut to change the direction of an arrow instead for using wirl
+
+!auto connect with quick link uses the closest to the pointer
+	give hint to wirl creation
+	=> better to be consistent. preference can be given in actions/mouse.pl
+	
+#action shortcut should not be gtk dependent
+
+# remove redo_stack_maximum_size
+
+#action should register a name we can call them with  instead for calling them by keyboard mapping
+
+#move %loaded_types in gpad_io to object
+
+#save file sets title, or not
+	
+#gpad format is unreadable anyway, compress
+
+#gpade import/export
+	remove gpade from gpad
+
+# importer can set the title
+
+#open save POD
+
+#use work directory
+
+#remove all unecessary use from the action files
+
+#open save export as plugins
+
+#saving as xx.txt will not save anything in gpad anymore
+
+! add --setup to locate the setup directory
+	=> use file::Repository
+	=> use getopt
+
+#override/move gpad internally set variables with variables set in the setup files
+	#=> wait till tab to space is defined
+	
+#command to generate a stencil ready definition from the current state of an object
+	=> load multiple stencils and keep the filesystem structure in the popup menues
+	=> allow shortcut to be associated with the stencil elements (by name and in setup files)
+
+#drawing arrow into box connects the arrow
+
+#transfor tabs to space
+
+#only allow start-end connectors to link for multiwirl
+	but allow moving of the intermediate connectors
+
+#shortcut that adds elements but opens the edit dialog directly before inserting the object
+	should this be the default for object creation from stencils?
+		=> shall we add a EDIT_ON_CREATE fields=
+
+#ctl + shift + arrows => connect arrows as connect boxes does
+
+#color groups when using solid background
+	=> through a get_element_background_color
+
+#error shift plus select area doesn't work
+
+#do notshow resize rectangle if attribut is not set
+
+#error after aligning box centers, the connectors are real weird in if_elsif.gpad
+
+#verify all the '* $character_' and '\ $character_'
+
+#editing box breaks the connections
+
+#?use DTD::GTK for dumps
+
+!? table element
+	=> user defined plugin in the future
+	
+!one character element should move not resize
+
+#keyboard mapping
+
+#automatic moving of start connector is weird
+	=> $moved_connector_name
+	
+#-init
+
+#export is broken since 'save as' 
+
+#handle file save properly
+	#save unnamed to new name OK
+	#save unnamed to old name ASK FOR OVERRIDE PERMISSION
+	#save named DO NOT ASK NAME
+	#save as WORKS as save UNAMED
+	#save mark document as NOT MODIFIED (check undo still works)
+
+#redo
+
+#quick insert for text (same as quick insert for boxes)
+
+#save element's X Y in character sizes
+
+#access stencil elements by name
+
+!add module with shared constants (ie setup)
+	=> later
+	
+#update_diagram should be configurable
+	make a module so we can optimize a connection at the time
+		canonize uses $self for character size only
+	? ask for the optimal connection before creating it
+
+#subs to connect specific connectors wherever the elements are and they are sized
+
+#script using cononize_connection doesn't work, path was changed
+
+#make a script library
+
+!update_diagram should be called when running in script mode
+	let the script writer decide if they want "optimized" connections or not
+
+# proper setup structure
+
+#editable arrow has connections!! use resize/info/highlight points instead
+
+# export ASCII to clipboard
+
+#quick connect
+	if selected elements
+		connect element under to selected elements
+		deselect all
+	else
+		select element
+		
+#forward mouse to ACTIONS
+
+#$dragging moved to class
+	setting it should be possible through an API
+
+#auto connect that moves an arrow start should update the end connector
+
+#multi wirl in default gpad.pl
+
+#alignment tool
+
+#single group element copied still thinks it part of a group
+
+#changing text in if reconnect wrong
+
+#set/get_text
+
+#default glyph types for box
+
+#setting X, Y in scipts doesn't generate expected ASCII output
+
+#connector error in multi wirl
+
+#transfor to ASCII output has extra spaces
+
+#multiline arrow take direction for every point (for scripting)
+
+!--script my_script.pl
+
+#save on exit if modified
+
+#multiline arrow
+
+!reapeat box
+	given a text, it will repeat it depednding on the size
+		!full multiples or not
+
+#process box
+
+#segfault
+#can't use Data::TreeDumper in copy to clipboard
+
+# 'new connection' is flashed for a connector that is already connected
+
+#tab to select first element generate 'uninitialzed value at 134'
+
+#undo
+	#do not save undo buffer
+	
+#copy doesn't keep connections
+
+#front back break connections
+#keyboard move doesn't move connections
+
+!cycle color for selection points like for groups?
+
+#move $previous_x, $previous_y to the class
+
+#error: drawing connections on move
+#error: drawing connections on resize box
+#error: drawing connections on edit
+
+#refactor other end offsetting (used in move and resize)
+
+#missing: save connections
+
+#error moving groups looses connection
+
+#thrown a few boxes and arrows in an empty document
+
+#keyboard short cut
+	transparent mode
+	show connectors connections
+	
+#resize connectee doesn't move the connector
+
+#move  group looses connections
+
+#resizing downright arrow flips it to rightdown
+
+handle multiple character start and end in angled arrow
+handle \t in text
+
+#after changing line glyphs, it becomes right down from right up !!
+
+#ungrouping moves object up
+selecting a single group element, through selection rectangle, selects the whole group
+	right?
+
+#saving named objects uses the objects contents for the next copy
+
+#save doesn't save grouping !!
+	save elements without NAME to avoid overriding object at load time
+
+?? seems that selection rectangle sometimes doesn't work
+
+#selection is done botom  up instead for the opposite!
+#when bg selection is on, can't select fg
+
+selecting an element that is between two grouped elements is not possible
+
+!selection cycles through objects when clicking + tab
+
+#BOX2 with title and text only displays wrong size
+
+#box and arrow streching are not ont the same
+	box doesn't accept row 0
+
+#can't loade face file
+
+#edit text to empty string
+
+#if only one element is editable in a group, edit it
+	present selection box if multiple editable objects
+
+#handle \ in text for pango
+
+#_ is removed from name in menues
+
+spell cheker
+
+#grouping
+
+Window size in character multiples
+Drag drop objects from views or other aflow instance
+Select font
+Colored font
+Background color
+#Stencils are normal files
+#Grouping, alignment, send back/front
+#Grid display
+#Horizontal and vertical alignement lines
+!Objects are hilighted when overed (incuding groups)
+#Select and move object with a single click
+#Multiple object selection
+Save in multiple format, try to keep extra attributes like color
+        text, raw text, html
+
+!Object is an instance of a class
+        node can change class (eg from square to round)
+        class can be modified (eg color change for all nodes)
+
+Node class defines the node's apparence, class is a script
+
+User defined key mapping, mouse mapping and menu mapping
+#Static object mode
+        select object(s) and click to insert it without drag drop
+
+Layers?
+        each layer has its tab and one can see through tabs
+        how does this play with split window
+
+Scripts can add their mappings
+
+Scripts can generate new graphs
+Re-order script so objects without link are aligned under each other
+Routing and reordering script
+Script can be save in stencil
+Drag drop script object executes it
+

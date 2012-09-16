@@ -1,0 +1,54 @@
+use strict ;
+use warnings ;
+
+use  App::Asciio::Stencil qw(create_box create_element) ;
+
+my @ascii = 
+	(
+	'house' => <<'EOA',
+  ___________  
+ //////|\\\\\\ 
+'.-----------.'
+ |    ___    | 
+ | [] | | [] | 
+ |____|_|____| 
+EOA
+
+	'corporate building' => <<'EOA',
+          .-'-.          
+      _.-'-._.-'-._      
+     '-.  _.-._ .' '
+     |   '-._.-'   |
+     |'-_|  |  |_.'|
+     |   |'-|-'|   |
+     |'-_|  |  |_.'|
+     |   |'-|-'|   |
+     |'-_|  |  |_.'|
+     |   |'-|-'|   | ___ 
+   .'['-_|  |  |_.-]   .`
+ .'  '-'_'-.|.-|_'-' .`  
+' --..._ '._| _|-'_.'    
+EOA
+
+	'building' => <<'EOA',
+   .--------.
+ ,'       .'|
+:-------.'# |
+| # # # | # |
+| # # # | # |
+| # # # | # |
+| # # # | # |
+| # # # | #  
+| # # # |    
+EOA
+
+	) ;
+	
+my @boxes ;
+
+for(my $ascii_index = 0 ; $ascii_index < $#ascii ; $ascii_index+= 2)
+	{
+	push @boxes, create_box(TEXT_ONLY => $ascii[$ascii_index + 1], NAME => $ascii[$ascii_index], ) ;
+	}
+	
+[@boxes] ;

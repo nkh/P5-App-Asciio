@@ -1,0 +1,14 @@
+
+            421  421  421
+             \    |    /
+              \   |   /
+               v  v  v
+             drwxrwxrwx
+             ^| || || |
+            / '-''-''-'
+           /   ^  ^  ^
+   file type    \  \  \
+   indicator     \  \  \
+               user  \  \
+                   group \
+                       other

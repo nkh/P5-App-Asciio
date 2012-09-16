@@ -1,0 +1,67 @@
+use strict ;
+use warnings ;
+
+use  App::Asciio::Stencil qw(create_box create_element) ;
+
+my @ascii = 
+	(
+	'arms_down' => <<'EOA',
+ o
+/|\
+/ \
+EOA
+
+	'arms_up' => <<'EOA',
+\o/
+ |
+/ \
+EOA
+
+	'Bunny' => <<'EOA',
+(\_/)
+(O.o)
+(> <)
+EOA
+
+	'Dilbert' => <<'EOA',
+ -.-.-,~ .
+ )     (
+ |_    |
+ /(_)---`\
+(_      -'
+ ]      |
+ |    _,')
+ [_,-'_-'(
+(_).-'    \
+/ /        \ 
+EOA
+
+	'BSD_devil' => <<'EOA',
+         ,       ,    
+         \\_    /|    
+         /- _`-/ '    
+        (/\/ \  /\    
+        O O   ) / |   
+        `-^--'`<  '   
+       (_)   _  )/    
+        `.___/` /     
+          `--' /      
+<---.   __ / __ \     
+<---|==(fl)=) \ /===  
+<---'   `-' `._,'\    
+           \     /    
+            ( ( / \__ 
+         ,---_' |    \
+         `-(____)    V
+EOA
+
+	) ;
+	
+my @boxes ;
+
+for(my $ascii_index = 0 ; $ascii_index < $#ascii ; $ascii_index+= 2)
+	{
+	push @boxes, create_box(TEXT_ONLY => $ascii[$ascii_index + 1], NAME => $ascii[$ascii_index], ) ;
+	}
+	
+[@boxes] ;

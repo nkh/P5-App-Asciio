@@ -1,0 +1,112 @@
+#!/usr/bin/perl -w
+
+package main ;
+
+use strict;
+use warnings;
+
+use Glib ':constants';
+use Gtk2 -init;
+Gtk2->init;
+
+use App::Asciio::GTK::Asciio ;
+
+use Module::Util qw(find_installed) ;
+use File::Basename ;
+
+#-----------------------------------------------------------------------------
+
+my $window = Gtk2::Window->new('toplevel');
+$window->set_title("asciio");
+$window->set_default_size(700, 800) ;
+$window->signal_connect("destroy", sub { exit(0); });
+
+my $vbox = Gtk2::VBox->new (FALSE, 0);
+$window->add($vbox);
+
+my $hpaned = Gtk2::HPaned->new;
+$vbox->pack_start($hpaned, TRUE, TRUE, 0);
+$hpaned->set_border_width (3);
+
+my @asciios ;
+
+my $asciio = new App::Asciio::GTK::Asciio(50, 25) ;
+push @asciios, $asciio ;
+
+$hpaned->add1($asciio->{widget});
+$vbox->show_all();
+
+my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
+	= $asciio->ParseSwitches([@ARGV], 0) ;
+
+die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
+
+my $setup_paths = [] ;
+
+if(@{$asciio_config->{SETUP_PATHS}})
+	{
+	$setup_paths = $asciio_config->{SETUP_PATHS} ;
+	}
+else
+	{
+	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
+	my $setup_path = $path . $basename . '/setup/' ;
+	
+	$setup_paths = 
+		[
+		$setup_path .  'setup.ini', 
+		$setup_path . 'GTK/setup.ini', 
+		] ;
+	}
+
+$asciio->setup($setup_paths) ;
+
+my ($character_width, $character_height) = $asciio->get_character_size() ;
+
+if(defined $asciio_config->{TARGETS}[0])
+	{
+	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
+	$window->set_default_size(@{$asciio->{WINDOW_SIZE}})  if defined $asciio->{WINDOW_SIZE} ;
+	}
+	
+$window->show();
+
+$asciio->set_modified_state(0) ;
+$asciio->run_script($asciio_config->{SCRIPT}) ;
+	
+#--------------------------------------------------------------------------
+
+$window->signal_connect (delete_event => \&delete_event, \@asciios) ;
+
+sub delete_event
+{
+my ($window, $event, $asciios) = @_;
+my $answer = 'yes';
+
+my $should_save ;
+for my $asciio (@{$asciios})
+	{
+	$should_save++ if $asciio->get_modified_state() ;
+	}
+	
+if($should_save) 
+	{
+	$answer = $asciios[0]->display_quit_dialog('asciio', ' ' x 25 . "Document is modified!\n\nAre you sure you want to quit and lose your changes?\n") ;
+	}
+	
+if($answer eq 'save_and_quit')
+	{
+	for my $asciio (@{$asciios})
+		{
+		my @saved_result = $asciio->run_actions_by_name('Save') ;
+		
+		$answer = 'cancel' if(! defined $saved_result[0][0] || $saved_result[0][0] eq '') ;
+		}
+	}
+	
+return $answer eq 'cancel';
+}
+
+#--------------------------------------------------------------------------
+
+Gtk2->main();
