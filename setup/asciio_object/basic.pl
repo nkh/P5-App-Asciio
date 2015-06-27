@@ -1,9 +1,9 @@
 FONT_FAMILY => 'Monospace',
-FONT_SIZE => '8',
-TAB_AS_SPACES => '   ',
+FONT_SIZE => '14',
+TAB_AS_SPACES => '    ',
 DISPLAY_GRID => 1,
-COPY_OFFSET_X => 2,
-COPY_OFFSET_Y => 2,
+COPY_OFFSET_X => 4,
+COPY_OFFSET_Y => 4,
 COLORS =>
 	{
 	background => [255, 255, 255],

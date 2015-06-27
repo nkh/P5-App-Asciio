@@ -281,7 +281,7 @@ my $build = $class->new
 	pm_files     => \%all_modules,
 	#~ autosplit    => \@split_modules,
 	
-	script_files => ['script/asciio', 'script/asciio_to_text'],
+	script_files => ['script/asciio', 'script/asciio_to_text', 'script/A',],
 	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@khemir.net>',
 	dist_abstract => 'App::Asciio - ASCII diagramming',
 	);

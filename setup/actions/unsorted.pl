@@ -1,4 +1,7 @@
 
+use strict ;
+use warnings ;
+
 #----------------------------------------------------------------------------------------------
 
 register_action_handlers
@@ -15,6 +18,8 @@ register_action_handlers
 	'Display commands' => ['C00-k', \&display_commands],
 	'Display action files' => ['C0S-K', \&display_action_files],
 	'Zoom in' => ['000-KP_Add', \&zoom, 1],
+	'Zoom out' => ['000-minus', \&zoom, -1],
+	'Zoom in' => ['000-plus', \&zoom, 1],
 	'Zoom out' => ['000-KP_Subtract', \&zoom, -1],
 	'Help' => ['000-F1', \&display_help],
 	'External command output in a box' => ['000-x', \&external_command_output, 1],
@@ -32,32 +37,34 @@ $self->display_message_modal(<<EOM) ;
 
 Very short help:
 
-k shows you all the keyboard mapping
+k show the keyboard mapping
+CTL+SHIFT+k 
 	
 b, Add a box
 B, Add a box, edit the text directly
-t, Add a text element
-a, add a wirl arrow (AsciiO arrow)
-SHIFT+A, add an angled arrow
+CTL+m, Add multiple boxes in one shot
 
-copy elements with the CTL key
-add elements to the selection with shift
+t, Add a text element
+CTL+SHIFT+M, Add multiple texts in one shot
 
 quick link:
 	select a box
 	CTL+SHIFT+ left mouse on the other element
 	
+a, add a wirl arrow (AsciiO arrow)
+SHIFT+A, add an angled arrow
 d, change the direction of the arrows (selection)
 f, flip the arrows (selection)
 
-CTL+m, Add multiple boxes in one shot
-CTL+SHIFT+M, Add multiple texts in one shot
+
+CTL+click, copy elements
+SHIFT+click: add elements to the selection
 
 CTL+g, group elements
 CTL+u, ungroup object
 
 Mouse right button shows a context menu.
-Double click (may) shows the element editing dialog
+Double click shows the element editing dialog
 
 EOM
 }
