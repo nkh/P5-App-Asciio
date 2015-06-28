@@ -1,3 +1,7 @@
+*.directory
+MYMETA.json
+MYMETA.yml
+beating_a_star.pdf
 *.tar.gz
 Build
 _build/

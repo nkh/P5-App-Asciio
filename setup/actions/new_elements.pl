@@ -28,5 +28,7 @@ my $element = $self->add_new_element_named($name, $self->{MOUSE_X}, $self->{MOUS
 
 $element->edit($self) if $edit;
 
+$self->select_elements(1, $element);
+
 $self->update_display() ;
 } ;
