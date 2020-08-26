@@ -65,7 +65,7 @@ you to draw ASCII diagrams in a modern (but simple) graphical interface.
 
 The ASCII graphs can be saved as ASCII or in a format that allows you to modify them later.
 
-Special thanks go to the Muppet and the gtk-perl group, Gábor Szabó for his help and advices.
+Special thanks go to the Muppet and the gtk-perl group, Gabor Szabo for his help and advices.
 
 Adam Kennedy coined the cool name.
 

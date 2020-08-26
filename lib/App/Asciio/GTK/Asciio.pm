@@ -194,6 +194,9 @@ if($self->{DISPLAY_GRID})
 # draw elements
 for my $element (@{$self->{ELEMENTS}})
 	{
+	# do not draw elements that are outside the viewport
+	# do not draw unnchanged elements, use a rendering cache
+
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
 	
 	if($self->is_element_selected($element))
