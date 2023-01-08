@@ -250,7 +250,7 @@ Exporting to the clipboard is done with B<ctl + e>.
           User code  v            v OS code
 	  
 	
-	     .---.  .---. .---.  .---.    .---.  .---.
+             .---.  .---. .---.  .---.    .---.  .---.
     OS API   '---'  '---' '---'  '---'    '---'  '---'
                |      |     |      |        |      |
                v      v     |      v        |      v
@@ -271,7 +271,7 @@ Exporting to the clipboard is done with B<ctl + e>.
 
 
                  
-		 .---------.  .---------.
+                 .---------.  .---------.
                  | State 1 |  | State 2 |
                  '---------'  '---------'
                     ^   \         ^  \
