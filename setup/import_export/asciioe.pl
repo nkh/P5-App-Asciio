@@ -33,12 +33,12 @@ my ($self, $elements_to_save, $file, $data)  = @_ ;
 if($self->{CREATE_BACKUP} && -e $file)
 	{
 	use File::Copy;
-	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!";		
+	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!" ;
 	}
 
-write_file($file, $self->serialize_self(1) .'$VAR1 ;') ;
+my $saved = write_file($file, $self->serialize_self(1) .'$VAR1 ;') ;
 
-return $file ;
+return $saved ;
 }
 
  

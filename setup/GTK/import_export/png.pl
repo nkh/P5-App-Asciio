@@ -28,8 +28,6 @@ sub export_png
 # 			$alloc->width, $alloc->height
 # 			);
 			
-# $pixbuf->save($file, "png" );
-
-return ;
+# return $pixbuf->save($file, "png" );
 }
 

@@ -181,7 +181,7 @@ if($self->get_modified_state())
 	{
 	my $user_answer = $self->display_quit_dialog('asciio', 'Diagram modified. Save it and exit?') ;
 	
-	if($user_answer eq 'yes')
+	if($user_answer eq 'save_and_quit')
 		{
 		my $file_name = $self->get_file_name('save') ;
 		
@@ -192,10 +192,13 @@ if($self->get_modified_state())
 					? $extension
 					: 'asciio_internal_format' ;
 					
-		$self->save_with_type(undef, $type, $file_name) if(defined $file_name && $file_name ne q[]) ;
+		my $saved = $self->save_with_type(undef, $type, $file_name) if(defined $file_name && $file_name ne q[]) ;
+		
+		$user_answer = 'ok' if defined $saved ;
 		}
 
-	exit if $user_answer ne 'cancel'
+print "$user_answer\n" ;
+	exit if $user_answer eq 'ok'
 	}
 else
 	{

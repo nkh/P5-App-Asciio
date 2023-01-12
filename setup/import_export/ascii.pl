@@ -20,11 +20,11 @@ if($self->{CREATE_BACKUP} && -e $file)
 	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!";		
 	}
 
-write_file($file, $self->transform_elements_to_ascii_buffer()) ;
+my $saved = write_file($file, $self->transform_elements_to_ascii_buffer()) ;
 #~ open FH, ">:encoding(utf8)",   $file_name;
 #~ print FH $self->transform_elements_to_ascii_buffer() ;
 #~ close FH ;
 
-return ;
+return $saved ;
 }
 

@@ -267,8 +267,8 @@ else
 		copy($file_name,"$file_name.bak") or die "save_with_type: Copy failed while making backup copy: $!";		
 		}
 		
-	write_file($file_name,compress($self->serialize_self() .'$VAR1 ;')) ;
 	$title = $file_name ;
+	write_file($file_name,compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
 	}	
 	
 return $title ;
