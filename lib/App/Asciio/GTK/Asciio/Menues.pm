@@ -39,8 +39,8 @@ for my $menu_entry (@{$self->get_context_menu_entries($popup_x, $popup_y)})
 
 push @menu_items, 
 	(
-	['/File/open', undef , sub {$self->run_actions_by_name('Open') ;}, 0 , '<Item>', undef],
-	['/File/save', undef , sub {$self->run_actions_by_name('Save') ;}, 0 , '<Item>', undef],
+	['/File/open',     undef , sub {$self->run_actions_by_name('Open') ;},      0 , '<Item>', undef],
+	['/File/save',     undef , sub {$self->run_actions_by_name('Save') ;},      0 , '<Item>', undef],
 	[ '/File/save as', undef , sub {$self->run_actions_by_name(['Save', 1]) ;}, 0 , '<Item>', undef],
 	) ;
 	
@@ -49,10 +49,19 @@ if($self->get_selected_elements(1) == 1)
 	push @menu_items, [ '/File/save stencil', undef , $self->menue_entry_wrapper(\&save_stencil), 0 , '<Item>', undef ] ;
 	}	
 
-my $item_factory = Gtk3::ItemFactory->new("Gtk2::Menu" ,"<popup>") ;
-$item_factory ->create_items($self->{widget}, @menu_items) ;
+# my $item_factory = Gtk3::ItemFactory->new("Gtk3::Menu" ,"<popup>") ;
+# $item_factory ->create_items($self->{widget}, @menu_items) ;
+# my $menu = $item_factory->get_widget("<popup>") ;
 
-my $menu = $item_factory->get_widget("<popup>") ;
+my $menu = Gtk3::Menu->new() ;
+
+my $menu_item=Gtk3::MenuItem->new('File/open');
+$menu->create_items() ;
+
+$menu_item->signal_connect('activate'=> sub { $self->run_actions_by_name('Open') ; });
+$menu_item->show() ;
+$menu->append($menu_item) ;
+
 
 $menu->popup(undef, undef, undef, undef, $event->button, $event->time) ;
 }
@@ -84,8 +93,8 @@ return sub
 my Readonly $SHORTCUTS = 0 ;
 my Readonly $CODE = 1 ;
 my Readonly $ARGUMENTS = 2 ;
-my Readonly $CONTEXT_MENUE_SUB = 3 ;
-my Readonly $CONTEXT_MENUE_ARGUMENTS = 4 ;
+my Readonly $CONTEXT_MENU_SUB = 3 ;
+my Readonly $CONTEXT_MENU_ARGUMENTS = 4 ;
 my Readonly $NAME= 5 ;
 
 sub get_context_menu_entries
@@ -99,25 +108,25 @@ for my $context_menu_handler
 		grep 
 			{
 			'ARRAY' eq ref $self->{CURRENT_ACTIONS}{$_} # not a sub actions definition
-			&& defined $self->{CURRENT_ACTIONS}{$_}[$CONTEXT_MENUE_SUB]
+			&& defined $self->{CURRENT_ACTIONS}{$_}[$CONTEXT_MENU_SUB]
 			} sort keys %{$self->{CURRENT_ACTIONS}}
 	)
 	{
-	#~ print "Adding context menue from action '$context_menu_handler->[$NAME]'.\n" ;
+	print "Adding context menu from action '$context_menu_handler->[$NAME]'.\n" ;
 	
-	if(defined $context_menu_handler->[$CONTEXT_MENUE_ARGUMENTS])
+	if(defined $context_menu_handler->[$CONTEXT_MENU_ARGUMENTS])
 		{
 		push @context_menu_entries, 
-			$context_menu_handler->[$CONTEXT_MENUE_SUB]->
+			$context_menu_handler->[$CONTEXT_MENU_SUB]->
 				(
 				$self,
-				$context_menu_handler->[$CONTEXT_MENUE_ARGUMENTS],
+				$context_menu_handler->[$CONTEXT_MENU_ARGUMENTS],
 				$popup_x, $popup_y,
 				) ;
 		}
 	else
 		{
-		push @context_menu_entries, $context_menu_handler->[$CONTEXT_MENUE_SUB]->($self, $popup_x, $popup_y) ;
+		push @context_menu_entries, $context_menu_handler->[$CONTEXT_MENU_SUB]->($self, $popup_x, $popup_y) ;
 		}
 	}
 	

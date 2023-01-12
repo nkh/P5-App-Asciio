@@ -228,7 +228,7 @@ for my $element (@{$self->{ELEMENTS}})
 			$gc->fill();
 			
 			$gc->set_source_rgb(@{$foreground_color});
-
+			
 			my $char_index = 0 ;
 			for my $char (split //, $line)
 				{
@@ -240,7 +240,7 @@ for my $element (@{$self->{ELEMENTS}})
 				
 				$gc->show_text($char);
 				}
-
+				
 			$line_index++;
 			$gc->stroke;
 			}

@@ -114,7 +114,7 @@ sub display_quit_dialog
 {
 my ($self, $title, $text) = @_ ;
 
-my $window = new Gtk3::Window() ;
+my $window = Gtk3::Window->new() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
 $dialog->set_default_size (300, 150);

@@ -24,11 +24,7 @@ my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')
 $dialog->set_default_size (450, 305);
 $dialog->add_button ('gtk-ok' => 'ok');
 
-#~ my $vbox = $dialog->vbox ;
-my $dialog_vbox = $dialog->vbox ;
-
 my $vbox = Gtk3::VBox->new (FALSE, 5);
-$dialog_vbox->pack_start ($vbox, TRUE, TRUE, 0);
 
 $vbox->pack_start (Gtk3::Label->new (""),
 		 FALSE, FALSE, 0);
@@ -52,7 +48,7 @@ $sw->add($treeview);
 
 # title
 my $titleview = Gtk3::TextView->new;
-$titleview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
+#$titleview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
 my $title_buffer = $titleview->get_buffer ;
 $title_buffer->insert ($title_buffer->get_end_iter, $title);
 
@@ -61,7 +57,7 @@ $titleview->show;
 
 # text 
 my $textview = Gtk3::TextView->new;
-$textview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
+#$textview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
 
 my $text_buffer = $textview->get_buffer;
 $text_buffer->insert ($text_buffer->get_end_iter, $text);
@@ -72,22 +68,6 @@ $textview->show() ;
 # Focus and select, code by Tian
 $text_buffer->select_range($text_buffer->get_start_iter, $text_buffer->get_end_iter);
 $textview->grab_focus() ;
-
-
-# some buttons
-#~ my $hbox = Gtk3::HBox->new (TRUE, 4);
-#~ $vbox->pack_start ($hbox, FALSE, FALSE, 0);
-
-#~ my $button = Gtk3::Button->new ("Add item");
-#~ $button->show() ;
-#~ $button->signal_connect (clicked => \&add_item, $model);
-#~ $hbox->pack_start ($button, TRUE, TRUE, 0);
-
-#~ $button = Gtk3::Button->new ("Remove item");
-#~ $button->signal_connect (clicked => \&remove_item, $treeview);
-#~ $hbox->pack_start ($button, TRUE, TRUE, 0);
-
-#~ $hbox->show() ;
 
 $treeview->show() ;
 $vbox->show() ;

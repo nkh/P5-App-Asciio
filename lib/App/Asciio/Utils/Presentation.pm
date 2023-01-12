@@ -36,11 +36,10 @@ return
 	sub
 		{
 		my ($self) = @_ ;
-
+		
 		my $element = $self->add_new_element_named('stencils/asciio/box', $x, $y) ;
-
 		$element->set_text($title, $text) ;
-
+		
 		$self->select_elements($select, $element) ;
 		
 		return $element ;
@@ -53,7 +52,8 @@ return
 	sub
 		{
 		my ($self) = @_ ;
-		$self->run_actions_by_name('Select all elements', 'Delete selected elements') ;
+		$self->select_all_elements() ;
+		$self->delete_elements($self->get_selected_elements(1)) ;
 		} ;
 }
 

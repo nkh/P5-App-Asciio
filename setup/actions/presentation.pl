@@ -30,6 +30,7 @@ if(defined $file_name && $file_name ne q{})
 
 	# run first slide
 	$slides->[$current_slide]->($self) ;
+	$self->deselect_all_elements() ;
 	$self->update_display() ;
 	}
 }
@@ -44,6 +45,7 @@ if($slides)
 	{
 	$current_slide = 0 ;
 	$slides->[$current_slide]->($self) ;
+	$self->deselect_all_elements() ;
 	$self->update_display() ;
 	}
 }
@@ -58,6 +60,7 @@ if($slides && $current_slide != $#$slides)
 	{
 	$current_slide++ ;
 	$slides->[$current_slide]->($self) ;
+	$self->deselect_all_elements() ;
 	$self->update_display() ;
 	}
 }
@@ -72,6 +75,7 @@ if($slides && $current_slide != 0)
 	{
 	$current_slide-- ;
 	$slides->[$current_slide]->($self) ;
+	$self->deselect_all_elements() ;
 	$self->update_display() ;
 	}
 }

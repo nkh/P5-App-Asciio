@@ -100,12 +100,12 @@ for my $action (@actions)
 		{
 		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
 			{
-			print "\e[32m$action [group]\e[0m\n" ;
+			printf '%20s %s', '', "\e[32m$action [group]\e[0m\n" ;
 			$current_actions_by_name = $self->{CURRENT_ACTIONS}{$action} ;
 			}
 		else
 			{
-			print "\e[32m$action\e[0m\n" ;
+			printf '%20s %s', '', "\e[32m$action\e[0m\n" ;
 			
 			if(defined $current_actions_by_name->{$action}[$ARGUMENTS])
 				{
@@ -130,7 +130,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		print "\e[31m$action\e[0m\n" ;
+		printf '%20s %s', '', "\e[31m$action\e[0m\n" ;
 		last ;
 		}
 	}

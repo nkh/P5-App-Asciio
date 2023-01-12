@@ -76,7 +76,7 @@ else
 		$box_type->[1][0] = 1 ; # title separator
 		$element->set_box_type($box_type) ;
 
-		$element->set_text('Warning!', 'The file you wanted to open had no content.');
+		$element->set_text('Warning!', "'$file_name' has no content.");
 
 		$self->select_elements(1, $element) ;
 		$self->update_display() ;
