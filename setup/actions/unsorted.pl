@@ -6,24 +6,24 @@ use warnings ;
 
 register_action_handlers
 	(
-	'Create multiple box elements from a text description' => ['C00-m', \&insert_multiple_boxes_from_text_description, 1],
-	'Create multiple text elements from a text description' => ['C0S-M', \&insert_multiple_boxes_from_text_description, 0],
-	'Flip transparent element background' => ['C00-t', \&transparent_elements],
-	'Flip grid display' => ['000-g', \&flip_grid_display],
-	'Flip color scheme' => ['CA0-c', \&flip_color_scheme],
-	'Undo' => ['C00-z', \&undo],
-	'Display undo stack statistics' => ['C0S-Z', \&display_undo_stack_statistics],
-	'Redo' => ['C00-y', \&redo],
-	'Display keyboard mapping' => ['000-k', \&display_keyboard_mapping],
-	'Display commands' => ['C00-k', \&display_commands],
-	'Display action files' => ['C0S-K', \&display_action_files],
-	'Zoom in' => ['000-KP_Add', \&zoom, 1],
-	'Zoom out' => ['000-minus', \&zoom, -1],
-	'Zoom in' => ['000-plus', \&zoom, 1],
-	'Zoom out' => ['000-KP_Subtract', \&zoom, -1],
-	'Help' => ['000-F1', \&display_help],
-	'External command output in a box' => ['000-x', \&external_command_output, 1],
-	'External command output in a box no frame' => ['C00-x', \&external_command_output, 0],
+	'Create multiple box elements from a text description'  => ['C00-m',           \&insert_multiple_boxes_from_text_description, 1],
+	'Create multiple text elements from a text description' => ['C00-t',           \&insert_multiple_boxes_from_text_description, 0],
+	'Flip transparent element background'                   => ['C0S-T',           \&transparent_elements                          ],
+	'Flip grid display'                                     => ['000-g',           \&flip_grid_display                             ],
+	'Flip color scheme'                                     => ['CA0-c',           \&flip_color_scheme                             ],
+	'Undo'                                                  => ['C00-z',           \&undo                                          ],
+	'Display undo stack statistics'                         => ['C0S-Z',           \&display_undo_stack_statistics                 ],
+	'Redo'                                                  => ['C00-y',           \&redo                                          ],
+	'Display keyboard mapping'                              => ['000-k',           \&display_keyboard_mapping                      ],
+	'Display commands'                                      => ['C00-k',           \&display_commands                              ],
+	'Display action files'                                  => ['C0S-K',           \&display_action_files                          ],
+	'Zoom in'                                               => ['000-plus',        \&zoom, 1                                       ],
+	# 'Zoom in'                                               => ['000-KP_Add',      \&zoom, 1                                       ],
+	'Zoom out'                                              => ['000-minus',       \&zoom, -1                                      ],
+	# 'Zoom out'                                              => ['000-KP_Subtract', \&zoom, -1                                      ],
+	'Help'                                                  => ['000-F1',          \&display_help                                  ],
+	'External command output in a box'                      => ['000-x',           \&external_command_output, 1                    ],
+	'External command output in a box no frame'             => ['C00-x',           \&external_command_output, 0                    ],
 	) ;
 
 #----------------------------------------------------------------------------------------------
@@ -48,8 +48,9 @@ t, Add a text element
 CTL+SHIFT+M, Add multiple texts in one shot
 
 quick link:
-	select a box
-	CTL+SHIFT+ left mouse on the other element
+	select a box, SHIFT+left-mouse
+		link to element under cursor
+		create element if none under cursor
 	
 a, add a wirl arrow (AsciiO arrow)
 SHIFT+A, add an angled arrow
@@ -91,31 +92,31 @@ $self->{COLOR_SCHEME} = 'system' unless exists $self->{COLOR_SCHEME} ;
 if($self->{COLOR_SCHEME} eq 'system')
 	{
 	$self->flush_color_cache() ;
-	$self->{COLOR_SCHEME} = 'linux' ;
+	$self->{COLOR_SCHEME} = 'night' ;
 	$self->{COLORS} =
 		{
-		background => [10, 10, 10],
-		grid => [30, 30, 30],
-		ruler_line => [25, 60, 80],
-		selected_element_background => [25, 40, 50],
-		element_background => [25, 25, 25],
-		element_foreground => [150, 150, 150] ,
-		selection_rectangle => [110, 0, 110],
-		test => [0, 255, 255],
+		background => [0.04, 0.04, 0.04],
+		grid => [0.12, 0.12, 0.12],
+		ruler_line => [0.10, 0.23, 0.31],
+		selected_element_background => [0.10, 0.16, 0.20],
+		element_background => [0.10, 0.10, 0.10],
+		element_foreground => [0.59, 0.59, 0.59] ,
+		selection_rectangle => [0.43, 0.00, 0.43],
+		test => [0.00, 1.00, 1.00],
 		group_colors =>
 			[
-			[[0x41, 0x32, 0x23], [0x2B, 0x21, 0x17]],
-			[[0x21, 0x3C, 0x23], [0x15, 0x27, 0x17]],
-			[[0x23, 0x32, 0x3C], [0x18, 0x22, 0x29]],
-			[[0x10, 0x44, 0x44], [0x0A, 0x2C, 0x2C]],
-			[[0x50, 0x28, 0x20], [0x2E, 0x17, 0x13]],
+			[[0.98, 0.86, 0.74], [0.98, 0.96, 0.93]],
+			[[0.71, 0.98, 0.71], [0.94, 0.98, 0.94]],
+			[[0.72, 0.86, 0.98], [0.95, 0.96, 0.98]],
+			[[0.54, 0.98, 0.98], [0.92, 0.98, 0.98]],
+			[[0.77, 0.89, 0.77], [0.93, 0.95, 0.93]],
 			],
 			
-		connection => [140, 65, 20],
-		connection_point => [130, 100, 50],
-		connector_point => [20, 100, 155],
-		new_connection => [180, 0, 0],
-		extra_point => [150, 110, 50], 
+		connection => [0.55, 0.25, 0.08],
+		connection_point => [0.51, 0.39, 0.20],
+		connector_point => [0.12, 0.56, 1.00],
+		new_connection => [1.00, 0.00, 0.00],
+		extra_point => [0.59, 0.43, 50], 
 		} ;
 		
 	$self->update_display() ;
@@ -126,29 +127,29 @@ else
 	$self->{COLOR_SCHEME} = 'system' ;
 	$self->{COLORS} =
 		{
-		background => [255, 255, 255],
-		grid => [229, 235, 255],
-		ruler_line => [85, 155, 225],
-		selected_element_background => [180, 244, 255],
-		element_background => [251, 251, 254],
-		element_foreground => [0, 0, 0] ,
-		selection_rectangle => [255, 0, 255],
-		test => [0, 255, 255],
+		background => [1.00, 1.00, 1.00],
+		grid => [0.89, 0.92, 1.00],
+		ruler_line => [0.33, 0.61, 0.88],
+		element_background => [0.98, 0.98, 1],
+		element_foreground => [0.00, 0.00, 0.00] ,
+		selected_element_background => [0.70, 0.95, 1.00],
+		selection_rectangle => [1.00, 0.00, 1.00],
+		test => [0.00, 1.00, 1.00],
 		
 		group_colors =>
 			[
-			[[250, 221, 190], [250, 245, 239]],
-			[[182, 250, 182], [241, 250, 241]],
-			[[185, 219, 250], [244, 247, 250]],
-			[[137, 250, 250], [235, 250, 250]],
-			[[198, 229, 198], [239, 243, 239]],
+			[[0.98, 0.86, 0.74], [0.98, 0.96, 0.93]],
+			[[0.71, 0.98, 0.71], [0.94, 0.98, 0.94]],
+			[[0.72, 0.86, 0.98], [0.95, 0.96, 0.98]],
+			[[0.54, 0.98, 0.98], [0.92, 0.98, 0.98]],
+			[[0.77, 0.89, 0.77], [0.93, 0.95, 0.93]],
 			],
 			
-		connection => 'Chocolate',
-		connection_point => [230, 198, 133],
-		connector_point => 'DodgerBlue',
-		new_connection => 'red' ,
-		extra_point => [230, 198, 133],
+		connection => [0.55, 0.25, 0.08],
+		connection_point => [0.90, 0.77, 0.52],
+		connector_point => [0.12, 0.56, 1.00],
+		new_connection => [1.00, 0.00, 0.00],
+		extra_point => [0.90, 0.77, 0.52],
 		} ;
 
 	$self->update_display() ;

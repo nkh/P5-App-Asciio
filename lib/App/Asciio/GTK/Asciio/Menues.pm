@@ -9,7 +9,7 @@ use warnings;
 use Data::TreeDumper ;
 
 use Glib ':constants';
-use Gtk2 -init;
+use Gtk3 -init;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -17,7 +17,7 @@ sub display_popup_menu
 {
 my ($self, $event) = @_;
 
-my ($popup_x, $popup_y) = $event->coords() ;
+my ($popup_x, $popup_y) = $event->get_coords() ;
 
 my @menu_items ;
 
@@ -49,7 +49,7 @@ if($self->get_selected_elements(1) == 1)
 	push @menu_items, [ '/File/save stencil', undef , $self->menue_entry_wrapper(\&save_stencil), 0 , '<Item>', undef ] ;
 	}	
 
-my $item_factory = Gtk2::ItemFactory->new("Gtk2::Menu" ,"<popup>") ;
+my $item_factory = Gtk3::ItemFactory->new("Gtk2::Menu" ,"<popup>") ;
 $item_factory ->create_items($self->{widget}, @menu_items) ;
 
 my $menu = $item_factory->get_widget("<popup>") ;

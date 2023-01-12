@@ -5,10 +5,12 @@ use File::Basename ;
 
 register_action_handlers
 	(
-	'Open' => ['C00-o', \&open],
-	'Save' => ['C00-s', \&save, undef],
-	'SaveAs' => ['C0S-S', \&save, 'as'],
-	'Insert' => ['C00-i', \&insert],
+	'Open'           => ['C00-o', \&open],
+	'Save'           => ['C00-s', \&save, undef],
+	'SaveAs'         => ['C0S-S', \&save, 'as'],
+	'Insert'         => ['C00-i', \&insert],
+	'Quit'           => ['000-q', \&quit],
+	'Quit no save'   => ['00S-Q', \&quit_no_save],
 	) ;
 
 #----------------------------------------------------------------------------------------------
@@ -161,4 +163,43 @@ if(defined $file_name && $file_name ne q[])
 	$self->run_actions_by_name(['Insert from clipboard', $x, $y]) ;
 	}
 } ;
+
+#----------------------------------------------------------------------------------------------
+
+sub quit_no_save
+{
+exit
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub quit
+{
+my ($self) = @_ ;
+
+if($self->get_modified_state())
+	{
+	my $user_answer = $self->display_quit_dialog('asciio', 'Diagram modified. Save it and exit?') ;
+	
+	if($user_answer eq 'yes')
+		{
+		my $file_name = $self->get_file_name('save') ;
+		
+		my ($base_name, $path, $extension) = File::Basename::fileparse($file_name, ('\..*')) ;
+		$extension =~ s/^\.// ;
+		
+		my $type =  $extension ne q{}
+					? $extension
+					: 'asciio_internal_format' ;
+					
+		$self->save_with_type(undef, $type, $file_name) if(defined $file_name && $file_name ne q[]) ;
+		}
+
+	exit if $user_answer ne 'cancel'
+	}
+else
+	{
+	exit ;
+	}
+}
 

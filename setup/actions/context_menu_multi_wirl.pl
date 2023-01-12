@@ -5,8 +5,8 @@ register_action_handlers
 	(
 	'Append multi_wirl section' => ['000-s',  \&append_section, undef,  \&multi_wirl_context_menu],
 	'Prepend multi_wirl section' => ['0A0-s',  \&prepend_section],
-	'Remove last section from multi_wirl' => ['000-q', \&remove_last_section_from_section_wirl_arrow],
-	'Remove first section from multi_wirl' => ['0A0-q', \&remove_first_section_from_section_wirl_arrow],
+	'Remove last section from multi_wirl' => ['CA0-s', \&remove_last_section_from_section_wirl_arrow],
+	# 'Remove first section from multi_wirl' => ['000-q', \&remove_first_section_from_section_wirl_arrow],
 	'Insert multi_wirl section' => ['00S-S', \&insert_wirl_arrow_section],
 	) ;
 

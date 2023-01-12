@@ -6,8 +6,8 @@ use strict;
 use warnings;
 
 use Glib ':constants';
-use Gtk2 -init;
-Gtk2->init;
+use Gtk3 -init;
+Gtk3->init;
 
 use App::Asciio::GTK::Asciio ;
 
@@ -16,21 +16,22 @@ use File::Basename ;
 
 #-----------------------------------------------------------------------------
 
-my $window = Gtk2::Window->new('toplevel');
+my $window = Gtk3::Window->new('toplevel');
 $window->set_title("asciio");
 $window->set_default_size(700, 800) ;
 $window->signal_connect("destroy", sub { exit(0); });
 
-my $vbox = Gtk2::VBox->new (FALSE, 0);
+
+my $vbox = Gtk3::VBox->new (FALSE, 0);
 $window->add($vbox);
 
-my $hpaned = Gtk2::HPaned->new;
+my $hpaned = Gtk3::HPaned->new;
 $vbox->pack_start($hpaned, TRUE, TRUE, 0);
 $hpaned->set_border_width (3);
 
 my @asciios ;
 
-my $asciio = new App::Asciio::GTK::Asciio(50, 25) ;
+my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25) ;
 push @asciios, $asciio ;
 
 $hpaned->add1($asciio->{widget});
@@ -54,7 +55,7 @@ else
 	
 	$setup_paths = 
 		[
-		$setup_path .  'setup.ini', 
+		$setup_path . 'setup.ini', 
 		$setup_path . 'GTK/setup.ini', 
 		] ;
 	}
@@ -109,4 +110,4 @@ return $answer eq 'cancel';
 
 #--------------------------------------------------------------------------
 
-Gtk2->main();
+Gtk3->main();

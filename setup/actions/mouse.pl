@@ -8,7 +8,7 @@ use App::Asciio::stripes::section_wirl_arrow ;
 
 register_action_handlers
 	(
-	'Quick link' => ['C0S-button_press-1', \&quick_link] ,
+	'Quick link' => ['00S-button_press-1', \&quick_link] ,
 	#~ 'C00-button_release' => ['', ] ,
 	#~ 'C00-motion_notify' =>['', ] ,
 	) ;

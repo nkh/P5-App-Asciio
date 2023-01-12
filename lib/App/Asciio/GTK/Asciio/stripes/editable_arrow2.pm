@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use Glib ':constants';
-use Gtk2 -init;
+use Gtk3 -init;
 use Glib qw(TRUE FALSE);
 
 sub display_box_edit_dialog
@@ -15,22 +15,22 @@ sub display_box_edit_dialog
 my ($self) = @_ ;
 
 my $rows = $self->{ARROW_TYPE} ;
-my $window = new Gtk2::Window() ;
+my $window = new Gtk3::Window() ;
 
-my $dialog = Gtk2::Dialog->new('Arrow attributes', $window, 'destroy-with-parent')  ;
+my $dialog = Gtk3::Dialog->new('Arrow attributes', $window, 'destroy-with-parent')  ;
 $dialog->set_default_size (220, 270);
 $dialog->add_button ('gtk-ok' => 'ok');
 
 #~ my $vbox = $dialog->vbox ;
 my $dialog_vbox = $dialog->vbox ;
 
-my $vbox = Gtk2::VBox->new (FALSE, 5);
+my $vbox = Gtk3::VBox->new (FALSE, 5);
 $dialog_vbox->pack_start ($vbox, TRUE, TRUE, 0);
 
-$vbox->pack_start (Gtk2::Label->new (""),
+$vbox->pack_start (Gtk3::Label->new (""),
 		 FALSE, FALSE, 0);
 
-my $sw = Gtk2::ScrolledWindow->new;
+my $sw = Gtk3::ScrolledWindow->new;
 $sw->set_shadow_type ('etched-in');
 $sw->set_policy ('automatic', 'automatic');
 $vbox->pack_start ($sw, TRUE, TRUE, 0);
@@ -39,7 +39,7 @@ $vbox->pack_start ($sw, TRUE, TRUE, 0);
 my $model = create_model ($rows);
 
 # create tree view
-my $treeview = Gtk2::TreeView->new_with_model ($model);
+my $treeview = Gtk3::TreeView->new_with_model ($model);
 $treeview->set_rules_hint (TRUE);
 $treeview->get_selection->set_mode ('single');
 
@@ -62,7 +62,7 @@ sub create_model
 {
 my ($rows) = @_ ;
 
-my $model = Gtk2::ListStore->new(qw/Glib::String Glib::String  Glib::String  Glib::String Glib::Boolean/);
+my $model = Gtk3::ListStore->new(qw/Glib::String Glib::String  Glib::String  Glib::String Glib::Boolean/);
 
 foreach my $row (@{$rows}) 
 	{
@@ -83,7 +83,7 @@ my ($treeview, $rows) = @_ ;
 my $model = $treeview->get_model;
 
 # column for row titles
-my $row_renderer = Gtk2::CellRendererText->new;
+my $row_renderer = Gtk3::CellRendererText->new;
 $row_renderer->set_data (column => 0);
 
 $treeview->insert_column_with_attributes
@@ -98,7 +98,7 @@ $column->set_fixed_width(80) ;
 my $current_column = 1 ;
 for my $column_title('start', 'body', 'end')
 	{
-	my $renderer = Gtk2::CellRendererText->new;
+	my $renderer = Gtk3::CellRendererText->new;
 	$renderer->signal_connect (edited => \&cell_edited, [$model, $rows]);
 	$renderer->set_data (column => $current_column );
 
@@ -121,7 +121,7 @@ my ($cell, $path_string, $new_text, $model_and_rows) = @_;
 
 my ($model, $rows) = @{$model_and_rows} ;
 
-my $path = Gtk2::TreePath->new_from_string ($path_string);
+my $path = Gtk3::TreePath->new_from_string ($path_string);
 my $column = $cell->get_data ("column");
 my $iter = $model->get_iter($path);
 my $row = ($path->get_indices)[0];

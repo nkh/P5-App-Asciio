@@ -7,7 +7,7 @@ use strict;
 use warnings;
 
 use Glib ':constants';
-use Gtk2 -init;
+use Gtk3 -init;
 use Glib qw(TRUE FALSE);
 
 #-----------------------------------------------------------------------------
@@ -18,22 +18,22 @@ my ($self, $title, $text) = @_ ;
 
 my $rows = $self->{BOX_TYPE} ;
 	
-my $window = new Gtk2::Window() ;
+my $window = new Gtk3::Window() ;
 
-my $dialog = Gtk2::Dialog->new('Box attributes', $window, 'destroy-with-parent')  ;
+my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')  ;
 $dialog->set_default_size (450, 305);
 $dialog->add_button ('gtk-ok' => 'ok');
 
 #~ my $vbox = $dialog->vbox ;
 my $dialog_vbox = $dialog->vbox ;
 
-my $vbox = Gtk2::VBox->new (FALSE, 5);
+my $vbox = Gtk3::VBox->new (FALSE, 5);
 $dialog_vbox->pack_start ($vbox, TRUE, TRUE, 0);
 
-$vbox->pack_start (Gtk2::Label->new (""),
+$vbox->pack_start (Gtk3::Label->new (""),
 		 FALSE, FALSE, 0);
 
-my $sw = Gtk2::ScrolledWindow->new;
+my $sw = Gtk3::ScrolledWindow->new;
 $sw->set_shadow_type ('etched-in');
 $sw->set_policy ('automatic', 'automatic');
 $vbox->pack_start ($sw, TRUE, TRUE, 0);
@@ -42,7 +42,7 @@ $vbox->pack_start ($sw, TRUE, TRUE, 0);
 my $model = create_model ($rows);
 
 # create tree view
-my $treeview = Gtk2::TreeView->new_with_model ($model);
+my $treeview = Gtk3::TreeView->new_with_model ($model);
 $treeview->set_rules_hint (TRUE);
 $treeview->get_selection->set_mode ('single');
 
@@ -51,8 +51,8 @@ add_columns($treeview, $rows);
 $sw->add($treeview);
 
 # title
-my $titleview = Gtk2::TextView->new;
-$titleview->modify_font (Gtk2::Pango::FontDescription->from_string ('monospace 10'));
+my $titleview = Gtk3::TextView->new;
+$titleview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
 my $title_buffer = $titleview->get_buffer ;
 $title_buffer->insert ($title_buffer->get_end_iter, $title);
 
@@ -60,8 +60,8 @@ $vbox->add ($titleview);
 $titleview->show;
 
 # text 
-my $textview = Gtk2::TextView->new;
-$textview->modify_font (Gtk2::Pango::FontDescription->from_string ('monospace 10'));
+my $textview = Gtk3::TextView->new;
+$textview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
 
 my $text_buffer = $textview->get_buffer;
 $text_buffer->insert ($text_buffer->get_end_iter, $text);
@@ -75,15 +75,15 @@ $textview->grab_focus() ;
 
 
 # some buttons
-#~ my $hbox = Gtk2::HBox->new (TRUE, 4);
+#~ my $hbox = Gtk3::HBox->new (TRUE, 4);
 #~ $vbox->pack_start ($hbox, FALSE, FALSE, 0);
 
-#~ my $button = Gtk2::Button->new ("Add item");
+#~ my $button = Gtk3::Button->new ("Add item");
 #~ $button->show() ;
 #~ $button->signal_connect (clicked => \&add_item, $model);
 #~ $hbox->pack_start ($button, TRUE, TRUE, 0);
 
-#~ $button = Gtk2::Button->new ("Remove item");
+#~ $button = Gtk3::Button->new ("Remove item");
 #~ $button->signal_connect (clicked => \&remove_item, $treeview);
 #~ $hbox->pack_start ($button, TRUE, TRUE, 0);
 
@@ -109,7 +109,7 @@ sub create_model
 {
 my ($rows) = @_ ;
 
-my $model = Gtk2::ListStore->new(qw/Glib::Boolean Glib::String  Glib::String Glib::String Glib::String Glib::Boolean/);
+my $model = Gtk3::ListStore->new(qw/Glib::Boolean Glib::String  Glib::String Glib::String Glib::String Glib::Boolean/);
 
 foreach my $row (@{$rows}) 
 	{
@@ -130,10 +130,10 @@ my ($treeview, $rows) = @_ ;
 my $model = $treeview->get_model;
 
 # column for fixed toggles
-my $renderer = Gtk2::CellRendererToggle->new;
+my $renderer = Gtk3::CellRendererToggle->new;
 $renderer->signal_connect (toggled => \&display_toggled, [$model, $rows]) ;
 
-my $column = Gtk2::TreeViewColumn->new_with_attributes 
+my $column = Gtk3::TreeViewColumn->new_with_attributes 
 			(
 			'show',
 			$renderer,
@@ -145,7 +145,7 @@ $column->set_fixed_width(70) ;
 $treeview->append_column($column) ;
 
 # column for row titles
-my $row_renderer = Gtk2::CellRendererText->new;
+my $row_renderer = Gtk3::CellRendererText->new;
 $row_renderer->set_data (column => 1);
 
 $treeview->insert_column_with_attributes(-1, '', $row_renderer, text => 1) ;
@@ -155,7 +155,7 @@ $treeview->insert_column_with_attributes(-1, '', $row_renderer, text => 1) ;
 my $current_column = 2 ;
 for my $column_title('left', 'body', 'right')
 	{
-	my $renderer = Gtk2::CellRendererText->new;
+	my $renderer = Gtk3::CellRendererText->new;
 	$renderer->signal_connect (edited => \&cell_edited, [$model, $rows]);
 	$renderer->set_data (column => $current_column );
 
@@ -178,7 +178,7 @@ my ($cell, $path_string, $new_text, $model_and_rows) = @_;
 
 my ($model, $rows) = @{$model_and_rows} ;
 
-my $path = Gtk2::TreePath->new_from_string ($path_string);
+my $path = Gtk3::TreePath->new_from_string ($path_string);
 my $column = $cell->get_data ("column");
 my $iter = $model->get_iter($path);
 my $row = ($path->get_indices)[0];
@@ -197,7 +197,7 @@ my ($cell, $path_string, $model_and_rows) = @_;
 my ($model, $rows) = @{$model_and_rows} ;
 
 my $column = $cell->get_data ('column');
-my $path = Gtk2::TreePath->new ($path_string) ;
+my $path = Gtk3::TreePath->new ($path_string) ;
 my $iter = $model->get_iter ($path);
 my $display = $model->get($iter, 0);
 

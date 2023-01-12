@@ -2,6 +2,23 @@
 # This is the todo.txt #
 #----------------------#
 
+gtk3 port:
+	#key send twice
+	#ctl+c not handled
+	#display corrupted
+	object dialog not opening
+	#object color wrong
+	#zoom out key not working
+	#new colors in night mode
+	#get font size to size objects and grid
+	#Flip transparent element background, makes foreground transparent
+
+	stop using cairo's toy text API which doesn't handle character spacing and other fonts
+	multiple shortcuts for the same command don't work, see zoom
+	test all dialogs
+	test all functions
+
+
 use json as file format
 
 diagonal text is kinky, Ian's request

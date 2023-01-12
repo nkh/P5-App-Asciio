@@ -37,18 +37,15 @@ for my $action (@actions)
 		{
 		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
 			{
-			my $action_group_name = 
-				$self->{CURRENT_ACTIONS}{$action}{GROUP_NAME}  || 'unnamed action group' ;
+			my $action_group_name = $self->{CURRENT_ACTIONS}{$action}{GROUP_NAME}  || 'unnamed action group' ;
 			
-			print "using action handlers group '$action_group_name'" 
-				. "[$self->{CURRENT_ACTIONS}{$action}{ORIGIN}].\n" ;
+			printf "%-20s %-40s [%s]\n", "$modifiers-$action_key", $action_group_name, $self->{CURRENT_ACTIONS}{$action}{ORIGIN} ;
 			
 			$self->{CURRENT_ACTIONS} = $self->{CURRENT_ACTIONS}{$action} ;
 			}
 		else
 			{
-			print "Handling input '$modifiers + $action_key' with action '$self->{CURRENT_ACTIONS}{$action}[$NAME]'"
-				. "[$self->{CURRENT_ACTIONS}{$action}[$ORIGIN]].\n" ;
+			printf "%-20s %-40s [%s]\n", "$modifiers-$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN] ;
 			
 			if(defined $self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS])
 				{
@@ -73,7 +70,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		print "no handler for input '$modifiers + $action_key'.\n" ;
+		print "$modifiers-$action_key\n" ;
 		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 		}
 	}
@@ -103,12 +100,12 @@ for my $action (@actions)
 		{
 		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
 			{
-			print "using action handlers group '$action'\n" ;
+			print "\e[32m$action [group]\e[0m\n" ;
 			$current_actions_by_name = $self->{CURRENT_ACTIONS}{$action} ;
 			}
 		else
 			{
-			print "running action '$action'.\n" ;
+			print "\e[32m$action\e[0m\n" ;
 			
 			if(defined $current_actions_by_name->{$action}[$ARGUMENTS])
 				{
@@ -133,7 +130,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		print "no handler for '$action'.\n" ;
+		print "\e[31m$action\e[0m\n" ;
 		last ;
 		}
 	}

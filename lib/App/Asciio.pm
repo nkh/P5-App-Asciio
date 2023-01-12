@@ -372,29 +372,29 @@ my $self =
 		COPY_OFFSET_Y => 3,
 		COLORS =>
 			{
-			background => [255, 255, 255],
-			grid => [229, 235, 255],
-			ruler_line => [85, 155, 225],
-			selected_element_background => [180, 244, 255],
-			element_background => [251, 251, 254],
-			element_foreground => [0, 0, 0] ,
-			selection_rectangle => [255, 0, 255],
-			test => [0, 255, 255],
+			background => [1.00, 1.00, 1.00],
+			grid => [0.89, 0.92, 1.00],
+			ruler_line => [0.33, 0.61, 0.88],
+			selected_element_background => [0.70, 0.95, 1.00],
+			element_background => [0.98, 0.98, 1],
+			element_foreground => [0.00, 0.00, 0.00] ,
+			selection_rectangle => [1.00, 0.00, 1.00],
+			test => [0.00, 1.00, 1.00],
 			
 			group_colors =>
 				[
-				[[250, 221, 190], [250, 245, 239]],
-				[[182, 250, 182], [241, 250, 241]],
-				[[185, 219, 250], [244, 247, 250]],
-				[[137, 250, 250], [235, 250, 250]],
-				[[198, 229, 198], [239, 243, 239]],
+				[[0.98, 0.86, 0.74], [0.98, 0.96, 0.93]],
+				[[0.71, 0.98, 0.71], [0.94, 0.98, 0.94]],
+				[[0.72, 0.86, 0.98], [0.95, 0.96, 0.98]],
+				[[0.54, 0.98, 0.98], [0.92, 0.98, 0.98]],
+				[[0.77, 0.89, 0.77], [0.93, 0.95, 0.93]],
 				],
 				
-			connection => 'Chocolate',
-			connection_point => [230, 198, 133],
-			connector_point => 'DodgerBlue',
-			new_connection => 'red' ,
-			extra_point => [230, 198, 133],
+			connection => [0.82, 0.41, 0.12],
+			connection_point => [0.90, 0.77, 0.52],
+			connector_point => [0.0, 0.0, 0.52],
+			new_connection =>  [1.0, 0.0, 0.0],
+			extra_point => [0.90, 0.77, 0.52],
 			},
 		
 		NEXT_GROUP_COLOR => 0, 
@@ -430,10 +430,7 @@ sub set_title
 {
 my ($self, $title) = @_;
 
-if(defined $title)
-	{
-	$self->{TITLE} = $title ;
-	}
+defined $title and $self->{TITLE} = $title ;
 }
 
 sub get_title
@@ -796,7 +793,7 @@ sub key_press_event
 my ($self, $event)= @_;
 
 my $modifiers = $event->{MODIFIERS} ;
-my $key = $self->{KEYS}{C}{$event->{KEY_VALUE}} ;
+my $key = $event->{KEY_NAME} ;
 
 $self->run_actions("$modifiers-$key") ;
 
@@ -834,14 +831,7 @@ sub get_color
 {
 my ($self, $name) = @_;
 
-unless (exists $self->{ALLOCATED_COLORS}{$name}) 
-	{
-	my $color  = [255, 0, 0];
-	
-	$self->{ALLOCATED_COLORS}{$name} = $color ;
-	}
-	
-return($self->{ALLOCATED_COLORS}{$name}) ;
+return($self->{COLORS}{$name} // [1, 0, 0]) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -849,7 +839,6 @@ return($self->{ALLOCATED_COLORS}{$name}) ;
 sub flush_color_cache
 {
 my ($self) = @_ ;
-delete $self->{ALLOCATED_COLORS} ;
 }
 
 #-----------------------------------------------------------------------------

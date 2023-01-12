@@ -9,8 +9,8 @@ use strict;
 use warnings;
 
 use Glib ':constants';
-use Gtk2 -init;
-use Gtk2::Gdk::Keysyms ;
+use Gtk3 -init;
+# use Gtk3::Gdk::Keysyms ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
@@ -31,26 +31,23 @@ our $VERSION = '0.01' ;
 
 sub new
 {
-my ($class, $width, $height) = @_ ;
+my ($class, $window, $width, $height) = @_ ;
 
 my $self = App::Asciio::new($class) ;
 bless $self, $class ;
 
-$self->{KEYS}{K} = {%Gtk2::Gdk::Keysyms} ;
+# $self->{KEYS}{K} = {%Gtk3::Gdk::Keysyms} ;
 $self->{KEYS}{C}= {map{$self ->{KEYS}{K}{$_} => $_} keys %{$self->{KEYS}{K}}} ;
 
-my $drawing_area = Gtk2::DrawingArea->new;
+$window->signal_connect(key_press_event => \&key_press_event, $self);
+$window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
+$window->signal_connect(button_press_event => \&button_press_event, $self);
+$window->signal_connect(button_release_event => \&button_release_event, $self);
 
+my $drawing_area = Gtk3::DrawingArea->new;
 $self->{widget} = $drawing_area ;
 
-$drawing_area->can_focus(TRUE) ;
-
-$drawing_area->signal_connect(configure_event => \&configure_event, $self);
-$drawing_area->signal_connect(expose_event => \&expose_event, $self);
-$drawing_area->signal_connect(motion_notify_event => \&motion_notify_event, $self);
-$drawing_area->signal_connect(button_press_event => \&button_press_event, $self);
-$drawing_area->signal_connect(button_release_event => \&button_release_event, $self);
-$drawing_area->signal_connect(key_press_event => \&key_press_event, $self);
+$drawing_area->signal_connect(draw => \&expose_event, $self);
 
 $drawing_area->set_events
 		([qw/
@@ -101,10 +98,11 @@ $self->SUPER::set_font($font_family, $font_size) ;
 
 $self->{widget}->modify_font
 	(
-	Gtk2::Pango::FontDescription->from_string 
+	Pango::FontDescription::from_string 
 		(
 		$self->{FONT_FAMILY} . ' ' . $self->{FONT_SIZE}
 		)
+		
 	);
 }
 
@@ -117,85 +115,56 @@ my ($self) = @_;
 $self->SUPER::update_display() ;
 
 my $widget = $self->{widget} ;
-$widget->queue_draw_area(0, 0, $widget->allocation->width,$widget->allocation->height);
-}
-
-#-----------------------------------------------------------------------------
-
-sub configure_event 
-{
-my ($widget, $event, $self) = @_;
-
-$self->{PIXMAP} = Gtk2::Gdk::Pixmap->new 
-			(
-			$widget->window,
-			$widget->allocation->width, $widget->allocation->height,
-			-1
-			);
-			
-$self->{WINDOW_SIZE} = [$widget->allocation->width, $widget->allocation->height] ;
-
-$self->{PIXMAP}->draw_rectangle
-		(
-		$widget->get_style->base_gc ($widget->state),
-		TRUE, 0, 0, $widget->allocation->width,
-		$widget->allocation->height
-		);
-		
-return TRUE;
+$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
 }
 
 #-----------------------------------------------------------------------------
 
 sub expose_event
 {
-my ($widget, $event, $self) = @_;
 
-my $gc = Gtk2::Gdk::GC->new($self->{PIXMAP});
+my ( $widget, $gc, $self ) = @_;
 
 # draw background
-$gc->set_foreground($self->get_color('background'));
+$gc->set_source_rgb(@{$self->get_color('background')});
+$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+$gc->fill;
+$gc->stroke;
 
-$self->{PIXMAP}->draw_rectangle
-		(
-		$gc,	TRUE,
-		0, 0,
-		$widget->allocation->width, $widget->allocation->height
-		);
+$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
+$gc->set_font_size($self->{FONT_SIZE});
 
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($widget_width, $widget_height) = $self->{PIXMAP}->get_size();
+
+my $character_lift = $character_height / 3 ;
+
+my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
 if($self->{DISPLAY_GRID})
 	{
-	$gc->set_foreground($self->get_color('grid'));
+	$gc->set_line_width(1);
+	$gc->set_source_rgb(@{$self->get_color('grid')});
 
 	for my $horizontal (0 .. ($widget_height/$character_height) + 1)
 		{
-		$self->{PIXMAP}->draw_line
-					(
-					$gc,
-					0,  $horizontal * $character_height,
-					$widget_width, $horizontal * $character_height
-					);
+		$gc->move_to(0,  $horizontal * $character_height);
+		$gc->line_to($widget_width, $horizontal * $character_height);
 		}
 
 	for my $vertical(0 .. ($widget_width/$character_width) + 1)
 		{
-		$self->{PIXMAP}->draw_line
-					(
-					$gc,
-					$vertical * $character_width, 0,
-					$vertical * $character_width, $widget_height
-					);
+		$gc->move_to($vertical * $character_width, 0) ;
+		$gc->line_to($vertical * $character_width, $widget_height);
 		}
-	}
 	
+	$gc->stroke;
+	}
+
 # draw elements
 for my $element (@{$self->{ELEMENTS}})
 	{
 	# do not draw elements that are outside the viewport
-	# do not draw unnchanged elements, use a rendering cache
+	# do not draw unchanged elements, use a rendering cache
 
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
 	
@@ -242,64 +211,59 @@ for my $element (@{$self->{ELEMENTS}})
 			? $self->get_color($foreground_color)
 			: $self->get_color('element_foreground') ;
 			
-	$gc->set_foreground($foreground_color);
-	
 	for my $mask_and_element_strip ($element->get_mask_and_element_stripes())
 		{
-		$gc->set_foreground($background_color);
+		my $line_index=0 ;
+		for my $line (split /\n/, $mask_and_element_strip->{TEXT})
+			{
+			$gc->set_line_width(1);
+			$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
+			$gc->rectangle
+				(
+				($element->{X} + $mask_and_element_strip->{X_OFFSET}) * $character_width,
+				($element->{Y} + $mask_and_element_strip->{Y_OFFSET}  + $line_index) * $character_height,
+				($mask_and_element_strip->{WIDTH}) * $character_width,
+				$character_height,
+				);
+			$gc->fill();
 			
-		$self->{PIXMAP}->draw_rectangle
+			$gc->set_source_rgb(@{$foreground_color});
+
+			my $char_index = 0 ;
+			for my $char (split //, $line)
+				{
+				$gc->move_to
 					(
-					$gc,
-					$self->{OPAQUE_ELEMENTS},
-					($element->{X} + $mask_and_element_strip->{X_OFFSET}) * $character_width,
-					($element->{Y} + $mask_and_element_strip->{Y_OFFSET}) * $character_height,
-					$mask_and_element_strip->{WIDTH} * $character_width,
-					$mask_and_element_strip->{HEIGHT} * $character_height,
+					($element->{X} + ($mask_and_element_strip->{X_OFFSET}) + $char_index++) * $character_width,
+					($element->{Y} + $mask_and_element_strip->{Y_OFFSET} + 1 + $line_index) * $character_height - $character_lift
 					);
-					
-		$gc->set_foreground($foreground_color);
-		
-		my $layout = $widget->create_pango_layout($mask_and_element_strip->{TEXT}) ;
-		
-		my ($text_width, $text_height) = $layout->get_pixel_size;
-		
-		$self->{PIXMAP}->draw_layout
-					(
-					$gc,
-					($element->{X} + $mask_and_element_strip->{X_OFFSET}) * $character_width,
-					($element->{Y} + $mask_and_element_strip->{Y_OFFSET}) * $character_height,
-					$layout
-					);
+				
+				$gc->show_text($char);
+				}
+
+			$line_index++;
+			$gc->stroke;
+			}
 		}
 	}
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
 	{
-	my $color = Gtk2::Gdk::Color->new( map {$_ * 257} @{$line->{COLOR} }) ;
-	$self->{widget}->get_colormap->alloc_color($color,TRUE,TRUE) ;
-	
-	$gc->set_foreground($color);
+	$gc->set_source_rgb(@{$line->{COLOR} });
 	
 	if($line->{TYPE} eq 'VERTICAL')
 		{
-		$self->{PIXMAP}->draw_line
-					(
-					$gc,
-					$line->{POSITION} * $character_width, 0,
-					$line->{POSITION} * $character_width, $widget_height
-					);
+		$gc->move_to($line->{POSITION} * $character_width, 0) ;
+		$gc->line_to($line->{POSITION} * $character_width, $widget_height) ;
 		}
 	else
 		{
-		$self->{PIXMAP}->draw_line
-					(
-					$gc,
-					0, $line->{POSITION} * $character_height,
-					$widget_width, $line->{POSITION} * $character_height
-					);
+		$gc->move_to(0, $line->{POSITION} * $character_height) ;
+		$gc->line_to($widget_width, $line->{POSITION} * $character_height);
 		}
+
+	$gc->stroke() ;
 	}
 
 # draw connections
@@ -332,91 +296,90 @@ for my $connection (@{$self->{CONNECTIONS}})
 		
 	if($draw_connection)
 		{
-		$gc->set_foreground($self->get_color('connection'));	
+		$gc->set_source_rgb(@{$self->get_color('connection')});
 		
 		$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
 		
-		$self->{PIXMAP}->draw_rectangle
-						(
-						$gc,
-						FALSE,
-						($connector->{X} + $connection->{CONNECTED}{X}) * $character_width,
-						($connector->{Y}  + $connection->{CONNECTED}{Y}) * $character_height,
-						$character_width, $character_height
-						);
+		$gc->rectangle
+			(
+			($connector->{X} + $connection->{CONNECTED}{X}) * $character_width,
+			($connector->{Y}  + $connection->{CONNECTED}{Y}) * $character_height,
+			$character_width, $character_height
+			);
+		
+		$gc->stroke() ;
 		}
 	}
 	
 # draw connectors and connection points
 for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
 	{
-	$gc->set_foreground($self->get_color('connector_point'));
+	$gc->set_source_rgb(@{$self->get_color('connector_point')});
+		
 	for my $connector ($element->get_connector_points())
 		{
 		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
 		
-		$self->{PIXMAP}->draw_rectangle
-						(
-						$gc,
-						FALSE,
-						($element->{X} + $connector->{X}) * $character_width,
-						($connector->{Y} + $element->{Y}) * $character_height,
-						$character_width, $character_height
-						);
+		$gc->rectangle
+			(
+			($element->{X} + $connector->{X}) * $character_width,
+			($connector->{Y} + $element->{Y}) * $character_height,
+			$character_width, $character_height
+			);
+		
+		$gc->stroke() ;
 		}
 		
-	$gc->set_foreground($self->get_color('connection_point'));
+	$gc->set_source_rgb(@{$self->get_color('connection_point')});
 	for my $connection_point ($element->get_connection_points())
 		{
 		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
 		
-		$self->{PIXMAP}->draw_rectangle # little box
-						(
-						$gc,
-						TRUE,
-						(($connection_point->{X} + $element->{X}) * $character_width) + ($character_width / 3),
-						(($connection_point->{Y} + $element->{Y}) * $character_height) + ($character_height / 3),
-						$character_width / 3 , $character_height / 3
-						);
-		}
+		$gc->rectangle
+			(
+			(($connection_point->{X} + $element->{X}) * $character_width) + ($character_width / 3),
+			(($connection_point->{Y} + $element->{Y}) * $character_height) + ($character_height / 3),
+			$character_width / 3 , $character_height / 3
+			);
 		
+		$gc->stroke() ;
+		}
+	
 	for my $extra_point ($element->get_extra_points())
 		{
-		if(exists $extra_point ->{COLOR})
+		if(exists $extra_point->{COLOR})
 			{
-			$gc->set_foreground($self->get_color($extra_point ->{COLOR}));
+			$gc->set_source_rgb(@{$self->get_color($extra_point->{COLOR})});
 			}
 		else
 			{
-			$gc->set_foreground($self->get_color('extra_point'));
+			$gc->set_source_rgb(@{$self->get_color('extra_point')});
 			}
 			
-		$self->{PIXMAP}->draw_rectangle
-						(
-						$gc,
-						FALSE,
-						(($extra_point ->{X}  + $element->{X}) * $character_width),
-						(($extra_point ->{Y}  + $element->{Y}) * $character_height),
-						$character_width, $character_height 
-						);
+		$gc->rectangle
+			(
+			(($extra_point ->{X}  + $element->{X}) * $character_width),
+			(($extra_point ->{Y}  + $element->{Y}) * $character_height),
+			$character_width, $character_height 
+			);
+		
+		$gc->stroke() ;
 		}
 	}
 
 # draw new connections
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	{
-	$gc->set_foreground($self->get_color('new_connection'));
+	$gc->set_source_rgb(@{$self->get_color('new_connection')});
 	
 	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
 	
-	$self->{PIXMAP}->draw_rectangle
-					(
-					$gc,
-					FALSE,
-					($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width ,
-					($end_connection->{Y} + $new_connection->{CONNECTED}{Y}) * $character_height ,
-					$character_width, $character_height
-					);
+	$gc->rectangle
+		(
+		($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width ,
+		($end_connection->{Y} + $new_connection->{CONNECTED}{Y}) * $character_height ,
+		$character_width, $character_height
+		);
 	}
 
 delete $self->{NEW_CONNECTIONS} ;
@@ -441,20 +404,12 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 		$start_y -= $height ;
 		}
 		
-	$gc->set_foreground($self->get_color('selection_rectangle')) ;
-	$self->{PIXMAP}->draw_rectangle($gc, FALSE,$start_x, $start_y, $width, $height);
+	$gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
+	$gc->rectangle($start_x, $start_y, $width, $height) ;
+	$gc->stroke() ;
 	
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
-
-$widget->window->draw_drawable
-		(
-		$widget->style->fg_gc($widget->state),
-		$self->{PIXMAP},
-		$event->area->x, $event->area->y,
-		$event->area->x, $event->area->y,
-		$event->area->width, $event->area->height
-		);
 
 return TRUE;
 }
@@ -489,27 +444,31 @@ sub create_asciio_event
 {
 my ($self, $event) = @_ ;
 
+my $event_type= $event->type() ;
+
 my $asciio_event =
 	{
-	TYPE =>  $event->type(),
+	TYPE =>  $event_type,
 	STATE => $event->state() ,
 	MODIFIERS => get_key_modifiers($event),
 	BUTTON => -1,
-	KEY_VALUE => -1,
+	KEY_NAME => -1,
 	COORDINATES => [-1, -1],
 	} ;
 
-$asciio_event->{BUTTON} = $event->button() if ref $event eq 'Gtk2::Gdk::Event::Button' ;
+$asciio_event->{BUTTON} = $event->button() if ref $event eq 'Gtk3::Gdk::EventButton' ;
 if
 	(
-	ref $event eq "Gtk2::Gdk::Event::Motion" 
-	|| ref $event eq "Gtk2::Gdk::Event::Button" 
+	$event_type eq "motion-notify" 
+	|| ref $event eq "Gtk3::Gdk::EventButton" 
 	)
 	{
-	$asciio_event->{COORDINATES} = [$self->closest_character($event->coords())]  ;
+	$asciio_event->{COORDINATES} = [$self->closest_character($event->get_coords())]  ;
 	}
 
-$asciio_event->{KEY_VALUE} = $event->keyval() if ref $event eq "Gtk2::Gdk::Event::Key" ;
+$asciio_event->{KEY_NAME} = Gtk3::Gdk::keyval_name($event->keyval) if $event_type eq 'key-press' ;
+
+# use Data::TreeDumper ; print DumpTree $asciio_event ;
 
 return $asciio_event ;
 }
@@ -560,48 +519,9 @@ if(exists $self->{USER_CHARACTER_WIDTH})
 	}
 else
 	{
-	my $layout = $self->{widget}->create_pango_layout('M') ;
-	return $layout->get_pixel_size() ;
+	$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE});
+	return $self->{widget}->create_pango_layout('M')->get_pixel_size() ;
 	}
-}
-
-#-----------------------------------------------------------------------------
-
-sub get_color 
-{
-my ($self, $name) = @_;
-
-unless (exists $self->{ALLOCATED_COLORS}{$name}) 
-	{
-	my $color  ;
-	
-	if('ARRAY' eq  ref $name) 
-		{
-		$color = Gtk2::Gdk::Color->new( map {$_ * 257} @{$name}) ;
-		}
-	elsif(exists $self->{COLORS}{$name}) 
-		{
-		if('ARRAY' eq ref $self->{COLORS}{$name})
-			{
-			$color = Gtk2::Gdk::Color->new( map {$_ * 257} @{ $self->{COLORS}{$name}}) ;
-			}
-		else
-			{
-			$color = Gtk2::Gdk::Color->parse($self->{COLORS}{$name});
-			}
-		}
-	else
-		{
-		$color = Gtk2::Gdk::Color->parse($name);
-		}
-	
-	$color = Gtk2::Gdk::Color->new( map {$_ * 257} (255, 0, 0)) unless defined $color ;
-	$self->{widget}->get_colormap->alloc_color($color,TRUE,TRUE) ;
-	
-	$self->{ALLOCATED_COLORS}{$name} = $color ;
-	}
-	
-return($self->{ALLOCATED_COLORS}{$name}) ;
 }
 
 #-----------------------------------------------------------------------------

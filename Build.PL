@@ -242,7 +242,6 @@ my $build = $class->new
 	build_requires => 
 		{
 		'Text::Diff' => 0,
-		'Test::Block' => 0,
 		'Test::Exception' => 0,
 		'Test::NoWarnings' => 0,
 		'Test::Warn' => 0,
@@ -259,9 +258,8 @@ my $build = $class->new
 		'version'    => 0.50,
 		
 		'Glib' => 0,
-		'Gtk2' => 0,
-		'Gtk2::Gdk::Keysyms' => 0,
-		'Data::TreeDumper::Renderer::GTK' => 0,
+		'Gtk3' => 0,
+		# 'Gtk3::Gdk::Keysyms' => 0,
 		
 		'Compress::Bzip2' => 0,
 		'Cwd' => 0,

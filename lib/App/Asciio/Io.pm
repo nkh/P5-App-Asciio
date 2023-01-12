@@ -93,8 +93,7 @@ return $title ;
  Readonly my  @ELEMENTS_TO_KEEP_FROM_CURRENT_OBJECT => 
 	qw
 		(
-		widget PIXMAP 
-		ALLOCATED_COLORS 
+		widget  
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
 		TITLE
@@ -219,8 +218,6 @@ sub serialize_self
 my ($self, $indent) = @_ ;
 
 local $self->{widget} = undef ;
-local $self->{PIXMAP} = undef ;
-local $self->{ALLOCATED_COLORS} = undef ;
 local $self->{ACTIONS} = [] ;
 local $self->{HOOKS} = [] ;
 local $self->{CURRENT_ACTIONS} = [] ;
