@@ -143,8 +143,6 @@ for my $new_element (@{$elements})
 	$new_element->{NAME} =~ s~/+~/~g ;
 	$new_element->{NAME} =~ s~^/~~g ;
 	
-	#~ print $new_element->{NAME} . "\n" ;
-	
 	if(exists $new_element->{NAME})
 		{
 		if(exists $self->{ELEMENT_TYPES_BY_NAME}{$new_element->{NAME}})

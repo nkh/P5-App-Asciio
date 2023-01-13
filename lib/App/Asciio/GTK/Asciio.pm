@@ -14,6 +14,7 @@ use Gtk3 -init;
 
 use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
+use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
 
 use App::Asciio::GTK::Asciio::Dialogs ;

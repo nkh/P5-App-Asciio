@@ -1027,6 +1027,8 @@ my ($self) = @_ ;
 
 return unless $self->{EDITABLE} ;
 
+$self->display_arrow_edit_dialog() ;
+
 # add section
 # remove section
 

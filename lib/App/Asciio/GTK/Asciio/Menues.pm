@@ -34,7 +34,7 @@ for my $menu_entry (@{$self->get_context_menu_entries($popup_x, $popup_y)})
 	my($name, $sub, $data) = @{$menu_entry} ;
 	(my $name_with_underscore = $name) =~ s/_/__/g ;
 	
-	push @menu_items, [ $name_with_underscore, undef , $self->menue_entry_wrapper($sub, $data), 0, '<Item>', undef],
+	push @menu_items, [ $name_with_underscore, undef , $self->menu_entry_wrapper($sub, $data), 0, '<Item>', undef],
 	}
 
 push @menu_items, 
@@ -46,10 +46,10 @@ push @menu_items,
 	
 if($self->get_selected_elements(1) == 1)
 	{
-	push @menu_items, [ '/File/save stencil', undef , $self->menue_entry_wrapper(\&save_stencil), 0 , '<Item>', undef ] ;
+	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&save_stencil), 0 , '<Item>', undef ] ;
 	}	
 
-use Data::TreeDumper ; print DumpTree \@menu_items ;
+# use Data::TreeDumper ; print DumpTree \@menu_items ;
 
 # my $item_factory = Gtk3::ItemFactory->new("Gtk3::Menu" ,"<popup>") ;
 # $item_factory ->create_items($self->{widget}, @menu_items) ;
@@ -57,14 +57,54 @@ use Data::TreeDumper ; print DumpTree \@menu_items ;
 
 my $menu = Gtk3::Menu->new() ;
 
-my $menu_item=Gtk3::MenuItem->new('File/open');
-
-$menu_item->signal_connect('activate'=> sub { $self->run_actions_by_name('Open') ; });
-$menu_item->show() ;
-$menu->append($menu_item) ;
-
+insert_menu_items($menu, \@menu_items) ;
 
 $menu->popup(undef, undef, undef, undef, $event->button, $event->time) ;
+}
+
+sub insert_menu_items
+{
+my ($root, $menu_entry_definitions) = @_ ;
+
+my %menus ;
+
+for my $menu_entry_definition (@$menu_entry_definitions)
+	{
+	my ($path, undef, $sub, undef, $item, undef) = @$menu_entry_definition ;
+	
+	$path =~ s~^/~~ or die "Menu path doesn't start at root" ;
+	my @path_elements = split m~/~, $path ;
+	my $name = pop @path_elements ;
+
+	my $container = $root ;
+
+	for my $path_element (@path_elements)
+		{
+		if(exists $menus{$path_element})
+			{
+			$container = $menus{$path_element} ;
+			}
+		else
+			{
+			my $menu = Gtk3::Menu->new() ;
+			$menu->show() ;
+			$menus{$path_element} = $menu ;
+			
+			my $menu_item = Gtk3::MenuItem->new_with_label($path_element);
+			$menu_item->show() ;
+			$menu_item->set_submenu($menu) ;
+			
+			$container->append($menu_item) ;
+				
+			$container = $menu 
+			}
+		}
+	
+	my $menu_item=Gtk3::MenuItem->new($name);
+	$menu_item->signal_connect('activate'=> $sub);
+	$menu_item->show() ;
+	$container->append($menu_item) ;
+	}
 }
 
 sub insert_generator 
@@ -79,14 +119,11 @@ return sub
 	} ;
 }
 
-sub menue_entry_wrapper
+sub menu_entry_wrapper
 {
 my ($self, $sub, $data) = @_ ; 
 
-return sub
-	{
-	$sub->($self, $data) ;
-	} ;
+return sub { $sub->($self, $data) ; } ;
 }
 
 #------------------------------------------------------------------------------------------------------
@@ -113,7 +150,7 @@ for my $context_menu_handler
 			} sort keys %{$self->{CURRENT_ACTIONS}}
 	)
 	{
-	print "Adding context menu from action '$context_menu_handler->[$NAME]'.\n" ;
+	# print "Adding context menu from action '$context_menu_handler->[$NAME]'.\n" ;
 	
 	if(defined $context_menu_handler->[$CONTEXT_MENU_ARGUMENTS])
 		{

@@ -42,6 +42,7 @@ lib/App/Asciio/GTK/Asciio/Menues.pm
 
 lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
+lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
 
 );

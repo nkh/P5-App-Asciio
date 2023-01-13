@@ -333,7 +333,7 @@ my ($self, $asciio) = @_ ;
 
 return unless $self->{EDITABLE} ;
 
-my ($text_only) = $asciio->display_edit_dialog('asciio', $self->{TEXT_ONLY}) ;
+my ($text_only) = $asciio->display_edit_dialog('process object', $self->{TEXT_ONLY}) ;
 
 my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
 $text_only =~ s/\t/$tab_as_space/g ;

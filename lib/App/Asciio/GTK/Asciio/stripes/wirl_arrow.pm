@@ -18,39 +18,24 @@ my $rows = $self->{ARROW_TYPE} ;
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new('Arrow attributes', $window, 'destroy-with-parent')  ;
-$dialog->set_default_size (450, 505);
-$dialog->add_button ('gtk-ok' => 'ok');
-
-#~ my $vbox = $dialog->vbox ;
-my $dialog_vbox = $dialog->vbox ;
+$dialog->set_default_size(450, 505);
+$dialog->add_button('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new (FALSE, 5);
-$dialog_vbox->pack_start ($vbox, TRUE, TRUE, 0);
+$vbox->pack_start(Gtk3::Label->new (""), FALSE, FALSE, 0);
 
-$vbox->pack_start (Gtk3::Label->new (""),
-		 FALSE, FALSE, 0);
-
-my $sw = Gtk3::ScrolledWindow->new;
-$sw->set_shadow_type ('etched-in');
-$sw->set_policy ('automatic', 'automatic');
-$vbox->pack_start ($sw, TRUE, TRUE, 0);
-
-# create model
-my $model = create_model ($rows);
-
-# create tree view
-my $treeview = Gtk3::TreeView->new_with_model ($model);
-$treeview->set_rules_hint (TRUE);
-$treeview->get_selection->set_mode ('single');
+my $treeview = Gtk3::TreeView->new_with_model(create_model($rows));
+$treeview->set_rules_hint(TRUE);
+$treeview->get_selection->set_mode('single');
 
 add_columns($treeview, $rows);
 
-$sw->add($treeview);
+$vbox->add($treeview);
 
 $treeview->show() ;
 $vbox->show() ;
-$sw->show() ;
 
+$dialog->get_content_area()->add($vbox) ;
 $dialog->run() ;
 
 $dialog->destroy ;

@@ -12,12 +12,18 @@ gtk3 port:
 	#new colors in night mode
 	#get font size to size objects and grid
 	#Flip transparent element background, makes foreground transparent
+	#section_wirl_arrow::Edit doesn't call wirl_arrow edit
 
 	stop using cairo's toy text API which doesn't handle character spacing and other fonts
 	multiple shortcuts for the same command don't work, see zoom
+
 	test all dialogs
+		package App::Asciio::GTK::Asciio ;
+
 	test all functions
 
+	clipboard
+	# my $treedumper = Data::TreeDumper::Renderer::GTK->new
 
 use json as file format
 

@@ -44,6 +44,7 @@ $treeview->show() ;
 $vbox->show() ;
 $sw->show() ;
 
+$dialog->get_content_area()->add($vbox) ;
 $dialog->run() ;
 
 $dialog->destroy ;

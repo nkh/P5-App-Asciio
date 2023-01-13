@@ -17,7 +17,7 @@ my ($self, $previous_color) = @_ ;
 my $color = Gtk3::Gdk::Color->new (@{$previous_color});
 my $dialog = Gtk3::ColorSelectionDialog->new ("Changing color");
 
-my $colorsel = $dialog->colorsel;
+my $colorsel = $dialog->get_color_selection;
 
 $colorsel->set_previous_color ($color);
 $colorsel->set_current_color ($color);
@@ -98,7 +98,7 @@ $dialog->add_button ('gtk-no' => 'no');
 $dialog->add_button ('gtk-cancel' => 'cancel');
 
 my $label = Gtk3::Label->new($text);
-$dialog->vbox->add ($label);
+$dialog->get_content_area->add ($label);
 $label->show;
 
 my $result = $dialog->run() ;
@@ -198,17 +198,17 @@ $buffer->insert ($buffer->get_end_iter, $text);
 $dialog->get_content_area->add ($textview) ;
 $textview->show;
 
-#
+
 # Set up the dialog such that Ctrl+Return will activate the "ok"  response. Muppet
-#
-#~ my $accel = Gtk3::AccelGroup->new;
-#~ $accel->connect
-		#~ (
-		#~ Gtk3::Gdk->keyval_from_name ('Return'), ['control-mask'], [],
-                #~ sub { $dialog->response ('ok'); }
-		#~ );
-		
-#~ $dialog->add_accel_group ($accel);
+
+# my $accel = Gtk3::AccelGroup->new;
+# $accel->connect
+#       (
+#       Gtk3::Gdk->keyval_from_name ('Return'), ['control-mask'], [],
+#       sub { $dialog->response ('ok'); }
+#       );
+      
+# $dialog->add_accel_group ($accel);
 
 $dialog->run() ;
 

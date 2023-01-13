@@ -197,7 +197,6 @@ if($self->get_modified_state())
 		$user_answer = 'ok' if defined $saved ;
 		}
 
-print "$user_answer\n" ;
 	exit if $user_answer eq 'ok'
 	}
 else

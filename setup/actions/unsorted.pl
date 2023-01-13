@@ -419,7 +419,7 @@ sub insert_multiple_boxes_from_text_description
 {
 my ($self, $boxed) = @_ ;
 
-my $text = $self->display_edit_dialog('multiple texts from input', "\ntext\ntext\ntext\ntext" ) ;
+my $text = $self->display_edit_dialog('multiple objects from input', "\ntext\ntext\ntext\ntext" ) ;
 
 if(defined $text && $text ne '')
 	{
