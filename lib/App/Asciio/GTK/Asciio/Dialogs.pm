@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use Data::TreeDumper ;
-# use Data::TreeDumper::Renderer::GTK ;
+use Data::TreeDumper::Renderer::GTK ;
 
 #-----------------------------------------------------------------------------
 
@@ -39,27 +39,80 @@ return [$color->red, $color->green , $color->blue]  ;
 
 sub show_dump_window
 {
-# my ($self, $data, $title, @dumper_setup) = @_ ;
+my ($self, $data, $title, @dumper_setup) = @_ ;
 
-# my $treedumper = Data::TreeDumper::Renderer::GTK->new
-# 				(
-# 				data => $data,
-# 				title => $title,
-# 				dumper_setup => {@dumper_setup}
-# 				);
+my $window = new Gtk3::Window() ;
+
+my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
+$dialog->set_default_size(600, 800);
+$dialog->add_button('gtk-ok' => 'ok');
+
+my $vbox = Gtk3::VBox->new(FALSE, 5);
+$vbox->pack_start(Gtk3::Label->new (""), FALSE, FALSE, 0);
+$vbox->add(Gtk3::Label->new (""));
+
+# tree dump
+my $treedumper = Data::TreeDumper::Renderer::GTK->new
+				(
+				data => $data,
+				title => $title,
+				dumper_setup => {@dumper_setup}
+				);
 		
-# $treedumper->modify_font(Gtk3::Pango::FontDescription->from_string ('monospace'));
+# $treedumper->modify_font(Pango::FontDescription::from_string ('monospace'));
 # $treedumper->collapse_all;
 
-# # some boilerplate to get the widget onto the screen...
-# my $window = Gtk3::Window->new;
+my $scroller = Gtk3::ScrolledWindow->new;
+$scroller->add($treedumper);
+$dialog->get_content_area()->add($scroller);
+
+
+$vbox->add ($scroller) ;
+$treedumper->show() ;
+$scroller->show();
+$vbox->show() ;
+
+$dialog->get_content_area()->add($vbox) ;
+
+$dialog->run() ;
+$dialog->destroy ;
+}
+
+sub xshow_dump_window
+{
+my ($self, $data, $title, @dumper_setup) = @_ ;
+
+my $treedumper = Data::TreeDumper::Renderer::GTK->new
+				(
+				data => $data,
+				title => $title,
+				dumper_setup => {@dumper_setup}
+				);
+		
+$treedumper->modify_font(Pango::FontDescription::from_string ('monospace'));
+$treedumper->collapse_all;
+
+# boilerplate to get the widget onto the screen...
+my $window = new Gtk3::Window() ;
+my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
+$dialog->set_default_size (300, 400);
+$dialog->add_button('gtk-ok' => 'ok');
+
+# my $vbox = Gtk3::VBox->new(FALSE, 5);
 
 # my $scroller = Gtk3::ScrolledWindow->new;
-# $scroller->add ($treedumper);
+# $scroller->add($treedumper);
+# $dialog->get_content_area()->add($scroller);
 
-# $window->add ($scroller);
-# $window->set_default_size(640, 1000) ;
-# $window->show_all;
+$dialog->get_content_area()->add($treedumper);
+$dialog->show_all;
+
+# $vbox->show() ;
+
+# $dialog->get_content_area()->add($vbox) ;
+$window->show_all;
+$dialog->run() ;
+$dialog->destroy ;
 }
 
 #-----------------------------------------------------------------------------
