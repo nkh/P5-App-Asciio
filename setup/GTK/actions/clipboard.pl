@@ -18,10 +18,10 @@ my ($self) = @_ ;
 
 my $ascii = $self->transform_elements_to_ascii_buffer($self->get_selected_elements(1)) ;
 
-Gtk3::Clipboard->get(Gtk3::Gdk->SELECTION_CLIPBOARD)->set_text($ascii);
+Gtk3::Clipboard::get($Gdk::SELECTION_CLIPBOARD)->set_text($ascii);
 
 # also put in selection  --  DH
-Gtk3::Clipboard->get(Gtk3::Gdk->SELECTION_PRIMARY)->set_text($ascii);
+Gtk3::Clipboard::get($Gdk::SELECTION_PRIMARY)->set_text($ascii);
 }
 
 #----------------------------------------------------------------------------------------------
@@ -30,7 +30,9 @@ sub import_from_clipboard_to_box
 {
 my ($self) = @_ ;
 
-my $ascii = Gtk3::Clipboard->get($Gtk3::Gdk::SELECTION_CLIPBOARD)->wait_for_text();
+
+       # self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
+my $ascii = Gtk3::Clipboard::get($Gdk::SELECTION_CLIPBOARD)->wait_for_text();
 
 my $element = $self->add_new_element_named('stencils/asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
@@ -47,7 +49,7 @@ sub import_from_primary_to_box
 {
 my ($self) = @_ ;
 
-my $ascii = Gtk3::Clipboard->get($Gtk3::Gdk::SELECTION_PRIMARY)->wait_for_text();
+my $ascii = Gtk3::Clipboard::get($Gdk::SELECTION_PRIMARY)->wait_for_text();
 
 my $element = $self->add_new_element_named('stencils/asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
