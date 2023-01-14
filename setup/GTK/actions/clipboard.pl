@@ -31,7 +31,6 @@ sub import_from_clipboard_to_box
 my ($self) = @_ ;
 
 
-       # self.clipboard = Gtk.Clipboard.get(Gdk.SELECTION_CLIPBOARD)
 my $ascii = Gtk3::Clipboard::get($Gdk::SELECTION_CLIPBOARD)->wait_for_text();
 
 my $element = $self->add_new_element_named('stencils/asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;

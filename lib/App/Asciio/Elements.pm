@@ -446,7 +446,6 @@ if($self->is_connected($selected_element))
 #~ !!! TODO if not already connected to them (same connection)
 $self->connect_elements($selected_element) ; # connect to new elements if any
 
-
 for my $connection ($self->get_connected($selected_element))
 	{
 	# all connection where the selected element is the connectee

@@ -394,22 +394,18 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 
+if ($self->{MOUSE_TOGGLE})
+	{
+	my $start_x = $self->{MOUSE_X} * $character_width ;
+	my $start_y = $self->{MOUSE_Y} * $character_height ;
+	
+	$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
+	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
+	$gc->fill() ;
+	$gc->stroke() ;
+	}
+
 return TRUE;
-}
-
-#-----------------------------------------------------------------------------
-
-sub get_key_modifiers
-{
-my ($event) = @_ ;
-
-my $key_modifiers = $event->state() ;
-
-my $modifiers = $key_modifiers =~ /control-mask/ ? 'C' :0 ;
-$modifiers .= $key_modifiers =~ /mod1-mask/ ? 'A' :0 ;
-$modifiers .= $key_modifiers =~ /shift-mask/ ? 'S' :0 ;
-
-return($modifiers) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -423,44 +419,8 @@ $self->SUPER::button_release_event($self->create_asciio_event($event)) ;
 
 #-----------------------------------------------------------------------------
 
-sub create_asciio_event
-{
-my ($self, $event) = @_ ;
-
-my $event_type= $event->type() ;
-
-my $asciio_event =
-	{
-	TYPE =>  $event_type,
-	STATE => $event->state() ,
-	MODIFIERS => get_key_modifiers($event),
-	BUTTON => -1,
-	KEY_NAME => -1,
-	COORDINATES => [-1, -1],
-	} ;
-
-$asciio_event->{BUTTON} = $event->button() if ref $event eq 'Gtk3::Gdk::EventButton' ;
-if
-	(
-	$event_type eq "motion-notify" 
-	|| ref $event eq "Gtk3::Gdk::EventButton" 
-	)
-	{
-	$asciio_event->{COORDINATES} = [$self->closest_character($event->get_coords())]  ;
-	}
-
-$asciio_event->{KEY_NAME} = Gtk3::Gdk::keyval_name($event->keyval) if $event_type eq 'key-press' ;
-
-# use Data::TreeDumper ; print DumpTree $asciio_event ;
-
-return $asciio_event ;
-}
-
-#-----------------------------------------------------------------------------
-
 sub button_press_event 
 {
-#~ print "button_press_event\n" ;
 my ($widget, $event, $self) = @_ ;
 
 my $asciio_event = $self->create_asciio_event($event) ;
@@ -488,6 +448,55 @@ my ($widget, $event, $self)= @_;
 my $asciio_event = $self->create_asciio_event($event) ;
 
 $self->SUPER::key_press_event($asciio_event) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub create_asciio_event
+{
+my ($self, $event) = @_ ;
+
+my $event_type= $event->type() ;
+
+my $asciio_event =
+	{
+	TYPE =>  $event_type,
+	STATE => $event->state() ,
+	MODIFIERS => get_key_modifiers($event),
+	BUTTON => -1,
+	KEY_NAME => -1,
+	COORDINATES => [-1, -1],
+	} ;
+
+$asciio_event->{BUTTON} = $event->button() if ref $event eq 'Gtk3::Gdk::EventButton' ;
+
+if
+	(
+	$event_type eq "motion-notify" 
+	|| ref $event eq "Gtk3::Gdk::EventButton" 
+	)
+	{
+	$asciio_event->{COORDINATES} = [$self->closest_character($event->get_coords())]  ;
+	}
+
+$asciio_event->{KEY_NAME} = Gtk3::Gdk::keyval_name($event->keyval) if $event_type eq 'key-press' ;
+
+return $asciio_event ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_key_modifiers
+{
+my ($event) = @_ ;
+
+my $key_modifiers = $event->state() ;
+
+my $modifiers = $key_modifiers =~ /control-mask/ ? 'C' :0 ;
+$modifiers .= $key_modifiers =~ /mod1-mask/ ? 'A' :0 ;
+$modifiers .= $key_modifiers =~ /shift-mask/ ? 'S' :0 ;
+
+return($modifiers) ;
 }
 
 #-----------------------------------------------------------------------------

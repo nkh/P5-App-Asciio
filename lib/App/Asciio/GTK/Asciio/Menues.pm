@@ -17,7 +17,7 @@ sub display_popup_menu
 {
 my ($self, $event) = @_;
 
-my ($popup_x, $popup_y) = $event->get_coords() ;
+my ($popup_x, $popup_y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
 
 my @menu_items ;
 
@@ -53,7 +53,7 @@ my $menu = Gtk3::Menu->new() ;
 
 insert_menu_items($menu, \@menu_items) ;
 
-$menu->popup(undef, undef, undef, undef, $event->button, $event->time) ;
+$menu->popup(undef, undef, undef, undef, $event->{BUTTON}, 0) ;
 }
 
 sub insert_menu_items
@@ -108,7 +108,9 @@ my ($character_width, $character_height) = $self->get_character_size() ;
 
 return sub
 	{
-	$self->add_new_element_of_type($element, $self->closest_character($x, $y)) ;
+	my $new_element = $self->add_new_element_of_type($element, $x, $y) ;
+	$self->deselect_all_elements() ;
+	$self->select_elements(1, $new_element) ;
 	$self->update_display();
 	} ;
 }

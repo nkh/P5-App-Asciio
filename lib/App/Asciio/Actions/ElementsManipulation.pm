@@ -255,10 +255,17 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-$self->create_undo_snapshot() ;
+if($self->{MOUSE_TOGGLE})
+	{
+	$self->{MOUSE_X} -= $offset ;
+	}
+else
+	{
+	$self->create_undo_snapshot() ;
 
-$self->move_elements(-$offset, 0, $self->get_selected_elements(1)) ;
-$self->update_display() ;
+	$self->move_elements(-$offset, 0, $self->get_selected_elements(1)) ;
+	$self->update_display() ;
+	}
 } ;
 
 #----------------------------------------------------------------------------------------------
@@ -269,10 +276,17 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-$self->create_undo_snapshot() ;
+if($self->{MOUSE_TOGGLE})
+	{
+	$self->{MOUSE_X} += $offset ;
+	}
+else
+	{
+	$self->create_undo_snapshot() ;
 
-$self->move_elements($offset, 0, $self->get_selected_elements(1)) ;
-$self->update_display() ;
+	$self->move_elements($offset, 0, $self->get_selected_elements(1)) ;
+	$self->update_display() ;
+	}
 } ;
 
 #----------------------------------------------------------------------------------------------
@@ -283,10 +297,17 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-$self->create_undo_snapshot() ;
+if($self->{MOUSE_TOGGLE})
+	{
+	$self->{MOUSE_Y} -= $offset ;
+	}
+else
+	{
+	$self->create_undo_snapshot() ;
 
-$self->move_elements(0, -$offset, $self->get_selected_elements(1)) ;
-$self->update_display() ;
+	$self->move_elements(0, -$offset, $self->get_selected_elements(1)) ;
+	$self->update_display() ;
+	}
 } ;
 
 #----------------------------------------------------------------------------------------------
@@ -297,10 +318,17 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-$self->create_undo_snapshot() ;
+if($self->{MOUSE_TOGGLE})
+	{
+	$self->{MOUSE_Y} += $offset ;
+	}
+else
+	{
+	$self->create_undo_snapshot() ;
 
-$self->move_elements(0, $offset, $self->get_selected_elements(1)) ;
-$self->update_display() ;
+	$self->move_elements(0, $offset, $self->get_selected_elements(1)) ;
+	$self->update_display() ;
+	}
 } ;
 
 #----------------------------------------------------------------------------------------------

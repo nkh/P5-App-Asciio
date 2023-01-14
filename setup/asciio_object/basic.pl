@@ -29,6 +29,8 @@ COLORS =>
 	connection_point => [0.90, 0.77, 0.52],
 	new_connection =>  [1.0, 0.0, 0.0],
 	extra_point => [0.90, 0.77, 0.52],
+
+	mouse_rectangle => [0.90, 0.20, 0.20],
 	},
 
 RULER_LINES =>

@@ -388,6 +388,8 @@ my $self =
 			connector_point => [0.0, 0.0, 0.52],
 			new_connection =>  [1.0, 0.0, 0.0],
 			extra_point => [0.90, 0.77, 0.52],
+			
+			mouse_rectangle => [0.90, 0.20, 0.20],
 			},
 		
 		NEXT_GROUP_COLOR => 0, 
@@ -526,8 +528,9 @@ $self->update_display();
 
 sub button_press_event 
 {
-#~ print "button_press_event\n" ;
-my ($self, $event, $wrapper_event) = @_ ;
+# print "button_press_event\n" ;
+my ($self, $event) = @_ ;
+# use Data::TreeDumper ; print DumpTree $event ;
 
 $self->{DRAGGING} = '' ;
 delete $self->{RESIZE_CONNECTOR_NAME} ;
@@ -541,7 +544,6 @@ my $button = $event->{BUTTON} ;
 if($self->exists_action("${modifiers}-button_press-$button"))
 	{
 	$self->run_actions(["${modifiers}-button_press-$button", $event]) ;
-	return 1 ;
 	}
 
 my($x, $y) = @{$event->{COORDINATES}} ;
@@ -612,9 +614,9 @@ if($event->{BUTTON} == 2)
   
 if($event->{BUTTON} == 3) 
 	{
-	$self->display_popup_menu($wrapper_event) ; # display_popup_menu is handled by derived Asciio
+	$self->display_popup_menu($event) ; # display_popup_menu is handled by derived Asciio
 	}
-  
+
 return 1;
 }
 
@@ -785,6 +787,7 @@ my ($self, $event)= @_;
 my $modifiers = $event->{MODIFIERS} ;
 my $key = $event->{KEY_NAME} ;
 
+$self->{EVENT} = $event ;
 $self->run_actions("$modifiers-$key") ;
 
 return 0 ;
