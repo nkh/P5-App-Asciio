@@ -92,7 +92,7 @@ The ASCII graphs can be saved as ASCII or in a format that allows you to modify 
                               context menu
 				   
 
-Press 'F1' for help.
+Press 'F1' for help; 'F2', 'F3', 'F4' for mappings.
 
 =head2 Context menu
 
@@ -124,8 +124,6 @@ implemented are:
 =item * ...
 
 =back
-
-The available commands are displayed if you press B<K>. 
 
 =head2 Elements
 
@@ -202,7 +200,7 @@ A set of whirl arrows connected to each other
                                  (> <)
 				 
 
-You can also use the 'External commands in box' to direct an external command output to a box. Default shortcuts are 'x' and CTL + 'x'.
+You can also use the 'External commands in box' to direct an external command output to a box.
 
 =head3 "if" box and "process" box
 
@@ -457,6 +455,8 @@ my ($self) = @_;
 $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
 }
 
+#-----------------------------------------------------------------------------
+
 sub get_grid_usage
 {
 my ($self) = @_;
@@ -500,7 +500,6 @@ my ($self, $hook_name,  @arguments) = @_;
 
 $self->{HOOKS}{$hook_name}->(@arguments)  if (exists $self->{HOOKS}{$hook_name}) ;
 }
-
 
 #-----------------------------------------------------------------------------
 
@@ -630,6 +629,8 @@ my($x, $y) = @{$event->{COORDINATES}} ;
 my $modifiers = $event->{MODIFIERS} ; 
 my $button = $event->{BUTTON} ;
 
+print "STATE: $event->{STATE}\n" ;
+
 if($self->exists_action("${modifiers}motion_notify"))
 	{
 	$self->run_actions(["${modifiers}-motion_notify", $event]) ;
@@ -646,9 +647,9 @@ if ($event->{STATE} >= "button1-mask")
 	{
 	if($self->{DRAGGING} ne '')
 		{
-		if      ($self->{DRAGGING} eq 'move') { $self->move_elements_event($x, $y) ; }
-		elsif ($self->{DRAGGING}eq 'resize') { $self->resize_element_event($x, $y) ; }
-		elsif ($self->{DRAGGING}eq 'select') { $self->select_element_event($x, $y) ; }
+		if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
+		elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
+		elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
 		}
 	else
 		{

@@ -16,6 +16,11 @@ register_action_handlers
 
 	'Mouse right-click'       => ['000-adiaeresis',     \&mouse_right_click                      ] ,
 	
+	'Mouse drag left'         => ['00S-Left',           \&mouse_drag_left                        ] ,
+	'Mouse drag right'        => ['00S-Right',          \&mouse_drag_right                       ] ,
+	'Mouse drag left'         => ['00S-Up',             \&mouse_drag_up                          ] ,
+	'Mouse drag left'         => ['00S-Down',           \&mouse_drag_down                        ] ,
+
 	#~ 'C00-button_release' => ['', ] ,
 	#~ 'C00-motion_notify' =>['', ] ,
 	) ;
@@ -169,4 +174,90 @@ my ($self) = @_;
 
 $self->display_popup_menu($self->{EVENT}) ; # display_popup_menu is handled by derived Asciio
 }
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_drag_left()
+{
+my ($self) = @: ;
+
+# [ shift-mask mod2-mask button1-mask ]
+App::Asciio::motion_notify_event
+	(
+	$self,
+	{
+	BUTTON => 1,
+	COORDINATES => [ $self->{MOUSE_X} - 1 , $self->{MOUSE_Y} ], 
+	KEY_NAME => -1,
+	MODIFIERS => '00S',
+	STATE => "[ mod2-mask button1-mask ]",
+	TYPE => 'button-press'
+	},
+	) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_drag_right()
+{
+my ($self) = @_ ;
+
+App::Asciio::motion_notify_event
+	(
+	$self,
+	{
+	BUTTON => 1,
+	COORDINATES => [ $self->{MOUSE_X} + 1 , $self->{MOUSE_Y} ], 
+	KEY_NAME => -1,
+	MODIFIERS => '000',
+	STATE => "[ mod2-mask button1-mask ]",
+	TYPE => 'button-press'
+	},
+	) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_drag_up()
+{
+my ($self) = @_ ;
+
+App::Asciio::motion_notify_event
+	(
+	$self,
+	{
+	BUTTON => 1,
+	COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} - 1 ], 
+	KEY_NAME => -1,
+	MODIFIERS => '000',
+	STATE => "[ mod2-mask button1-mask ]",
+	TYPE => 'button-press'
+	},
+	) ;
+
+
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_drag_down()
+{
+my ($self) = @_ ;
+
+App::Asciio::motion_notify_event
+	(
+	$self,
+	{
+	BUTTON => 1,
+	COORDINATES => [ $self->{MOUSE_X} , $self->{MOUSE_Y} + 1 ], 
+	KEY_NAME => -1,
+	MODIFIERS => '000',
+	STATE => "[ mod2-mask button1-mask ]",
+	TYPE => 'button-press'
+	},
+	) ;
+}
+
+
+
 

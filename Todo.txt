@@ -31,7 +31,10 @@ gtk3 port:
 
 	#event_option_changed
 
+	
 add mouse movements and clicks actions 
+	popup menu doesn't open at cursor position
+
 	add possibility to insert entry in input queue to emulate previous mouse actions via keyboard
 
 angle arrow type not implemented, no dialog either

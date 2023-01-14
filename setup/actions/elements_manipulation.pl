@@ -9,8 +9,10 @@ register_action_handlers
 	'Select previous element'                       => ['00S-ISO_Left_Tab', \&App::Asciio::Actions::ElementsManipulation::select_previous_element                  ],
 	
 	'Select all elements'                           => ['C00-a',            \&App::Asciio::Actions::ElementsManipulation::select_all_elements                      ],
+	'Deselect all elements'                         => ['000-k',            \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements                    ],
+	
 	'Delete selected elements'                      => ['000-Delete',       \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements                 ],
-
+	
 	'Group selected elements'                       => ['C00-g',            \&App::Asciio::Actions::ElementsManipulation::group_selected_elements                  ],
 	'Ungroup selected elements'                     => ['C00-u',            \&App::Asciio::Actions::ElementsManipulation::ungroup_selected_elements                ],
 	

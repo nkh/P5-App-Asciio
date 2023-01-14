@@ -233,8 +233,18 @@ my ($self) = @_ ;
 
 $self->select_all_elements() ;
 $self->update_display() ;
-} ;	
-	
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub deselect_all_elements
+{
+my ($self) = @_ ;
+
+$self->deselect_all_elements() ;
+$self->update_display() ;
+}
+
 #----------------------------------------------------------------------------------------------
 
 sub delete_selected_elements
@@ -245,7 +255,7 @@ $self->create_undo_snapshot() ;
 
 $self->delete_elements($self->get_selected_elements(1)) ;
 $self->update_display() ;
-} ;	
+}
 
 #----------------------------------------------------------------------------------------------
 
