@@ -14,14 +14,14 @@ sub get_color_from_user
 {
 my ($self, $previous_color) = @_ ;
 
-my $color = Gtk3::Gdk::Color->new (@{$previous_color});
+my $color = Gtk3::Gdk::Color->new (map { $_ * 65535 } @{$previous_color});
 my $dialog = Gtk3::ColorSelectionDialog->new ("Changing color");
 
 my $colorsel = $dialog->get_color_selection;
 
-$colorsel->set_previous_color ($color);
-$colorsel->set_current_color ($color);
-$colorsel->set_has_palette (TRUE);
+$colorsel->set_previous_color($color);
+$colorsel->set_current_color($color);
+$colorsel->set_has_palette(TRUE);
 
 my $response = $dialog->run;
 
@@ -32,7 +32,7 @@ if ($response eq 'ok')
 
 $dialog->destroy;
 
-return [$color->red, $color->green , $color->blue]  ;
+return [$color->red / 65535, $color->green / 65535, $color->blue / 65535]  ;
 }
 
 #-----------------------------------------------------------------------------
@@ -45,27 +45,26 @@ my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
 $dialog->set_default_size(600, 800);
-$dialog->add_button('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new(FALSE, 5);
 $vbox->pack_start(Gtk3::Label->new (""), FALSE, FALSE, 0);
 $vbox->add(Gtk3::Label->new (""));
 
-# tree dump
+# tree
 my $treedumper = Data::TreeDumper::Renderer::GTK->new
 				(
 				data => $data,
-				title => $title,
 				dumper_setup => {@dumper_setup}
 				);
-		
-# $treedumper->modify_font(Pango::FontDescription::from_string ('monospace'));
-# $treedumper->collapse_all;
+$treedumper->modify_font(Pango::FontDescription::from_string ('monospace'));
+$treedumper->collapse_all;
+$treedumper->set_hexpand(TRUE) ;
+$treedumper->set_vexpand(TRUE) ;
 
-my $scroller = Gtk3::ScrolledWindow->new;
+my $scroller = Gtk3::ScrolledWindow->new();
+$scroller->set_hexpand(TRUE) ;
+$scroller->set_vexpand(TRUE) ;
 $scroller->add($treedumper);
-$dialog->get_content_area()->add($scroller);
-
 
 $vbox->add ($scroller) ;
 $treedumper->show() ;
@@ -78,42 +77,6 @@ $dialog->run() ;
 $dialog->destroy ;
 }
 
-sub xshow_dump_window
-{
-my ($self, $data, $title, @dumper_setup) = @_ ;
-
-my $treedumper = Data::TreeDumper::Renderer::GTK->new
-				(
-				data => $data,
-				title => $title,
-				dumper_setup => {@dumper_setup}
-				);
-		
-$treedumper->modify_font(Pango::FontDescription::from_string ('monospace'));
-$treedumper->collapse_all;
-
-# boilerplate to get the widget onto the screen...
-my $window = new Gtk3::Window() ;
-my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
-$dialog->set_default_size (300, 400);
-$dialog->add_button('gtk-ok' => 'ok');
-
-# my $vbox = Gtk3::VBox->new(FALSE, 5);
-
-# my $scroller = Gtk3::ScrolledWindow->new;
-# $scroller->add($treedumper);
-# $dialog->get_content_area()->add($scroller);
-
-$dialog->get_content_area()->add($treedumper);
-$dialog->show_all;
-
-# $vbox->show() ;
-
-# $dialog->get_content_area()->add($vbox) ;
-$window->show_all;
-$dialog->run() ;
-$dialog->destroy ;
-}
 
 #-----------------------------------------------------------------------------
 

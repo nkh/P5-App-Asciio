@@ -1,18 +1,17 @@
 
 package App::Asciio ;
 
-$|++ ;
+#------------------------------------------------------------------------------------------------------
 
-use strict;
-use warnings;
+$|++ ;
 
 #------------------------------------------------------------------------------------------------------
 
 my Readonly $SHORTCUTS = 0 ;
 my Readonly $CODE = 1 ;
 my Readonly $ARGUMENTS = 2 ;
-my Readonly $CONTEXT_MENUE_SUB = 3 ;
-my Readonly $CONTEXT_MENUE_ARGUMENTS = 4 ;
+my Readonly $CONTEXT_MENU_SUB = 3 ;
+my Readonly $CONTEXT_MENU_ARGUMENTS = 4 ;
 my Readonly $NAME= 5 ;
 my Readonly $ORIGIN= 6 ;
 

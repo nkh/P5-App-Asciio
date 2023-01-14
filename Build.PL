@@ -22,6 +22,20 @@ lib/App/Asciio/Undo.pm
 lib/App/Asciio/Options.pm
 lib/App/Asciio/Stencil.pm
 
+lib/App/Asciio/Actions/Colors.pm
+lib/App/Asciio/Actions/Align.pm
+lib/App/Asciio/Actions/File.pm
+lib/App/Asciio/Actions/Presentation.pm
+lib/App/Asciio/Actions/Unsorted.pm
+lib/App/Asciio/Actions/Ruler.pm
+lib/App/Asciio/Actions/Clipboard.pm
+lib/App/Asciio/Actions/Elements.pm
+lib/App/Asciio/Actions/ElementsManipulation.pm
+lib/App/Asciio/Actions/Multiwirl.pm
+lib/App/Asciio/Actions/Mouse.pm
+lib/App/Asciio/Actions/Box.pm
+lib/App/Asciio/Actions/Debug.pm
+
 lib/App/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/stripes/editable_box2.pm

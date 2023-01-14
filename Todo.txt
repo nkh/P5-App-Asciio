@@ -16,12 +16,27 @@ gtk3 port:
 	#clipboard
 	#test all dialogs
 	#test all functions
+	#my $treedumper = Data::TreeDumper::Renderer::GTK->new
+
+	get pango size once, till next zoom
 
 	stop using cairo's toy text API which doesn't handle character spacing and other fonts
-	multiple shortcuts for the same command don't work, see zoom
 
+	save png
 
-	my $treedumper = Data::TreeDumper::Renderer::GTK->new
+	#test all functions
+		#colors not set, new format?
+		#group colors
+		#context_menu_box
+
+	#event_option_changed
+
+FIGLET
+
+add mouse movements and clicks actions 
+	add possibility to insert entry in input queue to emulate previous mouse actions via keyboard
+
+angle arrow type not implemented, no dialog either
 
 use json as file format
 

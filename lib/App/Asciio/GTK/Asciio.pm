@@ -37,9 +37,6 @@ my ($class, $window, $width, $height) = @_ ;
 my $self = App::Asciio::new($class) ;
 bless $self, $class ;
 
-# $self->{KEYS}{K} = {%Gtk3::Gdk::Keysyms} ;
-$self->{KEYS}{C}= {map{$self ->{KEYS}{K}{$_} => $_} keys %{$self->{KEYS}{K}}} ;
-
 $window->signal_connect(key_press_event => \&key_press_event, $self);
 $window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
 $window->signal_connect(button_press_event => \&button_press_event, $self);
@@ -173,11 +170,7 @@ for my $element (@{$self->{ELEMENTS}})
 		{
 		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
 			{
-			$background_color = 
-				$self->get_color
-					(
-					$self->{COLORS}{group_colors}[$element->{GROUP}[-1]{GROUP_COLOR}][0]
-					) ;
+			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
 			}
 		else
 			{
@@ -186,19 +179,11 @@ for my $element (@{$self->{ELEMENTS}})
 		}
 	else
 		{
-		if(defined $background_color)
-			{
-			$background_color = $self->get_color($background_color) ;
-			}
-		else
+		unless (defined $background_color)
 			{
 			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
 				{
-				$background_color = 
-					$self->get_color
-						(
-						$self->{COLORS}{group_colors}[$element->{GROUP}[-1]{GROUP_COLOR}][1]
-						) ;
+				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
 				}
 			else
 				{
@@ -207,11 +192,8 @@ for my $element (@{$self->{ELEMENTS}})
 			}
 		}
 			
-	$foreground_color = 
-		defined $foreground_color
-			? $self->get_color($foreground_color)
-			: $self->get_color('element_foreground') ;
-			
+	$foreground_color //= $self->get_color('element_foreground') ;
+	
 	for my $mask_and_element_strip ($element->get_mask_and_element_stripes())
 		{
 		my $line_index=0 ;

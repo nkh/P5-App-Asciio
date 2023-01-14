@@ -5,9 +5,9 @@ use List::Util qw(min max) ;
 
 register_action_handlers
 	(
-	'Export to clipboard & primary as ascii'=> ['C00-e', \&export_to_clipboard_as_ascii] ,
-	'Import from clipboard to box'=> ['C0S-E', \&import_from_clipboard_to_box] ,
-	'Import from primary to box'=> ['0A0-e', \&import_from_primary_to_box] ,
+	'Export to clipboard & primary as ascii' => ['C00-e', \&export_to_clipboard_as_ascii] ,
+	'Import from clipboard to box'           => ['C0S-E', \&import_from_clipboard_to_box] ,
+	'Import from primary to box'             => ['0A0-e', \&import_from_primary_to_box  ] ,
 	) ;
 
 #----------------------------------------------------------------------------------------------

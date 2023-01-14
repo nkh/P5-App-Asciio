@@ -23,7 +23,7 @@ use App::Asciio::Options ;
 
 #-----------------------------------------------------------------------------
 
-our $VERSION = '1.51' ;
+our $VERSION = '1.6' ;
 
 #-----------------------------------------------------------------------------
 
@@ -60,14 +60,10 @@ App::Asciio - Plain ASCII diagram
 
 =head1 DESCRIPTION
 
-It has always been painful to do ASCII diagrams by hand. This perl application allows 
-you to draw ASCII diagrams in a modern (but simple) graphical interface.
+This application allows you to draw ASCII diagrams in a simple graphical interface.
 
 The ASCII graphs can be saved as ASCII or in a format that allows you to modify them later.
 
-Special thanks go to the Muppet and the gtk-perl group, Gabor Szabo for his help and advices.
-
-Adam Kennedy coined the cool name.
 
 =head1 DOCUMENTATION
 
@@ -98,11 +94,11 @@ Adam Kennedy coined the cool name.
 
 Press 'F1' for help.
 
-=head2 context menu
+=head2 Context menu
 
 The context menu allows to access to B<Asciio> commands.
 
-=head2 keyboard shortcuts
+=head2 Keyboard shortcuts
 
 All the keyboad commands definitions can be found under I<asciio/setup/actions/>. Among the commands
 implemented are:
@@ -131,13 +127,11 @@ implemented are:
 
 The available commands are displayed if you press B<K>. 
 
-=head2 elements
-
-There are a few elements implemented at the moment.
+=head2 Elements
 
 =head3 wirl arrow
 
-An arrow that tries to do what you want. Try rotating the end clockwise then counter clockwise to see how it acts
+An arrow that tries to do what you want. Rotating the end clockwise or counter-clockwise changes its direction
 
                ^
                |
@@ -220,17 +214,17 @@ You can also use the 'External commands in box' to direct an external command ou
    '--------------'     /___________/    /_________/
    
 
-=head3 your own stencils
+=head3 user stencils
 
 Take a look at I<setup/stencils/computer> for a stencil example. Stencils listed in I<setup/setup.ini> will
 be loaded when B<Asciio> starts.
 
-=head3 your own element type
+=head3 user element type
 
 For simple elements, put your design in a box. That should cover 90% of anyone's needs. You can look in 
 I<lib/stripes> for element implementation examples.
 
-=head2 exporting to ASCII
+=head2 Exporting to ASCII
 
 You can export to a file in ASCII format but using the B<.txt> extension.
 
@@ -364,7 +358,6 @@ my $self =
 		DRAGGING => '',
 		SELECTION_RECTANGLE =>{START_X => 0, START_Y => 0},
 		
-		KEYS => {K =>{}, C =>{},},
 		ACTIONS => {},
 		VALID_SELECT_ACTION => { map {$_, 1} qw(resize move)},
 		
@@ -415,9 +408,6 @@ return($self) ;
 sub event_options_changed
 {
 my ($self) = @_;
-
-my $number_of_group_colors = scalar(@{$self->{COLORS}{group_colors}}) ;
-$self->{GROUP_COLORS} = [0 .. $number_of_group_colors - 1] ,
 
 $self->{CURRENT_ACTIONS} = $self->{ACTIONS}  ;
 
@@ -863,6 +853,10 @@ Undoubtedly many as I wrote this as a fun little project where I used no design 
 This program is free software; you can redistribute
 it and/or modify it under the same terms as Perl itself.
 
+Special thanks go to the Muppet, the gtk-perl group, and Gabor Szabo for their help.
+
+Adam Kennedy coined the name.
+
 =head1 SUPPORTED OSes
 
 =head2 Gentoo
@@ -884,7 +878,7 @@ Thanks to Emanuel Haupt.
 
 =head2 Ubuntu and Debian
 
-Ports are on the way.
+Ports for the older gtk2 version exist, gtk3 not yet.
 
 =head2 Windows
 

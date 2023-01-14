@@ -57,6 +57,7 @@ else
 		[
 		$setup_path . 'setup.ini', 
 		$setup_path . 'GTK/setup.ini', 
+		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
 		] ;
 	}
 

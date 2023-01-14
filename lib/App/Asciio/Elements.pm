@@ -40,12 +40,12 @@ sub get_group_color
 # cycle through color to give visual clue to user
 my ($self) = @_ ;
 
-my $name = $self->{GROUP_COLORS}[$self->{NEXT_GROUP_COLOR}] ;
+my $colors = $self->{COLORS}{group_colors}[$self->{NEXT_GROUP_COLOR}] ;
 
 $self->{NEXT_GROUP_COLOR}++ ;
-$self->{NEXT_GROUP_COLOR} = 0 if $self->{NEXT_GROUP_COLOR} >= scalar(@{$self->{GROUP_COLORS}}) ;
+$self->{NEXT_GROUP_COLOR} = 0 if $self->{NEXT_GROUP_COLOR} >= scalar(@{$self->{COLORS}{group_colors}}) ;
 
-return ($name) ;
+return ($colors) ;
 }
 
 #-----------------------------------------------------------------------------

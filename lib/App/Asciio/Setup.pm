@@ -24,7 +24,7 @@ for my $setup_file (@{$setup_ini_files})
 	
 	unless(-e $setup_file)
 		{
-		croak "Can't find setup data '$setup_file'\n" ;
+		warn "Asciio: Warning: can't find setup data '$setup_file'\n" and next ;
 		}
 		
 	push @{$self->{SETUP_PATHS}}, $setup_file ;
@@ -41,7 +41,7 @@ for my $setup_file (@{$setup_ini_files})
 				CODE_FROM_FILE => $setup_file,
 				) ;
 
-	die "can't load '$setup_file': $! $@\n" if $@ ;
+	warn "can't load '$setup_file': $! $@\n" if $@ ;
 	}
 		
 	$self->setup_stencils($setup_path, $ini_files->{STENCILS} || []) ;
@@ -64,7 +64,7 @@ for my $stencil (@{$stencils})
 		{
 		if(-f "$setup_path/$stencil")
 			{
-			print "loading stencil '$setup_path$stencil'\n" if $self->{DISPLAY_SETUP_INFORMATION} ;
+			print "loading stencil '$setup_path/$stencil'\n" if $self->{DISPLAY_SETUP_INFORMATION} ;
 			$self->load_elements("$setup_path/$stencil", $stencil) ;
 			}
 		elsif(-d "$setup_path/$stencil")
@@ -93,10 +93,11 @@ my Readonly $CATEGORY = 0 ;
 my Readonly $SHORTCUTS = 0 ;
 my Readonly $CODE = 1 ;
 my Readonly $ARGUMENTS = 2 ;
-my Readonly $CONTEXT_MENUE_SUB = 3;
-my Readonly $CONTEXT_MENUE_ARGUMENTS = 4 ;
+my Readonly $CONTEXT_MENU_SUB = 3;
+my Readonly $CONTEXT_MENU_ARGUMENTS = 4 ;
 my Readonly $NAME= 5 ;
 my Readonly $ORIGIN= 6 ;
+my Readonly $FULL_ORIGIN= 7 ;
 
 sub setup_hooks
 {
@@ -133,11 +134,11 @@ my($self, $setup_path, $action_files) = @_ ;
 
 for my $action_file (@{ $action_files })
 	{
-	#~ print "setup_action_handlers: loading '$action_file'\n" ;
+	#~ print "setup_action_handlers: loading '$setup_path/$action_file'\n" ;
 	
 	my $context = new Eval::Context() ;
 
-	#~ print "loading action '$setup_path$action_file'\n" ;
+	#~ print "loading action '$setup_path/$action_file'\n" ;
 	
 	my %action_handlers;
 	$context->eval
@@ -160,15 +161,17 @@ for my $action_file (@{ $action_files })
 			{
 			$shortcuts_definition = $action_handlers{$name}{SHORTCUTS}  ;
 			$action_handlers{$name}{GROUP_NAME} = $group_name = $name ;
-			$action_handlers{$name}{ORIGIN} = $action_file;
+			$action_handlers{$name}{ORIGIN} = $action_file ;
+			$action_handlers{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 			
-			$action_handler = $self->get_group_action_handler($action_handlers{$name}, $action_file) ;
+			$action_handler = $self->get_group_action_handler($action_handlers{$name}, $setup_path, $action_file) ;
 			}
 		elsif('ARRAY' eq ref $action_handlers{$name})
 			{
 			$shortcuts_definition= $action_handlers{$name}[$SHORTCUTS]  ;
 			$action_handlers{$name}[$NAME] = $name ;
 			$action_handlers{$name}[$ORIGIN] = $action_file ;
+			$action_handlers{$name}[$FULL_ORIGIN] = "$setup_path/$action_file" ;
 			
 			$action_handler = $action_handlers{$name} ;
 			}
@@ -195,8 +198,8 @@ for my $action_file (@{ $action_files })
 			if(exists $self->{ACTIONS}{$shortcut})
 				{
 				print "Overriding shortcut '$shortcut'!\n" ;
-				print "\tnew is '$name' defined in file '$action_file'\n" ;
-				print "\told was '$self->{ACTIONS}{$shortcut}[5]' defined in file '$self->{ACTIONS}{$shortcut}[6]'\n" ;
+				print "\tnew is '$name' defined in file '$setup_path/$action_file'\n" ;
+				print "\told was '$self->{ACTIONS}{$shortcut}[$NAME]' defined in file '$self->{ACTIONS}{$shortcut}[$FULL_ORIGIN]'\n" ;
 				}
 				
 			$self->{ACTIONS}{$shortcut} =  $action_handler ;
@@ -204,7 +207,8 @@ for my $action_file (@{ $action_files })
 			if(defined $group_name)
 				{
 				$self->{ACTIONS}{$shortcut}{GROUP_NAME} = $group_name ;
-				$self->{ACTIONS}{$shortcut}{ORIGIN} = $action_file;
+				$self->{ACTIONS}{$shortcut}{ORIGIN} = $action_file ;
+				$self->{ACTIONS}{$shortcut}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 				}
 			}
 		}
@@ -213,7 +217,7 @@ for my $action_file (@{ $action_files })
 
 sub get_group_action_handler
 {
-my ($self, $action_handler_definition, $action_file) = @_ ;
+my ($self, $action_handler_definition, $setup_path, $action_file) = @_ ;
 
 my %handler ;
 
@@ -232,15 +236,17 @@ for my $name (keys %{$action_handler_definition})
 		{
 		$shortcuts_definition= $action_handler_definition->{$name}{SHORTCUTS}  ;
 		$action_handler_definition->{$name}{GROUP_NAME} = $group_name = $name ;
-		$action_handler_definition->{$name}{ORIGIN} = $action_file ;
+		$action_handler_definition->{$name}{ORIGIN} = $action_file  ;
+		$action_handler_definition->{$name}{FULL_ORIGIN} = "$setup_path/$action_file"  ;
 		
-		$action_handler = $self->get_group_action_handler($action_handler_definition->{$name}, $action_file) ;
+		$action_handler = $self->get_group_action_handler($action_handler_definition->{$name}, $setup_path, $action_file) ;
 		}
 	elsif('ARRAY' eq ref $action_handler_definition->{$name})
 		{
 		$shortcuts_definition= $action_handler_definition->{$name}[$SHORTCUTS]  ;
 		$action_handler_definition->{$name}[$NAME] = $name ;
-		$action_handler_definition->{$name}[$ORIGIN] = $action_file ;
+		$action_handler_definition->{$name}[$ORIGIN] = $action_file  ;
+		$action_handler_definition->{$name}[$FULL_ORIGIN] = "$setup_path/$action_file"  ;
 		
 		$action_handler = $action_handler_definition->{$name} ;
 		}
@@ -264,7 +270,7 @@ for my $name (keys %{$action_handler_definition})
 		{
 		if(exists $handler{$shortcut})
 			{
-			print "Overriding action group '$shortcut' with definition from file'$action_file'!\n" ;
+			print "Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n" ;
 			}
 			
 		$handler{$shortcut} =  $action_handler ;
@@ -308,7 +314,7 @@ EOC
 		{
 		if(exists $self->{IMPORT_EXPORT_HANDLERS}{$extension})
 			{
-			print "Overriding import/export handler for extension '$extension'!\n" ;
+			print "Overriding import/export handler for extension '$extension' in file '$setup_path/$import_export_file'\n" ;
 			}
 			
 		$self->{IMPORT_EXPORT_HANDLERS}{$extension} = $import_export_handlers{$extension}  ;

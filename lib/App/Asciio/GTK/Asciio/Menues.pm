@@ -49,12 +49,6 @@ if($self->get_selected_elements(1) == 1)
 	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&save_stencil), 0 , '<Item>', undef ] ;
 	}	
 
-# use Data::TreeDumper ; print DumpTree \@menu_items ;
-
-# my $item_factory = Gtk3::ItemFactory->new("Gtk3::Menu" ,"<popup>") ;
-# $item_factory ->create_items($self->{widget}, @menu_items) ;
-# my $menu = $item_factory->get_widget("<popup>") ;
-
 my $menu = Gtk3::Menu->new() ;
 
 insert_menu_items($menu, \@menu_items) ;
