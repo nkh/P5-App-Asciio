@@ -13,13 +13,15 @@ register_action_handlers
 
 	'Mouse left-click'        => ['000-odiaeresis',     \&mouse_left_click                       ] ,
 	'Mouse shift-left-click'  => ['00S-Odiaeresis',     \&mouse_shift_left_click                 ] ,
+	'Mouse ctl-left-click'    => ['C00-odiaeresis',     \&mouse_ctl_left_click                   ] ,
+	'Mouse alt-left-click'    => ['0A0-odiaeresis',     \&mouse_alt_left_click                   ] ,
 
 	'Mouse right-click'       => ['000-adiaeresis',     \&mouse_right_click                      ] ,
 	
 	'Mouse drag left'         => ['00S-Left',           \&mouse_drag_left                        ] ,
 	'Mouse drag right'        => ['00S-Right',          \&mouse_drag_right                       ] ,
-	'Mouse drag left'         => ['00S-Up',             \&mouse_drag_up                          ] ,
-	'Mouse drag left'         => ['00S-Down',           \&mouse_drag_down                        ] ,
+	'Mouse drag up'           => ['00S-Up',             \&mouse_drag_up                          ] ,
+	'Mouse drag down'         => ['00S-Down',           \&mouse_drag_down                        ] ,
 
 	#~ 'C00-button_release' => ['', ] ,
 	#~ 'C00-motion_notify' =>['', ] ,
@@ -136,7 +138,7 @@ if($self->{MOUSE_TOGGLE})
 		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
 		KEY_NAME => -1,
 		MODIFIERS => '000',
-		STATE => {},
+		STATE => '',
 		TYPE => 'button-press'
 		},
 		) ;
@@ -159,7 +161,53 @@ if($self->{MOUSE_TOGGLE})
 		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
 		KEY_NAME => -1,
 		MODIFIERS => '00S',
-		STATE => {},
+		STATE => '',
+		TYPE => 'button-press'
+		},
+		) ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_ctl_left_click
+{
+my ($self ) = @_;
+
+if($self->{MOUSE_TOGGLE})
+	{
+	App::Asciio::button_press_event
+		(
+		$self,
+		{
+		BUTTON => 1,
+		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
+		KEY_NAME => -1,
+		MODIFIERS => 'C00',
+		STATE => '',
+		TYPE => 'button-press'
+		},
+		) ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_alt_left_click
+{
+my ($self ) = @_;
+
+if($self->{MOUSE_TOGGLE})
+	{
+	App::Asciio::button_press_event
+		(
+		$self,
+		{
+		BUTTON => 1,
+		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
+		KEY_NAME => -1,
+		MODIFIERS => '0A0',
+		STATE => '',
 		TYPE => 'button-press'
 		},
 		) ;
@@ -179,9 +227,8 @@ $self->display_popup_menu($self->{EVENT}) ; # display_popup_menu is handled by d
 
 sub mouse_drag_left()
 {
-my ($self) = @: ;
+my ($self) = @_ ;
 
-# [ shift-mask mod2-mask button1-mask ]
 App::Asciio::motion_notify_event
 	(
 	$self,
@@ -190,7 +237,7 @@ App::Asciio::motion_notify_event
 	COORDINATES => [ $self->{MOUSE_X} - 1 , $self->{MOUSE_Y} ], 
 	KEY_NAME => -1,
 	MODIFIERS => '00S',
-	STATE => "[ mod2-mask button1-mask ]",
+	STATE => "dragging-button1",
 	TYPE => 'button-press'
 	},
 	) ;
@@ -210,7 +257,7 @@ App::Asciio::motion_notify_event
 	COORDINATES => [ $self->{MOUSE_X} + 1 , $self->{MOUSE_Y} ], 
 	KEY_NAME => -1,
 	MODIFIERS => '000',
-	STATE => "[ mod2-mask button1-mask ]",
+	STATE => "dragging-button1",
 	TYPE => 'button-press'
 	},
 	) ;
@@ -230,7 +277,7 @@ App::Asciio::motion_notify_event
 	COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} - 1 ], 
 	KEY_NAME => -1,
 	MODIFIERS => '000',
-	STATE => "[ mod2-mask button1-mask ]",
+	STATE => "dragging-button1",
 	TYPE => 'button-press'
 	},
 	) ;
@@ -252,7 +299,7 @@ App::Asciio::motion_notify_event
 	COORDINATES => [ $self->{MOUSE_X} , $self->{MOUSE_Y} + 1 ], 
 	KEY_NAME => -1,
 	MODIFIERS => '000',
-	STATE => "[ mod2-mask button1-mask ]",
+	STATE => "dragging-button1",
 	TYPE => 'button-press'
 	},
 	) ;

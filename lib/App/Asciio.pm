@@ -351,13 +351,12 @@ my $self =
 		OPAQUE_ELEMENTS => 1,
 		DISPLAY_GRID => 1,
 		
-		PREVIOUS_X => -1, PREVIOUS_Y => -1,
+		PREVIOUS_X => 0, PREVIOUS_Y => 0,
 		MOUSE_X => 0, MOUSE_Y => 0,
 		DRAGGING => '',
 		SELECTION_RECTANGLE =>{START_X => 0, START_Y => 0},
 		
 		ACTIONS => {},
-		VALID_SELECT_ACTION => { map {$_, 1} qw(resize move)},
 		
 		COPY_OFFSET_X => 3,
 		COPY_OFFSET_Y => 3,
@@ -527,9 +526,7 @@ $self->update_display();
 
 sub button_press_event 
 {
-# print "button_press_event\n" ;
 my ($self, $event) = @_ ;
-# use Data::TreeDumper ; print DumpTree $event ;
 
 $self->{DRAGGING} = '' ;
 delete $self->{RESIZE_CONNECTOR_NAME} ;
@@ -543,6 +540,7 @@ my $button = $event->{BUTTON} ;
 if($self->exists_action("${modifiers}-button_press-$button"))
 	{
 	$self->run_actions(["${modifiers}-button_press-$button", $event]) ;
+	return 1 ;
 	}
 
 my($x, $y) = @{$event->{COORDINATES}} ;
@@ -571,25 +569,27 @@ if($event->{BUTTON} == 1)
 		{
 		if(defined $first_element)
 			{
-			$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
+			$self->select_elements_flip($first_element) ;
 			}
 		}
-	else
+	
+	if ($modifiers eq '0A0')
 		{
 		if(defined $first_element)
 			{
-			 if ($modifiers eq '00S')
+			$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
+			}
+		}
+	
+	if ($modifiers eq '000')
+		{
+		if(defined $first_element)
+			{
+			unless($self->is_element_selected($first_element))
 				{
-				$self->select_elements_flip($first_element) ;
-				}
-			else
-				{
-				unless($self->is_element_selected($first_element))
-					{
-					# make the element under cursor the only selected element
-					$self->select_elements(0, @{$self->{ELEMENTS}}) ;
-					$self->select_elements(1, $first_element) ;
-					}
+				# make the element under cursor the only selected element
+				$self->select_elements(0, @{$self->{ELEMENTS}}) ;
+				$self->select_elements(1, $first_element) ;
 				}
 			}
 		else
@@ -625,11 +625,9 @@ sub motion_notify_event
 {
 my ($self, $event) = @_ ;
 
+my $button = $event->{BUTTON} ;
 my($x, $y) = @{$event->{COORDINATES}} ;
 my $modifiers = $event->{MODIFIERS} ; 
-my $button = $event->{BUTTON} ;
-
-print "STATE: $event->{STATE}\n" ;
 
 if($self->exists_action("${modifiers}motion_notify"))
 	{
@@ -637,30 +635,23 @@ if($self->exists_action("${modifiers}motion_notify"))
 	return 1 ;
 	}
 
-if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
+if ($event->{STATE} eq "dragging-button1") 
 	{
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-	$self->update_display() ;
-	}
-	
-if ($event->{STATE} >= "button1-mask") 
-	{
-	if($self->{DRAGGING} ne '')
-		{
-		if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
-		elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
-		elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
-		}
-	else
+	if($self->{DRAGGING} eq '')
 		{
 		my @selected_elements = $self->get_selected_elements(1) ;
-		my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @selected_elements ;
+		my ($first_element) = first_value {$self->is_over_element($_, $self->{PREVIOUS_X}, $self->{PREVIOUS_Y})} reverse @selected_elements ;
 		
-		if(@selected_elements > 1)
+		if(@selected_elements <= 1)
 			{
 			if(defined $first_element)
 				{
-				$self->{DRAGGING} = 'move' ;
+				$self->{DRAGGING} = $first_element->get_selection_action
+									(
+									$self->{PREVIOUS_X} - $first_element->{X},
+									$self->{PREVIOUS_Y} - $first_element->{Y},
+									);
+									
 				}
 			else
 				{
@@ -671,28 +662,43 @@ if ($event->{STATE} >= "button1-mask")
 			{
 			if(defined $first_element)
 				{
-				$self->{DRAGGING} = $first_element->get_selection_action
-									(
-									$x - $first_element->{X},
-									$y - $first_element->{Y},
-									);
-									
-				$self->{DRAGGING} ='' unless exists $self->{VALID_SELECT_ACTION}{$self->{DRAGGING}} ;
+				$self->{DRAGGING} = 'move' ;
 				}
 			else
 				{
 				$self->{DRAGGING} = 'select' ;
 				}
 			}
-			
-		($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
+		
+		}
+	
+	if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
+	elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
+	elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
+	
+	if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
+		{
+		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+		$self->{PREVIOUS_X} = $x ;
+		$self->{PREVIOUS_Y} = $y ;
+		# $self->update_display() ;
+		}
+	}
+else
+	{
+	if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
+		{
+		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+		$self->{PREVIOUS_X} = $x ;
+		$self->{PREVIOUS_Y} = $y ;
+		$self->update_display() ;
 		}
 	}
 
-if ($event->{STATE} >= "button2-mask") 
-	{
-	$self->select_element_event($x, $y, $self->{MIDDLE_BUTTON_SELECTION_FILTER} || sub{1}) ;
-	}
+# if ($event->{STATE} eq "dragging-button2") 
+# 	{
+# 	$self->select_element_event($x, $y, $self->{MIDDLE_BUTTON_SELECTION_FILTER} || sub{1}) ;
+# 	}
 	
 return 1;
 }
@@ -730,6 +736,7 @@ if($x_offset != 0 || $y_offset != 0)
 	$self->update_display();
 	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
 }
 
@@ -749,6 +756,7 @@ if($x_offset != 0 || $y_offset != 0)
 	$self->update_display();
 	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
 }
 
@@ -776,6 +784,7 @@ if($x_offset != 0 || $y_offset != 0)
 	$self->update_display();
 
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
 }
 	

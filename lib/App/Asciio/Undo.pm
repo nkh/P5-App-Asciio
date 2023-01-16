@@ -138,7 +138,7 @@ my @diff_lines = get_diff_lines(\@seq1, \@seq2) ;
 
 for my $diff_line (@diff_lines)
 	{
-	print DumpTree $diff_line ;
+	# print DumpTree $diff_line ;
 	
 	my (
 		$number_of_errors

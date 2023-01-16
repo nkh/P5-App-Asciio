@@ -16,6 +16,7 @@ use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
+use App::Asciio::stripes::rhombus;
 
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
@@ -159,8 +160,10 @@ if($self->{DISPLAY_GRID})
 	}
 
 # draw elements
+my $element_index = 0 ;
 for my $element (@{$self->{ELEMENTS}})
 	{
+	$element_index++ ;
 	# do not draw elements that are outside the viewport
 	# do not draw unchanged elements, use a rendering cache
 
@@ -211,21 +214,44 @@ for my $element (@{$self->{ELEMENTS}})
 			$gc->fill();
 			
 			$gc->set_source_rgb(@{$foreground_color});
-			
-			my $char_index = 0 ;
-			for my $char (split //, $line)
+				
+			if($self->{NUMBERED_OBJECTS})
 				{
+				$gc->rectangle
+					(
+					($element->{X} + $mask_and_element_strip->{X_OFFSET}) * $character_width,
+					($element->{Y} + $mask_and_element_strip->{Y_OFFSET}  + $line_index) * $character_height,
+					($mask_and_element_strip->{WIDTH}) * $character_width,
+					$character_height,
+					);
+				
 				$gc->move_to
 					(
-					($element->{X} + ($mask_and_element_strip->{X_OFFSET}) + $char_index++) * $character_width,
+					($element->{X} + ($mask_and_element_strip->{X_OFFSET})) * $character_width,
 					($element->{Y} + $mask_and_element_strip->{Y_OFFSET} + 1 + $line_index) * $character_height - $character_lift
 					);
 				
-				$gc->show_text($char);
+				$gc->show_text($element_index);
+				$gc->stroke;
 				}
-				
+			else
+				{
+				my $char_index = 0 ;
+				for my $char (split //, $line)
+					{
+					$gc->move_to
+						(
+						($element->{X} + ($mask_and_element_strip->{X_OFFSET}) + $char_index++) * $character_width,
+						($element->{Y} + $mask_and_element_strip->{Y_OFFSET} + 1 + $line_index) * $character_height - $character_lift
+						);
+					
+					$gc->show_text($char);
+					}
+					
+				$gc->stroke;
+				}
+			
 			$line_index++;
-			$gc->stroke;
 			}
 		}
 	}
@@ -460,11 +486,11 @@ my $event_type= $event->type() ;
 
 my $asciio_event =
 	{
-	TYPE =>  $event_type,
-	STATE => $event->state() ,
-	MODIFIERS => get_key_modifiers($event),
-	BUTTON => -1,
-	KEY_NAME => -1,
+	TYPE        => "$event_type",
+	STATE       => '',
+	MODIFIERS   => get_key_modifiers($event),
+	BUTTON      => -1,
+	KEY_NAME    => -1,
 	COORDINATES => [-1, -1],
 	} ;
 
@@ -472,11 +498,17 @@ $asciio_event->{BUTTON} = $event->button() if ref $event eq 'Gtk3::Gdk::EventBut
 
 if
 	(
-	$event_type eq "motion-notify" 
+	$event_type eq "motion-notify"
 	|| ref $event eq "Gtk3::Gdk::EventButton" 
 	)
 	{
 	$asciio_event->{COORDINATES} = [$self->closest_character($event->get_coords())]  ;
+
+	if($event_type eq "motion-notify")
+		{
+		$asciio_event->{STATE} = "dragging-button1" if $event->state() >= "button1-mask" ;
+		$asciio_event->{STATE} = "dragging-button2" if $event->state() >= "button2-mask" ;
+		}
 	}
 
 $asciio_event->{KEY_NAME} = Gtk3::Gdk::keyval_name($event->keyval) if $event_type eq 'key-press' ;

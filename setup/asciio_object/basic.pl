@@ -4,6 +4,9 @@ TAB_AS_SPACES => '    ',
 DISPLAY_GRID => 1,
 COPY_OFFSET_X => 4,
 COPY_OFFSET_Y => 4,
+MOUSE_X => 0,
+MOUSE_Y => 0,
+
 COLORS =>
 	{
 	background => [1, 1, 1],

@@ -242,6 +242,13 @@ sub deselect_all_elements
 my ($self) = @_ ;
 
 $self->deselect_all_elements() ;
+
+$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+$self->{DRAGGING} = '' ;
+
 $self->update_display() ;
 }
 
@@ -267,7 +274,17 @@ $offset = 1 unless defined $offset ;
 
 if($self->{MOUSE_TOGGLE})
 	{
-	$self->{MOUSE_X} -= $offset ;
+	if($self->{MOUSE_X} >= $offset)
+		{
+		$self->{MOUSE_X} -= $offset ;
+		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+		$self->{DRAGGING} = '' ;
+		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
+		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
+		}
 	}
 else
 	{
@@ -288,7 +305,16 @@ $offset = 1 unless defined $offset ;
 
 if($self->{MOUSE_TOGGLE})
 	{
-	$self->{MOUSE_X} += $offset ;
+	if($self->{MOUSE_X} < 300)
+		{
+		$self->{MOUSE_X} += $offset ;
+		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
+		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
+		}
 	}
 else
 	{
@@ -309,7 +335,17 @@ $offset = 1 unless defined $offset ;
 
 if($self->{MOUSE_TOGGLE})
 	{
-	$self->{MOUSE_Y} -= $offset ;
+	if($self->{MOUSE_Y} >= $offset)
+		{
+		$self->{MOUSE_Y} -= $offset ;
+		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+		$self->{DRAGGING} = '' ;
+		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
+		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
+		}
 	}
 else
 	{
@@ -330,7 +366,17 @@ $offset = 1 unless defined $offset ;
 
 if($self->{MOUSE_TOGGLE})
 	{
-	$self->{MOUSE_Y} += $offset ;
+	if($self->{MOUSE_Y} < 200)
+		{
+		$self->{MOUSE_Y} += $offset ;
+		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+		$self->{DRAGGING} = '' ;
+		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
+		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
+		}
 	}
 else
 	{

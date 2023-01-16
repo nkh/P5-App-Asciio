@@ -31,18 +31,39 @@ gtk3 port:
 
 	#event_option_changed
 
-	
-add mouse movements and clicks actions 
+#add mouse movements and clicks actions 
 	popup menu doesn't open at cursor position
 
-	add possibility to insert entry in input queue to emulate previous mouse actions via keyboard
+	#add possibility to insert entry in input queue to emulate previous mouse actions via keyboard
+
+	#selection
+		srtas at x=0 even if cursor moved
+		no deselection at start
+		no deselection at end
+
+	arrow resize not working
+
+	resize not started directly, works after one goies back to resize tag again
+
+#add numbered element display
+	like tmux show pane id
+
+command: goto element index
+
+add canvas size to asciio object
+	use as limit when moving mouse emulation cursor
+
+cache the grid
+	takes time to draw!
 
 angle arrow type not implemented, no dialog either
 
 use json as file format
 
 diagonal text is kinky, Ian's request
+	any orientation text + options to keep it to diagonals or horizontal, vertical
 
+	
 auto connection using A* module http://search.cpan.org/~acdalton/AI-Pathfinding-AStar-0.10/
 	- orthogonal or orthogonal and diagonal arrows
 	- add get_cost_map to base Asciio
