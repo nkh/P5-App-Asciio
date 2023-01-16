@@ -23,6 +23,7 @@ register_action_handlers
 	'Mouse drag up'           => ['00S-Up',             \&mouse_drag_up                          ] ,
 	'Mouse drag down'         => ['00S-Down',           \&mouse_drag_down                        ] ,
 
+	'Mouse on element id'     => ['00S-G',              \&mouse_on_element_id                    ] ,
 	#~ 'C00-button_release' => ['', ] ,
 	#~ 'C00-motion_notify' =>['', ] ,
 	) ;
@@ -305,6 +306,31 @@ App::Asciio::motion_notify_event
 	) ;
 }
 
+#----------------------------------------------------------------------------------------------
 
+
+sub mouse_on_element_id
+{
+my ($self) = @_ ;
+
+my $id = $self->display_edit_dialog('element id', '') ;
+$id = "$id" + 0 ;
+
+return unless exists $self->{ELEMENTS}[$id - 1] ;
+
+my $element = $self->{ELEMENTS}[$id - 1 ] ;
+my ($x, $y) = ($element->{X}, $element->{Y}) ;
+
+($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+$self->{PREVIOUS_X} = $x ;
+$self->{PREVIOUS_Y} = $y ;
+# $self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+# $self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+# $self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+# $self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+# $self->{DRAGGING} = '' ;
+	
+$self->update_display() ;
+}
 
 

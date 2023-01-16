@@ -180,7 +180,7 @@ else
 $self->update_display() ;
 }
 
- #----------------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------------
 
 sub select_previous_element
 {
@@ -221,6 +221,23 @@ else
 	{
 	$self->select_elements(1, $self->{ELEMENTS}[-1]);
 	}
+	
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub select_element_by_id
+{
+my ($self) = @_ ;
+
+my $id = $self->display_edit_dialog('element id', '') ;
+
+return unless exists $self->{ELEMENTS}[$id - 1] ;
+
+$self->create_undo_snapshot() ;
+
+$self->select_elements_flip($self->{ELEMENTS}[$id - 1]) ;
 	
 $self->update_display() ;
 }

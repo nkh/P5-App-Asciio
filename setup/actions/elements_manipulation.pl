@@ -7,6 +7,7 @@ register_action_handlers
 	(
 	'Select next element'                           => ['000-Tab',          \&App::Asciio::Actions::ElementsManipulation::select_next_element                      ],
 	'Select previous element'                       => ['00S-ISO_Left_Tab', \&App::Asciio::Actions::ElementsManipulation::select_previous_element                  ],
+	'Select element by id'                          => ['C00-Tab',          \&App::Asciio::Actions::ElementsManipulation::select_element_by_id                     ],
 	
 	'Select all elements'                           => ['C00-a',            \&App::Asciio::Actions::ElementsManipulation::select_all_elements                      ],
 	'Deselect all elements'                         => ['000-l',            \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements                    ],
