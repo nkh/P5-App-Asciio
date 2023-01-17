@@ -10,7 +10,8 @@ use warnings;
 
 use Glib ':constants';
 use Gtk3 -init;
-# use Gtk3::Gdk::Keysyms ;
+
+use List::MoreUtils qw(minmax) ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
@@ -121,138 +122,163 @@ $widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_alloca
 
 sub expose_event
 {
-
 my ( $widget, $gc, $self ) = @_;
-
-# draw background
-$gc->set_source_rgb(@{$self->get_color('background')});
-$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
-$gc->fill;
-$gc->stroke;
 
 $gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
 $gc->set_font_size($self->{FONT_SIZE});
 
 my ($character_width, $character_height) = $self->get_character_size() ;
-
 my $character_lift = $character_height / 3 ;
-
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
-if($self->{DISPLAY_GRID})
+# draw background
+my $grid_rendering = $self->{RENDERING}{GRID} ;
+
+unless (defined $grid_rendering)
 	{
-	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('grid')});
+	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
+	my $gc = Cairo::Context->create($surface);
+		
+	$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
+	$gc->set_font_size($self->{FONT_SIZE});
 
-	for my $horizontal (0 .. ($widget_height/$character_height) + 1)
-		{
-		$gc->move_to(0,  $horizontal * $character_height);
-		$gc->line_to($widget_width, $horizontal * $character_height);
-		}
-
-	for my $vertical(0 .. ($widget_width/$character_width) + 1)
-		{
-		$gc->move_to($vertical * $character_width, 0) ;
-		$gc->line_to($vertical * $character_width, $widget_height);
-		}
+	$gc->set_source_rgb(@{$self->get_color('background')});
+	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+	$gc->fill;
 	
+	if($self->{DISPLAY_GRID})
+		{
+		$gc->set_line_width(1);
+		$gc->set_source_rgb(@{$self->get_color('grid')});
+		
+		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
+			{
+			$gc->move_to(0,  $horizontal * $character_height);
+			$gc->line_to($widget_width, $horizontal * $character_height);
+			}
+		
+		for my $vertical(0 .. ($widget_width/$character_width) + 1)
+			{
+			$gc->move_to($vertical * $character_width, 0) ;
+			$gc->line_to($vertical * $character_width, $widget_height);
+			}
+		}
+		
 	$gc->stroke;
+	$grid_rendering = $self->{RENDERING}{GRID} = $surface ;
 	}
+
+$gc->set_source_surface($grid_rendering, 0, 0);
+$gc->paint;
+$gc->show_page;
 
 # draw elements
 my $element_index = 0 ;
+
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
-	# do not draw elements that are outside the viewport
-	# do not draw unchanged elements, use a rendering cache
-
-	my ($background_color, $foreground_color) =  $element->get_colors() ;
+	# do not draw elements that are outside changed area
 	
-	if($self->is_element_selected($element))
+	my $renderings = $element->{RENDERING}[$element->{SELECTED} // 0] ;
+	my @renderings ;
+	
+	unless (defined $renderings)
 		{
-		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-			{
-			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
-			}
-		else
-			{
-			$background_color = $self->get_color('selected_element_background');
-			}
-		}
-	else
-		{
-		unless (defined $background_color)
+		my ($background_color, $foreground_color) =  $element->get_colors() ;
+		
+		if($self->is_element_selected($element))
 			{
 			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
 				{
-				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
+				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
 				}
 			else
 				{
-				$background_color = $self->get_color('element_background') ;
+				$background_color = $self->get_color('selected_element_background');
 				}
 			}
-		}
-			
-	$foreground_color //= $self->get_color('element_foreground') ;
-	
-	for my $mask_and_element_strip ($element->get_mask_and_element_stripes())
-		{
-		my $line_index=0 ;
-		for my $line (split /\n/, $mask_and_element_strip->{TEXT})
+		else
 			{
-			$gc->set_line_width(1);
-			$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
-			$gc->rectangle
-				(
-				($element->{X} + $mask_and_element_strip->{X_OFFSET}) * $character_width,
-				($element->{Y} + $mask_and_element_strip->{Y_OFFSET}  + $line_index) * $character_height,
-				($mask_and_element_strip->{WIDTH}) * $character_width,
-				$character_height,
-				);
-			$gc->fill();
-			
-			$gc->set_source_rgb(@{$foreground_color});
-				
-			if($self->{NUMBERED_OBJECTS})
+			unless (defined $background_color)
 				{
-				$gc->rectangle
-					(
-					($element->{X} + $mask_and_element_strip->{X_OFFSET}) * $character_width,
-					($element->{Y} + $mask_and_element_strip->{Y_OFFSET}  + $line_index) * $character_height,
-					($mask_and_element_strip->{WIDTH}) * $character_width,
-					$character_height,
-					);
-				
-				$gc->move_to
-					(
-					($element->{X} + ($mask_and_element_strip->{X_OFFSET})) * $character_width,
-					($element->{Y} + $mask_and_element_strip->{Y_OFFSET} + 1 + $line_index) * $character_height - $character_lift
-					);
-				
-				$gc->show_text($element_index);
-				$gc->stroke;
-				}
-			else
-				{
-				my $char_index = 0 ;
-				for my $char (split //, $line)
+				if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
 					{
-					$gc->move_to
-						(
-						($element->{X} + ($mask_and_element_strip->{X_OFFSET}) + $char_index++) * $character_width,
-						($element->{Y} + $mask_and_element_strip->{Y_OFFSET} + 1 + $line_index) * $character_height - $character_lift
-						);
-					
-					$gc->show_text($char);
+					$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
 					}
-					
-				$gc->stroke;
+				else
+					{
+					$background_color = $self->get_color('element_background') ;
+					}
 				}
-			
-			$line_index++;
 			}
+				
+		$foreground_color //= $self->get_color('element_foreground') ;
+	
+		$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
+		$gc->set_font_size($self->{FONT_SIZE});
+		
+		my @mask_and_element_stripes = $element->get_mask_and_element_stripes() ;
+		
+		for my $mask_and_element_strip (@mask_and_element_stripes)
+			{
+			my $line_index = 0 ;
+			for my $line (split /\n/, $mask_and_element_strip->{TEXT})
+				{
+				unless (exists $self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line})
+					{
+					my $surface = Cairo::ImageSurface->create('argb32', $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
+					
+					my $gc = Cairo::Context->create($surface);
+					$gc->set_line_width(1);
+					$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
+					$gc->rectangle(0, 0, $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
+					$gc->fill();
+					
+					$gc->set_source_rgb(@{$foreground_color});
+					
+					if($self->{NUMBERED_OBJECTS})
+						{
+						$gc->rectangle(0, 0, $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
+						$gc->move_to(0, $character_height - $character_lift);
+						$gc->show_text($element_index);
+						$gc->stroke;
+						}
+					else
+						{
+						my $char_index = 0 ;
+						for my $char (split //, $line)
+							{
+							# raw positioning (that previously used Pango) needs polishing, can be addition
+							$gc->move_to($char_index++ * $character_width, $character_height - $character_lift);
+							$gc->show_text($char);
+							}
+							
+						$gc->stroke;
+						}
+					
+					$self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line} = $surface ; # keep reference
+					print scalar(keys %{$self->{RENDERING}{STRIPS}[0]}) . " - " . scalar(keys %{$self->{RENDERING}{STRIPS}[1]}) ."\n"
+					}
+				
+				my $strip_rendering = $self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line} ;
+				push @renderings, [$strip_rendering, $mask_and_element_strip->{X_OFFSET}, $mask_and_element_strip->{Y_OFFSET} + $line_index++] ;
+				}
+			}
+		
+		$renderings = $element->{RENDERING}[$element->{SELECTED} // 0] = \@renderings ;
+		}
+	
+	for my $rendering (@$renderings)
+		{
+		$gc->set_source_surface
+			(
+			$rendering->[0],
+			($element->{X} + $rendering->[1]) * $character_width, # can be single addition
+			($element->{Y} + $rendering->[2]) * $character_height
+			);
+		
+		$gc->paint;
 		}
 	}
 
@@ -271,9 +297,8 @@ for my $line (@{$self->{RULER_LINES}})
 		$gc->move_to(0, $line->{POSITION} * $character_height) ;
 		$gc->line_to($widget_width, $line->{POSITION} * $character_height);
 		}
-
-	$gc->stroke() ;
 	}
+$gc->stroke() ;
 
 # draw connections
 my (%connected_connections, %connected_connectors) ;
@@ -321,71 +346,98 @@ for my $connection (@{$self->{CONNECTIONS}})
 	}
 	
 # draw connectors and connection points
+unless (defined $self->{RENDERING}{CONNECTOR_POINT})
+	{
+	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
+	my $gc = Cairo::Context->create($surface);
+	$gc->set_source_rgb(@{$self->get_color('connector_point')});
+	$gc->rectangle(0, 0, $character_width, $character_height);
+	$gc->stroke() ;
+	
+	$self->{RENDERING}{CONNECTOR_POINT} = $surface ;
+	}
+my $connector_point_rendering = $self->{RENDERING}{CONNECTOR_POINT} ;
+
+unless (defined $self->{RENDERING}{CONNECTION_POINT})
+	{
+	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
+	
+	my $gc = Cairo::Context->create($surface);
+	$gc->set_source_rgb(@{$self->get_color('connection_point')});
+	$gc->rectangle($character_width/3, $character_height/3, $character_width/3, $character_height/3);
+	$gc->stroke() ;
+	
+	$self->{RENDERING}{CONNECTION_POINT} = $surface ;
+	}
+my $connection_point_rendering = $self->{RENDERING}{CONNECTION_POINT} ;
+
+unless (defined $self->{RENDERING}{EXTRA_POINT})
+	{
+	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
+	
+	my $gc = Cairo::Context->create($surface);
+	$gc->set_source_rgb(@{$self->get_color('extra_point')});
+	$gc->rectangle(0, 0, $character_width, $character_height);
+	$gc->stroke() ;
+	
+	$self->{RENDERING}{EXTRA_POINT} = $surface ;
+	}
+my $extra_point_rendering = $self->{RENDERING}{EXTRA_POINT} ;
+
 for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
 	{
-	$gc->set_source_rgb(@{$self->get_color('connector_point')});
-		
 	for my $connector ($element->get_connector_points())
 		{
 		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
 		
-		$gc->rectangle
+		$gc->set_source_surface
 			(
-			($element->{X} + $connector->{X}) * $character_width,
+			$connector_point_rendering,
+			($element->{X} + $connector->{X}) * $character_width, # can be additions
 			($connector->{Y} + $element->{Y}) * $character_height,
-			$character_width, $character_height
 			);
 		
-		$gc->stroke() ;
+		$gc->paint;
 		}
 		
-	$gc->set_source_rgb(@{$self->get_color('connection_point')});
 	for my $connection_point ($element->get_connection_points())
 		{
 		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
 		
-		$gc->rectangle
+		$gc->set_source_surface
 			(
-			(($connection_point->{X} + $element->{X}) * $character_width) + ($character_width / 3),
+			$connection_point_rendering,
+			(($connection_point->{X} + $element->{X}) * $character_width) + ($character_width / 3), # can be additions
 			(($connection_point->{Y} + $element->{Y}) * $character_height) + ($character_height / 3),
-			$character_width / 3 , $character_height / 3
 			);
 		
-		$gc->stroke() ;
+		$gc->paint;
 		}
 	
 	for my $extra_point ($element->get_extra_points())
 		{
-		if(exists $extra_point->{COLOR})
-			{
-			$gc->set_source_rgb(@{$self->get_color($extra_point->{COLOR})});
-			}
-		else
-			{
-			$gc->set_source_rgb(@{$self->get_color('extra_point')});
-			}
-			
-		$gc->rectangle
+		$gc->set_source_surface
 			(
-			(($extra_point ->{X}  + $element->{X}) * $character_width),
-			(($extra_point ->{Y}  + $element->{Y}) * $character_height),
-			$character_width, $character_height 
+			$extra_point_rendering,
+			(($extra_point->{X}  + $element->{X}) * $character_width), # can be additions
+			(($extra_point->{Y}  + $element->{Y}) * $character_height),
 			);
 		
-		$gc->stroke() ;
+		$gc->paint;
 		}
+	
+	$gc->show_page;
 	}
 
 # draw new connections
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	{
-	$gc->set_source_rgb(@{$self->get_color('new_connection')});
-	
 	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
 	
+	$gc->set_source_rgb(@{$self->get_color('new_connection')});
 	$gc->rectangle
 		(
-		($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width ,
+		($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width , # can be additions
 		($end_connection->{Y} + $new_connection->{CONNECTED}{Y}) * $character_height ,
 		$character_width, $character_height
 		);

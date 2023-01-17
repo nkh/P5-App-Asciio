@@ -12,6 +12,9 @@ if(@selected_elements == 1)
 	{
 	$self->create_undo_snapshot() ;
 	$self->edit_element($selected_elements[0]) ;
+	
+	delete $selected_elements[0]{RENDERING} ;
+	
 	$self->update_display();
 	}
 }

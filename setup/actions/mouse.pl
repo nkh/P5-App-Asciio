@@ -28,7 +28,7 @@ register_action_handlers
 	#~ 'C00-motion_notify' =>['', ] ,
 	) ;
 
-
+# look at miro
 #----------------------------------------------------------------------------------------------
 
 use List::MoreUtils qw(first_value) ;
@@ -307,7 +307,6 @@ App::Asciio::motion_notify_event
 }
 
 #----------------------------------------------------------------------------------------------
-
 
 sub mouse_on_element_id
 {

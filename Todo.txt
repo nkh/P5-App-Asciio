@@ -2,6 +2,23 @@
 # This is the todo.txt #
 #----------------------#
 
+selecting an object takes long time when there are many objects
+	is stripes coordinates used rather than object to filter out?
+		need limits for arrow types
+
+	octosplit?
+
+C00-a                Select all elements                      [actions/elements_manipulation.pl]
+perl: ../../../../src/cairo-surface.c:930: cairo_surface_reference: Assertion `CAIRO_REFERENCE_COUNT_HAS_REFERENCE (&surface->ref_count)' failed.
+./script/A: line 2: 789333 Aborted                 (core dumped) perl -Mblib script/asciio $@
+	maybe due to copy paste where object cloning doesn't increment ref count in gtk object
+		keep gtk object in $App::Ascii::self should isolate that problem
+			means that all rendered strips live forever!
+
+	perl: ../../../../src/cairo-pattern.c:187: _cairo_pattern_set_error: Assertion `status < CAIRO_STATUS_LAST_STATUS' failed.
+	./script/A: line 2: 797148 Aborted                 (core dumped) perl -Mblib script/asciio $@
+
+
 gtk3 port:
 	#key send twice
 	#ctl+c not handled
@@ -31,6 +48,8 @@ gtk3 port:
 
 	#event_option_changed
 
+check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
+
 #add mouse movements and clicks actions 
 	popup menu doesn't open at cursor position
 
@@ -48,12 +67,12 @@ gtk3 port:
 #add numbered element display
 	like tmux show pane id
 
-command: goto element index
+#command: goto element index
 
 add canvas size to asciio object
 	use as limit when moving mouse emulation cursor
 
-cache the grid
+#cache the grid
 	takes time to draw!
 
 angle arrow type not implemented, no dialog either

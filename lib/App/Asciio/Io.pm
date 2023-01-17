@@ -66,6 +66,7 @@ else
 		
 		$self->load_self($saved_self) ; # resurect
 		delete $self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} ;
+		delete $self->{RENDERING} ;
 		
 		$title = $file_name ;
 		}

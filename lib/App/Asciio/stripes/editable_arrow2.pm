@@ -33,7 +33,7 @@ my $self = bless  {}, __PACKAGE__ ;
 $self->setup
 	(
 	$element_definition->{ARROW_TYPE} || Clone::clone($DEFAULT_ARROW_TYPE),
-	$element_definition->{END_X}, 	$element_definition->{END_Y},
+	$element_definition->{END_X}, $element_definition->{END_Y},
 	$element_definition->{EDITABLE},
 	) ;
 
@@ -54,6 +54,7 @@ $self->set
 	END_X => $real_end_x,
 	END_Y => $real_end_y,
 	ARROW_TYPE => $arrow_type,
+	RENDERING => undef,
 	) ;
 }
 

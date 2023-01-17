@@ -208,6 +208,8 @@ while (my ($key, $value) = each %key_values)
 	#~ print "setting $key, $value\n" ;
 	$self->{$key} = ${value} ;
 	}
+
+delete $self->{RENDERING};
 }
 
 #-----------------------------------------------------------------------------

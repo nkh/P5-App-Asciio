@@ -6,6 +6,7 @@ COPY_OFFSET_X => 4,
 COPY_OFFSET_Y => 4,
 MOUSE_X => 0,
 MOUSE_Y => 0,
+ACTION_VERBOSE => 1,
 
 COLORS =>
 	{

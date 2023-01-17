@@ -18,9 +18,8 @@ use File::Basename ;
 
 my $window = Gtk3::Window->new('toplevel');
 $window->set_title("asciio");
-$window->set_default_size(700, 800) ;
+$window->set_default_size(2000, 2000) ;
 $window->signal_connect("destroy", sub { exit(0); });
-
 
 my $vbox = Gtk3::VBox->new (FALSE, 0);
 $window->add($vbox);
