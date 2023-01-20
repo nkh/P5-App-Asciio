@@ -846,6 +846,20 @@ my ($self) = @_ ;
 
 #-----------------------------------------------------------------------------
 
+sub invalidate_rendering_cache
+{
+my ($self) = @_ ;
+
+for my $element (@{$self->{ELEMENTS}}) 
+	{
+	delete $element->{RENDERING} ;
+	}
+
+delete $self->{RENDERING} ;
+}
+
+#-----------------------------------------------------------------------------
+
 =head1 DEPENDENCIES
 
 gnome libraries, gtk, gtk-perl for the gtk version

@@ -8,6 +8,8 @@ selecting an object takes long time when there are many objects
 
 	octosplit?
 
+group colors don't work with cache
+
 gtk3 port:
 	#key send twice
 	#ctl+c not handled

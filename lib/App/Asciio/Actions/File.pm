@@ -151,6 +151,7 @@ if(defined $file_name && $file_name ne q[])
 	
 	$asciio->load_file($file_name) ;
 	$asciio->run_actions_by_name('Select all elements', 'Copy to clipboard') ;
+	$asciio->invalidate_rendering_cache() ;
 	
 	use Clone ;
 	$self->{CLIPBOARD} = Clone::clone($asciio->{CLIPBOARD}) ; 
