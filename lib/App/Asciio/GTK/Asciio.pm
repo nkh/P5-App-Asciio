@@ -180,42 +180,45 @@ for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
 	my $is_selected = $element->{SELECTED} // 0 ;
-	my ($background_color, $foreground_color) =  $element->get_colors() ;
-	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') ;
 
+	my ($background_color, $foreground_color) =  $element->get_colors() ;
+	
+	if($is_selected)
+		{
+		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+			{
+			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
+			}
+		else
+			{
+			$background_color = $self->get_color('selected_element_background');
+			}
+		}
+	else
+		{
+		unless (defined $background_color)
+			{
+			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+				{
+				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
+				}
+			else
+				{
+				$background_color = $self->get_color('element_background') ;
+				}
+			}
+		}
+			
+	$foreground_color //= $self->get_color('element_foreground') ;
+	
+	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') ;
+	
 	# do not draw elements that are outside changed area
 	my $renderings = $element->{RENDERING}[$is_selected]{$color_set} ;
 	my @renderings ;
 	
 	unless (defined $renderings)
 		{
-		if($self->is_element_selected($element))
-			{
-			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-				{
-				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
-				}
-			else
-				{
-				$background_color = $self->get_color('selected_element_background');
-				}
-			}
-		else
-			{
-			unless (defined $background_color)
-				{
-				if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-					{
-					$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
-					}
-				else
-					{
-					$background_color = $self->get_color('element_background') ;
-					}
-				}
-			}
-				
-		$foreground_color //= $self->get_color('element_foreground') ;
 		my @mask_and_element_stripes = $element->get_mask_and_element_stripes() ;
 		
 		for my $mask_and_element_strip (@mask_and_element_stripes)
