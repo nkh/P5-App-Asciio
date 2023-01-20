@@ -8,33 +8,65 @@ MOUSE_X => 0,
 MOUSE_Y => 0,
 ACTION_VERBOSE => 1,
 
-COLORS =>
-	{
-	background => [1, 1, 1],
-	grid => [.90, 0.92, 1],
-	ruler_line => [.30, 0.6, .88],
-	element_background => [0.98, 0.98, 1],
-	element_foreground => [0, 0, 0] ,
-	selected_element_background => [0.70, 0.95, 1],
-	selection_rectangle => [1, 0, 1],
-	test => [0, 1, 1],
-	
-	group_colors =>
-		[
-		[[.98, 0.86, 0.74], [.98, 0.96, 0.93]],
-		[[0.71, .98, 0.71], [0.94, .98, 0.94]],
-		[[0.72, 0.86, .98], [0.95, 0.96, .98]],
-		[[0.54, .98, .98], [0.92, .98, .98]],
-		[[0.77, 0.89, 0.77], [0.93, 0.95, 0.93]],
-		],
-	
-	connection => [0.82, 0.41, 0.12],
-	connection_point => [0.90, 0.77, 0.52],
-	connection_point => [0.90, 0.77, 0.52],
-	new_connection =>  [1.0, 0.0, 0.0],
-	extra_point => [0.90, 0.77, 0.52],
+COLORS => {},
 
-	mouse_rectangle => [0.90, 0.20, 0.20],
+COLOR_SCHEMES =>
+	{
+	'night' =>
+		{
+		background => [0.04, 0.04, 0.04],
+		grid => [0.12, 0.12, 0.12],
+		ruler_line => [0.10, 0.23, 0.31],
+		selected_element_background => [0.10, 0.16, 0.20],
+		element_background => [0.10, 0.10, 0.10],
+		element_foreground => [0.59, 0.59, 0.59] ,
+		selection_rectangle => [0.43, 0.00, 0.43],
+		test => [0.00, 1.00, 1.00],
+		group_colors =>
+			[
+			[[0.98, 0.86, 0.74], [0.98, 0.96, 0.93]],
+			[[0.71, 0.98, 0.71], [0.94, 0.98, 0.94]],
+			[[0.72, 0.86, 0.98], [0.95, 0.96, 0.98]],
+			[[0.54, 0.98, 0.98], [0.92, 0.98, 0.98]],
+			[[0.77, 0.89, 0.77], [0.93, 0.95, 0.93]],
+			],
+			
+		connection => [0.55, 0.25, 0.08],
+		connection_point => [0.51, 0.39, 0.20],
+		connector_point => [0.12, 0.56, 1.00],
+		new_connection => [1.00, 0.00, 0.00],
+		extra_point => [0.59, 0.43, 50], 
+		
+		mouse_rectangle => [0.90, 0.20, 0.20],
+		}, 
+	'system' =>
+		{
+		background => [1.00, 1.00, 1.00],
+		grid => [0.89, 0.92, 1.00],
+		ruler_line => [0.33, 0.61, 0.88],
+		element_background => [0.98, 0.98, 1],
+		element_foreground => [0.00, 0.00, 0.00] ,
+		selected_element_background => [0.70, 0.95, 1.00],
+		selection_rectangle => [1.00, 0.00, 1.00],
+		test => [0.00, 1.00, 1.00],
+		
+		group_colors =>
+			[
+			[[0.98, 0.86, 0.74], [0.98, 0.96, 0.93]],
+			[[0.71, 0.98, 0.71], [0.94, 0.98, 0.94]],
+			[[0.72, 0.86, 0.98], [0.95, 0.96, 0.98]],
+			[[0.54, 0.98, 0.98], [0.92, 0.98, 0.98]],
+			[[0.77, 0.89, 0.77], [0.93, 0.95, 0.93]],
+			],
+			
+		connection => [0.55, 0.25, 0.08],
+		connection_point => [0.90, 0.77, 0.52],
+		connector_point => [0.12, 0.56, 1.00],
+		new_connection => [1.00, 0.00, 0.00],
+		extra_point => [0.90, 0.77, 0.52],
+		
+		mouse_rectangle => [0.90, 0.20, 0.20],
+		} 
 	},
 
 RULER_LINES =>

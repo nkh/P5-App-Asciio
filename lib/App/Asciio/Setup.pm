@@ -344,6 +344,8 @@ for my $options_file (@{ $options_files })
 		$self->{$option_name} = $options{$option_name} ;
 		}
 		
+	$self->{COLORS} = $options{COLOR_SCHEMES}{system} ;
+	
 	die "can't load setup file '$options_file': $! $@\n" if $@ ;
 	}
 	

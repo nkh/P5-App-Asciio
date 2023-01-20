@@ -179,15 +179,16 @@ my $element_index = 0 ;
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
+	my $is_selected = $element->{SELECTED} // 0 ;
+	my ($background_color, $foreground_color) =  $element->get_colors() ;
+	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') ;
+
 	# do not draw elements that are outside changed area
-	
-	my $renderings = $element->{RENDERING}[$element->{SELECTED} // 0] ;
+	my $renderings = $element->{RENDERING}[$is_selected]{$color_set} ;
 	my @renderings ;
 	
 	unless (defined $renderings)
 		{
-		my ($background_color, $foreground_color) =  $element->get_colors() ;
-		
 		if($self->is_element_selected($element))
 			{
 			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
@@ -222,7 +223,7 @@ for my $element (@{$self->{ELEMENTS}})
 			my $line_index = 0 ;
 			for my $line (split /\n/, $mask_and_element_strip->{TEXT})
 				{
-				unless (exists $self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line})
+				unless (exists $self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line})
 					{
 					my $surface = Cairo::ImageSurface->create('argb32', $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
 					
@@ -256,15 +257,15 @@ for my $element (@{$self->{ELEMENTS}})
 						$gc->stroke;
 						}
 					
-					$self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line} = $surface ; # keep reference
+					$self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line} = $surface ; # keep reference
 					}
 				
-				my $strip_rendering = $self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line} ;
+				my $strip_rendering = $self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line} ;
 				push @renderings, [$strip_rendering, $mask_and_element_strip->{X_OFFSET}, $mask_and_element_strip->{Y_OFFSET} + $line_index++] ;
 				}
 			}
 		
-		$renderings = $element->{RENDERING}[$element->{SELECTED} // 0] = \@renderings ;
+		$renderings = $element->{RENDERING}[$is_selected]{$color_set} = \@renderings ;
 		}
 	
 	for my $rendering (@$renderings)

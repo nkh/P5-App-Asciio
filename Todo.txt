@@ -2,13 +2,15 @@
 # This is the todo.txt #
 #----------------------#
 
-selecting an object takes long time when there are many objects
-	is stripes coordinates used rather than object to filter out?
-		need limits for arrow types
+group colors don't work with cache
+
+list points that can be made faster in Asciio core
+	selecting an object takes long time when there are many objects
+		is stripes coordinates used rather than object to filter out?
+			need limits for arrow types
 
 	octosplit?
 
-group colors don't work with cache
 
 gtk3 port:
 	#key send twice

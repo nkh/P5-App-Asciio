@@ -9,7 +9,6 @@ register_action_handlers
 	'Create multiple text elements from a text description' => ['C00-t',           \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0],
 	'Flip transparent element background'                   => ['C0S-T',           \&App::Asciio::Actions::Unsorted::transparent_elements                          ],
 	'Flip grid display'                                     => ['000-g',           \&App::Asciio::Actions::Unsorted::flip_grid_display                             ],
-	'Flip color scheme'                                     => ['CA0-c',           \&App::Asciio::Actions::Unsorted::flip_color_scheme                             ],
 	'Undo'                                                  => ['C00-z',           \&App::Asciio::Actions::Unsorted::undo                                          ],
 	'Display undo stack statistics'                         => ['C0S-Z',           \&App::Asciio::Actions::Unsorted::display_undo_stack_statistics                 ],
 	'Redo'                                                  => ['C00-y',           \&App::Asciio::Actions::Unsorted::redo                                          ],
