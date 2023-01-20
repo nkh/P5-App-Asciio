@@ -846,7 +846,6 @@ my ($self) = @_ ;
 
 #-----------------------------------------------------------------------------
 
-
 =head1 DEPENDENCIES
 
 gnome libraries, gtk, gtk-perl for the gtk version

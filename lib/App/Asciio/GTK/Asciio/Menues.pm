@@ -104,7 +104,6 @@ for my $menu_entry_definition (@$menu_entry_definitions)
 sub insert_generator 
 { 
 my ($self, $element, $x, $y) = @_ ; 
-my ($character_width, $character_height) = $self->get_character_size() ;
 
 return sub
 	{

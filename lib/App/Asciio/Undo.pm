@@ -96,7 +96,6 @@ else
 sub create_undo_snapshot
 {
 my ($self) = @_;
-
 #TODO: delta, serialize and compress, use the same huffman table for extra compression
 my $serialized_self ;
 
@@ -104,15 +103,6 @@ my $serialized_self ;
 	local $self->{DO_STACK} = undef ;
 	$serialized_self = $self->serialize_self()  ;
 }
-
-#~ my $previous_serialized_self = '' ;
-#~ {
-	#~ local $self->{DO_STACK} = undef ;
-	#~ my $xxx= $self->serialize_self(1)  ;
-	#~ use File::Slurp ;
-	#~ write_file("test/undo_$self->{DO_STACK_POINTER}.txt", $xxx) ;
-	# diff serialize 1 + bzip 2 => 500-1000 bytes vs 4000-5000 bytes with no diff and compress
-#~ }
 
 my $compressed_self = compress $serialized_self ;
 

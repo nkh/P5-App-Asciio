@@ -47,8 +47,11 @@ if(defined $file_name && $file_name ne q[])
 						? $extension
 						: 'asciio_internal_format' ;
 	
+	my $rendering = $self->{RENDERING} ;
+	$self->invalidate_rendering_cache() ;
 	my $elements_to_save = Clone::clone($self->{ELEMENTS}) ;
-	
+	$self->{RENDERING} = my $rendering ;
+
 	for my $element (@{$elements_to_save})
 		{
 		delete $element->{NAME} ;

@@ -10,7 +10,6 @@ use Data::Dumper ;
 use Data::TreeDumper ;
 use File::Slurp ;
 use Readonly ;
-#~ use Compress::LZF ':compress';
 use Compress::Bzip2 qw(:all :utilities :gzip);
 
 #-----------------------------------------------------------------------------
@@ -101,6 +100,7 @@ return $title ;
 		ELEMENT_TYPES_BY_NAME
 		ELEMENT_TYPES
 		MIDDLE_BUTTON_SELECTION_FILTER
+		RENDERING
 		) ;
 
 sub load_self

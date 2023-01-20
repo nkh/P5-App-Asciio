@@ -54,6 +54,8 @@ my ($self, $direction) = @_ ;
 my ($family, $size) = $self->get_font() ;
 
 $self->set_font($family, $size + $direction) ;
+
+$self->invalidate_rendering_cache() ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -61,6 +63,7 @@ $self->set_font($family, $size + $direction) ;
 sub flip_color_scheme
 {
 my ($self) = @_ ;
+$self->invalidate_rendering_cache() ;
 
 $self->{COLOR_SCHEME} = 'system' unless exists $self->{COLOR_SCHEME} ;
 

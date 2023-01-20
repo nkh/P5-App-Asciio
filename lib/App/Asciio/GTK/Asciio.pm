@@ -125,7 +125,8 @@ sub expose_event
 my ( $widget, $gc, $self ) = @_;
 
 $gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
-$gc->set_font_size($self->{FONT_SIZE});
+# $gc->set_font_size($self->{FONT_SIZE});
+$gc->set_line_width(1);
 
 my ($character_width, $character_height) = $self->get_character_size() ;
 my $character_lift = $character_height / 3 ;
@@ -214,10 +215,6 @@ for my $element (@{$self->{ELEMENTS}})
 			}
 				
 		$foreground_color //= $self->get_color('element_foreground') ;
-	
-		$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
-		$gc->set_font_size($self->{FONT_SIZE});
-		
 		my @mask_and_element_stripes = $element->get_mask_and_element_stripes() ;
 		
 		for my $mask_and_element_strip (@mask_and_element_stripes)
@@ -230,7 +227,8 @@ for my $element (@{$self->{ELEMENTS}})
 					my $surface = Cairo::ImageSurface->create('argb32', $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
 					
 					my $gc = Cairo::Context->create($surface);
-					$gc->set_line_width(1);
+					$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
+					$gc->set_font_size($self->{FONT_SIZE});
 					$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
 					$gc->rectangle(0, 0, $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
 					$gc->fill();
@@ -239,6 +237,7 @@ for my $element (@{$self->{ELEMENTS}})
 					
 					if($self->{NUMBERED_OBJECTS})
 						{
+						$gc->set_line_width(1);
 						$gc->rectangle(0, 0, $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
 						$gc->move_to(0, $character_height - $character_lift);
 						$gc->show_text($element_index);
@@ -258,7 +257,6 @@ for my $element (@{$self->{ELEMENTS}})
 						}
 					
 					$self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line} = $surface ; # keep reference
-					print scalar(keys %{$self->{RENDERING}{STRIPS}[0]}) . " - " . scalar(keys %{$self->{RENDERING}{STRIPS}[1]}) ."\n"
 					}
 				
 				my $strip_rendering = $self->{RENDERING}{STRIPS}[$element->{SELECTED} // 0]{$line} ;
@@ -330,18 +328,31 @@ for my $connection (@{$self->{CONNECTIONS}})
 		
 	if($draw_connection)
 		{
-		$gc->set_source_rgb(@{$self->get_color('connection')});
-		
 		$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
 		
-		$gc->rectangle
+		unless (defined $self->{RENDERING}{CONNECTION})
+			{
+			my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
+			
+			my $gc = Cairo::Context->create($surface);
+			$gc->set_line_width(1);
+			$gc->set_source_rgb(@{$self->get_color('connection')});
+			$gc->rectangle(0, 0, $character_width, $character_height);
+			$gc->stroke() ;
+			
+			$self->{RENDERING}{EXTRA_POINT} = $surface ;
+			}
+		
+		my $connection_rendering = $self->{RENDERING}{EXTRA_POINT} ;
+		
+		$gc->set_source_surface
 			(
+			$connection_rendering,
 			($connector->{X} + $connection->{CONNECTED}{X}) * $character_width,
 			($connector->{Y}  + $connection->{CONNECTED}{Y}) * $character_height,
-			$character_width, $character_height
 			);
 		
-		$gc->stroke() ;
+		$gc->paint;
 		}
 	}
 	
@@ -349,7 +360,9 @@ for my $connection (@{$self->{CONNECTIONS}})
 unless (defined $self->{RENDERING}{CONNECTOR_POINT})
 	{
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
+	
 	my $gc = Cairo::Context->create($surface);
+	$gc->set_line_width(1);
 	$gc->set_source_rgb(@{$self->get_color('connector_point')});
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
@@ -363,6 +376,8 @@ unless (defined $self->{RENDERING}{CONNECTION_POINT})
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 	
 	my $gc = Cairo::Context->create($surface);
+	$gc->set_line_width(1);
+	$gc->set_source_rgb(@{$self->get_color('connector_point')});
 	$gc->set_source_rgb(@{$self->get_color('connection_point')});
 	$gc->rectangle($character_width/3, $character_height/3, $character_width/3, $character_height/3);
 	$gc->stroke() ;
@@ -376,6 +391,8 @@ unless (defined $self->{RENDERING}{EXTRA_POINT})
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 	
 	my $gc = Cairo::Context->create($surface);
+	$gc->set_line_width(1);
+	$gc->set_source_rgb(@{$self->get_color('connector_point')});
 	$gc->set_source_rgb(@{$self->get_color('extra_point')});
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
@@ -407,8 +424,8 @@ for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUS
 		$gc->set_source_surface
 			(
 			$connection_point_rendering,
-			(($connection_point->{X} + $element->{X}) * $character_width) + ($character_width / 3), # can be additions
-			(($connection_point->{Y} + $element->{Y}) * $character_height) + ($character_height / 3),
+			(($connection_point->{X} + $element->{X}) * $character_width), # can be additions
+			(($connection_point->{Y} + $element->{Y}) * $character_height),
 			);
 		
 		$gc->paint;
@@ -595,12 +612,31 @@ if(exists $self->{USER_CHARACTER_WIDTH})
 	}
 else
 	{
-	$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE});
-	return $self->{widget}->create_pango_layout('M')->get_pixel_size() ;
+	unless (exists $self->{RENDERING}{CHARACTER_SIZE})
+		{
+		$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE});
+		$self->{RENDERING}{CHARACTER_SIZE} = [$self->{widget}->create_pango_layout('M')->get_pixel_size()] ;
+		}
+	
+	return @{ $self->{RENDERING}{CHARACTER_SIZE} } ;
 	}
 }
 
 #-----------------------------------------------------------------------------
+
+sub invalidate_rendering_cache
+{
+my ($self) = @_ ;
+
+for my $element (@{$self->{ELEMENTS}}) 
+	{
+	delete $element->{RENDERING} ;
+	}
+
+delete $self->{RENDERING} ;
+}
+
+#----------------------------------------------------------------------------------------------
 
 
 =head1 DEPENDENCIES
