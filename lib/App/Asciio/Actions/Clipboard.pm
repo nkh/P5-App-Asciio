@@ -7,6 +7,8 @@ use List::Util qw(min max) ;
 sub copy_to_clipboard
 {
 my ($self) = @_ ;
+my $rendering = $self->{RENDERING} ;
+$self->invalidate_rendering_cache() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 return unless @selected_elements ;
@@ -26,7 +28,8 @@ my $elements_and_connections =
 	CONNECTIONS => \@connections ,
 	};
 	
-$self->{CLIPBOARD} =  Clone::clone($elements_and_connections) ;
+$self->{CLIPBOARD} = Clone::clone($elements_and_connections) ;
+$self->{RENDERING} = $rendering ;
 } ;	
 	
 #----------------------------------------------------------------------------------------------

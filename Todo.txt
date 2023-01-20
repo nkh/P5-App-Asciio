@@ -8,17 +8,6 @@ selecting an object takes long time when there are many objects
 
 	octosplit?
 
-C00-a                Select all elements                      [actions/elements_manipulation.pl]
-perl: ../../../../src/cairo-surface.c:930: cairo_surface_reference: Assertion `CAIRO_REFERENCE_COUNT_HAS_REFERENCE (&surface->ref_count)' failed.
-./script/A: line 2: 789333 Aborted                 (core dumped) perl -Mblib script/asciio $@
-	maybe due to copy paste where object cloning doesn't increment ref count in gtk object
-		keep gtk object in $App::Ascii::self should isolate that problem
-			means that all rendered strips live forever!
-
-	perl: ../../../../src/cairo-pattern.c:187: _cairo_pattern_set_error: Assertion `status < CAIRO_STATUS_LAST_STATUS' failed.
-	./script/A: line 2: 797148 Aborted                 (core dumped) perl -Mblib script/asciio $@
-
-
 gtk3 port:
 	#key send twice
 	#ctl+c not handled
