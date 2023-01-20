@@ -101,7 +101,13 @@ my $serialized_self ;
 
 {
 	local $self->{DO_STACK} = undef ;
+	
+	my $rendering = $self->{RENDERING} ;
+	$self->invalidate_rendering_cache() ;
+	
 	$serialized_self = $self->serialize_self()  ;
+	
+	$self->{RENDERING} = $rendering ;
 }
 
 my $compressed_self = compress $serialized_self ;
