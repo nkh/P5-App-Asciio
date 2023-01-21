@@ -80,7 +80,9 @@ if($@)
 	use Data::TreeDumper ;
 	warn "Can't create new element with definition:\n" ;
 	warn DumpTree \%element_definition ;
+	warn '-' x 80 . "\n" ;
 	warn $code ;
+	warn '-' x 80 . "\n" ;
 	warn $@ ;
 	}
 

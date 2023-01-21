@@ -109,6 +109,7 @@ $self->set
 	TEXT_ONLY => $text_only,
 	RESIZABLE => $resizable,
 	EDITABLE => $editable,
+	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $width, HEIGHT => ($text =~ tr[\n][\n]) + 1, TEXT => $text} ],
 	) ;
 }
 

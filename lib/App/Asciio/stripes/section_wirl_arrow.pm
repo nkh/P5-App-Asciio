@@ -141,22 +141,22 @@ my %diagonal_non_diagonal_to_overlay_character =
 	(map {$_ => q{'}} qw( down-left left-down up-right right-up)), 
 	) ;
 	
-sub get_mask_and_element_stripes
+sub get_stripes
 {
 my ($self) = @_ ;
 
-my @mask_and_element_stripes ;
+my @stripes ;
 
 my $arrow_index = 0 ;
 for my $arrow(@{$self->{ARROWS}})
 	{
-	push @mask_and_element_stripes, 
+	push @stripes, 
 		map 
 		{
 		$_->{X_OFFSET} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
 		$_->{Y_OFFSET} += $self->{POINTS_OFFSETS}[$arrow_index][1];
 		$_ ;
-		} @{$arrow->get_mask_and_element_stripes()} ;
+		} @{$arrow->get_stripes()} ;
 		
 	$arrow_index++ ;
 	}
@@ -259,7 +259,7 @@ for my $arrow(@{$self->{ARROWS}})
 	if($arrow_index != 0 && defined $connection) # first character of the first section is always right
 		{
 		# overlay the first character of this arrow
-		push @mask_and_element_stripes, 
+		push @stripes, 
 			{
 			X_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][0],
 			Y_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][1],
@@ -272,7 +272,7 @@ for my $arrow(@{$self->{ARROWS}})
 	$arrow_index++ ;
 	}
 
-return \@mask_and_element_stripes ;
+return \@stripes ;
 }
 
 #-----------------------------------------------------------------------------
@@ -927,15 +927,15 @@ my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @
 $field ||= 0 ;
 my $is_under = 0 ;
 
-for my $mask_strip (@{$element->get_mask_and_element_stripes()})
+for my $strip (@{$element->get_stripes()})
 	{
-	my $stripe_x = $element_offset_x + $mask_strip->{X_OFFSET} ;
-	my $stripe_y = $element_offset_y + $mask_strip->{Y_OFFSET} ;
+	my $stripe_x = $element_offset_x + $strip->{X_OFFSET} ;
+	my $stripe_y = $element_offset_y + $strip->{Y_OFFSET} ;
 	
 	if
 		(
-		$stripe_x - $field <= $x   && $x < $stripe_x + $mask_strip->{WIDTH} + $field
-		&& $stripe_y - $field <= $y && $y < $stripe_y + $mask_strip->{HEIGHT} + $field
+		$stripe_x - $field <= $x   && $x < $stripe_x + $strip->{WIDTH} + $field
+		&& $stripe_y - $field <= $y && $y < $stripe_y + $strip->{HEIGHT} + $field
 		) 
 		{
 		$is_under++ ;

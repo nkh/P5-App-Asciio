@@ -439,14 +439,14 @@ my %cost_map ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
-	for my $mask_and_element_strip (@{$element->get_mask_and_element_stripes()})
+	for my $strip (@{$element->get_stripes()})
 		{
-		my $x_offset = $element->{X} + $mask_and_element_strip->{X_OFFSET} ;
-		my $y_offset = $element->{Y} + $mask_and_element_strip->{Y_OFFSET} ;
+		my $x_offset = $element->{X} + $strip->{X_OFFSET} ;
+		my $y_offset = $element->{Y} + $strip->{Y_OFFSET} ;
 		
 		my $string_offset = 0 ;
 		
-		for my $string ( split /\n/, $mask_and_element_strip->{TEXT})
+		for my $string ( split /\n/, $strip->{TEXT})
 			{
 			for (0 .. length($string) - 1 )
 				{

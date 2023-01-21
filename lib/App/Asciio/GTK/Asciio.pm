@@ -219,23 +219,23 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	unless (defined $renderings)
 		{
-		my $mask_and_element_stripes = $element->get_mask_and_element_stripes() ;
+		my $stripes = $element->get_stripes() ;
 		$self->update_quadrants($element) ;
 		
-		for my $mask_and_element_strip (@{$mask_and_element_stripes})
+		for my $strip (@{$stripes})
 			{
 			my $line_index = 0 ;
-			for my $line (split /\n/, $mask_and_element_strip->{TEXT})
+			for my $line (split /\n/, $strip->{TEXT})
 				{
 				unless (exists $self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line})
 					{
-					my $surface = Cairo::ImageSurface->create('argb32', $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
+					my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
 					
 					my $gc = Cairo::Context->create($surface);
 					$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
 					$gc->set_font_size($self->{FONT_SIZE});
 					$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
-					$gc->rectangle(0, 0, $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
+					$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
 					$gc->fill();
 					
 					$gc->set_source_rgb(@{$foreground_color});
@@ -243,7 +243,7 @@ for my $element (@{$self->{ELEMENTS}})
 					if($self->{NUMBERED_OBJECTS})
 						{
 						$gc->set_line_width(1);
-						$gc->rectangle(0, 0, $mask_and_element_strip->{WIDTH} * $character_width, $character_height);
+						$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
 						$gc->move_to(0, $character_height - $character_lift);
 						$gc->show_text($element_index);
 						$gc->stroke;
@@ -265,7 +265,7 @@ for my $element (@{$self->{ELEMENTS}})
 					}
 				
 				my $strip_rendering = $self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line} ;
-				push @renderings, [$strip_rendering, $mask_and_element_strip->{X_OFFSET}, $mask_and_element_strip->{Y_OFFSET} + $line_index++] ;
+				push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
 				}
 			}
 		

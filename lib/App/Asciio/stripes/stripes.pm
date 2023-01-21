@@ -52,7 +52,7 @@ return bless
 
 #---------------------------------------------------------------------------
 
-sub get_mask_and_element_stripes
+sub get_stripes
 {
 my ($self) = @_ ;
 
