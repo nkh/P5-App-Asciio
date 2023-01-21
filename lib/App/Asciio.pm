@@ -439,7 +439,7 @@ my %cost_map ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
-	for my $mask_and_element_strip ($element->get_mask_and_element_stripes())
+	for my $mask_and_element_strip (@{$element->get_mask_and_element_stripes()})
 		{
 		my $x_offset = $element->{X} + $mask_and_element_strip->{X_OFFSET} ;
 		my $y_offset = $element->{Y} + $mask_and_element_strip->{Y_OFFSET} ;
@@ -774,6 +774,15 @@ $self->{EVENT} = $event ;
 $self->run_actions("$modifiers-$key") ;
 
 return 0 ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub update_quadrants
+{
+my ($self, $element) = @_ ;
+
+my ($x1, $x2, $y1, $y2) = $element->get_extents() ;
 }
 
 #-----------------------------------------------------------------------------

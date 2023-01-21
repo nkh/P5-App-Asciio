@@ -115,6 +115,7 @@ $self->set
 	RESIZABLE => $resizable,
 	EDITABLE => $editable,
 	AUTO_SHRINK => $auto_shrink,
+	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $end_x, HEIGHT => $end_y, TEXT => $text } ],
 	) ;
 }
 

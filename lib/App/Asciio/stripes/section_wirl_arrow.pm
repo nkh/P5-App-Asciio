@@ -156,7 +156,7 @@ for my $arrow(@{$self->{ARROWS}})
 		$_->{X_OFFSET} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
 		$_->{Y_OFFSET} += $self->{POINTS_OFFSETS}[$arrow_index][1];
 		$_ ;
-		} $arrow->get_mask_and_element_stripes() ;
+		} @{$arrow->get_mask_and_element_stripes()} ;
 		
 	$arrow_index++ ;
 	}
@@ -272,7 +272,7 @@ for my $arrow(@{$self->{ARROWS}})
 	$arrow_index++ ;
 	}
 
-return(@mask_and_element_stripes) ;
+return \@mask_and_element_stripes ;
 }
 
 #-----------------------------------------------------------------------------
@@ -924,12 +924,10 @@ sub is_over_element
 {
 my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @_ ;
 
-die "Error: 'is_over_element' needs position!" unless defined $x && defined $y ;
-
 $field ||= 0 ;
 my $is_under = 0 ;
 
-for my $mask_strip ($element->get_mask_and_element_stripes())
+for my $mask_strip (@{$element->get_mask_and_element_stripes()})
 	{
 	my $stripe_x = $element_offset_x + $mask_strip->{X_OFFSET} ;
 	my $stripe_y = $element_offset_y + $mask_strip->{Y_OFFSET} ;

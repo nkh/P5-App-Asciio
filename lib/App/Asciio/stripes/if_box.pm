@@ -218,7 +218,7 @@ sub resize
 {
 my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;
 
-# if box is npt resizable
+# if box is not resizable
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 
 #~ return(0, 0, $self->{WIDTH}, $self->{HEIGHT})  unless $self->{RESIZABLE} ;

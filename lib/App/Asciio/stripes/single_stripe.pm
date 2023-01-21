@@ -33,6 +33,7 @@ $self->set
 	TEXT => $text,
 	WIDTH =>  $width,
 	HEIGHT => $height,
+	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $self->{WIDTH}, HEIGHT => $self->{HEIGHT}, TEXT => $self->{TEXT}} ],
 	) ;
 }
 
@@ -42,7 +43,7 @@ sub get_mask_and_element_stripes
 {
 my ($self) = @_ ;
 
-return {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $self->{WIDTH}, HEIGHT => $self->{HEIGHT}, TEXT => $self->{TEXT}} ;
+return $self->{STRIPES} ;
 }
 
 #-----------------------------------------------------------------------------

@@ -219,9 +219,10 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	unless (defined $renderings)
 		{
-		my @mask_and_element_stripes = $element->get_mask_and_element_stripes() ;
+		my $mask_and_element_stripes = $element->get_mask_and_element_stripes() ;
+		$self->update_quadrants($element) ;
 		
-		for my $mask_and_element_strip (@mask_and_element_stripes)
+		for my $mask_and_element_strip (@{$mask_and_element_stripes})
 			{
 			my $line_index = 0 ;
 			for my $line (split /\n/, $mask_and_element_strip->{TEXT})

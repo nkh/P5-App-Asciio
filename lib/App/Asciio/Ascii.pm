@@ -27,7 +27,7 @@ my @lines ;
 
 for my $element (@elements)
 	{
-	for my $strip ($element->get_mask_and_element_stripes())
+	for my $strip (@{$element->get_mask_and_element_stripes()})
 		{
 		my $line_index = 0 ;
 		for my $sub_strip (split("\n", $strip->{TEXT}))

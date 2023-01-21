@@ -323,7 +323,7 @@ for my $connection ($self->get_connected($selected_element))
 	# all connection where the selected element is the connectee
 	
 	my ($new_connection) = # in characters relative to element origin
-			$selected_element->get_named_connection($connection->{CONNECTION}{NAME}) ;
+	$selected_element->get_named_connection($connection->{CONNECTION}{NAME}) ;
 	
 	if(defined $new_connection)
 		{
@@ -628,12 +628,10 @@ sub is_over_element
 {
 my ($self, $element, $x, $y, $field) = @_ ;
 
-die "Error: 'is_over_element' needs position!" unless defined $x && defined $y ;
-
-$field ||= 0 ;
+$field //= 0 ;
 my $is_under = 0 ;
 
-for my $mask_strip ($element->get_mask_and_element_stripes())
+for my $mask_strip (@{$element->get_mask_and_element_stripes()})
 	{
 	my $stripe_x = $element->{X} + $mask_strip->{X_OFFSET} ;
 	my $stripe_y = $element->{Y} + $mask_strip->{Y_OFFSET} ;
@@ -676,7 +674,7 @@ if($height < 0)
 	
 my $is_under = 1 ;
 
-for my $mask_strip ($element->get_mask_and_element_stripes())
+for my $mask_strip (@{$element->get_mask_and_element_stripes()})
 	{
 	my $stripe_x = $element->{X} + $mask_strip->{X_OFFSET} ;
 	my $stripe_y = $element->{Y} + $mask_strip->{Y_OFFSET} ;

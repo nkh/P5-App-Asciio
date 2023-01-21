@@ -4,7 +4,8 @@ package App::Asciio::stripes::stripes ;
 use strict;
 use warnings;
 
-use List::MoreUtils qw(minmax) ;
+use List::Util qw(max) ;
+# use List::MoreUtils qw(max) ;
 
 sub new
 {
@@ -13,16 +14,17 @@ my ($class, $element_definition) = @_ ;
 my  @stripes ;
 
 my ($total_width, $total_height) = (0, 0) ;
+my ($min_x, $min_y, $max_x, $max_y) = (0, 0, 0, 0) ;
 
 for my $stripe (@{$element_definition->{STRIPES}})
 	{
 	my $text = $stripe->{TEXT} ;
-
+	
 	my $width = 0 ;
 	map {$width  = $width < length($_) ? length($_)  : $width} split("\n", $text) ;
-
+	
 	my $height = ($text =~ tr[\n][\n]) + 1 ;
-
+	
 	push @stripes, 
 		{
 		TEXT => $text,
@@ -32,16 +34,20 @@ for my $stripe (@{$element_definition->{STRIPES}})
 		HEIGHT => $height , 
 		} ;
 		
-	(undef, $total_width) = minmax($total_width,  $stripe->{X_OFFSET} + $width) ;
-	(undef, $total_height) = minmax($total_height,  $stripe->{Y_OFFSET} + $height) ;
+	($total_width) = max($total_width, $stripe->{X_OFFSET} + $width) ;
+	($total_height) = max($total_height, $stripe->{Y_OFFSET} + $height) ;
+
+	($min_x, $max_x) = minmax($min_x, $max_x, $stripe->{X_OFFSET}, $stripe->{X_OFFSET} + $width) ;
+	($min_y, $max_y) = minmax($min_y, $max_y, $stripe->{Y_OFFSET}, $stripe->{Y_OFFSET} + $height) ;
 	}
-	
+
 return bless  
 		{
 		STRIPES => \@stripes,
+		EXTENTS => [$min_x, $max_x, $min_y, $max_y],
 		WIDTH => $total_width,
 		HEIGHT => $total_height,
-		}, __PACKAGE__ ;	
+		}, __PACKAGE__ ;
 }
 
 #---------------------------------------------------------------------------
@@ -50,14 +56,15 @@ sub get_mask_and_element_stripes
 {
 my ($self) = @_ ;
 
-my @elements_stripes ;
+# my @elements_stripes ;
 
-for my $stripe (@{$self->{STRIPES}})
-	{
-	push @elements_stripes, {X_OFFSET => $stripe->{X_OFFSET}, Y_OFFSET => $stripe->{Y_OFFSET}, WIDTH => $stripe->{WIDTH}, HEIGHT => $stripe->{HEIGHT}, TEXT => $stripe->{TEXT}} ;
-	}
+# for my $stripe (@{$self->{STRIPES}})
+# 	{
+# 	push @elements_stripes, {X_OFFSET => $stripe->{X_OFFSET}, Y_OFFSET => $stripe->{Y_OFFSET}, WIDTH => $stripe->{WIDTH}, HEIGHT => $stripe->{HEIGHT}, TEXT => $stripe->{TEXT}} ;
+# 	}
 	
-return(@elements_stripes) ;
+# return(@elements_stripes) ;
+return $self->{STRIPES} ;
 }
 
 #-----------------------------------------------------------------------------
@@ -67,6 +74,15 @@ sub get_size
 my ($self) = @_ ;
 
 return($self->{WIDTH}, $self->{HEIGHT}) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_extents
+{
+my ($self) = @_ ;
+
+return($self->{EXTENTS}) ;
 }
 
 #-----------------------------------------------------------------------------
