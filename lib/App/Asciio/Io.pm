@@ -65,7 +65,7 @@ else
 		
 		$self->load_self($saved_self) ; # resurect
 		delete $self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} ;
-		delete $self->{RENDERING} ;
+		delete $self->{CACHE} ;
 		
 		$title = $file_name ;
 		}
@@ -90,7 +90,7 @@ return $title ;
 
 #-----------------------------------------------------------------------------
 
- Readonly my  @ELEMENTS_TO_KEEP_FROM_CURRENT_OBJECT => 
+ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT => 
 	qw
 		(
 		widget  
@@ -100,7 +100,7 @@ return $title ;
 		ELEMENT_TYPES_BY_NAME
 		ELEMENT_TYPES
 		MIDDLE_BUTTON_SELECTION_FILTER
-		RENDERING
+		CACHE
 		) ;
 
 sub load_self
@@ -109,7 +109,7 @@ my ($self, $new_self)  = @_;
 
 return unless defined $new_self ;
 
-delete @{$new_self}{@ELEMENTS_TO_KEEP_FROM_CURRENT_OBJECT} ;
+delete @{$new_self}{@ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT} ;
 
 my @keys = keys %{$new_self} ;
 @{$self}{@keys} = @{$new_self}{@keys} ;
@@ -227,12 +227,24 @@ local $self->{MODIFIED} => 0 ;
 local $self->{TITLE} = '' ;
 local $self->{CREATE_BACKUP} = undef ;
 local $self->{MIDDLE_BUTTON_SELECTION_FILTER} = undef ;
-	
+local $self->{CACHE} = undef ;
+
+my @elements_cache ;
+for my $element (@{$self->{ELEMENTS}}) 
+	{
+	push @elements_cache, $element->{CACHE} ;
+	$element->{CACHE} = undef ;
+	}
+
 local $Data::Dumper::Purity = 1 ;
 local $Data::Dumper::Indent = $indent || 0 ;
 local $Data::Dumper::Sortkeys = 1 ;
 
-Dumper($self) ;
+my $serialized = Dumper($self) ;
+
+$_->{CACHE} = pop @elements_cache for @{$self->{ELEMENTS}} ;
+
+return $serialized ;
 }
 
 #-----------------------------------------------------------------------------
@@ -267,7 +279,7 @@ else
 		}
 		
 	$title = $file_name ;
-	write_file($file_name,compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
+	write_file($file_name, compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
 	}	
 	
 return $title ;

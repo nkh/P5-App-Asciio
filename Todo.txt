@@ -2,7 +2,18 @@
 # This is the todo.txt #
 #----------------------#
 
-group colors don't work with cache
+update_display called everytime mouse changes grid cell, even if nothing close to grid cell
+	optimize by first looking if there will be changes, IE within an object, even if not on object
+
+milti arrow doesn't render properly when multipl section or add section
+
+cache not working for multi arrow
+
+undo core dump
+
+
+check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
+
 
 list points that can be made faster in Asciio core
 	selecting an object takes long time when there are many objects
@@ -12,7 +23,7 @@ list points that can be made faster in Asciio core
 	octosplit?
 
 
-gtk3 port:
+#gtk3 port:
 	#key send twice
 	#ctl+c not handled
 	#display corrupted
@@ -41,7 +52,6 @@ gtk3 port:
 
 	#event_option_changed
 
-check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
 
 #add mouse movements and clicks actions 
 	popup menu doesn't open at cursor position
@@ -97,7 +107,7 @@ read
 
 add actions:
 	- select all elements connected to currently selected element(s)
-	- select all elemet connected to the element under the pointer
+	- select all elements connected to the element under the pointer
 	- expend selection level with '+', also implement '-', '*', ...
 
 	- optimize current arrow (A* pathfinder)

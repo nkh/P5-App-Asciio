@@ -31,7 +31,7 @@ my ($color) = $self->get_color_from_user([0, 0, 0]) ;
 
 $self->create_undo_snapshot() ;
 
-delete $self->{RENDERING}{GRID} ;
+delete $self->{CACHE}{GRID} ;
 $self->{COLORS}{background} = $color ;
 	
 $self->update_display() ;
@@ -47,7 +47,7 @@ my ($color) = $self->get_color_from_user([0, 0, 0]) ;
 
 $self->create_undo_snapshot() ;
 
-delete $self->{RENDERING}{GRID} ;
+delete $self->{CACHE}{GRID} ;
 $self->{COLORS}{grid} = $color ;
 	
 $self->update_display() ;
@@ -125,7 +125,7 @@ else
 		mouse_rectangle => [0.90, 0.20, 0.20],
 		} ;
 	}
-	
+
 $self->update_display() ;
 }
 

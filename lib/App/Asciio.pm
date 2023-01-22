@@ -827,10 +827,10 @@ my ($self) = @_ ;
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	delete $element->{RENDERING} ;
+	delete $element->{CACHE} ;
 	}
 
-delete $self->{RENDERING} ;
+delete $self->{CACHE} ;
 }
 
 #-----------------------------------------------------------------------------

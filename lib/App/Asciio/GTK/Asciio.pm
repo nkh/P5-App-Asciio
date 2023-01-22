@@ -133,7 +133,7 @@ my $character_lift = $character_height / 3 ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
 # draw background
-my $grid_rendering = $self->{RENDERING}{GRID} ;
+my $grid_rendering = $self->{CACHE}{GRID} ;
 
 unless (defined $grid_rendering)
 	{
@@ -166,7 +166,7 @@ unless (defined $grid_rendering)
 		}
 		
 	$gc->stroke;
-	$grid_rendering = $self->{RENDERING}{GRID} = $surface ;
+	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
 	}
 
 $gc->set_source_surface($grid_rendering, 0, 0);
@@ -174,13 +174,15 @@ $gc->paint;
 $gc->show_page;
 
 # draw elements
+# todo: do not draw elements that are outside changed area
 my $element_index = 0 ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
 	my $is_selected = $element->{SELECTED} // 0 ;
-
+	$is_selected = 1 if $is_selected > 0 ;
+	
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
 	
 	if($is_selected)
@@ -213,12 +215,13 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') ;
 	
-	# do not draw elements that are outside changed area
-	my $renderings = $element->{RENDERING}[$is_selected]{$color_set} ;
+
+	my $renderings = $element->{CACHE}[$is_selected]{$color_set} ;
 	my @renderings ;
 	
 	unless (defined $renderings)
 		{
+		print "rendering [$is_selected]{$color_set} $element to " ;
 		my $stripes = $element->get_stripes() ;
 		$self->update_quadrants($element) ;
 		
@@ -227,7 +230,7 @@ for my $element (@{$self->{ELEMENTS}})
 			my $line_index = 0 ;
 			for my $line (split /\n/, $strip->{TEXT})
 				{
-				unless (exists $self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line})
+				unless (exists $self->{CACHE}{STRIPS}[$is_selected]{$color_set}{$line})
 					{
 					my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
 					
@@ -261,15 +264,16 @@ for my $element (@{$self->{ELEMENTS}})
 						$gc->stroke;
 						}
 					
-					$self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line} = $surface ; # keep reference
+					$self->{CACHE}{STRIPS}[$is_selected]{$color_set}{$line} = $surface ; # keep reference
 					}
 				
-				my $strip_rendering = $self->{RENDERING}{STRIPS}[$is_selected]{$color_set}{$line} ;
+				my $strip_rendering = $self->{CACHE}{STRIPS}[$is_selected]{$color_set}{$line} ;
 				push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
 				}
 			}
 		
-		$renderings = $element->{RENDERING}[$is_selected]{$color_set} = \@renderings ;
+		$renderings = $element->{CACHE}[$is_selected]{$color_set} = \@renderings ;
+		print "$element->{CACHE}[$is_selected]{$color_set} \n" ;
 		}
 	
 	for my $rendering (@$renderings)
@@ -335,7 +339,7 @@ for my $connection (@{$self->{CONNECTIONS}})
 		{
 		$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
 		
-		unless (defined $self->{RENDERING}{CONNECTION})
+		unless (defined $self->{CACHE}{CONNECTION})
 			{
 			my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 			
@@ -345,10 +349,10 @@ for my $connection (@{$self->{CONNECTIONS}})
 			$gc->rectangle(0, 0, $character_width, $character_height);
 			$gc->stroke() ;
 			
-			$self->{RENDERING}{EXTRA_POINT} = $surface ;
+			$self->{CACHE}{EXTRA_POINT} = $surface ;
 			}
 		
-		my $connection_rendering = $self->{RENDERING}{EXTRA_POINT} ;
+		my $connection_rendering = $self->{CACHE}{EXTRA_POINT} ;
 		
 		$gc->set_source_surface
 			(
@@ -362,7 +366,7 @@ for my $connection (@{$self->{CONNECTIONS}})
 	}
 	
 # draw connectors and connection points
-unless (defined $self->{RENDERING}{CONNECTOR_POINT})
+unless (defined $self->{CACHE}{CONNECTOR_POINT})
 	{
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 	
@@ -372,11 +376,11 @@ unless (defined $self->{RENDERING}{CONNECTOR_POINT})
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
 	
-	$self->{RENDERING}{CONNECTOR_POINT} = $surface ;
+	$self->{CACHE}{CONNECTOR_POINT} = $surface ;
 	}
-my $connector_point_rendering = $self->{RENDERING}{CONNECTOR_POINT} ;
+my $connector_point_rendering = $self->{CACHE}{CONNECTOR_POINT} ;
 
-unless (defined $self->{RENDERING}{CONNECTION_POINT})
+unless (defined $self->{CACHE}{CONNECTION_POINT})
 	{
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 	
@@ -387,11 +391,11 @@ unless (defined $self->{RENDERING}{CONNECTION_POINT})
 	$gc->rectangle($character_width/3, $character_height/3, $character_width/3, $character_height/3);
 	$gc->stroke() ;
 	
-	$self->{RENDERING}{CONNECTION_POINT} = $surface ;
+	$self->{CACHE}{CONNECTION_POINT} = $surface ;
 	}
-my $connection_point_rendering = $self->{RENDERING}{CONNECTION_POINT} ;
+my $connection_point_rendering = $self->{CACHE}{CONNECTION_POINT} ;
 
-unless (defined $self->{RENDERING}{EXTRA_POINT})
+unless (defined $self->{CACHE}{EXTRA_POINT})
 	{
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 	
@@ -402,9 +406,9 @@ unless (defined $self->{RENDERING}{EXTRA_POINT})
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
 	
-	$self->{RENDERING}{EXTRA_POINT} = $surface ;
+	$self->{CACHE}{EXTRA_POINT} = $surface ;
 	}
-my $extra_point_rendering = $self->{RENDERING}{EXTRA_POINT} ;
+my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
 	{
@@ -617,13 +621,13 @@ if(exists $self->{USER_CHARACTER_WIDTH})
 	}
 else
 	{
-	unless (exists $self->{RENDERING}{CHARACTER_SIZE})
+	unless (exists $self->{CACHE}{CHARACTER_SIZE})
 		{
 		$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE});
-		$self->{RENDERING}{CHARACTER_SIZE} = [$self->{widget}->create_pango_layout('M')->get_pixel_size()] ;
+		$self->{CACHE}{CHARACTER_SIZE} = [$self->{widget}->create_pango_layout('M')->get_pixel_size()] ;
 		}
 	
-	return @{ $self->{RENDERING}{CHARACTER_SIZE} } ;
+	return @{ $self->{CACHE}{CHARACTER_SIZE} } ;
 	}
 }
 
@@ -635,10 +639,10 @@ my ($self) = @_ ;
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	delete $element->{RENDERING} ;
+	delete $element->{CACHE} ;
 	}
 
-delete $self->{RENDERING} ;
+delete $self->{CACHE} ;
 }
 
 #----------------------------------------------------------------------------------------------

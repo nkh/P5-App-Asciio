@@ -7,7 +7,7 @@ use List::Util qw(min max) ;
 sub copy_to_clipboard
 {
 my ($self) = @_ ;
-my $rendering = $self->{RENDERING} ;
+my $cache = $self->{CACHE} ;
 $self->invalidate_rendering_cache() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
@@ -29,7 +29,7 @@ my $elements_and_connections =
 	};
 	
 $self->{CLIPBOARD} = Clone::clone($elements_and_connections) ;
-$self->{RENDERING} = $rendering ;
+$self->{CACHE} = $cache ;
 } ;	
 	
 #----------------------------------------------------------------------------------------------

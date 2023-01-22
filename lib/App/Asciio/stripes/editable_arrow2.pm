@@ -54,7 +54,7 @@ $self->set
 	END_X => $real_end_x,
 	END_Y => $real_end_y,
 	ARROW_TYPE => $arrow_type,
-	RENDERING => undef,
+	CACHE => undef,
 	) ;
 }
 

@@ -490,7 +490,7 @@ if($connection)
 			#~ [$no_section_connetor_name, $connector_name],
 			[$connector_name, $no_section_connetor_name],
 			) ;
-		
+	
 	return
 		(
 		$x_offset, $y_offset, $width, $height,
