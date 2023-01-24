@@ -216,11 +216,12 @@ for my $element (@{$self->{ELEMENTS}})
 			
 	$foreground_color //= $self->get_color('element_foreground') ;
 	
-	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
+	my $color_set = $is_selected . '-'
+			. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
 			. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
 	
 
-	my $renderings = $element->{CACHE}{RENDERING}[$is_selected]{$color_set} ;
+	my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
 	
 	unless (defined $renderings)
 		{
@@ -234,7 +235,9 @@ for my $element (@{$self->{ELEMENTS}})
 			my $line_index = 0 ;
 			for my $line (split /\n/, $strip->{TEXT})
 				{
-				unless (exists $self->{CACHE}{STRIPS}[$is_selected]{$color_set}{$line})
+				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
+				
+				unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
 					{
 					my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
 					
@@ -268,15 +271,15 @@ for my $element (@{$self->{ELEMENTS}})
 						$gc->stroke;
 						}
 					
-					$self->{CACHE}{STRIPS}[$is_selected]{$color_set}{$line} = $surface ; # keep reference
+					$self->{CACHE}{STRIPS}{$color_set}{$line} = $surface ; # keep reference
 					}
 				
-				my $strip_rendering = $self->{CACHE}{STRIPS}[$is_selected]{$color_set}{$line} ;
+				my $strip_rendering = $self->{CACHE}{STRIPS}{$color_set}{$line} ;
 				push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
 				}
 			}
 		
-		$renderings = $element->{CACHE}{RENDERING}[$is_selected]{$color_set} = \@renderings ;
+		$renderings = $element->{CACHE}{RENDERING}{$color_set} = \@renderings ;
 # print "-----> " . \@renderings . " " . scalar(@renderings) . "\n" ;
 		}
 	
