@@ -72,6 +72,7 @@ if(defined $new_self)
 	
 	my $VAR1 ;
 	eval $decompressed_new_self  ;
+	$VAR1->invalidate_rendering_cache() ;
 	
 	if($@)
 		{
@@ -98,18 +99,12 @@ else
 sub create_undo_snapshot
 {
 my ($self) = @_;
-#TODO: use the same huffman table for extra compression
+#TODO: use the same huffman table for all the frames in the undo buffer for extra compression
 my $serialized_self ;
 
 {
 	local $self->{DO_STACK} = undef ;
-	
-	# my $cache = $self->{CACHE} ;
-	# $self->invalidate_rendering_cache() ;
-	
 	$serialized_self = $self->serialize_self()  ;
-	
-	# $self->{CACHE} = $cache ;
 }
 
 my $compressed_self = compress $serialized_self ;

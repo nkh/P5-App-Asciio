@@ -75,6 +75,8 @@ my ($self, $arrow_type, $points, $direction, $allow_diagonal_lines, $editable, $
 
 if('ARRAY' eq ref $points && @{$points} > 0)
 	{
+	delete $self->{CACHE} ;
+	
 	my ($start_x, $start_y, $arrows) = (0, 0, []) ;
 	
 	my $points_offsets ;
@@ -145,134 +147,145 @@ sub get_stripes
 {
 my ($self) = @_ ;
 
-my @stripes ;
+my $stripes = $self->{CACHE}{STRIPES} ;
 
-my $arrow_index = 0 ;
-for my $arrow(@{$self->{ARROWS}})
+unless (defined $stripes)
 	{
-	push @stripes, 
-		map 
-		{
-		$_->{X_OFFSET} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
-		$_->{Y_OFFSET} += $self->{POINTS_OFFSETS}[$arrow_index][1];
-		$_ ;
-		} @{$arrow->get_stripes()} ;
-		
-	$arrow_index++ ;
-	}
+	my @stripes ;
 
-# handle connections
-my ($previous_direction) = ($self->{ARROWS}[0]{DIRECTION} =~ /^([^-]+)/) ;
-
-my $previous_was_diagonal ;
-
-$arrow_index = 0 ;
-for my $arrow(@{$self->{ARROWS}})
-	{
-	last if @{$self->{ARROWS}} == 1 ;
-	
-	my ($connection, $d1, $d2) ;
-		
-	if($arrow->{DIRECTION} =~ /^([^-]+)-([^-]+)$/) 
+	my $arrow_index = 0 ;
+	for my $arrow(@{$self->{ARROWS}})
 		{
-		($d1, $d2) = ($1, $2) ;
-		}
-	else
-		{
-		$d1 = $arrow->{DIRECTION};
-		}
-
-	if($self->{ALLOW_DIAGONAL_LINES} && $arrow->{WIDTH} == $arrow->{HEIGHT})
-		{
-		# this section is diagonal
-		if
-			(
-			$previous_was_diagonal
-			&& 
-				(
-				$previous_was_diagonal eq $arrow->{DIRECTION} 
-				|| 
-				(defined $d2 && $previous_was_diagonal eq "$d2-$d1")
-				)
-			)
+		push @stripes, 
+			map 
 			{
-			# two diagonals going in the same direction
-			$connection = $diagonal_direction_to_overlay_character{$arrow->{DIRECTION}} ;
+				{
+				TEXT     => $_->{TEXT},
+				WIDTH    => $_->{WIDTH}, 
+				HEIGHT   => $_->{HEIGHT} , 
+				X_OFFSET => $_->{X_OFFSET} + $self->{POINTS_OFFSETS}[$arrow_index][0],
+				Y_OFFSET => $_->{Y_OFFSET} + $self->{POINTS_OFFSETS}[$arrow_index][1],
+				}
+			} @{$arrow->get_stripes()} ;
+			
+		$arrow_index++ ;
+		}
+
+	# handle connections
+	my ($previous_direction) = ($self->{ARROWS}[0]{DIRECTION} =~ /^([^-]+)/) ;
+
+	my $previous_was_diagonal ;
+
+	$arrow_index = 0 ;
+	for my $arrow(@{$self->{ARROWS}})
+		{
+		last if @{$self->{ARROWS}} == 1 ;
+		
+		my ($connection, $d1, $d2) ;
+			
+		if($arrow->{DIRECTION} =~ /^([^-]+)-([^-]+)$/) 
+			{
+			($d1, $d2) = ($1, $2) ;
 			}
 		else
 			{
-			# previous non diagonal or two diagonals not going in the same direction
-			$connection  = ($d1 eq 'up' || (defined $d2 && $d2 eq 'up')) ?  q{'} : q{.} ;
+			$d1 = $arrow->{DIRECTION};
 			}
-				
-		$previous_was_diagonal = $arrow->{DIRECTION} ;
-		}
-	else
-		{
-		# straight or angled arrow
-		if(defined $previous_was_diagonal)
+		
+		if($self->{ALLOW_DIAGONAL_LINES} && $arrow->{WIDTH} == $arrow->{HEIGHT})
 			{
-			if($arrow->{DIRECTION} =~ /^down/)
+			# this section is diagonal
+			if
+				(
+				$previous_was_diagonal
+				&& 
+					(
+					$previous_was_diagonal eq $arrow->{DIRECTION} 
+					|| 
+					(defined $d2 && $previous_was_diagonal eq "$d2-$d1")
+					)
+				)
 				{
-				$connection = q{.}   ;
-				}
-			elsif($arrow->{DIRECTION} =~ /^up/)
-				{
-				$connection = q{'}  ;
+				# two diagonals going in the same direction
+				$connection = $diagonal_direction_to_overlay_character{$arrow->{DIRECTION}} ;
 				}
 			else
 				{
-				$connection = $previous_was_diagonal =~ /down/ ? q{'} : q{.} ;
+				# previous non diagonal or two diagonals not going in the same direction
+				$connection  = ($d1 eq 'up' || (defined $d2 && $d2 eq 'up')) ?  q{'} : q{.} ;
 				}
+					
+			$previous_was_diagonal = $arrow->{DIRECTION} ;
 			}
 		else
 			{
-			if($previous_direction ne $d1)
+			# straight or angled arrow
+			if(defined $previous_was_diagonal)
 				{
-				if($d1 eq 'down')
+				if($arrow->{DIRECTION} =~ /^down/)
 					{
-					$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+					$connection = q{.}   ;
 					}
-				elsif($d1 eq 'up')
+				elsif($arrow->{DIRECTION} =~ /^up/)
 					{
-					$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
-					}
-				elsif($previous_direction eq 'down')
-					{
-					$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
-					}
-				elsif($previous_direction eq 'up')
-					{
-					$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+					$connection = q{'}  ;
 					}
 				else
 					{
-					$connection = $self->{ARROW_TYPE}[$left_index][$body_index] ;  # for left and right, up down cases handled over
+					$connection = $previous_was_diagonal =~ /down/ ? q{'} : q{.} ;
 					}
 				}
+			else
+				{
+				if($previous_direction ne $d1)
+					{
+					if($d1 eq 'down')
+						{
+						$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+						}
+					elsif($d1 eq 'up')
+						{
+						$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
+						}
+					elsif($previous_direction eq 'down')
+						{
+						$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
+						}
+					elsif($previous_direction eq 'up')
+						{
+						$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+						}
+					else
+						{
+						$connection = $self->{ARROW_TYPE}[$left_index][$body_index] ;  # for left and right, up down cases handled over
+						}
+					}
+				}
+				
+			$previous_direction = defined $d2 ? $d2 : $d1 ;
+			$previous_was_diagonal = undef ;
 			}
 			
-		$previous_direction = defined $d2 ? $d2 : $d1 ;
-		$previous_was_diagonal = undef ;
-		}
-		
-	if($arrow_index != 0 && defined $connection) # first character of the first section is always right
-		{
-		# overlay the first character of this arrow
-		push @stripes, 
+		if($arrow_index != 0 && defined $connection) # first character of the first section is always right
 			{
-			X_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][0],
-			Y_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][1],
-			WIDTH => 1,
-			HEIGHT => 1,
-			TEXT => $connection,
-			} ;
+			# overlay the first character of this arrow
+			push @stripes, 
+				{
+				TEXT     => $connection,
+				WIDTH    => 1,
+				HEIGHT   => 1,
+				X_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][0],
+				Y_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][1],
+				} ;
+			}
+			
+		$arrow_index++ ;
 		}
-		
-	$arrow_index++ ;
+
+	$stripes = $self->{CACHE}{STRIPES} = \@stripes ;
 	}
 
-return \@stripes ;
+return $stripes ;
 }
 
 #-----------------------------------------------------------------------------
@@ -371,8 +384,8 @@ sub get_connector_points
 {
 my ($self) = @_ ;
 
-my(@all_connector_points)  = $self->get_all_points() ;
-my(@connector_points) ;
+my (@all_connector_points)  = $self->get_all_points() ;
+my (@connector_points) ;
 
 push @connector_points, $all_connector_points[0] unless $self->{NOT_CONNECTABLE_START} ;
 push @connector_points, $all_connector_points[-1] unless $self->{NOT_CONNECTABLE_END} ;
@@ -479,6 +492,8 @@ my $connection = $self->get_named_connection($connector_name) ;
 
 if($connection)
 	{
+	delete $self->{CACHE} ;
+	
 	my ($x_offset, $y_offset, $width, $height, undef) = 
 		$self->resize
 			(
@@ -511,6 +526,8 @@ my ($self, $reference_x, $reference_y, $new_x, $new_y, $hint, $connector_name_ar
 
 Readonly my $MULTI_WIRL_CONNECTOR_NAME_INDEX => 0 ;
 Readonly my $WIRL_CONNECTOR_NAME_INDEX => 1 ;
+
+delete $self->{CACHE} ;
 
 my ($start_element, $start_element_index, $end_element, $end_element_index) ;
 
@@ -721,6 +738,8 @@ sub insert_section
 {
 my ($self, $x_offset, $y_offset) = @_ ;
 
+delete $self->{CACHE} ;
+
 my $index = 0 ;
 
 for my $arrow (@{$self->{ARROWS}})
@@ -775,6 +794,8 @@ sub prepend_section
 {
 my ($self, $extend_x, $extend_y) = @_ ;
 
+delete $self->{CACHE} ;
+
 my $arrow = new App::Asciio::stripes::wirl_arrow
 			({
 			END_X => -$extend_x, 
@@ -804,6 +825,8 @@ $self->set(WIDTH => $width, HEIGHT => $height,) ;
 sub append_section
 {
 my ($self, $extend_x, $extend_y) = @_ ;
+
+delete $self->{CACHE} ;
 
 my $last_point = $self->get_points()->[-1] ;
 
@@ -838,6 +861,8 @@ my ($self) = @_ ;
 
 return if @{$self->{ARROWS}} == 1 ;
 
+delete $self->{CACHE} ;
+
 pop @{$self->{POINTS_OFFSETS}} ;
 pop @{$self->{ARROWS}} ;
 		
@@ -852,6 +877,8 @@ sub remove_first_section
 my ($self) = @_ ;
 
 return(0, 0) if @{$self->{ARROWS}} == 1 ;
+
+delete $self->{CACHE} ;
 
 my $second_arrow_x_offset = $self->{POINTS_OFFSETS}[1][0] ;
 my $second_arrow_y_offset = $self->{POINTS_OFFSETS}[1][1] ;
@@ -879,6 +906,8 @@ return($second_arrow_x_offset, $second_arrow_y_offset) ;
 sub change_section_direction
 {
 my ($self, $x, $y) = @_ ;
+
+delete $self->{CACHE} ;
 
 if(1 == @{$self->{ARROWS}})
 	{
@@ -988,6 +1017,8 @@ return($self->{ARROW_TYPE})  ;
 sub set_arrow_type
 {
 my ($self, $arrow_type) = @_ ;
+
+delete $self->{CACHE} ;
 $self->setup($arrow_type, $self->get_points(), $self->{DIRECTION}, $self->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
 }
 
@@ -1024,6 +1055,8 @@ sub edit
 my ($self) = @_ ;
 
 return unless $self->{EDITABLE} ;
+
+delete $self->{CACHE} ;
 
 $self->display_arrow_edit_dialog() ;
 

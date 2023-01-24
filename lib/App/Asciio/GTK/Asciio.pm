@@ -119,13 +119,16 @@ $widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_alloca
 }
 
 #-----------------------------------------------------------------------------
+# my $rendering_index = 0 ;
 
 sub expose_event
 {
 my ( $widget, $gc, $self ) = @_;
 
+# $rendering_index++ ;
+# print "\nRendering $rendering_index\n" ;
+
 $gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
-# $gc->set_font_size($self->{FONT_SIZE});
 $gc->set_line_width(1);
 
 my ($character_width, $character_height) = $self->get_character_size() ;
@@ -213,15 +216,16 @@ for my $element (@{$self->{ELEMENTS}})
 			
 	$foreground_color //= $self->get_color('element_foreground') ;
 	
-	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') ;
+	my $color_set = ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
+			. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
 	
 
-	my $renderings = $element->{CACHE}[$is_selected]{$color_set} ;
-	my @renderings ;
+	my $renderings = $element->{CACHE}{RENDERING}[$is_selected]{$color_set} ;
 	
 	unless (defined $renderings)
 		{
-		print "rendering [$is_selected]{$color_set} $element to " ;
+		my @renderings ;
+		
 		my $stripes = $element->get_stripes() ;
 		$self->update_quadrants($element) ;
 		
@@ -272,8 +276,8 @@ for my $element (@{$self->{ELEMENTS}})
 				}
 			}
 		
-		$renderings = $element->{CACHE}[$is_selected]{$color_set} = \@renderings ;
-		print "$element->{CACHE}[$is_selected]{$color_set} \n" ;
+		$renderings = $element->{CACHE}{RENDERING}[$is_selected]{$color_set} = \@renderings ;
+# print "-----> " . \@renderings . " " . scalar(@renderings) . "\n" ;
 		}
 	
 	for my $rendering (@$renderings)

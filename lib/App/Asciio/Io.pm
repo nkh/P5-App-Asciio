@@ -232,7 +232,7 @@ local $self->{CACHE} = undef ;
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	push @elements_cache, $element->{CACHE} ;
+	push @elements_cache, [$element, $element->{CACHE}] ;
 	$element->{CACHE} = undef ;
 	}
 
@@ -242,7 +242,10 @@ local $Data::Dumper::Sortkeys = 1 ;
 
 my $serialized = Dumper($self) ;
 
-$_->{CACHE} = pop @elements_cache for @{$self->{ELEMENTS}} ;
+for (@elements_cache)
+	{
+	$_->[0]{CACHE} = $_->[1] ;
+	}
 
 return $serialized ;
 }

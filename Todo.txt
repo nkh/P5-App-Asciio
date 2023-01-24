@@ -4,13 +4,10 @@
 
 update_display called everytime mouse changes grid cell, even if nothing close to grid cell
 	optimize by first looking if there will be changes, IE within an object, even if not on object
+	if object has changed, compute changed window, extent of all objects that have been changed plus their extent ....
+	we may still get an event where everything needs to be redrawn, IE: other window overlapped Asciios window 
 
-milti arrow doesn't render properly when multipl section or add section
-
-cache not working for multi arrow
-
-undo core dump
-
+delete an element and older elements must be regenerated
 
 check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
 
@@ -23,60 +20,8 @@ list points that can be made faster in Asciio core
 	octosplit?
 
 
-#gtk3 port:
-	#key send twice
-	#ctl+c not handled
-	#display corrupted
-	object dialog not opening
-	#object color wrong
-	#zoom out key not working
-	#new colors in night mode
-	#get font size to size objects and grid
-	#Flip transparent element background, makes foreground transparent
-	#section_wirl_arrow::Edit doesn't call wirl_arrow edit
-	#clipboard
-	#test all dialogs
-	#test all functions
-	#my $treedumper = Data::TreeDumper::Renderer::GTK->new
-
-	get pango size once, till next zoom
-
-	stop using cairo's toy text API which doesn't handle character spacing and other fonts
-
-	save png
-
-	#test all functions
-		#colors not set, new format?
-		#group colors
-		#context_menu_box
-
-	#event_option_changed
-
-
-#add mouse movements and clicks actions 
-	popup menu doesn't open at cursor position
-
-	#add possibility to insert entry in input queue to emulate previous mouse actions via keyboard
-
-	#selection
-		srtas at x=0 even if cursor moved
-		no deselection at start
-		no deselection at end
-
-	arrow resize not working
-
-	resize not started directly, works after one goies back to resize tag again
-
-#add numbered element display
-	like tmux show pane id
-
-#command: goto element index
-
 add canvas size to asciio object
 	use as limit when moving mouse emulation cursor
-
-#cache the grid
-	takes time to draw!
 
 angle arrow type not implemented, no dialog either
 
@@ -242,6 +187,66 @@ connections connected to a start and an end connector are displayed with warning
 	=> how do we handle double pointed arrows?
 
 #------------------- done ----------------------------
+
+#multi arrow doesn't render properly when multipl section or add section
+
+#cache not working for multi arrow
+	all the elements must handle their cache
+
+
+#undo core dump
+
+#gtk3 port:
+	#key send twice
+	#ctl+c not handled
+	#display corrupted
+	object dialog not opening
+	#object color wrong
+	#zoom out key not working
+	#new colors in night mode
+	#get font size to size objects and grid
+	#Flip transparent element background, makes foreground transparent
+	#section_wirl_arrow::Edit doesn't call wirl_arrow edit
+	#clipboard
+	#test all dialogs
+	#test all functions
+	#my $treedumper = Data::TreeDumper::Renderer::GTK->new
+
+	get pango size once, till next zoom
+
+	stop using cairo's toy text API which doesn't handle character spacing and other fonts
+
+	save png
+
+	#test all functions
+		#colors not set, new format?
+		#group colors
+		#context_menu_box
+
+	#event_option_changed
+
+
+#add mouse movements and clicks actions 
+	popup menu doesn't open at cursor position
+
+	#add possibility to insert entry in input queue to emulate previous mouse actions via keyboard
+
+	#selection
+		srtas at x=0 even if cursor moved
+		no deselection at start
+		no deselection at end
+
+	arrow resize not working
+
+	resize not started directly, works after one goies back to resize tag again
+
+#add numbered element display
+	like tmux show pane id
+
+#command: goto element index
+
+#cache the grid
+	takes time to draw!
 
 #insertion from context menu doesn't select inserted element while shortcut does
 

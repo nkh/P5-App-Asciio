@@ -379,6 +379,7 @@ sub flip_grid_display
 {
 my ($self) = @_ ;
 $self->{DISPLAY_GRID} ^=1 ;
+delete $self->{CACHE}{GRID} ;
 $self->update_display() ;
 }
 	
