@@ -10,6 +10,7 @@ use warnings;
 
 use Glib ':constants';
 use Gtk3 -init;
+use Pango ;
 
 use List::MoreUtils qw(minmax) ;
 
@@ -95,15 +96,6 @@ sub set_font
 my ($self, $font_family, $font_size) = @_;
 
 $self->SUPER::set_font($font_family, $font_size) ;
-
-$self->{widget}->modify_font
-	(
-	Pango::FontDescription::from_string 
-		(
-		$self->{FONT_FAMILY} . ' ' . $self->{FONT_SIZE}
-		)
-		
-	);
 }
 
 #-----------------------------------------------------------------------------
@@ -119,20 +111,17 @@ $widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_alloca
 }
 
 #-----------------------------------------------------------------------------
-# my $rendering_index = 0 ;
+my $rendering_index = 0 ;
 
 sub expose_event
 {
 my ( $widget, $gc, $self ) = @_;
 
-# $rendering_index++ ;
-# print "\nRendering $rendering_index\n" ;
+$rendering_index++ ;
 
-$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
 $gc->set_line_width(1);
 
 my ($character_width, $character_height) = $self->get_character_size() ;
-my $character_lift = $character_height / 3 ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
 # draw background
@@ -143,9 +132,6 @@ unless (defined $grid_rendering)
 	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
 	my $gc = Cairo::Context->create($surface);
 		
-	$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
-	$gc->set_font_size($self->{FONT_SIZE});
-
 	$gc->set_source_rgb(@{$self->get_color('background')});
 	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
 	$gc->fill;
@@ -174,10 +160,8 @@ unless (defined $grid_rendering)
 
 $gc->set_source_surface($grid_rendering, 0, 0);
 $gc->paint;
-$gc->show_page;
 
 # draw elements
-# todo: do not draw elements that are outside changed area
 my $element_index = 0 ;
 
 for my $element (@{$self->{ELEMENTS}})
@@ -220,7 +204,6 @@ for my $element (@{$self->{ELEMENTS}})
 			. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
 			. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
 	
-
 	my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
 	
 	unless (defined $renderings)
@@ -233,6 +216,7 @@ for my $element (@{$self->{ELEMENTS}})
 		for my $strip (@{$stripes})
 			{
 			my $line_index = 0 ;
+			
 			for my $line (split /\n/, $strip->{TEXT})
 				{
 				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
@@ -242,8 +226,6 @@ for my $element (@{$self->{ELEMENTS}})
 					my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
 					
 					my $gc = Cairo::Context->create($surface);
-					$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
-					$gc->set_font_size($self->{FONT_SIZE});
 					$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
 					$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
 					$gc->fill();
@@ -253,22 +235,21 @@ for my $element (@{$self->{ELEMENTS}})
 					if($self->{NUMBERED_OBJECTS})
 						{
 						$gc->set_line_width(1);
+						$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
+						$gc->set_font_size($self->{FONT_SIZE});
 						$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
-						$gc->move_to(0, $character_height - $character_lift);
+						$gc->move_to(0, $character_height * 0.66) ;
 						$gc->show_text($element_index);
 						$gc->stroke;
 						}
 					else
 						{
-						my $char_index = 0 ;
-						for my $char (split //, $line)
-							{
-							# raw positioning (that previously used Pango) needs polishing, can be addition
-							$gc->move_to($char_index++ * $character_width, $character_height - $character_lift);
-							$gc->show_text($char);
-							}
-							
-						$gc->stroke;
+						my $layout = Pango::Cairo::create_layout($gc) ;
+						
+						my $font_description = Pango::FontDescription->from_string($self->{FONT_FAMILY} . ' ' . $self->{FONT_SIZE}) ;
+						$layout->set_font_description($font_description) ;
+						$layout->set_text($line) ;
+						Pango::Cairo::show_layout($gc, $layout);
 						}
 					
 					$self->{CACHE}{STRIPS}{$color_set}{$line} = $surface ; # keep reference
@@ -280,7 +261,6 @@ for my $element (@{$self->{ELEMENTS}})
 			}
 		
 		$renderings = $element->{CACHE}{RENDERING}{$color_set} = \@renderings ;
-# print "-----> " . \@renderings . " " . scalar(@renderings) . "\n" ;
 		}
 	
 	for my $rendering (@$renderings)
@@ -356,10 +336,10 @@ for my $connection (@{$self->{CONNECTIONS}})
 			$gc->rectangle(0, 0, $character_width, $character_height);
 			$gc->stroke() ;
 			
-			$self->{CACHE}{EXTRA_POINT} = $surface ;
+			$self->{CACHE}{CONNECTION} = $surface ;
 			}
 		
-		my $connection_rendering = $self->{CACHE}{EXTRA_POINT} ;
+		my $connection_rendering = $self->{CACHE}{CONNECTION} ;
 		
 		$gc->set_source_surface
 			(
@@ -393,7 +373,6 @@ unless (defined $self->{CACHE}{CONNECTION_POINT})
 	
 	my $gc = Cairo::Context->create($surface);
 	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('connector_point')});
 	$gc->set_source_rgb(@{$self->get_color('connection_point')});
 	$gc->rectangle($character_width/3, $character_height/3, $character_width/3, $character_height/3);
 	$gc->stroke() ;
@@ -408,7 +387,6 @@ unless (defined $self->{CACHE}{EXTRA_POINT})
 	
 	my $gc = Cairo::Context->create($surface);
 	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('connector_point')});
 	$gc->set_source_rgb(@{$self->get_color('extra_point')});
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
@@ -630,8 +608,15 @@ else
 	{
 	unless (exists $self->{CACHE}{CHARACTER_SIZE})
 		{
-		$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE});
-		$self->{CACHE}{CHARACTER_SIZE} = [$self->{widget}->create_pango_layout('M')->get_pixel_size()] ;
+		my $surface = Cairo::ImageSurface->create('argb32', 100, 100);
+		my $gc = Cairo::Context->create($surface);
+		my $layout = Pango::Cairo::create_layout($gc) ;
+		
+		my $font_description = Pango::FontDescription->from_string($self->{FONT_FAMILY} . ' ' . $self->{FONT_SIZE}) ;
+		$layout->set_font_description($font_description) ;
+		$layout->set_text('M') ;
+		
+		$self->{CACHE}{CHARACTER_SIZE} = [$layout->get_pixel_size()] ;
 		}
 	
 	return @{ $self->{CACHE}{CHARACTER_SIZE} } ;

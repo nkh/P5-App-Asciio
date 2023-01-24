@@ -56,6 +56,7 @@ my ($family, $size) = $self->get_font() ;
 $self->set_font($family, $size + $direction) ;
 
 $self->invalidate_rendering_cache() ;
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
