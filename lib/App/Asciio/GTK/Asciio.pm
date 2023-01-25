@@ -279,7 +279,7 @@ for my $element (@{$self->{ELEMENTS}})
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
 	{
-	$gc->set_source_rgb(@{$line->{COLOR} });
+	$gc->set_source_rgb(@{$self->get_color('ruler_line')});
 	
 	if($line->{TYPE} eq 'VERTICAL')
 		{

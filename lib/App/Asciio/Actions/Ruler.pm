@@ -36,13 +36,8 @@ if(! defined $data->{POSITION})
 		}
 	}
 
-$self->add_ruler_lines
-		({
-		COLOR => $self->{COLORS}{ruler_line},
-		NAME => 'from context menu',
-		%{$data},
-		}) ;
-		
+$self->add_ruler_lines({NAME => 'from context menu', %{$data},}) ;
+
 $self->update_display();
 }
 

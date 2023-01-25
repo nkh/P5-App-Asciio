@@ -1,7 +1,5 @@
 
 div
-	night colors don't change the ruler colors
-
 	transparent background for cmd output
 		width > spaces == transparent
 		spaces => transparent
