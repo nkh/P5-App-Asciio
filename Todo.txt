@@ -3,8 +3,6 @@ test
 	check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
 
 actions
-	- add offsets input to multiple element creation window
-	
 	- add stencils dynamically
 	
 	- re-parsable asciio output

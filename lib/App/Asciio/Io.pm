@@ -199,7 +199,12 @@ if(defined $name && $name ne q[])
 		use Data::Dumper ;
 		my ($element) = $self->get_selected_elements(1) ;
 		
+		my $cache = $element->{CACHE} ;
+		delete $element->{CACHE} ;
+		
 		my $stencil = Clone::clone($element) ;
+		
+		$element->{CACHE} = $cache ;
 		
 		delete $stencil->{X} ;
 		delete $stencil->{Y} ;

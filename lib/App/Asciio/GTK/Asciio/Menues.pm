@@ -43,10 +43,11 @@ push @menu_items,
 	['/File/save',     undef , sub {$self->run_actions_by_name('Save') ;},      0 , '<Item>', undef],
 	[ '/File/save as', undef , sub {$self->run_actions_by_name(['Save', 1]) ;}, 0 , '<Item>', undef],
 	) ;
-	
+
+use App::Asciio::Io ;
 if($self->get_selected_elements(1) == 1)
 	{
-	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&save_stencil), 0 , '<Item>', undef ] ;
+	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&App::Asciio::save_stencil), 0 , '<Item>', undef ] ;
 	}	
 
 my $menu = Gtk3::Menu->new() ;
