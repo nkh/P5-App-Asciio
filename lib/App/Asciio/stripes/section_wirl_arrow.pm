@@ -822,6 +822,8 @@ my ($width, $height) = $self->get_width_and_height() ;
 $self->set(WIDTH => $width, HEIGHT => $height,) ;
 }
 
+#-----------------------------------------------------------------------------
+
 sub append_section
 {
 my ($self, $extend_x, $extend_y) = @_ ;
@@ -949,6 +951,8 @@ else
 	}
 }
 
+#-----------------------------------------------------------------------------
+
 sub is_over_element
 {
 my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @_ ;
@@ -974,7 +978,6 @@ for my $strip (@{$element->get_stripes()})
 	
 return($is_under) ;
 }
-
 
 #-----------------------------------------------------------------------------
 

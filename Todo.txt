@@ -1,49 +1,41 @@
 
-div
-	arrow can match inside a box, moving an arrow around has become more tricky
-		=> do not connect if both ends are unconnected and arrow is being moved
-
-	add offsets input to multiple element creation window
-
 test
 	check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
 
 actions
+	- add offsets input to multiple element creation window
 	- select all elements connected to currently selected element(s)
 	- select all elements connected to the element under the pointer
-	- expend selection level with '+', also implement '-', '*', ...
-
-	- optimize current arrow (A* pathfinder)
-	- click + key on arrow adds a 'flex' point to arrow
-
-	- let actions load stencils
-
+	- expand selection level with '+', also implement '-', '*', ...
+	
+	- add stencils dynamically
+	
 	- re-parsable asciio output
 		- in asciio that opens a text box where compact format can be pasted
 			asciio creates the objects on top of what's in the current session
-
+		
 		- open/import a compact format file
 			- if the file extentions is cf_asciio, the file is content are created
 			- parse the file for asciio object sections
 				if multiple sections are found, groups are created
-
+		
 		- save current selection to compact format
 			- save all if no selection
 			- add preview to file
 			- groups are saved in different sections
-
+		
 		- options to save compact format to clipboard when text is copied
-
+		
 		- $EDITOR function to open the compact format data in asciio
-
+		
 		- command line option to load a file or read data from stdin
-
+		
 		[type_id, x, y, [ [x, y, text], ...]]
 			[editable_box2, 28, 10, [[0, 0, '.---.\n|   |\n'---'],],
 			[editable_box2, 23, 6, [[0, 0, '.-------------------------------------.\n|  ...
-
+		
 		10 times the two boxes above (9.4 Kb), is 196 bytes compressed with xz,  268 bytes in base64, plus 10 bytes for commenting and Asciio tag
-
+		
 		# /Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4CVNAINdAC2ZSIa5noBxnZW0yqIaz72vVRjjgUzDGiy3
 		# Po3E8bwwy7VQE/zFZFk8FHevfr/c6NoV0cAfrJzC5Vh0AAwb7zaQTJFHsnC1eZQAMYtHQlS4jFEU
 		# JFwWj6O/0IZDP5A1uKJrx3w5LcogFPthz6Z8VJOmAvB6IhlEWmPofBNv7LcHAg8AAAClewlSPWXT
@@ -54,20 +46,20 @@ objects
 	table object
 	
 	markdown formatted text
-
+	
 	diagonal text, Ian's request
 		any orientation text + options to keep it to diagonals or horizontal, vertical
 		add text to angled arrow so the text can be rotated
 	
 	angle arrow dialog does nothing
-
+	
 	merge arrows and split arrow
-
+	
 	more than one resize handle
 
 display
 	Curses UI
-
+	
 	panning
 	
 	scrollbars
@@ -78,7 +70,7 @@ display
 		- save as pdf and printing
 		- use ANSI stencil
 			
-
+	
 	presentation mode
 		accept a directory as input
 			show slides based on sort order or order.slide.txt
@@ -94,9 +86,9 @@ display
 
 architecture
 	handle unicode (remove write_file)
-
+	
 	copy elements to the system clipboard to allow copies between instances
-
+	
 	handle multiple versions with one of the following mechanisms:
 		- git/embed git::PurePerl 
 		- use PAR 
@@ -106,12 +98,12 @@ optimization
 	selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 			need limits for arrow types
-
+	
 	update_display called everytime mouse changes grid cell, even if nothing close to grid cell
 		optimize by first looking if there will be changes, IE within an object, even if not on object
 		if object has changed, compute changed window, extent of all objects that have been changed plus their extent ....
 		we may still get an event where everything needs to be redrawn, IE: other window overlapped Asciios window 
-
+	
 		#App::Asciio::stripes::editable_arrow2=HASH(0x559c42d63638) (no extents)
 		#App::Asciio::stripes::angled_arrow=HASH(0x559c42e0bf80) (no extents)
 		#App::Asciio::stripes::if_box=HASH(0x559c42ccd3f8) (no extents)
@@ -121,34 +113,34 @@ optimization
 	large number of element
 		make a single box out of them
 			keep them in the current object or in a different file
-
+	
 	Zbuffer/bit masks
 		when rendering stripes, keep list of objects per cell
 			IE: quadrant size is 1 cell
-
+	
 	Connection optimizer
 		- no optimization needed for unchanged objects
 			- asciio must keep track of changed objects
 				- but we must not be intruisive
 					- md5 ??
-
+		
 		auto connection using A* module http://search.cpan.org/~acdalton/AI-Pathfinding-AStar-0.10/
 			- orthogonal or orthogonal and diagonal arrows
 			- add get_cost_map to base Asciio
 				- get_cost_map can also be implemented in draw in sub classes
 			- connectors and elements could have different costs
-
-
+		
 		http://www-cs-students.stanford.edu/~amitp/gameprog.html
 		Path finding, see ISBN 2550-0124977820
-
-
+		
 		connected, non auto-connect, arrows loose their connection if the connectee is resized
 			=> this is because resize doesn't keep the connection. The 
 				canonizer reconnects elements but non auto-connect objects are not handled by the canonizer
 				
 				=> make canonizer re connect to the same place instead for changing the connector
-
+		
+		optimize current arrow (A* pathfinder)
+	
 	do_stack serialization
 		# use bzip2
 		=> diff + compress

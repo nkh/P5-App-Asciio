@@ -35,7 +35,7 @@ COLOR_SCHEMES =>
 		connection_point => [0.51, 0.39, 0.20],
 		connector_point => [0.12, 0.56, 1.00],
 		new_connection => [1.00, 0.00, 0.00],
-		extra_point => [0.59, 0.43, 50], 
+		extra_point => [0.70, 0.57, 0.32],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
 		}, 
@@ -63,7 +63,7 @@ COLOR_SCHEMES =>
 		connection_point => [0.90, 0.77, 0.52],
 		connector_point => [0.12, 0.56, 1.00],
 		new_connection => [1.00, 0.00, 0.00],
-		extra_point => [0.90, 0.77, 0.52],
+		extra_point => [0.70, 0.57, 0.32],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
 		} 

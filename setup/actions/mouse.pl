@@ -1,29 +1,31 @@
 
 use App::Asciio::Actions::Mouse ;
+use App::Asciio::Actions::Multiwirl ;
 
 #----------------------------------------------------------------------------------------------
 
 register_action_handlers
 	(
-	'Quick link'              => ['00S-button_press-1', \&App::Asciio::Actions::Mouse::quick_link] ,
+	'Quick link'              => ['00S-button_press-1', \&App::Asciio::Actions::Mouse::quick_link                    ] ,
+	'Insert flex point'       => ['0A0-button_press-1', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section ],
 	
-	# 'left button pressed'     => ['000-button_press-1', \&left_button_pressed                    ] ,
+	# 'left button pressed'     => ['000-button_press-1', \&left_button_pressed                                        ] ,
 
-	'Toggle mouse'            => ['000-apostrophe',     \&toggle_mouse                           ] ,
+	'Toggle mouse'            => ['000-apostrophe',     \&toggle_mouse                                               ] ,
 
-	'Mouse left-click'        => ['000-odiaeresis',     \&mouse_left_click                       ] ,
-	'Mouse shift-left-click'  => ['00S-Odiaeresis',     \&mouse_shift_left_click                 ] ,
-	'Mouse ctl-left-click'    => ['C00-odiaeresis',     \&mouse_ctl_left_click                   ] ,
-	'Mouse alt-left-click'    => ['0A0-odiaeresis',     \&mouse_alt_left_click                   ] ,
+	'Mouse left-click'        => ['000-odiaeresis',     \&mouse_left_click                                           ] ,
+	'Mouse shift-left-click'  => ['00S-Odiaeresis',     \&mouse_shift_left_click                                     ] ,
+	'Mouse ctl-left-click'    => ['C00-odiaeresis',     \&mouse_ctl_left_click                                       ] ,
+	'Mouse alt-left-click'    => ['0A0-odiaeresis',     \&mouse_alt_left_click                                       ] ,
 
-	'Mouse right-click'       => ['000-adiaeresis',     \&mouse_right_click                      ] ,
+	'Mouse right-click'       => ['000-adiaeresis',     \&mouse_right_click                                          ] ,
 	
-	'Mouse drag left'         => ['00S-Left',           \&mouse_drag_left                        ] ,
-	'Mouse drag right'        => ['00S-Right',          \&mouse_drag_right                       ] ,
-	'Mouse drag up'           => ['00S-Up',             \&mouse_drag_up                          ] ,
-	'Mouse drag down'         => ['00S-Down',           \&mouse_drag_down                        ] ,
+	'Mouse drag left'         => ['00S-Left',           \&mouse_drag_left                                            ] ,
+	'Mouse drag right'        => ['00S-Right',          \&mouse_drag_right                                           ] ,
+	'Mouse drag up'           => ['00S-Up',             \&mouse_drag_up                                              ] ,
+	'Mouse drag down'         => ['00S-Down',           \&mouse_drag_down                                            ] ,
 
-	'Mouse on element id'     => ['00S-G',              \&mouse_on_element_id                    ] ,
+	'Mouse on element id'     => ['00S-G',              \&mouse_on_element_id                                        ] ,
 	#~ 'C00-button_release' => ['', ] ,
 	#~ 'C00-motion_notify' =>['', ] ,
 	) ;

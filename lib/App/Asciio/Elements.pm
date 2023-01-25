@@ -203,8 +203,8 @@ my %selected_elements = map { $_ => 1} @elements ;
 
 for my $element (@elements)
 	{
-	@$element{'X', 'Y'} =	($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
-		
+	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
+	
 	# handle arrow element
 	my (@current_element_connections, %used_connectors) ;
 	
@@ -213,7 +213,7 @@ for my $element (@elements)
 		# disconnect current connections if it is not connected to another elements we are moving
 		# connectees move their connected along
 		
-		@current_element_connections =$self->get_connections_containing($element)  ,
+		@current_element_connections = $self->get_connections_containing($element)  ,
 		
 		my (@connections_to_delete, @connections_to_keep) ;
 		for my $current_element_connection (@current_element_connections)
