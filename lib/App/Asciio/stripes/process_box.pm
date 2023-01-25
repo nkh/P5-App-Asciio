@@ -166,6 +166,7 @@ $self->set
 	TEXT_ONLY => $text_only,
 	EDITABLE => $editable,
 	RESIZABLE => $resizable,
+	EXTENTS => [0, 0, $element_width, $y_offset +  1],
 	) ;
 }
 

@@ -54,6 +54,30 @@ my ($self, $glyphs, $end_x, $end_y, $direction, $editable) = @_ ;
 
 (my ($stripes, $width, $height), $direction) = get_arrow($glyphs, $end_x, $end_y, $direction) ;
 
+my ($ex1, $ey1, $ex2, $ey2) ;
+
+if ($end_x < 0)
+	{
+	$ex1 = $end_x ;
+	$ex2 = 1 ;
+	}
+else
+	{
+	$ex1 = 0 ;
+	$ex2 = $end_x + 1 ;
+	}
+
+if ($end_y < 0)
+	{
+	$ey1 = $end_y ;
+	$ey2 = 1 ;
+	}
+else
+	{
+	$ey1 = 0 ;
+	$ey2 = $end_y + 1 ;
+	}
+
 $self->set
 	(
 	GLYPHS => $glyphs,
@@ -63,6 +87,7 @@ $self->set
 	DIRECTION => $direction,
 	END_X => $end_x,
 	END_Y => $end_y,
+	EXTENTS => [$ex1, $ey1, $ex2, $ey2],
 	) ;
 }
 

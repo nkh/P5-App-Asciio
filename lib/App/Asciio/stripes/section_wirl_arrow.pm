@@ -1001,6 +1001,8 @@ for my $start_point (@{$self->{POINTS_OFFSETS}})
 	$arrow_index++ ;
 	}
 
+$self->{EXTENTS} = [$smallest_x, $smallest_y, $biggest_x + 1, $biggest_y + 1] ;
+
 return(($biggest_x - $smallest_x) + 1, ($biggest_y - $smallest_y) + 1) ;
 }
 

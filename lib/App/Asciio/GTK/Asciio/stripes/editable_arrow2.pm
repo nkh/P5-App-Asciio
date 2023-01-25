@@ -22,27 +22,18 @@ $dialog->set_default_size (220, 270);
 $dialog->add_button ('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new (FALSE, 5);
-$vbox->pack_start (Gtk3::Label->new (""),
-		 FALSE, FALSE, 0);
+$vbox->add(Gtk3::Label->new (""));
 
-my $sw = Gtk3::ScrolledWindow->new;
-$sw->set_shadow_type ('etched-in');
-$sw->set_policy ('automatic', 'automatic');
-$vbox->pack_start ($sw, TRUE, TRUE, 0);
-
-my $model = create_model ($rows);
-
-my $treeview = Gtk3::TreeView->new_with_model ($model);
+my $treeview = Gtk3::TreeView->new_with_model(create_model ($rows));
 $treeview->set_rules_hint (TRUE);
 $treeview->get_selection->set_mode ('single');
 
 add_columns($treeview, $rows);
 
-$sw->add($treeview);
+$vbox->add($treeview);
 
 $treeview->show() ;
 $vbox->show() ;
-$sw->show() ;
 
 $dialog->get_content_area()->add($vbox) ;
 $dialog->run() ;

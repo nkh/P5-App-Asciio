@@ -100,6 +100,7 @@ for my $line (@bottom_lines)
 	}
 
 $text .= ' ' x ($half_the_lines + 1) . q{'} . '-' x $text_width . q{'} . "\n" ;
+my $height = $text =~ tr[\n][\n] ;
 
 $self->set
 	(
@@ -109,7 +110,8 @@ $self->set
 	TEXT_ONLY => $text_only,
 	RESIZABLE => $resizable,
 	EDITABLE => $editable,
-	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $width, HEIGHT => ($text =~ tr[\n][\n]) + 1, TEXT => $text} ],
+	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $width, HEIGHT => $height, TEXT => $text} ],
+	EXTENTS => [0, 0, $width, $height],
 	) ;
 }
 

@@ -2,30 +2,32 @@
 # This is the todo.txt #
 #----------------------#
 
-update_display called everytime mouse changes grid cell, even if nothing close to grid cell
-	optimize by first looking if there will be changes, IE within an object, even if not on object
-	if object has changed, compute changed window, extent of all objects that have been changed plus their extent ....
-	we may still get an event where everything needs to be redrawn, IE: other window overlapped Asciios window 
-
-delete an element and older elements must be regenerated
-
 check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
 
-
-list points that can be made faster in Asciio core
+list of points that can be made faster in Asciio core
 	selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 			need limits for arrow types
 
-	octosplit?
+	update_display called everytime mouse changes grid cell, even if nothing close to grid cell
+		optimize by first looking if there will be changes, IE within an object, even if not on object
+		if object has changed, compute changed window, extent of all objects that have been changed plus their extent ....
+		we may still get an event where everything needs to be redrawn, IE: other window overlapped Asciios window 
 
-
-add canvas size to asciio object
-	use as limit when moving mouse emulation cursor
+		#App::Asciio::stripes::editable_arrow2=HASH(0x559c42d63638) (no extents)
+		#App::Asciio::stripes::angled_arrow=HASH(0x559c42e0bf80) (no extents)
+		#App::Asciio::stripes::if_box=HASH(0x559c42ccd3f8) (no extents)
+		#App::Asciio::stripes::process_box=HASH(0x559c42cd3dc0) (no extents)
+		App::Asciio::stripes::rhombus=HASH(0x559c42d79c08) (no extents)
+	
+	large number of element
+		make a single box out of them
+			keep them in the current object or in a different file
 
 angle arrow type not implemented, no dialog either
 
 use json as file format
+	faster saving (see pbs)
 
 diagonal text is kinky, Ian's request
 	any orientation text + options to keep it to diagonals or horizontal, vertical
@@ -99,7 +101,7 @@ document what ascii_events should contain
 split into two distributions?
 	=> easier for those who want to build another interface
 
-setup/actions manipulating asciio object directely move to asciio
+setup/actions manipulating asciio object directly move to asciio
 
 transparent background for cmd output
 	width > spaces == transparent

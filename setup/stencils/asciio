@@ -6,7 +6,7 @@ use  App::Asciio::Stencil qw(create_box create_element) ;
 [
 create_box(WITH_SIZE => [4, 2], WITH_FRAME => 1, TEXT_ONLY => '', NAME => 'box',),
 create_box(WITH_SIZE => [4, 2], WITH_FRAME => 1, TEXT_ONLY => 'text', NAME => 'shrink_box', AUTO_SHRINK => 1,),
-create_box( TEXT_ONLY => 'A', NAME => 'text', AUTO_SHRINK => 1,),
+create_box(TEXT_ONLY => 'A', NAME => 'text', AUTO_SHRINK => 1,),
 
 create_element
 	(
@@ -36,6 +36,7 @@ create_element
 	END_X => 3,
 	END_Y => -3,
 	RESIZABLE => 1,
+	EDITABLE => 1,
 	) ,
 	
 create_element

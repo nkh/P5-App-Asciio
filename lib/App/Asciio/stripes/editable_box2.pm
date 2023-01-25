@@ -116,6 +116,7 @@ $self->set
 	EDITABLE => $editable,
 	AUTO_SHRINK => $auto_shrink,
 	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $end_x, HEIGHT => $end_y, TEXT => $text } ],
+	EXTENTS => [ 0, 0, $end_x, $end_y ],
 	) ;
 }
 
@@ -139,8 +140,8 @@ sub get_box_frame_size_overhead
 my ($box_type) = @_ ;
 
 my @displayed_elements = grep { $_->[$DISPLAY] } @{$box_type} ;
-my $extra_width = max(0, map {length} map {$_->[$LEFT]}@displayed_elements)
-				+ max(0, map {length} map {$_->[$RIGHT]}@displayed_elements) ;
+my $extra_width = max(0, map {length} map {$_->[$LEFT]} @displayed_elements)
+				+ max(0, map {length} map {$_->[$RIGHT]} @displayed_elements) ;
 				
 my $extra_height = 0 ;
 

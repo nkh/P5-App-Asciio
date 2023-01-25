@@ -25,7 +25,6 @@ $dialog->set_default_size(450, 305);
 $dialog->add_button('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new(FALSE, 5);
-# $vbox->pack_start(Gtk3::Label->new (""), FALSE, FALSE, 0);
 $vbox->add(Gtk3::Label->new (""));
 
 my $treeview = Gtk3::TreeView->new_with_model(create_model($rows));
@@ -37,7 +36,6 @@ $vbox->add($treeview);
 
 # box title
 my $titleview = Gtk3::TextView->new;
-# $titleview->modify_font(Pango::FontDescription->from_string('monospace 10'));
 my $title_buffer = $titleview->get_buffer ;
 $title_buffer->insert($title_buffer->get_end_iter, $title);
 
@@ -46,7 +44,6 @@ $titleview->show;
 
 # box text 
 my $textview = Gtk3::TextView->new;
-#$textview->modify_font (Gtk3::Pango::FontDescription->from_string ('monospace 10'));
 
 my $text_buffer = $textview->get_buffer;
 $text_buffer->insert($text_buffer->get_end_iter, $text);

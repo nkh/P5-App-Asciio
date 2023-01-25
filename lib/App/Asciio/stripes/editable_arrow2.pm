@@ -48,6 +48,30 @@ my ($self, $arrow_type, $end_x, $end_y, $editable) = @_ ;
 
 my ($stripes, $real_end_x, $real_end_y) = get_arrow($arrow_type, $end_x, $end_y) ;
 
+my ($ex1, $ey1, $ex2, $ey2) ;
+
+if ($real_end_x < 0)
+	{
+	$ex1 = $real_end_x ;
+	$ex2 = 1 ;
+	}
+else
+	{
+	$ex1 = 0 ;
+	$ex2 = $real_end_x + 1 ;
+	}
+
+if ($real_end_y < 0)
+	{
+	$ey1 = $real_end_y ;
+	$ey2 = 1 ;
+	}
+else
+	{
+	$ey1 = 0 ;
+	$ey2 = $real_end_y + 1 ;
+	}
+
 $self->set
 	(
 	STRIPES => $stripes,
@@ -55,6 +79,7 @@ $self->set
 	END_Y => $real_end_y,
 	ARROW_TYPE => $arrow_type,
 	CACHE => undef,
+	EXTENTS => [$ex1, $ey1, $ex2, $ey2],
 	) ;
 }
 
@@ -440,7 +465,7 @@ sub edit
 {
 my ($self, $asciio) = @_ ;
 
-return unless $self->{EDITABLE} ;
+# return unless $self->{EDITABLE} ;
 
 $self->display_box_edit_dialog() ;
 
