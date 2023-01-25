@@ -1,10 +1,32 @@
-#----------------------#
-# This is the todo.txt #
-#----------------------#
 
-check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
+copy to clipboard removes empty lines at the begining of the buffer
 
-list of points that can be made faster in Asciio core
+add offsets input to multiple element creation window
+
+night colors don't change the ruler colors
+
+transparent background for cmd output
+	width > spaces == transparent
+	spaces => transparent
+	0 => transparent
+	
+arrow can match inside a box, moving an arrow around has become more tricky
+	=> do not connect if both ends are unconnected and arrow is being moved
+
+test
+	check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
+
+architecture
+	handle unicode (remove write_file)
+
+	copy elements to the system clipboard to allow copies between instances
+
+	handle multiple versions with one of the following mechanisms:
+		- git/embed git::PurePerl 
+		- use PAR 
+		- multiple directories
+
+optimization 
 	selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 			need limits for arrow types
@@ -24,171 +46,129 @@ list of points that can be made faster in Asciio core
 		make a single box out of them
 			keep them in the current object or in a different file
 
-angle arrow type not implemented, no dialog either
+	Zbuffer/bit masks
+		when rendering stripes, keep list of objects per cell
+			IE: quadrant size is 1 cell
 
-use json as file format
-	faster saving (see pbs)
+	Connection optimizer
+		- no optimization needed for unchanged objects
+			- asciio must keep track of changed objects
+				- but we must not be intruisive
+					- md5 ??
 
-diagonal text is kinky, Ian's request
-	any orientation text + options to keep it to diagonals or horizontal, vertical
+		auto connection using A* module http://search.cpan.org/~acdalton/AI-Pathfinding-AStar-0.10/
+			- orthogonal or orthogonal and diagonal arrows
+			- add get_cost_map to base Asciio
+				- get_cost_map can also be implemented in draw in sub classes
+			- connectors and elements could have different costs
 
+
+		http://www-cs-students.stanford.edu/~amitp/gameprog.html
+		Path finding, see ISBN 2550-0124977820
+
+
+		connected, non auto-connect, arrows loose their connection if the connectee is resized
+			=> this is because resize doesn't keep the connection. The 
+				canonizer reconnects elements but non auto-connect objects are not handled by the canonizer
+				
+				=> make canonizer re connect to the same place instead for changing the connector
+
+	do_stack serialization
+		# use bzip2
+		=> diff + compress
+			# tests done
+			must have a reverse diff that can patch both ways or it's not worth it
+		let git do the work ?
+
+objects
+	table object
 	
-auto connection using A* module http://search.cpan.org/~acdalton/AI-Pathfinding-AStar-0.10/
-	- orthogonal or orthogonal and diagonal arrows
-	- add get_cost_map to base Asciio
-		- get_cost_map can also be implemented in draw in sub classes
-	- connectors and elements could have different costs
+	markdown formatted text
 
+	diagonal text, Ian's request
+		any orientation text + options to keep it to diagonals or horizontal, vertical
+		add text to angled arrow so the text can be rotated
+	
+	angle arrow dialog does nothing
 
-Optimize the connection optimizer
-	- no optimization needed for unchanged objects
-		- asciio must keep track of changed objects
-			- but we must not be intruisive
-				- md5 ??
+	merge arrows and split arrow
 
-re-parsable asciio output with minimal data
+	more than one resize handle
 
-read
-	http://www-cs-students.stanford.edu/~amitp/gameprog.html
-	Path finding, see ISBN 2550-0124977820
-
-add actions:
+actions
 	- select all elements connected to currently selected element(s)
 	- select all elements connected to the element under the pointer
 	- expend selection level with '+', also implement '-', '*', ...
 
 	- optimize current arrow (A* pathfinder)
-	- click + key on arrow adds a 'flex' point
+	- click + key on arrow adds a 'flex' point to arrow
 
-what's new section
+	- let actions load stencils
 
-night colors don't change the ruler colors
+	- re-parsable asciio output
+		- in asciio that opens a text box where compact format can be pasted
+			asciio creates the objects on top of what's in the current session
 
-? generate "nice looking" graph
-	- interface to ditaa
-	- HTML document?!
+		- open/import a compact format file
+			- if the file extentions is cf_asciio, the file is content are created
+			- parse the file for asciio object sections
+				if multiple sections are found, groups are created
 
-copy to clipboard removes empty lines at the begining of the buffer
+		- save current selection to compact format
+			- save all if no selection
+			- add preview to file
+			- groups are saved in different sections
 
-two section arrow middle connector keeps horizontal with linked element
-	this would reduce the amount of changes that need to be done manually
+		- options to save compact format to clipboard when text is copied
 
-Curses UI
+		- $EDITOR function to open the compact format data in asciio
 
-tutorial
+		- command line option to load a file or read data from stdin
 
-add offset input to multiple element creation window
+		[type_id, x, y, [ [x, y, text], ...]]
+			[editable_box2, 28, 10, [[0, 0, '.---.\n|   |\n'---'],],
+			[editable_box2, 23, 6, [[0, 0, '.-------------------------------------.\n|  ...
 
-slide mode
-	accept a directory as input
-		show slides based on sort order or order.slide.txt
-	allow saving of modified slides
-	allow deletion and insertion of slides
-		what if the slides are under git control?
-	extra window to show slide order and modify it (and the slides maybe)
-	extra slide menu (through actions)
-		open
-		save
-		insert
-		delete
-	
-arrow menu not working
+		10 times the two boxes above (9.4 Kb), is 196 bytes compressed with xz,  268 bytes in base64, plus 10 bytes for commenting and Asciio tag
 
-document what ascii_events should contain
-	links to gtk doc
-	should the content itself be defined in the derived class?
+		# /Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4CVNAINdAC2ZSIa5noBxnZW0yqIaz72vVRjjgUzDGiy3
+		# Po3E8bwwy7VQE/zFZFk8FHevfr/c6NoV0cAfrJzC5Vh0AAwb7zaQTJFHsnC1eZQAMYtHQlS4jFEU
+		# JFwWj6O/0IZDP5A1uKJrx3w5LcogFPthz6Z8VJOmAvB6IhlEWmPofBNv7LcHAg8AAAClewlSPWXT
+		# UQABnwHOSgAA2Mia+bHEZ/sCAAAAAARZWg==Asciio
+			
+			base 64 format '\s?\S+\s(*.)' to make it possible to find the b64 in text with comments
+display
+	Curses UI
 
-split into two distributions?
-	=> easier for those who want to build another interface
-
-setup/actions manipulating asciio object directly move to asciio
-
-transparent background for cmd output
-	width > spaces == transparent
-	spaces => transparent
-	0 => transparent
-	
-merge arrows and split arrow
-
-arrow merge object
-	like a single character text but nicer to use with  arrows
-	or merge arrow connections directely (weld them together)
-	
-multi-ended connectors
-	add remove end from multi ended connectors
-
-start and end connectors should have different colors
-
-copy elements to the system clipboard to allow copies between instances
-
-handle multiple versions with one of the following mechanisms:
-	- embed git::PurePerl 
-	- use PAR 
-	- multiple directories
-
-Display version somewhere
-
-connected, non auto-connect, arrows loose their connection if the connectee is resized
-	=> this is because resize doesn't keep the connection. The 
-		canonizer reconnects elements but non auto-connect objects are not handled by the canonizer
-		
-		=> make canonizer re connect to the same place instead for changing the connector
-		
-magnet object for ESD
-
-reload color options after loading file
-	display_grid + element_backgound_color
-	
-search for stripe class in the setup directory
-	or list the directories in the setup
-	or add the directory as setup data and 'use lib'
-	
-let actions load stencils
-
-forward KB + mouse events to stripes objects
-	
-table object
-	bulleted lists and otherwise formatted text
-
-record box object
-
-save as pdf and printing
-
-more than one resize handle
-
-zoom on pointer
-	#not ctl to zoom
 	panning
+	
 	scrollbars
 	
-autosave
+	? generate "nice looking" graph
+		- interface to ditaa
+		- HTML document?!
+		- save as pdf and printing
+		- use ANSI stencil
+			
 
-connector grouping
-
-cancel button in editing windows
-
-handle unicode (remove write_file)
-
-now arrow can match inside a box, moving an arrow around has become more tricky
-	=> do not connect if both ends are unconnected and arrow is being moved
-
-move action constants to module
-
-optimize do_stack serialization
-	# use bzip2
-	=> diff + compress
-		# tests done
-		must have a reverse diff that can patch both ways or it's not worth it
-		
-Management mode
-	=> make ascii look like not ascii
-		=> use ANSI X3.64
-		
-connections connected to a start and an end connector are displayed with warning color
-	move to display plugins
-	=> how do we handle double pointed arrows?
+	presentation mode
+		accept a directory as input
+			show slides based on sort order or order.slide.txt
+		allow saving of modified slides
+		allow deletion and insertion of slides
+			what if the slides are under git control?
+		extra window to show slide order and modify it (and the slides maybe)
+		extra slide menu (through actions)
+			open
+			save
+			insert
+			delete
 
 #------------------- done ----------------------------
+
+#connection object
+	can be grouped
+	no difference with a text object except it has not text, or maybe a connection text
 
 #multi arrow doesn't render properly when multipl section or add section
 

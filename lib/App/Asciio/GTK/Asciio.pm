@@ -211,7 +211,7 @@ for my $element (@{$self->{ELEMENTS}})
 		my @renderings ;
 		
 		my $stripes = $element->get_stripes() ;
-		$self->update_quadrants($element) ;
+		# $self->update_quadrants($element) ;
 		
 		for my $strip (@{$stripes})
 			{
