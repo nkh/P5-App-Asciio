@@ -56,7 +56,6 @@ my $treedumper = Data::TreeDumper::Renderer::GTK->new
 				data => $data,
 				dumper_setup => {@dumper_setup}
 				);
-$treedumper->modify_font(Pango::FontDescription::from_string ('monospace'));
 $treedumper->collapse_all;
 $treedumper->set_hexpand(TRUE) ;
 $treedumper->set_vexpand(TRUE) ;

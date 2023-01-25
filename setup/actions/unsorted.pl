@@ -21,7 +21,7 @@ register_action_handlers
 	# 'Zoom out'                                              => ['000-KP_Subtract', \&App::Asciio::Actions::Unsorted::zoom, -1                                      ],
 	'Help'                                                  => ['000-F1',          \&App::Asciio::Actions::Unsorted::display_help                                  ],
 	'External command output in a box'                      => ['000-x',           \&App::Asciio::Actions::Unsorted::external_command_output, 1                    ],
-	'External command output in a box no frame'             => ['C00-x',           \&App::Asciio::Actions::Unsorted::external_command_output, 0                    ],
+	'External command output in a box no frame'             => ['0A0-x',           \&App::Asciio::Actions::Unsorted::external_command_output, 0                    ],
 	) ;
 
 #----------------------------------------------------------------------------------------------
