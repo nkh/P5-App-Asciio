@@ -1,17 +1,16 @@
 
-copy to clipboard removes empty lines at the begining of the buffer
+div
+	night colors don't change the ruler colors
 
-add offsets input to multiple element creation window
+	transparent background for cmd output
+		width > spaces == transparent
+		spaces => transparent
+		0 => transparent
+		
+	arrow can match inside a box, moving an arrow around has become more tricky
+		=> do not connect if both ends are unconnected and arrow is being moved
 
-night colors don't change the ruler colors
-
-transparent background for cmd output
-	width > spaces == transparent
-	spaces => transparent
-	0 => transparent
-	
-arrow can match inside a box, moving an arrow around has become more tricky
-	=> do not connect if both ends are unconnected and arrow is being moved
+	add offsets input to multiple element creation window
 
 test
 	check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode

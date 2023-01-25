@@ -12,7 +12,10 @@ sub transform_elements_to_ascii_buffer
 {
 my ($self, @elements)  = @_ ;
 
-return(join("\n", $self->transform_elements_to_ascii_array(@elements)) . "\n") ;
+my $text = join("\n", $self->transform_elements_to_ascii_array(@elements)) . "\n" ;
+$text =~ s/^\n+|\n\K\n+$//g ;
+
+return($text) ;
 }
 
 #-----------------------------------------------------------------------------
