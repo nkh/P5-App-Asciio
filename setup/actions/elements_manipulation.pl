@@ -11,6 +11,7 @@ register_action_handlers
 	
 	'Select all elements'                           => ['C00-a',            \&App::Asciio::Actions::ElementsManipulation::select_all_elements                      ],
 	'Deselect all elements'                         => ['000-l',            \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements                    ],
+	'Select connected elements'                     => ['00S-P',            \&App::Asciio::Actions::ElementsManipulation::select_connected                         ],
 	
 	'Delete selected elements'                      => ['000-Delete',       \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements                 ],
 	
@@ -30,6 +31,6 @@ register_action_handlers
 	
 	'Change arrow direction'                        => ['000-d',            \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction                   ],
 	'Flip arrow start and end'                      => ['000-f',            \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                          ],
+
 	) ;
-	
 

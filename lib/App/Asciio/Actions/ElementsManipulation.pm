@@ -257,6 +257,35 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub select_connected
+{
+my ($self) = @_ ;
+
+my %selected_elements = map { $_ => 1 } $self->get_selected_elements(1) ;
+
+my (@selected_elements_connected, %selected_elements_connected, @not_connected_to_selected_element) ;
+
+for my $connection (@{$self->{CONNECTIONS}})
+	{
+ 	if(exists $selected_elements{$connection->{CONNECTEE}})
+		{
+		push @selected_elements_connected, $connection->{CONNECTED} ;
+		$selected_elements_connected{$connection->{CONNECTED}}++ ;
+		}
+	else
+		{
+		push @not_connected_to_selected_element, $connection ;
+		}
+	}
+
+$self->select_elements(1, @selected_elements_connected) ;
+$self->select_elements(1, map { $_->{CONNECTEE} } grep { exists $selected_elements_connected{$_->{CONNECTED}} } @not_connected_to_selected_element) ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 sub deselect_all_elements
 {
 my ($self) = @_ ;
