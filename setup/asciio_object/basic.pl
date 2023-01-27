@@ -2,6 +2,7 @@ FONT_FAMILY => 'Monospace',
 FONT_SIZE => '14',
 TAB_AS_SPACES => '    ',
 DISPLAY_GRID => 1,
+DISPLAY_GRID2 => 1,
 COPY_OFFSET_X => 4,
 COPY_OFFSET_Y => 4,
 MOUSE_X => 0,
@@ -16,6 +17,7 @@ COLOR_SCHEMES =>
 		{
 		background => [0.04, 0.04, 0.04],
 		grid => [0.12, 0.12, 0.12],
+		grid_2 => [0.22, 0.22, 0.22],
 		ruler_line => [0.10, 0.23, 0.31],
 		selected_element_background => [0.10, 0.16, 0.20],
 		element_background => [0.10, 0.10, 0.10],
@@ -43,6 +45,7 @@ COLOR_SCHEMES =>
 		{
 		background => [1.00, 1.00, 1.00],
 		grid => [0.89, 0.92, 1.00],
+		grid_2 => [0.79, 0.82, 0.90],
 		ruler_line => [0.33, 0.61, 0.88],
 		element_background => [0.98, 0.98, 1],
 		element_foreground => [0.00, 0.00, 0.00] ,

@@ -139,22 +139,28 @@ unless (defined $grid_rendering)
 	if($self->{DISPLAY_GRID})
 		{
 		$gc->set_line_width(1);
-		$gc->set_source_rgb(@{$self->get_color('grid')});
 		
 		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
 			{
+			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
+			$gc->set_source_rgb(@{$self->get_color($color)});
+			
 			$gc->move_to(0,  $horizontal * $character_height);
 			$gc->line_to($widget_width, $horizontal * $character_height);
+			$gc->stroke;
 			}
 		
 		for my $vertical(0 .. ($widget_width/$character_width) + 1)
 			{
+			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
+			$gc->set_source_rgb(@{$self->get_color($color)});
+			
 			$gc->move_to($vertical * $character_width, 0) ;
 			$gc->line_to($vertical * $character_width, $widget_height);
+			$gc->stroke;
 			}
 		}
 		
-	$gc->stroke;
 	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
 	}
 

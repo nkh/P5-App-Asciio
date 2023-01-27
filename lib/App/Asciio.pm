@@ -350,6 +350,7 @@ my $self =
 		TAB_AS_SPACES => '   ',
 		OPAQUE_ELEMENTS => 1,
 		DISPLAY_GRID => 1,
+		DISPLAY_GRID2 => 1,
 		
 		PREVIOUS_X => 0, PREVIOUS_Y => 0,
 		MOUSE_X => 0, MOUSE_Y => 0,
