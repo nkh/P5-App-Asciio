@@ -46,6 +46,7 @@ lib/App/Asciio/stripes/rhombus.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/stripes/single_stripe.pm
 lib/App/Asciio/stripes/stripes.pm
+lib/App/Asciio/stripes/group.pm
 
 lib/App/Asciio/Utils/Presentation.pm
 

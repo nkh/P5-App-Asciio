@@ -36,13 +36,9 @@ actions
 		# JFwWj6O/0IZDP5A1uKJrx3w5LcogFPthz6Z8VJOmAvB6IhlEWmPofBNv7LcHAg8AAAClewlSPWXT
 		# UQABnwHOSgAA2Mia+bHEZ/sCAAAAAARZWg==Asciio
 			
-			base 64 format '\s?\S+\s(*.)' to make it possible to find the b64 in text with comments
+		base 64 format '\s?\S+\s(*.)' to make it possible to find the b64 in text with comments
+
 objects
-	one stripe group objects
-	
-	linked objects
-		data in other asciio file
-	
 	table object
 	
 	markdown formatted text
@@ -54,11 +50,13 @@ objects
 	
 	angle arrow dialog does nothing
 	
-	merge arrows and split arrow
+	merge arrows and split-arrow
 	
 	more than one resize handle
 
 display
+	dialogs should use monospace font
+	
 	Terminal UI
 		use external programs for menus and dialogs
 		fzf to the max
@@ -115,10 +113,6 @@ optimization
 		#App::Asciio::stripes::if_box=HASH(0x559c42ccd3f8) (no extents)
 		#App::Asciio::stripes::process_box=HASH(0x559c42cd3dc0) (no extents)
 		App::Asciio::stripes::rhombus=HASH(0x559c42d79c08) (no extents)
-	
-	large number of element
-		make a single box out of them
-			keep them in the current object or in a different file
 	
 	Zbuffer/bit masks
 		when rendering stripes, keep list of objects per cell

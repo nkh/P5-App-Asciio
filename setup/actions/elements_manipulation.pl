@@ -32,5 +32,15 @@ register_action_handlers
 	'Change arrow direction'                        => ['000-d',            \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction                   ],
 	'Flip arrow start and end'                      => ['000-f',            \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                          ],
 
+	'stripes group'=> 
+		{
+		SHORTCUTS => '0A0-g',
+		
+		'create stripes group'                  => ['000-g',            \&App::Asciio::Actions::ElementsManipulation::create_stripes_group, 0                  ],
+		'create one stripe group'               => ['000-1',            \&App::Asciio::Actions::ElementsManipulation::create_stripes_group, 1                  ],
+		'ungroup stripes group'                 => ['000-u',            \&App::Asciio::Actions::ElementsManipulation::ungroup_stripes_group                    ],
+		}
 	) ;
+
+
 

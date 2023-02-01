@@ -42,12 +42,12 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	}
 
 return bless  
-		{
-		STRIPES => \@stripes,
-		EXTENTS => [$min_x, $max_x, $min_y, $max_y],
-		WIDTH => $total_width,
-		HEIGHT => $total_height,
-		}, __PACKAGE__ ;
+	{
+	STRIPES => \@stripes,
+	EXTENTS => [$min_x, $max_x, $min_y, $max_y],
+	WIDTH => $total_width,
+	HEIGHT => $total_height,
+	}, __PACKAGE__ ;
 }
 
 #---------------------------------------------------------------------------
@@ -56,14 +56,6 @@ sub get_stripes
 {
 my ($self) = @_ ;
 
-# my @elements_stripes ;
-
-# for my $stripe (@{$self->{STRIPES}})
-# 	{
-# 	push @elements_stripes, {X_OFFSET => $stripe->{X_OFFSET}, Y_OFFSET => $stripe->{Y_OFFSET}, WIDTH => $stripe->{WIDTH}, HEIGHT => $stripe->{HEIGHT}, TEXT => $stripe->{TEXT}} ;
-# 	}
-	
-# return(@elements_stripes) ;
 return $self->{STRIPES} ;
 }
 

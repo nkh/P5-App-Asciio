@@ -25,7 +25,7 @@ register_action_handlers
 	'Mouse drag up'           => ['00S-Up',             \&mouse_drag_up                                              ] ,
 	'Mouse drag down'         => ['00S-Down',           \&mouse_drag_down                                            ] ,
 
-	'Mouse on element id'     => ['00S-G',              \&mouse_on_element_id                                        ] ,
+	'Mouse on element id'     => ['000-m',              \&mouse_on_element_id                                        ] ,
 	#~ 'C00-button_release' => ['', ] ,
 	#~ 'C00-motion_notify' =>['', ] ,
 	) ;

@@ -125,11 +125,11 @@ if(@elements_to_flip)
 		#add new element, connects automatically
 		$self->add_element_at($arrow, $_->{X} + $end_connector->{X}, $_->{Y} + $end_connector->{Y}) ;
 		
-               # remove element
-                $self->delete_elements($_) ;
-
-                # keep the element selected
-                $self->select_elements(1, $arrow) ;
+		# remove element
+		$self->delete_elements($_) ;
+		
+		# keep the element selected
+		$self->select_elements(1, $arrow) ;
 		}
 		
 	$self->update_display() ;
@@ -563,6 +563,84 @@ else
 		}
 	}
 } ;
+
+#----------------------------------------------------------------------------------------------
+
+use App::Asciio::stripes::group ;
+
+#----------------------------------------------------------------------------------------------
+
+sub create_stripes_group
+{
+my ($self, $as_one_stripe) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements > 1)
+	{
+	$self->create_undo_snapshot() ;
+	
+	my @connections ;
+	
+	my %selected_elements = map { $_ => 1 } $self->get_selected_elements(1) ;
+	
+	my @selected_elements_connected ;
+	
+	for my $connection (@{$self->{CONNECTIONS}})
+		{
+		if(exists $selected_elements{$connection->{CONNECTEE}})
+			{
+			push @selected_elements_connected, $connection->{CONNECTED} ;
+			push @connections, $connection
+			}
+		}
+	
+	$self->select_elements(1, @selected_elements_connected) ;
+	
+	@selected_elements = $self->get_selected_elements(1) ;
+	
+	my ($new_element, $ex, $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe) ;
+	
+	@$new_element{'X', 'Y', 'SELECTED'} = ($ex, $ey, 1) ;
+	$self->add_elements($new_element) ;
+	
+	$self->delete_elements(@selected_elements) ;
+	}
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub ungroup_stripes_group
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements == 1 && ref $selected_elements[0] eq 'App::Asciio::stripes::group')
+	{
+	my $group = $selected_elements[0] ;
+	my $elements = $group->{ELEMENTS} ;
+	my $connections = $group->{CONNECTIONS} ;
+	
+	my $x_offset = $group->{X} - $group->{EX} ;
+	my $y_offset = $group->{Y} - $group->{EY} ;
+	
+	for my $element (@$elements)
+		{
+		@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
+		}
+	
+	$self->add_elements(@{$elements}) ;
+	push @{$self->{CONNECTIONS}}, @{$connections} ;
+	
+	delete $group->{CACHE} ;
+	$self->delete_elements($group) ;
+	
+	$self->update_display();
+	}
+}
 
 #----------------------------------------------------------------------------------------------
 

@@ -44,7 +44,7 @@ if
 			$file_name,
 			) ;
 		
-	$self->load_self($saved_self) ; # resurect from momified
+	$self->load_self($saved_self) ; # resurrect from mummified
 	$self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} = $handler_data ;
 	}
 else
@@ -233,6 +233,8 @@ local $self->{TITLE} = '' ;
 local $self->{CREATE_BACKUP} = undef ;
 local $self->{MIDDLE_BUTTON_SELECTION_FILTER} = undef ;
 local $self->{CACHE} = undef ;
+local $self->{ELEMENT_TYPES} = undef ;
+local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
