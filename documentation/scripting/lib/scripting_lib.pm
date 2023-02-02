@@ -158,7 +158,7 @@ return \&canonize_connections ;
 }
 
 EOC
-	CODE_FROM_FILE => 'setup/hooks/canonize_connections.pl' ,
+	CODE_FROM_FILE => 'lib/canonize_connections.pl' ,
 	) ;
 }
 

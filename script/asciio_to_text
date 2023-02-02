@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-package main ;
-
 use strict;
 use warnings;
 
@@ -10,36 +8,22 @@ use App::Asciio ;
 use Module::Util qw(find_installed) ;
 use File::Basename ;
 
-#-----------------------------------------------------------------------------
-
-my @asciios ;
-
 my $asciio = new App::Asciio() ;
-push @asciios, $asciio ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
 
-my $setup_paths = [] ;
-
 if(@{$asciio_config->{SETUP_PATHS}})
 	{
-	$setup_paths = $asciio_config->{SETUP_PATHS} ;
+	$asciio->setup($asciio_config->{SETUP_PATHS}) ;
 	}
 else
 	{
 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
-	my $setup_path = $path . $basename . '/setup/' ;
-	
-	$setup_paths = 
-		[
-		$setup_path .  'setup.ini', 
-		] ;
+	$asciio->setup([$path . $basename . '/setup/setup.ini']) ;
 	}
-
-$asciio->setup($setup_paths) ;
 
 if(defined $asciio_config->{TARGETS}[0])
 	{
@@ -47,7 +31,6 @@ if(defined $asciio_config->{TARGETS}[0])
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	}
 	
-$asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
 
 print $asciio->transform_elements_to_ascii_buffer() ;	

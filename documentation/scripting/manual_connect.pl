@@ -2,20 +2,17 @@
 use strict;
 use warnings;
 
-use lib qw(documentation/scripting/lib) ;
+use lib qw(lib) ;
 
 use App::Asciio ;
 use scripting_lib ;
 
+use Module::Util qw(find_installed) ;
+use File::Basename ;
+
 #-----------------------------------------------------------------------------
 
 my $asciio = new App::Asciio() ;
-my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
-	= $asciio->ParseSwitches([@ARGV], 0) ;
-
-die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
-
-$asciio->setup($asciio_config->{SETUP_INI_FILE}, $asciio_config->{SETUP_PATH}) ;
 
 #-----------------------------------------------------------------------------
 
