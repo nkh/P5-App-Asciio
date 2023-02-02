@@ -75,14 +75,14 @@ if(defined $new_self)
 	{
 	my ($do_stack_pointer, $do_stack) = ($self->{DO_STACK_POINTER}, $self->{DO_STACK}) ;
 	
-	my $decoder = get_sereal_decoder() ;
-	my $decompressed_new_self = decompress $new_self ;
-	my $saved_self = $decoder->decode($decompressed_new_self) ;
+	$self->{CACHE}{DECODER} = my $decoder = $self->{CACHE}{DECODER} // get_sereal_decoder() ;
+	
+	my $saved_self = $decoder->decode($new_self) ;
 	
 	if($@)
 		{
 		use File::Slurp ;
-		write_file('undo_error.pl', $decompressed_new_self ) ;
+		write_file('undo_error.pl', $new_self ) ;
 		die "Can't undo! $@\n" ;
 		}
 	else
@@ -104,7 +104,6 @@ else
 sub create_undo_snapshot
 {
 my ($self) = @_;
-#TODO: use the same huffman table for all the frames in the undo buffer for extra compression
 my $serialized_self ;
 
 {
@@ -112,11 +111,9 @@ my $serialized_self ;
 	$serialized_self = $self->serialize_self()  ;
 }
 
-my $compressed_self = compress $serialized_self ;
-
 splice(@{$self->{DO_STACK}}, min($self->{DO_STACK_POINTER}, scalar(@{$self->{DO_STACK}}))) ; # new do branch
 
-push @{$self->{DO_STACK}}, $compressed_self ;
+push @{$self->{DO_STACK}}, $serialized_self ;
 $self->{DO_STACK_POINTER} = @{$self->{DO_STACK}} ;
 }
 

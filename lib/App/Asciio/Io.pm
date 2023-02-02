@@ -6,7 +6,6 @@ $|++ ;
 use strict;
 use warnings;
 
-use Data::Dumper ;
 use Data::TreeDumper ;
 use File::Slurp ;
 use Readonly ;
@@ -20,6 +19,8 @@ use Sereal qw(
     encode_sereal
     decode_sereal
 ) ;
+
+use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
 #-----------------------------------------------------------------------------
 
@@ -250,13 +251,12 @@ for my $element (@{$self->{ELEMENTS}})
 	$element->{CACHE} = undef ;
 	}
 
-my $encoder = get_sereal_encoder() ;
+$self->{CACHE}{ENCODER} = my $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
+local $self->{CACHE}{ENCODER} = undef ;
+
 my $serialized = $encoder->encode($self) ;
 
-for (@elements_cache)
-	{
-	$_->[0]{CACHE} = $_->[1] ;
-	}
+$_->[0]{CACHE} = $_->[1] for @elements_cache ;
 
 return $serialized ;
 }

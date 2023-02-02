@@ -111,13 +111,10 @@ $widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_alloca
 }
 
 #-----------------------------------------------------------------------------
-my $rendering_index = 0 ;
 
 sub expose_event
 {
 my ( $widget, $gc, $self ) = @_;
-
-$rendering_index++ ;
 
 $gc->set_line_width(1);
 
@@ -593,9 +590,9 @@ my ($event) = @_ ;
 
 my $key_modifiers = $event->state() ;
 
-my $modifiers = $key_modifiers =~ /control-mask/ ? 'C' :0 ;
-$modifiers .= $key_modifiers =~ /mod1-mask/ ? 'A' :0 ;
-$modifiers .= $key_modifiers =~ /shift-mask/ ? 'S' :0 ;
+my $modifiers = $key_modifiers =~ /control-mask/ ? 'C' : 0 ;
+$modifiers .= $key_modifiers =~ /mod1-mask/ ? 'A' : 0 ;
+$modifiers .= $key_modifiers =~ /shift-mask/ ? 'S' : 0 ;
 
 return($modifiers) ;
 }

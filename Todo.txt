@@ -39,10 +39,14 @@ actions
 		base 64 format '\s?\S+\s(*.)' to make it possible to find the b64 in text with comments
 
 objects
-	table object
+	exec-box
+		remembers the commands that generated the output
 	
-	markdown formatted text
-		insert external output
+		table object
+			via external command
+		
+		markdown formatted text
+			insert external output
 	
 	diagonal text, Ian's request
 		any orientation text + options to keep it to diagonals or horizontal, vertical
@@ -55,7 +59,7 @@ objects
 	more than one resize handle
 
 display
-	dialogs should use monospace font
+	dialogs must use monospace font
 	
 	Terminal UI
 		use external programs for menus and dialogs
@@ -63,7 +67,9 @@ display
 		no sub menus, shortcut for each sub menu
 
 		how do we make object dialogs, specially those which contain tables or multiple elements to set?
-	
+		
+		new keyboard handler
+
 	panning
 	
 	scrollbars
