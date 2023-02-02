@@ -92,9 +92,6 @@ if ($as_one_strip)
 		}) ;
 	}
 
-use Data::TreeDumper ;
-print DumpTree $connections, "CONNECTIONS" ;
-
 return bless({
 		STRIPES => \@stripes,
 		EXTENTS => [$min_x, $max_x, $min_y, $max_y],

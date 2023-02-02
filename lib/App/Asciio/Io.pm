@@ -12,6 +12,15 @@ use File::Slurp ;
 use Readonly ;
 use Compress::Bzip2 qw(:all :utilities :gzip);
 
+use Sereal qw(
+    get_sereal_decoder
+    get_sereal_encoder
+    clear_sereal_object_cache
+ 
+    encode_sereal
+    decode_sereal
+) ;
+
 #-----------------------------------------------------------------------------
 
 sub load_file
@@ -52,10 +61,8 @@ else
 	if(-e $file_name && -s $file_name)
 		{
 		my $serialized_self = decompress(read_file($file_name)) ;
-		$serialized_self .= "\n\n" ;
-		
-		my $VAR1 ;
-		my $saved_self  = eval $serialized_self ;
+		my $decoder = get_sereal_decoder() ;
+		my $saved_self = $serialized_self = $decoder->decode($serialized_self) ;
 		
 		if($@)
 			{
@@ -243,11 +250,8 @@ for my $element (@{$self->{ELEMENTS}})
 	$element->{CACHE} = undef ;
 	}
 
-local $Data::Dumper::Purity = 1 ;
-local $Data::Dumper::Indent = $indent || 0 ;
-local $Data::Dumper::Sortkeys = 1 ;
-
-my $serialized = Dumper($self) ;
+my $encoder = get_sereal_encoder() ;
+my $serialized = $encoder->encode($self) ;
 
 for (@elements_cache)
 	{

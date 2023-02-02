@@ -559,6 +559,8 @@ if($event->{BUTTON} == 1)
 		{
 		if(defined $first_element)
 			{
+
+
 			unless($self->is_element_selected($first_element))
 				{
 				# make the element under cursor the only selected element
@@ -568,8 +570,7 @@ if($event->{BUTTON} == 1)
 			}
 		else
 			{
-			# deselect all
-			$self->deselect_all_elements()  if ($modifiers eq '000')  ;
+			$self->deselect_all_elements()  ;
 			}
 		}
 	
@@ -655,7 +656,6 @@ if ($event->{STATE} eq "dragging-button1")
 		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 		$self->{PREVIOUS_X} = $x ;
 		$self->{PREVIOUS_Y} = $y ;
-		# $self->update_display() ;
 		}
 	}
 else

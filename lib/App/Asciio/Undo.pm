@@ -7,6 +7,14 @@ use strict;
 use warnings;
 
 use Compress::Bzip2 qw(:all :utilities :gzip);
+use Sereal qw(
+    get_sereal_decoder
+    get_sereal_encoder
+    clear_sereal_object_cache
+ 
+    encode_sereal
+    decode_sereal
+) ;
 
 #-----------------------------------------------------------------------------
 
@@ -67,12 +75,9 @@ if(defined $new_self)
 	{
 	my ($do_stack_pointer, $do_stack) = ($self->{DO_STACK_POINTER}, $self->{DO_STACK}) ;
 	
+	my $decoder = get_sereal_decoder() ;
 	my $decompressed_new_self = decompress $new_self ;
-	$decompressed_new_self .= "\n\n" ; # important line or eval would complain about syntax errors !!!
-	
-	my $VAR1 ;
-	eval $decompressed_new_self  ;
-	$VAR1->invalidate_rendering_cache() ;
+	my $saved_self = $decoder->decode($decompressed_new_self) ;
 	
 	if($@)
 		{
@@ -82,7 +87,7 @@ if(defined $new_self)
 		}
 	else
 		{
-		$self->load_self($VAR1) ;
+		$self->load_self($saved_self) ;
 		($self->{DO_STACK_POINTER}, $self->{DO_STACK}) = ($do_stack_pointer, $do_stack) ;
 		$self->set_modified_state(1) ;
 		$self->update_display() ;

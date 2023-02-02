@@ -278,6 +278,7 @@ my $build = $class->new
 		'Gtk3' => 0,
 		# 'Gtk3::Gdk::Keysyms' => 0,
 		
+		'Sereal' => 0,
 		'Compress::Bzip2' => 0,
 		'Cwd' => 0,
 		'Eval::Context' => 0,
