@@ -115,3 +115,19 @@ setup/GTK/actions/clipboard.pl
 setup/GTK/import_export/png.pl
 
 
+# Text
+script/tasciio
+
+lib/App/Asciio/Text/Asciio.pm
+lib/App/Asciio/Text/Asciio/Dialogs.pm
+lib/App/Asciio/Text/Asciio/stripes/wirl_arrow.pm
+lib/App/Asciio/Text/Asciio/stripes/section_wirl_arrow.pm
+lib/App/Asciio/Text/Asciio/stripes/editable_box2.pm
+lib/App/Asciio/Text/Asciio/stripes/editable_arrow2.pm
+lib/App/Asciio/Text/Asciio/Menues.pm
+
+setup/Text/setup.ini
+setup/Text/actions/all.pl
+
+
+

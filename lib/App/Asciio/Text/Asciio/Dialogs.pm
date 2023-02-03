@@ -1,5 +1,5 @@
 
-package App::Asciio::Text::Asciio ;
+package App::Asciio::Text ;
 $|++ ;
 
 use strict;
@@ -166,9 +166,9 @@ sub display_edit_dialog
 {
 my ($self, $title, $text) = @_ ;
 
-$text ='' unless defined $text ;
+$text = '' unless defined $text ;
 
-return ;
+return $text ;
 
 # my $window = new Gtk3::Window() ;
 

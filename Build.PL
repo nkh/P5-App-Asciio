@@ -50,7 +50,6 @@ lib/App/Asciio/stripes/group.pm
 
 lib/App/Asciio/Utils/Presentation.pm
 
-
 lib/App/Asciio/GTK/Asciio.pm
 
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
@@ -61,6 +60,15 @@ lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
 
+lib/App/Asciio/Text/Asciio.pm
+
+lib/App/Asciio/Text/Asciio/Dialogs.pm
+lib/App/Asciio/Text/Asciio/Menues.pm
+
+lib/App/Asciio/Text/Asciio/stripes/editable_arrow2.pm
+lib/App/Asciio/Text/Asciio/stripes/wirl_arrow.pm
+lib/App/Asciio/Text/Asciio/stripes/section_wirl_arrow.pm
+lib/App/Asciio/Text/Asciio/stripes/editable_box2.pm
 );
 
 for(@pm_files)
@@ -103,6 +111,9 @@ setup/stencils/divers
 setup/GTK/setup.ini
 setup/GTK/actions/clipboard.pl
 setup/GTK/import_export/png.pl
+
+setup/Text/setup.ini
+setup/Text/actions/all.pl
 ) ;
 
 for(@setup_lib)

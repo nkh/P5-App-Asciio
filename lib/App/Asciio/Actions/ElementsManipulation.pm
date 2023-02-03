@@ -338,11 +338,11 @@ if($self->{MOUSE_TOGGLE})
 else
 	{
 	$self->create_undo_snapshot() ;
-
 	$self->move_elements(-$offset, 0, $self->get_selected_elements(1)) ;
-	$self->update_display() ;
 	}
-} ;
+
+$self->update_display() ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -368,11 +368,11 @@ if($self->{MOUSE_TOGGLE})
 else
 	{
 	$self->create_undo_snapshot() ;
-
 	$self->move_elements($offset, 0, $self->get_selected_elements(1)) ;
-	$self->update_display() ;
 	}
-} ;
+
+$self->update_display() ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -399,11 +399,11 @@ if($self->{MOUSE_TOGGLE})
 else
 	{
 	$self->create_undo_snapshot() ;
-
 	$self->move_elements(0, -$offset, $self->get_selected_elements(1)) ;
-	$self->update_display() ;
 	}
-} ;
+
+$self->update_display() ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -430,11 +430,11 @@ if($self->{MOUSE_TOGGLE})
 else
 	{
 	$self->create_undo_snapshot() ;
-
 	$self->move_elements(0, $offset, $self->get_selected_elements(1)) ;
-	$self->update_display() ;
 	}
-} ;
+
+$self->update_display() ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -456,7 +456,7 @@ if(@selected_elements >= 2)
 	}
 	
 $self->update_display() ;
-} ;
+}
 
 
 #----------------------------------------------------------------------------------------------
@@ -473,7 +473,7 @@ for my $grouped (grep {exists $_->{GROUP} } @selected_elements)
 	}
 
 $self->update_display() ;
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -490,7 +490,7 @@ if(@selected_elements)
 	}
 	
 $self->update_display() ;
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -507,7 +507,7 @@ if(@selected_elements)
 	}
 	
 $self->update_display() ;
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -562,7 +562,7 @@ else
 		$self->update_display() ;
 		}
 	}
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 

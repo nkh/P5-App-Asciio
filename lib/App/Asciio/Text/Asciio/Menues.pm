@@ -1,5 +1,5 @@
 
-package App::Asciio::GTK::Asciio ;
+package App::Asciio::Text ;
 
 $|++ ;
 

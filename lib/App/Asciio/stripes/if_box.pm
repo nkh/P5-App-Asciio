@@ -266,6 +266,8 @@ return unless $self->{EDITABLE} ;
 
 my ($text) = $asciio->display_edit_dialog('if object', $self->{TEXT_ONLY}) ;
 
+$text //= $self->{TEXT} ;
+
 my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
 $text =~ s/\t/$tab_as_space/g ;
 

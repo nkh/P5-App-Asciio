@@ -12,6 +12,8 @@ use File::Basename ;
 
 #-----------------------------------------------------------------------------
 
+my $asciio = App::Asciio::Text->new(50, 25) ;
+
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
 
@@ -31,7 +33,7 @@ else
 	$setup_paths = 
 		[
 		$setup_path . 'setup.ini', 
-		# $setup_path . 'Text/setup.ini', 
+		$setup_path . 'Text/setup.ini', 
 		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
 		] ;
 	}
@@ -43,16 +45,39 @@ my ($character_width, $character_height) = $asciio->get_character_size() ;
 if(defined $asciio_config->{TARGETS}[0])
 	{
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
-	$window->set_default_size(@{$asciio->{WINDOW_SIZE}}) if defined $asciio->{WINDOW_SIZE} ;
 	}
 	
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
 	
 #--------------------------------------------------------------------------
+sub match_key ;
 
-while(1)
+use Time::HiRes ;
+
+use Term::ReadKey;
+use Term::TermKey qw( FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
+ 
+my $tk = Term::TermKey->new(\*STDIN);
+ 
+# ensure perl and libtermkey agree on Unicode handling
+binmode( STDOUT, ":encoding(UTF-8)" ) if $tk->get_flags & FLAG_UTF8; 
+
+print "\e[2J\e[H" ;
+
+while (1)
 	{
-	$self->update_display() ;
-	sleep 0.5 ;
+	$tk->waitkey(my $key);
+	 
+	my $modifiers  = $key->modifier_ctrl  ? 'C' : 0 ;
+	   $modifiers .= $key->modifier_alt   ? 'A' : 0 ;
+	   $modifiers .= $key->modifier_shift ? 'S' : 0 ;
+	
+	my $key_name = $tk->format_key($key, 0) ;
+	
+	$asciio->key_press_event($key_name, $modifiers) ;
+	
+	do { ReadMode('normal') ; exit ; } if $key_name eq 'q' ;
 	}
+
+

@@ -33,4 +33,4 @@ if(defined $asciio_config->{TARGETS}[0])
 	
 $asciio->run_script($asciio_config->{SCRIPT}) ;
 
-print $asciio->transform_elements_to_ascii_buffer() ;	
+print $asciio->transform_elements_to_ascii_buffer() ;

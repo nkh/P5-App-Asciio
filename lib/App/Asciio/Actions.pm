@@ -1,5 +1,6 @@
 
 package App::Asciio ;
+use Encode ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -31,6 +32,8 @@ for my $action (@actions)
 		}
 		
 	my ($modifiers, $action_key) = $action =~ /(...)-(.*)/ ;
+	
+	my $action = encode('utf8', $action);
 	
 	if(exists $self->{CURRENT_ACTIONS}{$action})
 		{
@@ -71,7 +74,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		print "$modifiers-$action_key\n" if $self->{ACTION_VERBOSE} ;
+		printf "\e[31m%-20s\e[m\n", "$modifiers-$action_key" ;
 		
 		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 		}

@@ -8,6 +8,17 @@ use warnings;
 
 #-----------------------------------------------------------------------------
 
+sub transform_elements_to_ascii_buffer_keep_empty_lines
+{
+my ($self, @elements)  = @_ ;
+
+my $text = join("\n", $self->transform_elements_to_ascii_array(@elements)) . "\n" ;
+
+return($text) ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub transform_elements_to_ascii_buffer
 {
 my ($self, @elements)  = @_ ;

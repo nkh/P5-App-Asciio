@@ -168,6 +168,46 @@ for my $action_file (@{ $action_files })
 			}
 		elsif('ARRAY' eq ref $action_handlers{$name})
 			{
+			if(exists $self->{ACTIONS_BY_NAME}{$name})
+				{
+				print "Overriding action named '$name'\n" ;
+				print "\tdefined in file '$setup_path/$action_file'\n" ;
+				print "\told was defined in file '$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN}'\n" ;
+				
+				my $new_handler = $action_handlers{$name} ;
+				my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
+				
+				if(! defined $new_handler->[$SHORTCUTS] && defined $old_handler->[$SHORTCUTS]) 
+					{
+					print "\ttransfering shortcuts to overriding action\n" ;
+					$new_handler->[$SHORTCUTS] = $old_handler->[$SHORTCUTS]  ;
+					}
+				
+				if(! defined $new_handler->[$CODE] && defined $old_handler->[$CODE]) 
+					{
+					print "\ttransfering code to overriding action\n" ;
+					$new_handler->[$CODE] = $old_handler->[$CODE]  ;
+					}
+				
+				if(! defined $new_handler->[$ARGUMENTS] && defined $old_handler->[$ARGUMENTS]) 
+					{
+					print "\ttransfering arguments to overriding action\n" ;
+					$new_handler->[$ARGUMENTS] = $old_handler->[$ARGUMENTS]  ;
+					}
+				
+				if(! defined $new_handler->[$CONTEXT_MENU_SUB] && defined $old_handler->[$CONTEXT_MENU_SUB]) 
+					{
+					print "\ttransfering context menu to overriding action\n" ;
+					$new_handler->[$CONTEXT_MENU_SUB] = $old_handler->[$CONTEXT_MENU_SUB]  ;
+					}
+					
+				if(! defined $new_handler->[$CONTEXT_MENU_ARGUMENTS] && defined $old_handler->[$CONTEXT_MENU_ARGUMENTS]) 
+					{
+					print "\ttransfering context menu arguments to overriding action\n" ;
+					$new_handler->[$CONTEXT_MENU_ARGUMENTS] = $old_handler->[$CONTEXT_MENU_ARGUMENTS]  ;
+					}
+				}
+			
 			$shortcuts_definition= $action_handlers{$name}[$SHORTCUTS]  ;
 			$action_handlers{$name}[$NAME] = $name ;
 			$action_handlers{$name}[$ORIGIN] = $action_file ;
@@ -182,6 +222,7 @@ for my $action_file (@{ $action_files })
 			}
 			
 		$self->{ACTIONS_BY_NAME}{$name} = $action_handlers{$name}  ;
+		$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 		
 		my $shortcuts ;
 		if('ARRAY' eq ref $shortcuts_definition)
@@ -193,16 +234,17 @@ for my $action_file (@{ $action_files })
 			$shortcuts = [$shortcuts_definition]  ;
 			}
 			
+				
 		for my $shortcut (@$shortcuts)	
 			{
 			if(exists $self->{ACTIONS}{$shortcut})
 				{
-				print "Overriding shortcut '$shortcut'!\n" ;
+				print "Overriding shortcut '$shortcut'\n" ;
 				print "\tnew is '$name' defined in file '$setup_path/$action_file'\n" ;
 				print "\told was '$self->{ACTIONS}{$shortcut}[$NAME]' defined in file '$self->{ACTIONS}{$shortcut}[$FULL_ORIGIN]'\n" ;
 				}
 				
-			$self->{ACTIONS}{$shortcut} =  $action_handler ;
+			$self->{ACTIONS}{$shortcut} = $action_handler ;
 			
 			if(defined $group_name)
 				{
