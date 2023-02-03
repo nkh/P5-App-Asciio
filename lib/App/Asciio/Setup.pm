@@ -134,7 +134,7 @@ my($self, $setup_path, $action_files) = @_ ;
 
 for my $action_file (@{ $action_files })
 	{
-	print "setup_action_handlers: loading '$setup_path/$action_file'\n" ;
+	# print "setup_action_handlers: loading '$setup_path/$action_file'\n" ;
 	
 	my $context = new Eval::Context() ;
 	

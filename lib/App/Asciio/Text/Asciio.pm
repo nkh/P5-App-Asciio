@@ -60,29 +60,39 @@ print "\e[2J\e[H" ;
 print "\e[1;50H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
 
 # draw background
-if($self->{DISPLAY_GRID})
+my $grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} ;
+
+unless (defined $grid_rendering)
 	{
-	for my $line (0 .. $ROWS)
-		{
-		next if $line % 10 ;
-		
-		# $gc->set_source_rgb(@{$self->get_color($color)});
-		
-		print "\e[$line;0H\e[2;49;90m" . '-' x $COLS ;
-		
-		}
+	my $surface= '' ;
 	
-	for my $line (0 .. $COLS)
+	if($self->{DISPLAY_GRID})
 		{
-		next if $line % 10 ;
+		for my $line (0 .. $ROWS)
+			{
+			next if $line % 10 ;
+			
+			# $gc->set_source_rgb(@{$self->get_color($color)});
+			
+			$surface .= "\e[$line;0H\e[2;49;90m" . '-' x $COLS ;
+			}
 		
-		# $gc->set_source_rgb(@{$self->get_color($color)});
+		for my $line (0 .. $COLS)
+			{
+			next if $line % 10 ;
+			
+			# $gc->set_source_rgb(@{$self->get_color($color)});
+			
+			$surface .= "\e[$_;${line}H\e[2;49;90m" . '|' for (1 .. $ROWS) ;
+			}
 		
-		print "\e[$_;${line}H\e[2;49;90m" . '|' for (1 .. $ROWS) ;
+		$surface .= "\e[m" ;
 		}
-	
-	print "\e[m" ;
+
+	$grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} = $surface ;
 	}
+
+print $grid_rendering ;
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})

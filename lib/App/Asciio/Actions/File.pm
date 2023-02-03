@@ -113,7 +113,7 @@ if($self->get_modified_state())
 if($user_answer ne 'cancel')
 	{
 	$file_name ||= $self->get_file_name('open') ;
-
+	
 	if(defined $file_name && $file_name ne q[])
 		{
 		my $title = $self->load_file($file_name) ;
@@ -121,7 +121,7 @@ if($user_answer ne 'cancel')
 		my ($base_name, $path, $extension) = File::Basename::fileparse($file_name, ('\..*')) ;
 		$extension =~ s/^\.// ;
 		
-		my $type =  $extension ne q{}
+		my $type = $extension ne q{}
 					? $extension
 					: 'asciio_internal_format' ;
 					
