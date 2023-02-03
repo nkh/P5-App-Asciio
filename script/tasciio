@@ -51,9 +51,8 @@ $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
 	
 #--------------------------------------------------------------------------
-sub match_key ;
 
-use Time::HiRes ;
+# use Time::HiRes ;
 
 use Term::ReadKey;
 use Term::TermKey qw( FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);

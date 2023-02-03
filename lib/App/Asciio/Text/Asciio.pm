@@ -44,6 +44,7 @@ return($self) ;
 # $Term::ANSIColor::AUTORESET = 1 ;
 
 use Term::Size::Any qw(chars) ;
+# use Term::ANSIColor ;
 
 sub update_display 
 {
@@ -53,50 +54,35 @@ $self->SUPER::update_display() ;
 
 my ($COLS, $ROWS) = chars ;
 
+print "\e[?25l" ; # hide cursor
 print "\e[2J\e[H" ;
 
+print "\e[1;50H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
+
 # draw background
-my $grid_rendering = $self->{CACHE}{GRID} ;
-
-# unless (defined $grid_rendering)
-# 	{
-# 	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
-# 	my $gc = Cairo::Context->create($surface);
+if($self->{DISPLAY_GRID})
+	{
+	for my $line (0 .. $ROWS)
+		{
+		next if $line % 10 ;
 		
-# 	$gc->set_source_rgb(@{$self->get_color('background')});
-# 	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
-# 	$gc->fill;
+		# $gc->set_source_rgb(@{$self->get_color($color)});
+		
+		print "\e[$line;0H\e[2;49;90m" . '-' x $COLS ;
+		
+		}
 	
-# 	if($self->{DISPLAY_GRID})
-# 		{
-# 		$gc->set_line_width(1);
+	for my $line (0 .. $COLS)
+		{
+		next if $line % 10 ;
 		
-# 		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
-# 			{
-# 			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
-# 			$gc->set_source_rgb(@{$self->get_color($color)});
-			
-# 			$gc->move_to(0,  $horizontal * $character_height);
-# 			$gc->line_to($widget_width, $horizontal * $character_height);
-# 			$gc->stroke;
-# 			}
+		# $gc->set_source_rgb(@{$self->get_color($color)});
 		
-# 		for my $vertical(0 .. ($widget_width/$character_width) + 1)
-# 			{
-# 			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
-# 			$gc->set_source_rgb(@{$self->get_color($color)});
-			
-# 			$gc->move_to($vertical * $character_width, 0) ;
-# 			$gc->line_to($vertical * $character_width, $widget_height);
-# 			$gc->stroke;
-# 			}
-# 		}
-		
-# 	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
-# 	}
-
-# $gc->set_source_surface($grid_rendering, 0, 0);
-# $gc->paint;
+		print "\e[$_;${line}H\e[2;49;90m" . '|' for (1 .. $ROWS) ;
+		}
+	
+	print "\e[m" ;
+	}
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
@@ -105,15 +91,17 @@ for my $line (@{$self->{RULER_LINES}})
 	
 	if($line->{TYPE} eq 'VERTICAL')
 		{
-		print "\e[$_;$line->{POSITION}H" . '|' for (1 .. $ROWS) ;
+		print "\e[$_;$line->{POSITION}H\e[2;49;96m" . '|' for (1 .. $ROWS) ;
 		}
 	else
 		{
 		my $column = 0 ;
 		my $line =  $line->{POSITION} ;
 		
-		print "\e[$line;${column}H" . '-' x $COLS ;
+		print "\e[$line;${column}H\e[2;49;96m" . '-' x $COLS ;
 		}
+	
+	print "\e[m" ;
 	}
 
 # draw elements
@@ -207,7 +195,7 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	for my $rendering (@$renderings)
 		{
-		my $column = $element->{X} + $rendering->[1] ;
+		my $column = $element->{X} + $rendering->[1] + 1;
 		my $line =  $element->{Y} + $rendering->[2] + 1 ;
 		print "\e[$line;${column}H" . $rendering->[0] ;
 		}
@@ -215,6 +203,43 @@ for my $element (@{$self->{ELEMENTS}})
 
 # draw connections
 my (%connected_connections, %connected_connectors) ;
+
+# $gc->set_source_rgb(@{$self->get_color('connector_point')});
+my $connector_point_rendering = "\e[32mO\e[m" ;
+
+# $gc->set_source_rgb(@{$self->get_color('connection_point')});
+my $connection_point_rendering = "\e[33mo\e[m" ;
+
+# $gc->set_source_rgb(@{$self->get_color('extra_point')});
+my $extra_point_rendering = "\e[34m#\e[m" ;
+
+for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
+	{
+	for my $connector ($element->get_connector_points())
+		{
+		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
+		
+		my $column = $element->{X} + $connector->{X} + 1 ;
+		my $line = $connector->{Y} + $element->{Y} + 1 ;
+		print "\e[$line;${column}H" . $connector_point_rendering;
+		}
+		
+	for my $extra_point ($element->get_extra_points())
+		{
+		my $column = $extra_point->{X}  + $element->{X} + 1 ;
+		my $line = $extra_point->{Y} + $element->{Y} + 1 ;
+		print "\e[$line;${column}H" . $extra_point_rendering;
+		}
+
+	for my $connection_point ($element->get_connection_points())
+		{
+		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
+		
+		my $column = $connection_point->{X} + $element->{X} + 1 ;
+		my $line = $connection_point->{Y} + $element->{Y} + 1 ;
+		print "\e[$line;${column}H" . $connection_point_rendering;
+		}
+	}
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
@@ -247,50 +272,12 @@ for my $connection (@{$self->{CONNECTIONS}})
 		
 		my $connection_rendering = "\e[31mc\e[m" ;
 		
-		my $column = $connector->{X} + $connection->{CONNECTED}{X} ;
-		my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} ;
+		my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
+		my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
 		print "\e[$line;${column}H" . $connection_rendering;
 		}
 	}
 	
-# # draw connectors and connection points
-# $gc->set_source_rgb(@{$self->get_color('connector_point')});
-my $connector_point_rendering = "\e[32mX\e[m" ;
-
-# $gc->set_source_rgb(@{$self->get_color('connection_point')});
-my $connection_point_rendering = "\e[33mo\e[m" ;
-
-# $gc->set_source_rgb(@{$self->get_color('extra_point')});
-my $extra_point_rendering = "\e[34m#\e[m" ;
-
-for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
-	{
-	for my $connector ($element->get_connector_points())
-		{
-		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
-		
-		my $column = $element->{X} + $connector->{X} ;
-		my $line = $connector->{Y} + $element->{Y} ;
-		print "\e[$line;${column}H" . $connector_point_rendering;
-		}
-		
-	for my $connection_point ($element->get_connection_points())
-		{
-		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
-		
-		my $column = $connection_point->{X} + $element->{X} ;
-		my $line = $connection_point->{Y} + $element->{Y} + 1 ;
-		print "\e[$line;${column}H" . $connection_point_rendering;
-		}
-	
-	for my $extra_point ($element->get_extra_points())
-		{
-		my $column = $extra_point->{X}  + $element->{X} ;
-		my $line = $extra_point->{Y} + $element->{Y} + 1 ;
-		print "\e[$line;${column}H" . $extra_point_rendering;
-		}
-	}
-
 # draw new connections
 my $connection_rendering = "\e[31mc\e[m" ;
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
@@ -298,20 +285,20 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
 	
 	# $gc->set_source_rgb(@{$self->get_color('new_connection')});
-	my $column = $end_connection->{X} + $new_connection->{CONNECTED}{X} ;
-	my $line = $end_connection->{Y} + $new_connection->{CONNECTED}{Y} ;
+	my $column = $end_connection->{X} + $new_connection->{CONNECTED}{X} + 1 ;
+	my $line = $end_connection->{Y} + $new_connection->{CONNECTED}{Y} + 1 ;
 	print "\e[$line;${column}H" . $connection_rendering;
 	}
 
 delete $self->{NEW_CONNECTIONS} ;
 	
 # draw selection rectangle
-if(defined $self->{SELECTION_RECTANGLE}{END_X})
+if(0) #defined $self->{SELECTION_RECTANGLE}{END_X})
 	{
 	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} ;
 	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} ;
-	my $width = $self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X} ;
-	my $height = $self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y} ; 
+	my $width   = $self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X} ;
+	my $height  = $self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y} ; 
 	
 	if($width < 0)
 		{
@@ -331,7 +318,6 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	print "\e[$start_y;" . ($start_x + $width) . "H" . "\e[30m" . ( '-' x $width) ;
 	print "\e[$_;${start_x}H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
 	print "\e[$_;" . ($start_x + $width) . "H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
-	print "\em" ;
 
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
@@ -341,8 +327,10 @@ if ($self->{MOUSE_TOGGLE})
 	# $gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
 	
 	my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
-	print "\e[$line;${column}H" ;
+	print "\e[$line;${column}H\e[31mX" ; 
 	}
+	
+print "\e[m" ;
 
 return ;
 }

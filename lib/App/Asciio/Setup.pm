@@ -134,13 +134,12 @@ my($self, $setup_path, $action_files) = @_ ;
 
 for my $action_file (@{ $action_files })
 	{
-	#~ print "setup_action_handlers: loading '$setup_path/$action_file'\n" ;
+	print "setup_action_handlers: loading '$setup_path/$action_file'\n" ;
 	
 	my $context = new Eval::Context() ;
-
-	#~ print "loading action '$setup_path/$action_file'\n" ;
 	
 	my %action_handlers;
+	
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
@@ -148,9 +147,9 @@ for my $action_file (@{ $action_files })
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		CODE_FROM_FILE => "$setup_path/$action_file",
 		) ;
-
+	
 	die "can't load setup file '$action_file': $! $@\n" if $@ ;
-
+	
 	for my $name (keys %action_handlers)
 		{
 		my $action_handler ;
@@ -164,49 +163,11 @@ for my $action_file (@{ $action_files })
 			$action_handlers{$name}{ORIGIN} = $action_file ;
 			$action_handlers{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 			
-			$action_handler = $self->get_group_action_handler($action_handlers{$name}, $setup_path, $action_file) ;
+			$action_handler = $self->get_group_action_handler($setup_path, $action_file, $name, \%action_handlers) ;
 			}
 		elsif('ARRAY' eq ref $action_handlers{$name})
 			{
-			if(exists $self->{ACTIONS_BY_NAME}{$name})
-				{
-				print "Overriding action named '$name'\n" ;
-				print "\tdefined in file '$setup_path/$action_file'\n" ;
-				print "\told was defined in file '$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN}'\n" ;
-				
-				my $new_handler = $action_handlers{$name} ;
-				my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
-				
-				if(! defined $new_handler->[$SHORTCUTS] && defined $old_handler->[$SHORTCUTS]) 
-					{
-					print "\ttransfering shortcuts to overriding action\n" ;
-					$new_handler->[$SHORTCUTS] = $old_handler->[$SHORTCUTS]  ;
-					}
-				
-				if(! defined $new_handler->[$CODE] && defined $old_handler->[$CODE]) 
-					{
-					print "\ttransfering code to overriding action\n" ;
-					$new_handler->[$CODE] = $old_handler->[$CODE]  ;
-					}
-				
-				if(! defined $new_handler->[$ARGUMENTS] && defined $old_handler->[$ARGUMENTS]) 
-					{
-					print "\ttransfering arguments to overriding action\n" ;
-					$new_handler->[$ARGUMENTS] = $old_handler->[$ARGUMENTS]  ;
-					}
-				
-				if(! defined $new_handler->[$CONTEXT_MENU_SUB] && defined $old_handler->[$CONTEXT_MENU_SUB]) 
-					{
-					print "\ttransfering context menu to overriding action\n" ;
-					$new_handler->[$CONTEXT_MENU_SUB] = $old_handler->[$CONTEXT_MENU_SUB]  ;
-					}
-					
-				if(! defined $new_handler->[$CONTEXT_MENU_ARGUMENTS] && defined $old_handler->[$CONTEXT_MENU_ARGUMENTS]) 
-					{
-					print "\ttransfering context menu arguments to overriding action\n" ;
-					$new_handler->[$CONTEXT_MENU_ARGUMENTS] = $old_handler->[$CONTEXT_MENU_ARGUMENTS]  ;
-					}
-				}
+			$self->check_action_by_name($setup_path, $action_file, $name, \%action_handlers) ;
 			
 			$shortcuts_definition= $action_handlers{$name}[$SHORTCUTS]  ;
 			$action_handlers{$name}[$NAME] = $name ;
@@ -257,10 +218,55 @@ for my $action_file (@{ $action_files })
 	}
 }
 
+sub check_action_by_name
+{
+my ($self, $setup_path, $action_file, $name, $action_handlers) = @_ ;
+
+if(exists $self->{ACTIONS_BY_NAME}{$name})
+	{
+	print "Overriding action named '$name'\n" ;
+	print "\tdefined in file '$setup_path/$action_file'\n" ;
+	print "\told was defined in file '$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN}'\n" ;
+	
+	my $new_handler = $action_handlers->{$name} ;
+	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
+	
+	if(! defined $new_handler->[$SHORTCUTS]) 
+		{
+		die "\tno shortcuts in definition\n" ;
+		}
+	
+	if(! defined $new_handler->[$CODE] && defined $old_handler->[$CODE]) 
+		{
+		print "\ttransfering code to overriding action\n" ;
+		$new_handler->[$CODE] = $old_handler->[$CODE]  ;
+		}
+	
+	if(! defined $new_handler->[$ARGUMENTS] && defined $old_handler->[$ARGUMENTS]) 
+		{
+		print "\ttransfering arguments to overriding action\n" ;
+		$new_handler->[$ARGUMENTS] = $old_handler->[$ARGUMENTS]  ;
+		}
+	
+	if(! defined $new_handler->[$CONTEXT_MENU_SUB] && defined $old_handler->[$CONTEXT_MENU_SUB]) 
+		{
+		print "\ttransfering context menu to overriding action\n" ;
+		$new_handler->[$CONTEXT_MENU_SUB] = $old_handler->[$CONTEXT_MENU_SUB]  ;
+		}
+		
+	if(! defined $new_handler->[$CONTEXT_MENU_ARGUMENTS] && defined $old_handler->[$CONTEXT_MENU_ARGUMENTS]) 
+		{
+		print "\ttransfering context menu arguments to overriding action\n" ;
+		$new_handler->[$CONTEXT_MENU_ARGUMENTS] = $old_handler->[$CONTEXT_MENU_ARGUMENTS]  ;
+		}
+	}
+}
+
 sub get_group_action_handler
 {
-my ($self, $action_handler_definition, $setup_path, $action_file) = @_ ;
+my ($self, $setup_path, $action_file, $name, $action_handlers) = @_ ;
 
+my $action_handler_definition = $action_handlers->{$name} ;
 my %handler ;
 
 for my $name (keys %{$action_handler_definition})
@@ -271,7 +277,7 @@ for my $name (keys %{$action_handler_definition})
 	my $shortcuts_definition ;
 	if('SHORTCUTS' eq $name)
 		{
-		#~ print "Found shortcuts definition.\n" ;
+		# print "Found shortcuts definition.\n" ;
 		next ;
 		}
 	elsif('HASH' eq ref $action_handler_definition->{$name})
@@ -281,11 +287,13 @@ for my $name (keys %{$action_handler_definition})
 		$action_handler_definition->{$name}{ORIGIN} = $action_file  ;
 		$action_handler_definition->{$name}{FULL_ORIGIN} = "$setup_path/$action_file"  ;
 		
-		$action_handler = $self->get_group_action_handler($action_handler_definition->{$name}, $setup_path, $action_file) ;
+		$action_handler = $self->get_group_action_handler($setup_path, $action_file, $name, $action_handler_definition) ;
 		}
 	elsif('ARRAY' eq ref $action_handler_definition->{$name})
 		{
-		$shortcuts_definition= $action_handler_definition->{$name}[$SHORTCUTS]  ;
+		$self->check_action_by_name($setup_path, $action_file, $name, $action_handler_definition) ;
+		
+		$shortcuts_definition = $action_handler_definition->{$name}[$SHORTCUTS]  ;
 		$action_handler_definition->{$name}[$NAME] = $name ;
 		$action_handler_definition->{$name}[$ORIGIN] = $action_file  ;
 		$action_handler_definition->{$name}[$FULL_ORIGIN] = "$setup_path/$action_file"  ;
@@ -294,7 +302,7 @@ for my $name (keys %{$action_handler_definition})
 		}
 	else
 		{
-		#~ print "ignoring '$name'\n"  ;
+		# print "ignoring '$name'\n"  ;
 		next ;
 		}
 	
