@@ -43,6 +43,14 @@ for my $element (@{$elements})
 		
 		if(! $as_one_strip)
 			{
+			my @background_color ;
+			@background_color = ("BACKGROUND" => $element->{COLORS}{BACKGROUND}) if defined $element->{COLORS}{BACKGROUND} ;
+			@background_color = ("BACKGROUND" => $stripe->{BACKGROUND}) if defined $stripe->{BACKGROUND} ;
+			
+			my @foreground_color ;
+			@foreground_color = ("FOREGROUND" => $element->{COLORS}{FOREGROUND}) if defined $element->{COLORS}{FOREGROUND} ;
+			@foreground_color = ("FOREGROUND" => $stripe->{FOREGROUND}) if defined $stripe->{FOREGROUND} ;
+			
 			push @stripes, 
 				{
 				TEXT => $text,
@@ -50,6 +58,8 @@ for my $element (@{$elements})
 				Y_OFFSET => $stripe->{Y_OFFSET} + $element_offset_y,
 				WIDTH => $width, 
 				HEIGHT => $height , 
+				@background_color,
+				@foreground_color,
 				} ;
 			}
 		

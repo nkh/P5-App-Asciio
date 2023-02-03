@@ -220,6 +220,17 @@ for my $element (@{$self->{ELEMENTS}})
 			{
 			my $line_index = 0 ;
 			
+			my $strip_background_color = $background_color ;
+			my $strip_foreground_color = $foreground_color ;
+			
+			unless ($is_selected)
+				{
+				$strip_background_color = $strip->{BACKGROUND} // $background_color ;
+				$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
+				}
+			
+			$color_set .= $strip_background_color . $strip_foreground_color ;
+			
 			for my $line (split /\n/, $strip->{TEXT})
 				{
 				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
@@ -229,11 +240,11 @@ for my $element (@{$self->{ELEMENTS}})
 					my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
 					
 					my $gc = Cairo::Context->create($surface);
-					$gc->set_source_rgba(@{$background_color}, $self->{OPAQUE_ELEMENTS});
+					$gc->set_source_rgba(@{$strip_background_color}, $self->{OPAQUE_ELEMENTS});
 					$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
 					$gc->fill();
 					
-					$gc->set_source_rgb(@{$foreground_color});
+					$gc->set_source_rgb(@{$strip_foreground_color});
 					
 					if($self->{NUMBERED_OBJECTS})
 						{
