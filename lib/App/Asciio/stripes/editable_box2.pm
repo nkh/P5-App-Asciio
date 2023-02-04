@@ -363,21 +363,38 @@ return(0, 0, $self->{WIDTH}, $self->{HEIGHT})  unless $self->{RESIZABLE} ;
 my $new_end_x = $new_x ;
 my $new_end_y = $new_y ;
 
-if($new_end_x >= 0 &&  $new_end_y >= 0)
+if ($reference_x == -1 && $reference_y == -1)
 	{
 	$self->setup
 		(
 		$self->{TEXT_ONLY},
 		$self->{TITLE},
 		$self->{BOX_TYPE},
-		$new_end_x + 1,
-		$new_end_y + 1,
+		$self->{WIDTH} + $new_x,
+		$self->{HEIGHT} + $new_y,
 		$self->{RESIZABLE},
 		$self->{EDITABLE},
 		$self->{AUTO_SHRINK},
 		) ;
 	}
-	
+else
+	{
+	if($new_end_x >= 0 && $new_end_y >= 0)
+		{
+		$self->setup
+			(
+			$self->{TEXT_ONLY},
+			$self->{TITLE},
+			$self->{BOX_TYPE},
+			$new_end_x + 1,
+			$new_end_y + 1,
+			$self->{RESIZABLE},
+			$self->{EDITABLE},
+			$self->{AUTO_SHRINK},
+			) ;
+		}
+	}
+
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 }
 

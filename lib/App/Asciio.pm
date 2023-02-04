@@ -756,12 +756,12 @@ if($x_offset != 0 || $y_offset != 0)
 				) ;
 				
 	$self->update_display();
-
+	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
 }
-	
+
 #-----------------------------------------------------------------------------
 
 sub key_press_event

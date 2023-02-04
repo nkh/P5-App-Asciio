@@ -40,15 +40,19 @@ register_action_handlers
 	# 'Edit selected element'                          => 'Return',
 	# 'Change elements foreground color'               => 'ec',
 	# 'Change elements background color'               => 'eC',
-	# 'Select all elements'                            => '',
-	# 'Select connected elements'                      => '',
-	
+	'Select all elements'                           => [ 'C00-C-s'   ],
 	'Deselect all elements'                         => [ 'C00-C-l'   ],
-	# 'Select next element'                            => 'n',
-	'Select next element'                           => [ '000-<Tab>' ],
+	# 'Select connected elements'                      => '',
+	'Select next element'                           => [ '000-n' ],
+	'Select previous element'                       => [ '000-N' ],
+	# 'Select next element'                           => [ '000-<Tab>' ],
 	
-	# 'Select previous element'                        => 'N',
 	# 'Delete selected elements'                       => 'dd',
+	
+	'Resize element narrower'                       => [ '000-1' ],
+	'Resize element taller'                         => [ '000-2' ],
+	'Resize element shorter'                        => [ '000-3' ],
+	'Resize element wider'                          => [ '000-4' ],
 	
 	'Move selected elements left'                   => [ '000-h' ],
 	'Move selected elements right'                  => [ '000-l' ],

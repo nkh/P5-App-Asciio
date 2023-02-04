@@ -31,7 +31,12 @@ register_action_handlers
 	
 	'Change arrow direction'                        => ['000-d',            \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction                   ],
 	'Flip arrow start and end'                      => ['000-f',            \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                          ],
-
+	
+	'Resize element narrower'                       => ['000-1',            \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [-1, 0]           ],
+	'Resize element taller'                         => ['000-2',            \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0,  1]           ],
+	'Resize element shorter'                        => ['000-3',            \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0, -1]           ],
+	'Resize element wider'                          => ['000-4',            \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [1,  0]           ],
+	
 	'stripes group'=> 
 		{
 		SHORTCUTS => '0A0-g',

@@ -1,5 +1,7 @@
 package App::Asciio::Actions::ElementsManipulation ;
 
+use App::Asciio::stripes::group ;
+
 #----------------------------------------------------------------------------------------------
 
 sub edit_selected_element
@@ -564,9 +566,31 @@ else
 	}
 }
 
-#----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
-use App::Asciio::stripes::group ;
+sub resize_element_offset
+{
+my ($self, $offsets) = @_ ;
+
+my ($x_offset, $y_offset) = @$offsets ;
+
+if($x_offset != 0 || $y_offset != 0)
+	{
+	for my $selected_element ($self->get_selected_elements(1))
+		{
+		$self->{RESIZE_CONNECTOR_NAME} =
+			$self->resize_element
+					(
+					-1, - 1,
+					$x_offset, $y_offset,
+					$selected_element,
+					$self->{RESIZE_CONNECTOR_NAME},
+					) ;
+		}
+	
+	$self->update_display();
+	}
+}
 
 #----------------------------------------------------------------------------------------------
 

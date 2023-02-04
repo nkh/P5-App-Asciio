@@ -65,11 +65,11 @@ display
 		use external programs for menus and dialogs
 		fzf to the max
 		no sub menus, shortcut for each sub menu
-
+		
 		how do we make object dialogs, specially those which contain tables or multiple elements to set?
 		
 		new keyboard handler
-
+	
 	panning
 	
 	scrollbars
@@ -148,11 +148,19 @@ optimization
 		optimize current arrow (A* pathfinder)
 	
 	do_stack serialization
-		# use bzip2
 		=> diff + compress
 			# tests done
 			must have a reverse diff that can patch both ways or it's not worth it
 		let git do the work ?
+		
+		put ID to objects in ELEMENTS rather than serialized elements
+			large test shows time 0.2s vs 0.002s
+			
+			objects versions can be kept in memory or serialized separately if they
+			take too much space
+		
+		limit undo stack size
+
 
 #------------------- done ----------------------------
 
@@ -160,7 +168,7 @@ optimization
 	can be grouped
 	no difference with a text object except it has not text, or maybe a connection text
 
-#multi arrow doesn't render properly when multipl section or add section
+#multi arrow doesn't render properly when multiple section or add section
 
 #cache not working for multi arrow
 	all the elements must handle their cache
