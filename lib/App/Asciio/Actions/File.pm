@@ -165,7 +165,8 @@ if(defined $file_name && $file_name ne q[])
 
 sub quit_no_save
 {
-exit
+my ($self) = @_ ;
+$self->exit() ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -193,12 +194,12 @@ if($self->get_modified_state())
 		
 		$user_answer = 'ok' if defined $saved ;
 		}
-
-	exit if $user_answer eq 'ok'
+	
+	$self->exit() if $user_answer eq 'ok'
 	}
 else
 	{
-	exit ;
+	$self->exit() ;
 	}
 }
 

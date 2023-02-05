@@ -420,10 +420,25 @@ return($modifiers) ;
 
 #-----------------------------------------------------------------------------
 
+use Term::ReadKey;
+use Term::TermKey qw( FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
+
+sub exit
+{
+my ($self) = @_ ;
+
+ReadMode('normal') ;
+print "\e[?25h" ;
+
+exit ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub get_character_size
 {
 my ($self) = @_ ;
-	
+
 return 1, 1 ;
 }
 

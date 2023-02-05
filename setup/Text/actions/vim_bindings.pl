@@ -24,8 +24,8 @@ register_action_handlers
 		# 'Open'                                           => 'e',
 		# 'Save'                                           => 'w',
 		# 'SaveAs'                                         => 'W',
-		# 'Quit'                                           => 'q',
-		# 'Quit no save'                                   => 'Q',
+		'Quit'                                           => [ '000-q' ],
+		'Quit no save'                                   => [ '000-Q' ],
 		},
 
 	'Undo'                                           => [ '000-u'  ],
