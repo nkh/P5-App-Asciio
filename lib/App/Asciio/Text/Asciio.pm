@@ -60,39 +60,42 @@ print "\e[2J\e[H" ;
 print "\e[1;50H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
 
 # draw background
-my $grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} ;
-
-unless (defined $grid_rendering)
+if($self->{DISPLAY_GRID})
 	{
-	my $surface= '' ;
+	my $grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} ;
 	
-	if($self->{DISPLAY_GRID})
+	unless (defined $grid_rendering)
 		{
-		for my $line (0 .. $ROWS)
-			{
-			next if $line % 10 ;
-			
-			# $gc->set_source_rgb(@{$self->get_color($color)});
-			
-			$surface .= "\e[$line;0H\e[2;49;90m" . '-' x $COLS ;
-			}
+		my $surface= '' ;
 		
-		for my $line (0 .. $COLS)
+		if($self->{DISPLAY_GRID})
 			{
-			next if $line % 10 ;
+			for my $line (0 .. $ROWS)
+				{
+				next if $line % 10 ;
+				
+				# $gc->set_source_rgb(@{$self->get_color($color)});
+				
+				$surface .= "\e[$line;0H\e[2;49;90m" . '-' x $COLS ;
+				}
 			
-			# $gc->set_source_rgb(@{$self->get_color($color)});
+			for my $line (0 .. $COLS)
+				{
+				next if $line % 10 ;
+				
+				# $gc->set_source_rgb(@{$self->get_color($color)});
+				
+				$surface .= "\e[$_;${line}H\e[2;49;90m" . '|' for (1 .. $ROWS) ;
+				}
 			
-			$surface .= "\e[$_;${line}H\e[2;49;90m" . '|' for (1 .. $ROWS) ;
+			$surface .= "\e[m" ;
 			}
-		
-		$surface .= "\e[m" ;
+	
+		$grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} = $surface ;
 		}
-
-	$grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} = $surface ;
+	
+	print $grid_rendering ;
 	}
-
-print $grid_rendering ;
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
@@ -223,71 +226,74 @@ my $connection_point_rendering = "\e[33mo\e[m" ;
 # $gc->set_source_rgb(@{$self->get_color('extra_point')});
 my $extra_point_rendering = "\e[34m#\e[m" ;
 
-for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
+if ($self->{MOUSE_TOGGLE})
 	{
-	for my $connector ($element->get_connector_points())
+	for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
 		{
-		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
-		
-		my $column = $element->{X} + $connector->{X} + 1 ;
-		my $line = $connector->{Y} + $element->{Y} + 1 ;
-		print "\e[$line;${column}H" . $connector_point_rendering;
-		}
-		
-	for my $extra_point ($element->get_extra_points())
-		{
-		my $column = $extra_point->{X}  + $element->{X} + 1 ;
-		my $line = $extra_point->{Y} + $element->{Y} + 1 ;
-		print "\e[$line;${column}H" . $extra_point_rendering;
-		}
-
-	for my $connection_point ($element->get_connection_points())
-		{
-		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
-		
-		my $column = $connection_point->{X} + $element->{X} + 1 ;
-		my $line = $connection_point->{Y} + $element->{Y} + 1 ;
-		print "\e[$line;${column}H" . $connection_point_rendering;
-		}
-	}
-
-for my $connection (@{$self->{CONNECTIONS}})
-	{
-	my $draw_connection ;
-	my $connector  ;
-	
-	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
-		{
-		$draw_connection++ ;
-		
-		$connector = $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
-		$connected_connectors{$connection->{CONNECTED}}{$connector->{X}}{$connector->{Y}}++ ;
-		}
-		
-	if($self->is_over_element($connection->{CONNECTEE}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
-		{
-		$draw_connection++ ;
-		
-		my $connectee_connection = $connection->{CONNECTEE}->get_named_connection($connection->{CONNECTION}{NAME}) ;
-		
-		if($connectee_connection)
+		for my $connector ($element->get_connector_points())
 			{
-			$connected_connectors{$connection->{CONNECTEE}}{$connectee_connection->{X}}{$connectee_connection->{Y}}++ ;
+			next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
+			
+			my $column = $element->{X} + $connector->{X} + 1 ;
+			my $line = $connector->{Y} + $element->{Y} + 1 ;
+			print "\e[$line;${column}H" . $connector_point_rendering;
+			}
+			
+		for my $extra_point ($element->get_extra_points())
+			{
+			my $column = $extra_point->{X}  + $element->{X} + 1 ;
+			my $line = $extra_point->{Y} + $element->{Y} + 1 ;
+			print "\e[$line;${column}H" . $extra_point_rendering;
+			}
+		
+		for my $connection_point ($element->get_connection_points())
+			{
+			next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
+			
+			my $column = $connection_point->{X} + $element->{X} + 1 ;
+			my $line = $connection_point->{Y} + $element->{Y} + 1 ;
+			print "\e[$line;${column}H" . $connection_point_rendering;
 			}
 		}
-		
-	if($draw_connection)
+	
+	for my $connection (@{$self->{CONNECTIONS}})
 		{
-		$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
+		my $draw_connection ;
+		my $connector  ;
 		
-		my $connection_rendering = "\e[31mc\e[m" ;
-		
-		my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
-		my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
-		print "\e[$line;${column}H" . $connection_rendering;
+		if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
+			{
+			$draw_connection++ ;
+			
+			$connector = $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
+			$connected_connectors{$connection->{CONNECTED}}{$connector->{X}}{$connector->{Y}}++ ;
+			}
+			
+		if($self->is_over_element($connection->{CONNECTEE}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
+			{
+			$draw_connection++ ;
+			
+			my $connectee_connection = $connection->{CONNECTEE}->get_named_connection($connection->{CONNECTION}{NAME}) ;
+			
+			if($connectee_connection)
+				{
+				$connected_connectors{$connection->{CONNECTEE}}{$connectee_connection->{X}}{$connectee_connection->{Y}}++ ;
+				}
+			}
+			
+		if($draw_connection)
+			{
+			$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
+			
+			my $connection_rendering = "\e[31mc\e[m" ;
+			
+			my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
+			my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
+			print "\e[$line;${column}H" . $connection_rendering;
+			}
 		}
 	}
-	
+
 # draw new connections
 my $connection_rendering = "\e[31mc\e[m" ;
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
@@ -301,7 +307,7 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	}
 
 delete $self->{NEW_CONNECTIONS} ;
-	
+
 # draw selection rectangle
 if(0) #defined $self->{SELECTION_RECTANGLE}{END_X})
 	{
@@ -323,12 +329,12 @@ if(0) #defined $self->{SELECTION_RECTANGLE}{END_X})
 		}
 		
 	# $gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
-
+	
 	print "\e[$start_y;${start_x}H" . "\e[30m" . ( '-' x $width) ;
 	print "\e[$start_y;" . ($start_x + $width) . "H" . "\e[30m" . ( '-' x $width) ;
 	print "\e[$_;${start_x}H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
 	print "\e[$_;" . ($start_x + $width) . "H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
-
+	
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 

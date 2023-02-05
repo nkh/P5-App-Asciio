@@ -33,7 +33,7 @@ for my $action (@actions)
 		
 	my ($modifiers, $action_key) = $action =~ /(...)-(.*)/ ;
 	
-	my $action = encode('utf8', $action);
+	my $action = encode('utf8', $action) ;
 	
 	if(exists $self->{CURRENT_ACTIONS}{$action})
 		{
@@ -70,6 +70,8 @@ for my $action (@actions)
 					$self->{CURRENT_ACTIONS}{$action}[$CODE]->($self, @arguments)
 					] ;
 				}
+			
+			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 			}
 		}
 	else

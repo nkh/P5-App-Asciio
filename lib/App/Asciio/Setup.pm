@@ -32,7 +32,7 @@ for my $setup_file (@{$setup_ini_files})
 	my ($setup_name, $setup_path, $setup_ext) = File::Basename::fileparse($setup_file, ('\..*')) ;
 	
 	my $ini_files ;
-
+	
 	{
 	my $context = new Eval::Context() ;
 	$ini_files = $context->eval
@@ -40,7 +40,7 @@ for my $setup_file (@{$setup_ini_files})
 				PRE_CODE => "use strict;\nuse warnings;\n",
 				CODE_FROM_FILE => $setup_file,
 				) ;
-
+	
 	warn "can't load '$setup_file': $! $@\n" if $@ ;
 	}
 		
@@ -106,7 +106,7 @@ my($self, $setup_path, $hook_files) = @_ ;
 for my $hook_file (@{ $hook_files })
 	{
 	my $context = new Eval::Context() ;
-
+	
 	my @hooks ;
 	
 	$context->eval
@@ -116,7 +116,7 @@ for my $hook_file (@{ $hook_files })
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		CODE_FROM_FILE => "$setup_path/$hook_file" ,
 		) ;
-
+	
 	die "can't load hook file '$hook_file ': $! $@\n" if $@ ;
 	
 	for my $hook (@hooks)
@@ -134,8 +134,6 @@ my($self, $setup_path, $action_files) = @_ ;
 
 for my $action_file (@{ $action_files })
 	{
-	# print "setup_action_handlers: loading '$setup_path/$action_file'\n" ;
-	
 	my $context = new Eval::Context() ;
 	
 	my %action_handlers;
@@ -152,12 +150,14 @@ for my $action_file (@{ $action_files })
 	
 	for my $name (keys %action_handlers)
 		{
+		
 		my $action_handler ;
 		my $group_name ;
 		
 		my $shortcuts_definition ;
 		if('HASH' eq ref $action_handlers{$name})
 			{
+			# print "\e[31maction_handler: '$name' is group\e[m\n" ;
 			$shortcuts_definition = $action_handlers{$name}{SHORTCUTS}  ;
 			$action_handlers{$name}{GROUP_NAME} = $group_name = $name ;
 			$action_handlers{$name}{ORIGIN} = $action_file ;
@@ -182,8 +182,9 @@ for my $action_file (@{ $action_files })
 			next ;
 			}
 			
-		$self->{ACTIONS_BY_NAME}{$name} = $action_handlers{$name}  ;
-		$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
+		$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
+		$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} = $action_file ;
+		# $self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 		
 		my $shortcuts ;
 		if('ARRAY' eq ref $shortcuts_definition)
@@ -194,8 +195,8 @@ for my $action_file (@{ $action_files })
 			{
 			$shortcuts = [$shortcuts_definition]  ;
 			}
-			
-				
+		
+		
 		for my $shortcut (@$shortcuts)	
 			{
 			if(exists $self->{ACTIONS}{$shortcut})
@@ -205,6 +206,7 @@ for my $action_file (@{ $action_files })
 				print "\told was '$self->{ACTIONS}{$shortcut}[$NAME]' defined in file '$self->{ACTIONS}{$shortcut}[$FULL_ORIGIN]'\n" ;
 				}
 				
+			# print "\e[32maction_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
 			$self->{ACTIONS}{$shortcut} = $action_handler ;
 			
 			if(defined $group_name)
@@ -224,9 +226,7 @@ my ($self, $setup_path, $action_file, $name, $action_handlers) = @_ ;
 
 if(exists $self->{ACTIONS_BY_NAME}{$name})
 	{
-	print "Overriding action named '$name'\n" ;
-	print "\tdefined in file '$setup_path/$action_file'\n" ;
-	print "\told was defined in file '$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN}'\n" ;
+	print "\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown') ;
 	
 	my $new_handler = $action_handlers->{$name} ;
 	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
@@ -236,29 +236,32 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 		die "\tno shortcuts in definition\n" ;
 		}
 	
+	my $reused = '' ;
 	if(! defined $new_handler->[$CODE] && defined $old_handler->[$CODE]) 
 		{
-		print "\ttransfering code to overriding action\n" ;
+		$reused .= ", reused code" ;
 		$new_handler->[$CODE] = $old_handler->[$CODE]  ;
 		}
 	
 	if(! defined $new_handler->[$ARGUMENTS] && defined $old_handler->[$ARGUMENTS]) 
 		{
-		print "\ttransfering arguments to overriding action\n" ;
+		$reused .= ", reused arguments" ;
 		$new_handler->[$ARGUMENTS] = $old_handler->[$ARGUMENTS]  ;
 		}
 	
 	if(! defined $new_handler->[$CONTEXT_MENU_SUB] && defined $old_handler->[$CONTEXT_MENU_SUB]) 
 		{
-		print "\ttransfering context menu to overriding action\n" ;
+		$reused .= "reused context menu" ;
 		$new_handler->[$CONTEXT_MENU_SUB] = $old_handler->[$CONTEXT_MENU_SUB]  ;
 		}
 		
 	if(! defined $new_handler->[$CONTEXT_MENU_ARGUMENTS] && defined $old_handler->[$CONTEXT_MENU_ARGUMENTS]) 
 		{
-		print "\ttransfering context menu arguments to overriding action\n" ;
+		$reused .= "reused contet menu arguments" ;
 		$new_handler->[$CONTEXT_MENU_ARGUMENTS] = $old_handler->[$CONTEXT_MENU_ARGUMENTS]  ;
 		}
+	
+	print "$reused\e[m\n" ;
 	}
 }
 
@@ -306,6 +309,9 @@ for my $name (keys %{$action_handler_definition})
 		next ;
 		}
 	
+	$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
+	$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
+	
 	my $shortcuts ;
 	if('ARRAY' eq ref $shortcuts_definition)
 		{
@@ -323,6 +329,7 @@ for my $name (keys %{$action_handler_definition})
 			print "Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n" ;
 			}
 			
+		# print "\e[32maction_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
 		$handler{$shortcut} =  $action_handler ;
 		
 		if(defined $group_name)
@@ -344,7 +351,7 @@ my($self, $setup_path, $import_export_files) = @_ ;
 for my $import_export_file (@{ $import_export_files })
 	{
 	my $context = new Eval::Context() ;
-
+	
 	my %import_export_handlers ;
 	$context->eval
 		(
@@ -353,13 +360,13 @@ for my $import_export_file (@{ $import_export_files })
 		PRE_CODE => <<EOC ,
 			use strict;
 			use warnings;
-
+		
 EOC
 		CODE_FROM_FILE => "$setup_path/$import_export_file",
 		) ;
 			
 	die "can't load import/export handler defintion file '$import_export_file': $! $@\n" if $@ ;
-
+	
 	for my $extension (keys %import_export_handlers)
 		{
 		if(exists $self->{IMPORT_EXPORT_HANDLERS}{$extension})
@@ -381,7 +388,7 @@ my($self, $setup_path, $options_files) = @_ ;
 for my $options_file (@{ $options_files })
 	{
 	my $context = new Eval::Context() ;
-
+	
 	my %options = 
 		$context->eval
 			(
@@ -411,7 +418,7 @@ my($self, $script) = @_ ;
 if(defined $script)
 	{
 	my $context = new Eval::Context() ;
-
+	
 	$context->eval
 		(
 		PRE_CODE => "use strict;\nuse warnings;\n",

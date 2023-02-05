@@ -28,14 +28,14 @@ register_action_handlers
 		# 'Quit no save'                                   => 'Q',
 		},
 
-	# 'Undo'                                           => 'u',
-	# 'Redo'                                           => '®',
+	'Undo'                                           => [ '000-u'  ],
+	'Redo'                                           => [ 'C00-C-r'],
 	
 	# elements group
 	# --------------
-	# 'Insert from clipboard'                          => 'p',
-	# 'Copy to clipboard'                              => 'y',
-	# 'Export to clipboard & primary as ascii'         => 'Y',
+	'Insert from clipboard'                         => [ '000-p' ],
+	'Copy to clipboard'                             => [ '000-y' ],
+	'Export to clipboard & primary as ascii'        => [ '000-Y' ],
 	
 	# 'Edit selected element'                          => 'Return',
 	# 'Change elements foreground color'               => 'ec',
@@ -45,7 +45,8 @@ register_action_handlers
 	# 'Select connected elements'                      => '',
 	'Select next element'                           => [ '000-n' ],
 	'Select previous element'                       => [ '000-N' ],
-	# 'Select next element'                           => [ '000-<Tab>' ],
+	'Select next element move mouse'                => [ '000-Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
+	'Select previous element move mouse'            => [ '00S-S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
 	
 	# 'Delete selected elements'                       => 'dd',
 	
@@ -61,17 +62,17 @@ register_action_handlers
 	
 	# mouse group
 	# -----------
-	'Toggle mouse'                                  => [ "000-'" ] ,
-	'Mouse right-click'                             => [ '000-ä' ] ,
-	'Mouse left-click'                              => [ '000-ö' ] ,
-	'Mouse shift-left-click'                        => [ '000-Ö' ] ,
-	'Mouse ctl-left-click'                          => [ 'C00-ö' ] ,
-	'Mouse alt-left-click'                          => [ '0A0-ö' ] ,
+	'Toggle mouse'                                  => [ "000-'" ],
+	'Mouse right-click'                             => [ '000-ä' ],
+	'Mouse left-click'                              => [ '000-ö' ],
+	'Mouse shift-left-click'                        => [ '000-Ö' ],
+	'Mouse ctl-left-click'                          => [ 'C00-ö' ],
+	'Mouse alt-left-click'                          => [ '0A0-ö' ],
 
-	# 'Mouse drag down'                                => 'J',
-	# 'Mouse drag left'                                => 'H',
-	# 'Mouse drag right'                               => 'L',
-	# 'Mouse drag up'                                  => 'K',
+	# 'Mouse drag down'                               => [ '000-J' ],
+	# 'Mouse drag left'                               => [ '000-H' ],
+	# 'Mouse drag right'                              => [ '000-L' ],
+	# 'Mouse drag up'                                 => [ '000-K' ],
 	'Mouse drag left'                               => [ '0A0-A-Left'  ] ,
 	'Mouse drag right'                              => [ '0A0-A-Right' ] ,
 	'Mouse drag up'                                 => [ '0A0-A-Up'    ] ,
@@ -103,7 +104,7 @@ register_action_handlers
 		# 'External command output in a box'               => 'x',
 		# 'External command output in a box no frame'      => 'X',
 		# 'Insert from file'                               => 'f',
-
+		
 		'Add box'                                        => [ '000-b' ],
 		# 'Create multiple box elements from description'  => [ '000-M'],
 		# 'Create multiple text elements from description' => [ '000-T'],
@@ -119,44 +120,44 @@ register_action_handlers
 		'Add angled arrow'                               => [ '000-A' ],
 		'Add shrink box'                                 => [ '000-B' ],
 		},
-
-	# 'grouping group' => 
-	# 	{
-	# 	SHORTCUTS => '000-l',
-		
-		# 'Group selected elements'                        => 'g',
-		# 'Ungroup selected elements'                      => 'u',
-		# 'Ungroup group-object'                           => 'u',
-		# 'Move selected elements to the back'             => 'b',
-		# 'Move selected elements to the front'            => 'f',
-		# 'Temporary move selected element to the front'   => 'F',
-		# },
 	
-	# 'display group' => 
-	# 	{
-	# 	SHORTCUTS => '000-z',
+	'grouping group' => 
+		{
+		SHORTCUTS => '000-g',
 		
-		# 'Change AsciiO background color'                 => 'c',
-		# 'Change grid color'                              => 'C',
-		# 'Flip grid display'                              => 'g',
-		# 'Flip color scheme'                              => 's',
-		# 'Flip transparent element background'            => 't',
-		# 'Zoom out'                                       => '-',
-		# 'Zoom in'                                        => '+',
-		# },
+		'Group selected elements'                        => [ '000-g' ],
+		'Ungroup selected elements'                      => [ '000-u' ],
+		'Ungroup group-object'                           => [ '000-u' ],
+		'Move selected elements to the back'             => [ '000-b' ],
+		'Move selected elements to the front'            => [ '000-f' ],
+		'Temporary move selected element to the front'   => [ '000-F' ],
+		},
+	
+	'display group' => 
+		{
+		SHORTCUTS => '000-z',
+		
+		'Change Asciio background color'                 => [ '000-c' ],
+		'Change grid color'                              => [ '000-C' ],
+		'Flip grid display'                              => [ '000-g' ],
+		'Flip color scheme'                              => [ '000-s' ],
+		'Flip transparent element background'            => [ '000-t' ],
+		# 'Zoom out'                                       => [ '000--' ],
+		# 'Zoom in'                                        => [ '000-+' ],
+		},
 	
 	'align group' => 
 		{
 		SHORTCUTS => '000-A',
 		
-		# 'Align bottom'                                   => 'b',
-		# 'Align center'                                   => 'c',
-		# 'Align left'                                     => 'l',
-		# 'Align middle'                                   => 'm',
-		# 'Align right'                                    => 'r',
-		# 'Align top'                                      => 't',
+		'Align bottom'                                   => [ '000-b' ],
+		'Align center'                                   => [ '000-c' ],
+		'Align left'                                     => [ '000-l' ],
+		'Align middle'                                   => [ '000-m' ],
+		'Align right'                                    => [ '000-r' ],
+		'Align top'                                      => [ '000-t' ],
 		},
-
+	
 	'slides group' => 
 		{
 		SHORTCUTS => '000-S',
@@ -166,7 +167,7 @@ register_action_handlers
 		# 'next slide'                                     => 'n',
 		# 'first slide'                                    => 'g',
 		},
-
+	
 	'debug group' => 
 		{
 		SHORTCUTS => '000-D',

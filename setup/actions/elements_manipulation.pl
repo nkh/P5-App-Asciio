@@ -5,8 +5,8 @@ use App::Asciio::Actions::ElementsManipulation ;
 
 register_action_handlers
 	(
-	'Select next element'                           => ['000-Tab',          \&App::Asciio::Actions::ElementsManipulation::select_next_element                      ],
-	'Select previous element'                       => ['00S-ISO_Left_Tab', \&App::Asciio::Actions::ElementsManipulation::select_previous_element                  ],
+	'Select next element'                           => ['000-Tab',          \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0]         ],
+	'Select previous element'                       => ['00S-ISO_Left_Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0]         ],
 	'Select element by id'                          => ['C00-Tab',          \&App::Asciio::Actions::ElementsManipulation::select_element_by_id                     ],
 	
 	'Select all elements'                           => ['C00-a',            \&App::Asciio::Actions::ElementsManipulation::select_all_elements                      ],

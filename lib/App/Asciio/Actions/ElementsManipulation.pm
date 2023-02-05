@@ -37,9 +37,9 @@ if(@elements_to_redirect)
 	{
 	$changes_made++ ;
 	for (@elements_to_redirect)
-                {
-                $_->change_section_direction($self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y}) ;
-                }
+		{
+		$_->change_section_direction($self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y}) ;
+		}
 	}
 
 
@@ -50,9 +50,9 @@ if(@elements_to_redirect)
 	{
 	$changes_made++ ;
 	for (@elements_to_redirect)
-                {
-                $_->change_direction() ;
-                }
+		{
+		$_->change_direction() ;
+		}
 	}
 
 # all
@@ -96,14 +96,14 @@ if(@elements_to_flip)
 		
 	for (@elements_to_flip)
 		{
-                # create one with ends swapped
+		# create one with ends swapped
 		my $new_direction = $_->get_section_direction(0) ;
 		
-                if($new_direction =~ /(.*)-(.*)/)
-                        {
-                        my ($start_direction, $end_direction) = ($1, $2) ;
-                        $new_direction = $reverse_direction{$end_direction} . '-' . $reverse_direction{$start_direction} ;
-                        }
+		if($new_direction =~ /(.*)-(.*)/)
+			{
+			my ($start_direction, $end_direction) = ($1, $2) ;
+			$new_direction = $reverse_direction{$end_direction} . '-' . $reverse_direction{$start_direction} ;
+			}
 		else
 			{
 			$new_direction = $reverse_direction{$new_direction} ;
@@ -133,16 +133,17 @@ if(@elements_to_flip)
 		# keep the element selected
 		$self->select_elements(1, $arrow) ;
 		}
-		
+	
 	$self->update_display() ;
 	}
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub select_next_element
+sub select_element_direction
 {
-my ($self) = @_ ;
+my ($self, $direction_and_mouse) = @_ ;
+my ($direction, $move_mouse) = @{$direction_and_mouse} ;
 
 return unless exists $self->{ELEMENTS}[0] ;
 
@@ -150,83 +151,29 @@ $self->create_undo_snapshot() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
+my @elements = $direction ? @{$self->{ELEMENTS}} : reverse @{$self->{ELEMENTS}} ;
+my $next_element = $direction ? $self->{ELEMENTS}[0] : $self->{ELEMENTS}[-1] ;
+my $last_selectable_element = $direction ? $selected_elements[-1] : $selected_elements[0] ;
+
 if(@selected_elements)
 	{
-	my $last_selected_element = $selected_elements[-1] ;
+	my $seen_selected ;
 	
-	my ($seen_selected, $next_element) ;
-	
-	for my $element (@{$self->{ELEMENTS}}) 
+	for my $element (@elements) 
 		{
 		if(! $self->is_element_selected($element) && $seen_selected)
 			{
 			$next_element = $element ; last ;
 			}
-			
-		$seen_selected =$element == $last_selected_element ;
-		}
 		
-	$self->deselect_all_elements() ;
-	
-	if($next_element)
-		{
-		$self->select_elements(1, $next_element) ;
-		}
-	else
-		{
-		$self->select_elements(1, $self->{ELEMENTS}[0]);
+		$seen_selected = $element == $last_selectable_element ;
 		}
 	}
-else
-	{
-	$self->select_elements(1, $self->{ELEMENTS}[0]);
-	}
-	
-$self->update_display() ;
-}
 
-#----------------------------------------------------------------------------------------------
+$self->deselect_all_elements() ;
+$self->select_elements(1, $next_element) ;
+@$self{'MOUSE_X', 'MOUSE_Y'} = @$next_element{'X', 'Y'} if $move_mouse ;
 
-sub select_previous_element
-{
-my ($self) = @_ ;
-
-return unless exists $self->{ELEMENTS}[0] ;
-
-$self->create_undo_snapshot() ;
-
-my @selected_elements = $self->get_selected_elements(1) ;
-if(@selected_elements)
-	{
-	my $last_selected_element = $selected_elements[0]  ;
-
-	my ($seen_selected, $next_element) ;
-	for my $element (reverse @{$self->{ELEMENTS}}) 
-		{
-		if(! $self->is_element_selected($element) && $seen_selected)
-			{
-			$next_element = $element ; last ;
-			}
-			
-		$seen_selected =$element == $last_selected_element ;
-		}
-		
-	$self->deselect_all_elements() ;
-
-	 if(defined $next_element)
-		{
-		$self->select_elements(1, $next_element) ;
-		}
-	else
-		{
-		$self->select_elements(1, $self->{ELEMENTS}[-1]);
-		}
-	}
-else
-	{
-	$self->select_elements(1, $self->{ELEMENTS}[-1]);
-	}
-	
 $self->update_display() ;
 }
 
@@ -243,7 +190,7 @@ return unless exists $self->{ELEMENTS}[$id - 1] ;
 $self->create_undo_snapshot() ;
 
 $self->select_elements_flip($self->{ELEMENTS}[$id - 1]) ;
-	
+
 $self->update_display() ;
 }
 
@@ -269,7 +216,7 @@ my (@selected_elements_connected, %selected_elements_connected, @not_connected_t
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
- 	if(exists $selected_elements{$connection->{CONNECTEE}})
+	if(exists $selected_elements{$connection->{CONNECTEE}})
 		{
 		push @selected_elements_connected, $connection->{CONNECTED} ;
 		$selected_elements_connected{$connection->{CONNECTED}}++ ;
@@ -543,7 +490,7 @@ if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front})
 else
 	{
 	my @selected_elements = $self->get_selected_elements(1)  ;
-
+	
 	if(@selected_elements == 1 )
 		{
 		$self->create_undo_snapshot() ;
@@ -556,7 +503,7 @@ else
 			last if $selected_element == $_ ;
 			$position++ ;
 			}
-
+		
 		$self->move_elements_to_front($selected_element) ;
 		$self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front} = 
 			[$selected_element, $position] ;
