@@ -58,10 +58,27 @@ create_element
 
 create_element
 	(
-	NAME => 'boxes/rhombus',
+	NAME => 'shape/rhombus',
 	CLASS => 'App::Asciio::stripes::rhombus',
-	TEXT_ONLY => '',
+	RESIZABLE => 1,
 	EDITABLE => 1,
+	TEXT_ONLY => '', 
+	) ,
+
+create_element
+	(
+	NAME => 'shape/triangle/down',
+	CLASS => 'App::Asciio::stripes::triangle_down',
+	RESIZABLE => 1,
+	EDITABLE => 0,
+	) ,
+
+create_element
+	(
+	NAME => 'shape/triangle/up',
+	CLASS => 'App::Asciio::stripes::triangle_up',
+	RESIZABLE => 1,
+	EDITABLE => 0,
 	) ,
 
 create_box(NAME => 'rulers/0_to_9_vertical', TEXT_ONLY => "0\n1\n2\n3\n4\n5\n6\n7\n8\n9",) ,

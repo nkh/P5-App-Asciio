@@ -19,6 +19,7 @@ use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
 use App::Asciio::stripes::rhombus;
+use App::Asciio::GTK::Asciio::stripes::rhombus;
 
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
@@ -46,6 +47,7 @@ $window->signal_connect(button_press_event => \&button_press_event, $self);
 $window->signal_connect(button_release_event => \&button_release_event, $self);
 
 my $drawing_area = Gtk3::DrawingArea->new;
+$drawing_area->set_size_request(3600, 3600);
 $self->{widget} = $drawing_area ;
 
 $drawing_area->signal_connect(draw => \&expose_event, $self);

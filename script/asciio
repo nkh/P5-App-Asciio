@@ -18,23 +18,21 @@ use File::Basename ;
 
 my $window = Gtk3::Window->new('toplevel');
 $window->set_title("asciio");
-$window->set_default_size(2000, 2000) ;
+$window->set_default_size(1000, 1000) ;
 $window->signal_connect("destroy", sub { exit(0); });
 
-my $vbox = Gtk3::VBox->new (FALSE, 0);
-$window->add($vbox);
+my $scwin = Gtk3::ScrolledWindow->new();
+$scwin->set_policy('automatic', 'automatic');
 
-my $hpaned = Gtk3::HPaned->new;
-$vbox->pack_start($hpaned, TRUE, TRUE, 0);
-$hpaned->set_border_width (3);
+$window->add($scwin);
 
 my @asciios ;
 
 my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25) ;
 push @asciios, $asciio ;
 
-$hpaned->add1($asciio->{widget});
-$vbox->show_all();
+$scwin->add_with_viewport($asciio->{widget});
+$scwin->show_all();
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
@@ -70,7 +68,7 @@ if(defined $asciio_config->{TARGETS}[0])
 	$window->set_default_size(@{$asciio->{WINDOW_SIZE}})  if defined $asciio->{WINDOW_SIZE} ;
 	}
 	
-$window->show();
+$window->show_all();
 
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;

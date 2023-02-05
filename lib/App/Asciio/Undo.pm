@@ -82,7 +82,7 @@ if(defined $new_self)
 	if($@)
 		{
 		use File::Slurp ;
-		write_file('undo_error.pl', $new_self ) ;
+		write_file_utf8('undo_error.pl', $new_self ) ;
 		die "Can't undo! $@\n" ;
 		}
 	else

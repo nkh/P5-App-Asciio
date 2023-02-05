@@ -10,6 +10,7 @@ my @split_modules ;
 my @pm_files = qw(
 lib/App/Asciio.pm
 
+lib/App/Asciio/Toolfunc.pm
 lib/App/Asciio/Actions.pm
 lib/App/Asciio/Ascii.pm
 lib/App/Asciio/Connections.pm
@@ -43,6 +44,8 @@ lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/stripes/rhombus.pm
+lib/App/Asciio/stripes/triangle_down.pm
+lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/stripes/single_stripe.pm
 lib/App/Asciio/stripes/stripes.pm
@@ -59,6 +62,7 @@ lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
+lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
 
 lib/App/Asciio/Text/Asciio.pm
 

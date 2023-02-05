@@ -11,6 +11,7 @@ use Clone;
 use List::Util qw(min max first) ;
 use List::MoreUtils qw(any minmax first_value) ;
 
+use App::Asciio::Toolfunc ;
 use App::Asciio::Setup ;
 use App::Asciio::Dialogs ;
 use App::Asciio::Elements ;

@@ -218,7 +218,7 @@ if(defined $name && $name ne q[])
 		delete $stencil->{Y} ;
 		$stencil->{NAME} = $name;
 		
-		write_file($file_name, Dumper [$stencil]) ;
+		write_file_utf8($file_name, Dumper [$stencil]) ;
 		}
 	}
 }
@@ -298,6 +298,21 @@ else
 	
 return $title ;
 }
+
+#-----------------------------------------------------------------------------
+sub canvas_resize
+{
+my ($self, $width, $height) = @_ ;
+($width, $height) = $self->display_canvas_resize_dialog('width(integer)', 'height(integer)');
+unless($width =~ /^\d+$/ && $height =~ /^\d+$/) {
+	return;
+}
+
+$self->{widget}->set_size_request($width, $height);
+$self->event_options_changed();
+$self->invalidate_rendering_cache();
+}
+
 
 #-----------------------------------------------------------------------------
 

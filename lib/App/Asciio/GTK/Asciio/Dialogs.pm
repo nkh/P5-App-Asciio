@@ -206,12 +206,26 @@ my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
 $dialog->set_default_size (300, 150);
 $dialog->add_button ('gtk-ok' => 'ok');
 
+my $vbox = Gtk3::VBox->new(FALSE, 5) ;
+$vbox->pack_start(Gtk3::Label->new(""), FALSE, FALSE, 0) ;
+$vbox->add(Gtk3::Label->new("")) ;
+
 my $textview = Gtk3::TextView->new;
+$textview->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 12'));
 my $buffer = $textview->get_buffer;
 $buffer->insert ($buffer->get_end_iter, $text);
 
-$dialog->get_content_area->add ($textview) ;
-$textview->show;
+my $scroller = Gtk3::ScrolledWindow->new();
+$scroller->set_hexpand(TRUE);
+$scroller->set_vexpand(TRUE);
+$scroller->add($textview);
+$vbox->add($scroller);
+
+$textview->show();
+$scroller->show();
+$vbox->show();
+
+$dialog->get_content_area->add ($vbox) ;
 
 
 # Set up the dialog such that Ctrl+Return will activate the "ok"  response. Muppet
@@ -235,6 +249,49 @@ return $new_text
 }
 
 #-----------------------------------------------------------------------------
+
+sub display_canvas_resize_dialog
+{
+        my ($self, $width, $heigh) = @_ ;
+        my $window = new Gtk3::Window() ;
+        my $dialog = Gtk3::Dialog->new('Canvas size', $window, 'destroy-with-parent');
+        $dialog->set_default_size(280, 60);
+        $dialog->add_button('gtk-ok' => 'ok');
+        my $vbox = Gtk3::VBox->new(FALSE, 5) ;
+        $vbox->add(Gtk3::Label->new(""));
+        my $widthview = Gtk3::TextView->new();
+        my $width_buffter = $widthview->get_buffer();
+        $width_buffter->insert($width_buffter->get_end_iter, $width);
+        $vbox->add($widthview);
+        $widthview->show();
+
+        my $heighview = Gtk3::TextView->new();
+        my $heigh_buffer = $heighview->get_buffer;
+        $heigh_buffer->insert($heigh_buffer->get_end_iter, $heigh);
+        $vbox->add($heighview);
+        $heighview->show();
+
+        #Focus and select, code by Tian
+        $heigh_buffer->select_range($heigh_buffer->get_start_iter, $heigh_buffer->get_end_iter);
+        $heighview->grab_focus() ;
+
+        $width_buffter->select_range($width_buffter->get_start_iter, $width_buffter->get_end_iter);
+        $widthview->grab_focus() ;
+
+        $vbox->show() ;
+
+        $dialog->get_content_area()->add($vbox) ;
+        $dialog->run() ;
+
+        my $new_width =  $widthview->get_buffer->get_text($width_buffter->get_start_iter, $width_buffter->get_end_iter, TRUE) ;
+        my $new_heigh =  $heighview->get_buffer->get_text($heigh_buffer->get_start_iter, $heigh_buffer->get_end_iter, TRUE) ;
+
+        $dialog->destroy ;
+
+        return ($new_width, $new_heigh) ;
+}
+#-----------------------------------------------------------------------------
+
 
 sub get_file_name
 {

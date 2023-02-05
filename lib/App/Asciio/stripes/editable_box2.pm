@@ -2,6 +2,7 @@
 package App::Asciio::stripes::editable_box2 ;
 
 use base App::Asciio::stripes::single_stripe ;
+use App::Asciio::Toolfunc;
 
 use strict;
 use warnings;
@@ -50,7 +51,7 @@ my ($text_width,  @lines) = (0) ;
 
 for my $line (split("\n", $text_only))
 	{
-	$text_width  = max($text_width, length($line)) ;
+	$text_width  = max($text_width, physical_length($line)) ;
 	push @lines, $line ;
 	}
 	
@@ -60,7 +61,7 @@ $title_text = '' unless defined $title_text ;
 
 for my $title_line (split("\n", $title_text))
 	{
-	$title_width  = max($title_width, length($title_line)) ;
+	$title_width  = max($title_width, physical_length($title_line)) ;
 	push @title_lines, $title_line ;
 	}
 
@@ -83,7 +84,7 @@ my $text = $box_top ;
 
 for my $title_line (@title_lines)
 	{
-	my $pading =  ($end_x - (length($title_left . $title_line . $title_right))) ;
+	my $pading =  ($end_x - (physical_length($title_left . $title_line . $title_right))) ;
 	my $left_pading =  int($pading / 2) ;
 	my $right_pading = $pading - $left_pading ;
 	
@@ -94,7 +95,7 @@ $text .= $title_separator ;
 
 for my $line (@lines)
 	{
-	$text .= $box_left . $line . (' ' x ($end_x - (length($line) + $extra_width))) . $box_right . "\n" ;
+	$text .= $box_left . $line . (' ' x ($end_x - (physical_length($line) + $extra_width))) . $box_right . "\n" ;
 	}
 	
 for (1 .. ($end_y - (@lines + $extra_height + @title_lines)))
@@ -140,8 +141,8 @@ sub get_box_frame_size_overhead
 my ($box_type) = @_ ;
 
 my @displayed_elements = grep { $_->[$DISPLAY] } @{$box_type} ;
-my $extra_width = max(0, map {length} map {$_->[$LEFT]} @displayed_elements)
-				+ max(0, map {length} map {$_->[$RIGHT]} @displayed_elements) ;
+my $extra_width = max(0, map {physical_length $_} map {$_->[$LEFT]}@displayed_elements)
+				+ max(0, map {physical_length $_} map {$_->[$RIGHT]}@displayed_elements) ;
 				
 my $extra_height = 0 ;
 
@@ -161,7 +162,7 @@ my ($box_top, $box_left, $box_right, $box_bottom, $title_separator, $title_left,
 
 if($box_type->[$TOP][$DISPLAY])
 	{
-	my $box_left_and_right_length = length($box_type->[$TOP][$LEFT]) + length($box_type->[$TOP][$RIGHT]) ;
+	my $box_left_and_right_length = physical_length($box_type->[$TOP][$LEFT]) + physical_length($box_type->[$TOP][$RIGHT]) ;
 	$box_top = $box_type->[$TOP][$LEFT] 
 			. ($box_type->[$TOP][$BODY] x ($width - $box_left_and_right_length))   
 			. $box_type->[$TOP][$RIGHT] 
@@ -173,7 +174,7 @@ $title_right = $box_type->[$TITLE_SEPARATOR][$RIGHT] if($box_type->[$BODY_SEPARA
 
 if($box_type->[$TITLE_SEPARATOR][$DISPLAY])
 	{
-	my $title_left_and_right_length = length($title_left) + length($title_right) ;
+	my $title_left_and_right_length = physical_length($title_left) + physical_length($title_right) ;
 	
 	my $title_separator_body = $box_type->[$TITLE_SEPARATOR][$BODY] ;
 	$title_separator_body = ' ' unless defined $title_separator_body ;
@@ -190,7 +191,7 @@ $box_right = $box_type->[$BODY_SEPARATOR][$RIGHT] if($box_type->[$BODY_SEPARATOR
 
 if($box_type->[$BOTTOM][$DISPLAY])
 	{
-	my $box_left_and_right_length = length($box_type->[$BOTTOM][$LEFT]) + length($box_type->[$BOTTOM][$RIGHT]) ;
+	my $box_left_and_right_length = physical_length($box_type->[$BOTTOM][$LEFT]) + physical_length($box_type->[$BOTTOM][$RIGHT]) ;
 	$box_bottom = $box_type->[$BOTTOM][$LEFT] 
 			. ($box_type->[$BOTTOM][$BODY] x ($width - $box_left_and_right_length))   
 			. $box_type->[$BOTTOM][$RIGHT] ;
@@ -511,42 +512,5 @@ $self->setup
 
 #-----------------------------------------------------------------------------
 
-sub make_vertical_text
-{
-my ($text) = @_ ;
-
-my @lines = map{[split '', $_]} split "\n", $text ;
-
-my $vertical = '' ;
-my $found_character = 1 ;
-my $index = 0 ;
-
-while($found_character)
-	{
-	my $line ;
-	$found_character = 0 ;
-	
-	for(@lines)
-		{
-		if(defined $_->[$index])
-			{
-			$line.= $_->[$index] ;
-			$found_character++ ;
-			}
-		else
-			{
-			$line .= ' ' ;
-			}
-		}
-	
-	$line =~ s/\s+$//; 
-	$vertical .= "$line\n" if $found_character ;
-	$index++ ;
-	}
-
-return $vertical ;
-}
-
-#-----------------------------------------------------------------------------
 
 1 ;

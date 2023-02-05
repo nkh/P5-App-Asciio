@@ -7,6 +7,7 @@ register_action_handlers
 	(
 	'Export to clipboard & primary as ascii' => ['C00-e', \&export_to_clipboard_as_ascii] ,
 	'Import from clipboard to box'           => ['C0S-E', \&import_from_clipboard_to_box] ,
+	'Import from clipboard to box with no frame'=> ['0AS-T', \&import_from_clipboard_to_box_with_no_frame] ,
 	'Import from primary to box'             => ['0A0-e', \&import_from_primary_to_box  ] ,
 	) ;
 
@@ -25,21 +26,34 @@ Gtk3::Clipboard::get($Gdk::SELECTION_PRIMARY)->set_text($ascii);
 }
 
 #----------------------------------------------------------------------------------------------
-
-sub import_from_clipboard_to_box
+sub import_from_clipboard
 {
-my ($self) = @_ ;
-
+my ($self, $obj_str) = @_ ;
 
 my $ascii = Gtk3::Clipboard::get($Gdk::SELECTION_CLIPBOARD)->wait_for_text();
 
-my $element = $self->add_new_element_named('stencils/asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('stencils/asciio/' . $obj_str, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
 $element->set_text('', $ascii) ;
 
 $self->select_elements(1, $element) ;
-
 $self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_clipboard_to_box
+{
+my ($self) = @_ ;
+import_from_clipboard($self, 'box') ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_clipboard_to_box_with_no_frame
+{
+my ($self) = @_ ;
+import_from_clipboard($self, 'text') ;
 }
 
 #----------------------------------------------------------------------------------------------

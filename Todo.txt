@@ -825,3 +825,14 @@ Routing and reordering script
 Script can be save in stencil
 Drag drop script object executes it
 
+for qq
+    add some Diagon shape https://github.com/ArthurSonzogni/Diagon
+    add some svgbob shape https://ivanceras.github.io/svgbob-editor/
+    # box attributes font type set and add scrollbar
+    # Added rhombus text input function
+    # Rhombus adds a right-click menu of box type options
+    # right click menu Add the function of dynamically adjusting the canvas size 
+    # Added some unicode types to normal boxes and super arrows
+    # 
+
+

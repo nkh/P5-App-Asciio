@@ -31,6 +31,25 @@ return($text) ;
 
 #-----------------------------------------------------------------------------
 
+
+sub del_black_in_line
+{
+	my ($deal_line) = @_ ;
+	my $return_line = '' ;
+	my $black_flg = 0 ;
+	for my $character (split '', $deal_line) {
+		if($black_flg == 1) {
+			$black_flg = 0;
+		} else {
+			if(physical_length($character) != 1) {
+				$black_flg = 1;
+			}
+			$return_line .= $character;
+		}
+	}
+	return $return_line;
+}
+
 sub transform_elements_to_ascii_array
 {
 my ($self, @elements)  = @_ ;
@@ -54,8 +73,11 @@ for my $element (@elements)
 				my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 				
 				$lines[$y][$x] = $character if ($x >= 0 && $y >= 0) ;
-				
-				$character_index ++ ;
+				if(physical_length($character) != length($character)) {
+					$character_index = $character_index + 2;
+				} else {
+					$character_index ++ ;
+				}
 				}
 				
 			$line_index++ ;
@@ -68,7 +90,12 @@ my @ascii;
 for my $line (@lines)
 	{
 	my $ascii_line = join('', map {defined $_ ? $_ : ' '} @{$line})  ;
-	push @ascii,  $ascii_line;
+	if(defined $ascii_line) {
+		my $write_line = del_black_in_line($ascii_line);
+		push @ascii, $write_line;
+	} else {
+		push @ascii, $ascii_line;
+	}
 	}
 
 return(@ascii) ;

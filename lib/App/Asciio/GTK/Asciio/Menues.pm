@@ -50,6 +50,9 @@ if($self->get_selected_elements(1) == 1)
 	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&App::Asciio::save_stencil), 0 , '<Item>', undef ] ;
 	}	
 
+push @menu_items, [ '/Setting/canvas size', undef , $self->menu_entry_wrapper(\&App::Asciio::canvas_resize), 0 , '<Item>', undef ] ;
+
+
 my $menu = Gtk3::Menu->new() ;
 
 insert_menu_items($menu, \@menu_items) ;
