@@ -363,7 +363,7 @@ return(0, 0, $self->{WIDTH}, $self->{HEIGHT})  unless $self->{RESIZABLE} ;
 my $new_end_x = $new_x ;
 my $new_end_y = $new_y ;
 
-if ($reference_x == -1 && $reference_y == -1)
+if($reference_x == -1 && $reference_y == -1)
 	{
 	$self->setup
 		(

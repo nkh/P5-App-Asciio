@@ -387,6 +387,27 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub shrink_box
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1)  ;
+
+if(@selected_elements)
+	{
+	$self->create_undo_snapshot() ;
+	
+	for my $element (@selected_elements)
+		{
+		$element->shrink() if 'App::Asciio::stripes::editable_box2' eq ref $element ;
+		}
+	}
+	
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 sub group_selected_elements
 {
 my ($self) = @_ ;

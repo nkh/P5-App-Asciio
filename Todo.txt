@@ -4,8 +4,6 @@ test
 
 text interface
 	colors
-	menus
-	dialogues
 	mouse clicks
 		lef/rigt
 		drag

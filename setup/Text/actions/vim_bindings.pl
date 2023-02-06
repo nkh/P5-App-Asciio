@@ -43,6 +43,8 @@ register_action_handlers
 	'Move selected elements up'                              => [ '000-k' ],
 	'Move selected elements down'                            => [ '000-j' ],
 	
+	'Shrink box'                                             => [ '000-s' ],
+
 	# mouse group
 	# -----------
 	'Toggle mouse'                                           => [ "000-'" ],

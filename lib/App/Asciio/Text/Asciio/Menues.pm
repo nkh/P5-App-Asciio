@@ -24,8 +24,7 @@ for my $element (@{$self->{ELEMENT_TYPES}})
 	(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
 	$name_with_underscore = ucfirst $name_with_underscore ;
 	
-	push @menu_items, 
-		[ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef],
+	push @menu_items, [ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef],
 	}
 
 for my $menu_entry (@{$self->get_context_menu_entries($popup_x, $popup_y)})
@@ -57,7 +56,14 @@ insert_menu_items($menu, \@menu_items, $menu_lookup) ;
 
 my $result = prompt -1, 'popup menu ...', -menu => $menu, '> ';
 
-$a = prompt -1, "$result" ;
+if($result)
+	{
+	my $action = $menu_lookup->{"$result"} ;
+	my (undef, undef, $sub) = @$action ;
+	
+	$sub->() ;
+	}
+
 $self->update_display() ;
 }
 
@@ -96,7 +102,7 @@ for my $menu_entry_definition (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map 
 			}
 		}
 	
-	$menu_lookup->{$lookup_index} = $menu_entry_definition ;
+	$menu_lookup->{"$name [$lookup_index]"} = $menu_entry_definition ;
 	
 	if('ARRAY' eq ref $parent->{$last_path_element})
 		{

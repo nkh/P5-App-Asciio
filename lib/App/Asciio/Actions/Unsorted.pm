@@ -414,7 +414,7 @@ if(defined $command && $command ne '')
 		$output = "Can't execute '$command':\noutput:\n$output\nerror:\n$! [$?]" ;
 		$in_box++ ;
 		}
-
+	
 	my @box ;
 	
 	unless($in_box)

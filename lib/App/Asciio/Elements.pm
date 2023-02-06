@@ -301,7 +301,7 @@ for my $element (@elements)
 
 sub resize_element
 {
-my ($self, $reference_x, $reference_y, $new_x, $new_y, $selected_element, $connector_name) = @ _;
+my ($self, $reference_x, $reference_y, $new_x, $new_y, $selected_element, $connector_name) = @_;
 
 my ($x_offset, $y_offset, undef, undef, $resized_connector_name) = 
 	$selected_element->resize($reference_x, $reference_y, $new_x, $new_y, undef, $connector_name) ;
@@ -315,7 +315,7 @@ if($self->is_connected($selected_element))
 	# disconnect current connections
 	$self->delete_connections_containing($selected_element) ;
 	}
-	
+
 $self->connect_elements($selected_element) ; # connect to new elements if any
 
 for my $connection ($self->get_connected($selected_element))
