@@ -76,6 +76,7 @@ register_action_handlers
 		'Display action files'                           => [ '000-f' ],
 		
 		'Open'                                           => [ '000-e' ],
+		'Insert'                                         => [ '000-r' ],
 		'Save'                                           => [ '000-w' ],
 		'SaveAs'                                         => [ '000-W' ],
 		'Quit'                                           => [ '000-q' ],

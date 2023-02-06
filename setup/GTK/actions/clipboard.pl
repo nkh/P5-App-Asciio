@@ -33,7 +33,7 @@ my ($self) = @_ ;
 
 my $ascii = Gtk3::Clipboard::get($Gdk::SELECTION_CLIPBOARD)->wait_for_text();
 
-my $element = $self->add_new_element_named('stencils/asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
 $element->set_text('', $ascii) ;
 
@@ -50,7 +50,7 @@ my ($self) = @_ ;
 
 my $ascii = Gtk3::Clipboard::get($Gdk::SELECTION_PRIMARY)->wait_for_text();
 
-my $element = $self->add_new_element_named('stencils/asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
 $element->set_text('', $ascii) ;
 

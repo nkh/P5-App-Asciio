@@ -30,7 +30,7 @@ if($event->{BUTTON} == 1)
 	else
 		{
 		# user clicked in void or un-linkable object
-		my $new_box = $self->add_new_element_named('stencils/asciio/box', $x, $y) ;
+		my $new_box = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
 		connect_to_destination_element($self, $new_box, $x, $y) ;
 		}
 	}

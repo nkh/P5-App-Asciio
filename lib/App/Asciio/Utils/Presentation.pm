@@ -37,7 +37,7 @@ return
 		{
 		my ($self) = @_ ;
 		
-		my $element = $self->add_new_element_named('stencils/asciio/box', $x, $y) ;
+		my $element = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
 		$element->set_text($title, $text) ;
 		
 		$self->select_elements($select, $element) ;

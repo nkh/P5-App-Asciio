@@ -79,19 +79,19 @@ else
 		}
 	else
 		{
-		my $element = $self->add_new_element_named('stencils/asciio/box', 0, 0) ;
+		my $element = $self->add_new_element_named('Stencils/Asciio/box', 0, 0) ;
 		my $box_type = $element->get_box_type() ;
 		$box_type->[1][0] = 1 ; # title separator
 		$element->set_box_type($box_type) ;
-
+		
 		$element->set_text('Warning!', "'$file_name' has no content.");
-
+		
 		$self->select_elements(1, $element) ;
 		$self->update_display() ;
-
+		
 		$title = $file_name ;
 		}
-	}	
+	}
 
 return $title ;
 }
