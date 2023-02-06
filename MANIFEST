@@ -33,10 +33,10 @@ setup/import_export/ascii.pl
 setup/import_export/asciioe.pl
 setup/import_export/perl.pl
 
-setup/stencils/asciio
-setup/stencils/computer
-setup/stencils/people
-setup/stencils/divers
+setup/Stencils/Asciio
+setup/Stencils/Computer
+setup/Stencils/People
+setup/Stencils/Divers
 
 lib/App/Asciio.pm
 

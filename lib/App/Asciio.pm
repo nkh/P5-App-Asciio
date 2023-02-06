@@ -568,8 +568,6 @@ if($event->{BUTTON} == 1)
 		{
 		if(defined $first_element)
 			{
-
-
 			unless($self->is_element_selected($first_element))
 				{
 				# make the element under cursor the only selected element
@@ -587,7 +585,7 @@ if($event->{BUTTON} == 1)
 	
 	$self->update_display();
 	}
-	
+
 if($event->{BUTTON} == 2) 
 	{
 	$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;

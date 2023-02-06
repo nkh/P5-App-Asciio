@@ -175,20 +175,20 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref 
 		
 	if($element->is_connection_allowed('start'))
 		{
-		push @context_menu_entries, ["/Arrow connection/start doesn't connect", sub {$selected_elements[0]->allow_connection('start',0) ;}] ;
+		push @context_menu_entries, ["/arrow connection/start doesn't connect", sub {$selected_elements[0]->allow_connection('start',0) ;}] ;
 		}
 	else
 		{
-		push @context_menu_entries, ["/Arrow connection/start connects", sub {$selected_elements[0]->allow_connection('start',1) ;}] ;
+		push @context_menu_entries, ["/arrow connection/start connects", sub {$selected_elements[0]->allow_connection('start',1) ;}] ;
 		}
 		
 	if($element->is_connection_allowed('end'))
 		{
-		push @context_menu_entries, ["/Arrow connection/end doesn't connect", sub {$selected_elements[0]->allow_connection('end',0) ;}] ;
+		push @context_menu_entries, ["/arrow connection/end doesn't connect", sub {$selected_elements[0]->allow_connection('end',0) ;}] ;
 		}
 	else
 		{
-		push @context_menu_entries, ["/Arrow connection/end connects", sub {$selected_elements[0]->allow_connection('end',1) ;}] ;
+		push @context_menu_entries, ["/arrow connection/end connects", sub {$selected_elements[0]->allow_connection('end',1) ;}] ;
 		}
 		
 	push @context_menu_entries, 
@@ -210,22 +210,22 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref 
 		
 	push @context_menu_entries, 
 		[
-			'/Arrow type/dash', 
+			'/arrow type/dash', 
 			\&change_arrow_type,
 			{ELEMENT => $selected_elements[0], TYPE => 'dash', X => $x,	Y => $y,}
 		] ,
 		[
-			'/Arrow type/dot', 
+			'/arrow type/dot', 
 			\&change_arrow_type,
 			{ELEMENT => $selected_elements[0], TYPE => 'dot', X => $x,	Y => $y,}
 		],
 		[
-			'/Arrow type/octo', 
+			'/arrow type/octo', 
 			\&change_arrow_type,
 			{ELEMENT => $selected_elements[0], TYPE => 'octo',X => $x,	Y => $y,}
 		],
 		[
-			'/Arrow type/star', 
+			'/arrow type/star', 
 			\&change_arrow_type,
 			{ELEMENT => $selected_elements[0], TYPE => 'star', X => $x,	Y => $y, }
 		] ;

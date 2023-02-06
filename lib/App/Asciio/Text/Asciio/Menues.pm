@@ -7,9 +7,7 @@ use strict;
 use warnings;
 
 use Data::TreeDumper ;
-
-use Glib ':constants';
-use Gtk3 -init;
+use IO::Prompter ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -24,6 +22,7 @@ my @menu_items ;
 for my $element (@{$self->{ELEMENT_TYPES}})
 	{
 	(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
+	$name_with_underscore = ucfirst $name_with_underscore ;
 	
 	push @menu_items, 
 		[ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef],
@@ -48,58 +47,70 @@ use App::Asciio::Io ;
 if($self->get_selected_elements(1) == 1)
 	{
 	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&App::Asciio::save_stencil), 0 , '<Item>', undef ] ;
-	}	
+	}
 
-# my $menu = Gtk3::Menu->new() ;
+print "\e[2J\e[H\e[?25h" ;
 
-# insert_menu_items($menu, \@menu_items) ;
+my ($menu, $menu_lookup) = ({}, {}) ;
 
-# $menu->popup(undef, undef, undef, undef, $event->{BUTTON}, 0) ;
+insert_menu_items($menu, \@menu_items, $menu_lookup) ;
+
+my $result = prompt -1, 'popup menu ...', -menu => $menu, '> ';
+
+$a = prompt -1, "$result" ;
+$self->update_display() ;
 }
 
 sub insert_menu_items
 {
-my ($root, $menu_entry_definitions) = @_ ;
+my ($root, $menu_entry_definitions, $menu_lookup) = @_ ;
 
-my %menus ;
+my $lookup_index = 0 ;
 
-# for my $menu_entry_definition (@$menu_entry_definitions)
-# 	{
-# 	my ($path, undef, $sub, undef, $item, undef) = @$menu_entry_definition ;
+for my $menu_entry_definition (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map { [$_, $_->[0]] } @$menu_entry_definitions)
+	{
+	$lookup_index++ ;
 	
-# 	$path =~ s~^/~~ or die "Menu path doesn't start at root" ;
-# 	my @path_elements = split m~/~, $path ;
-# 	my $name = pop @path_elements ;
-
-# 	my $container = $root ;
-
-# 	for my $path_element (@path_elements)
-# 		{
-# 		if(exists $menus{$path_element})
-# 			{
-# 			$container = $menus{$path_element} ;
-# 			}
-# 		else
-# 			{
-# 			my $menu = Gtk3::Menu->new() ;
-# 			$menu->show() ;
-# 			$menus{$path_element} = $menu ;
-			
-# 			my $menu_item = Gtk3::MenuItem->new_with_label($path_element);
-# 			$menu_item->show() ;
-# 			$menu_item->set_submenu($menu) ;
-			
-# 			$container->append($menu_item) ;
-				
-# 			$container = $menu 
-# 			}
-# 		}
+	my ($path, undef, $sub, undef, $item, undef) = @$menu_entry_definition ;
 	
-# 	my $menu_item=Gtk3::MenuItem->new($name);
-# 	$menu_item->signal_connect('activate'=> $sub);
-# 	$menu_item->show() ;
-# 	$container->append($menu_item) ;
-# 	}
+	$path =~ s~^/~~ or die "Menu path doesn't start at root" ;
+	my @path_elements = split m~/~, $path ;
+	my $name = pop @path_elements ;
+	
+	my $parent = my $container = $root ;
+	my $last_path_element = $path_elements[-1] // $path ;
+	
+	for my $path_element (@path_elements)
+		{
+		last unless 'HASH' eq ref $container ;
+		
+		if(exists $container->{$path_element})
+			{
+			$parent = $container ;
+			$container = $container->{$path_element} ;
+			}
+		else
+			{
+			$parent = $container ;
+			$container = $container->{$path_element} = {} ;
+			}
+		}
+	
+	$menu_lookup->{$lookup_index} = $menu_entry_definition ;
+	
+	if('ARRAY' eq ref $parent->{$last_path_element})
+		{
+		push @{$parent->{$last_path_element}}, "$name [$lookup_index]"
+		}
+	elsif('HASH' eq ref $parent->{$last_path_element})
+		{
+		$parent->{$last_path_element} = [ "$name [$lookup_index]"] ;
+		}
+	else
+		{
+		$parent->{"$name [$lookup_index]"} = "$name [$lookup_index]" ;
+		}
+	}
 }
 
 sub insert_generator 

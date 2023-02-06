@@ -46,13 +46,11 @@ if(defined $asciio_config->{TARGETS}[0])
 	{
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	}
-	
+
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
-	
-#--------------------------------------------------------------------------
 
-# use Time::HiRes ;
+#--------------------------------------------------------------------------
 
 use Term::ReadKey;
 use Term::TermKey qw( FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
@@ -63,19 +61,39 @@ my $tk = Term::TermKey->new(\*STDIN);
 binmode( STDOUT, ":encoding(UTF-8)" ) if $tk->get_flags & FLAG_UTF8; 
 
 print "\e[2J\e[H" ;
+$asciio->update_display() ;
+
+print "\e[?1003h" ; # get mouse events
 
 while (1)
 	{
 	$tk->waitkey(my $key);
 	 
-	my $modifiers  = $key->modifier_ctrl  ? 'C' : 0 ;
-	   $modifiers .= $key->modifier_alt   ? 'A' : 0 ;
-	   $modifiers .= $key->modifier_shift ? 'S' : 0 ;
-	
-	my $key_name = $tk->format_key($key, 0) ;
-	
-	$asciio->key_press_event($key_name, $modifiers) ;
-	
+	if ( $key->type_is_mouse )
+		{
+		my ($ev, $button, $line, $col) = $tk->interpret_mouse( $key );
+		
+		if ($ev == 1 && $button == 1)
+			{
+			$asciio->run_actions_by_name("Mouse left-click") ;
+			}
+		
+		if ($ev == 3)
+			{
+			@$asciio{'MOUSE_X', 'MOUSE_Y'} = ($col - 1, $line - 1) ;
+			$asciio->update_display() if $asciio->{MOUSE_TOGGLE} ;
+			}
+		}
+	else
+		{
+		my $modifiers  = $key->modifier_ctrl  ? 'C' : 0 ;
+		   $modifiers .= $key->modifier_alt   ? 'A' : 0 ;
+		   $modifiers .= $key->modifier_shift ? 'S' : 0 ;
+		
+		my $key_name = $tk->format_key($key, 0) ;
+		
+		$asciio->key_press_event($key_name, $modifiers) ;
+		}
 	}
 
 

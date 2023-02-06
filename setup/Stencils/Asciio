@@ -42,7 +42,7 @@ create_element
 	
 create_element
 	(
-	NAME => 'boxes/if',
+	NAME => 'Boxes/if',
 	CLASS => 'App::Asciio::stripes::if_box',
 	TEXT_ONLY => 'condition',
 	EDITABLE => 1,
@@ -50,7 +50,7 @@ create_element
 
 create_element
 	(
-	NAME => 'boxes/process',
+	NAME => 'Boxes/process',
 	CLASS => 'App::Asciio::stripes::process_box',
 	TEXT_ONLY => 'process',
 	EDITABLE => 1,
@@ -58,14 +58,14 @@ create_element
 
 create_element
 	(
-	NAME => 'boxes/rhombus',
+	NAME => 'Boxes/rhombus',
 	CLASS => 'App::Asciio::stripes::rhombus',
 	TEXT_ONLY => '',
 	EDITABLE => 1,
 	) ,
 
-create_box(NAME => 'rulers/0_to_9_vertical', TEXT_ONLY => "0\n1\n2\n3\n4\n5\n6\n7\n8\n9",) ,
-create_box(NAME => 'rulers/01_to_50_horizontal', TEXT_ONLY => '01___5____0____5____0____5____0____5____0____5____0', ),
-create_box(NAME => 'rulers/0_to_9_horizontal', TEXT_ONLY => '0123456789',),
+create_box(NAME => 'Scale/1_to_10_vertical',   TEXT_ONLY => "1\n2\n3\n4\n5\n6\n7\n8\n9\n0",) ,
+create_box(NAME => 'Scale/1_to_50_horizontal', TEXT_ONLY => '1___5____0____5____0____5____0____5____0____5____0', ),
+create_box(NAME => 'Scale/1_to_10_horizontal', TEXT_ONLY => '1234567890',),
 ] ;
 

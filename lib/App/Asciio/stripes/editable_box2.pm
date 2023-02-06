@@ -463,7 +463,7 @@ my ($self, $asciio) = @_ ;
 return unless $self->{EDITABLE} ;
 
 my $text = $self->{TEXT_ONLY} ;
-$text = make_vertical_text($text)  if $self->{VERTICAL_TEXT} ;
+$text = make_vertical_text($text) if $self->{VERTICAL_TEXT} ;
 
 ($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text) ;
 
@@ -473,7 +473,7 @@ $text =~ s/\t/$tab_as_space/g ;
 $title=~ s/\t/$tab_as_space/g ;
 
 $text = make_vertical_text($text) if $self->{VERTICAL_TEXT} ;
-	
+
 $self->set_text($title, $text) ;
 }
 

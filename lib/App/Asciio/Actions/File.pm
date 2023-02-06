@@ -52,7 +52,7 @@ if(defined $file_name && $file_name ne q[])
 	
 	my $elements_to_save = Clone::clone($self->{ELEMENTS}) ;
 	$self->{CACHE} = my $cache ;
-
+	
 	for my $element (@{$elements_to_save})
 		{
 		delete $element->{NAME} ;
@@ -78,7 +78,9 @@ if(defined $file_name && $file_name ne q[])
 			}
 		}
 	}
-	
+
+$self->update_display() ;
+
 return $file_name ;
 } ;
 
@@ -127,6 +129,7 @@ if($user_answer ne 'cancel')
 					
 		$self->set_title($title) if defined $title;
 		$self->set_modified_state(0) ;
+		$self->update_display() ;
 		}
 	}
 } ;

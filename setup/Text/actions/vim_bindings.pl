@@ -11,99 +11,99 @@ my $title = $self->load_file($file_name) ;
 
 register_action_handlers
 	(
+	'Undo'                                                   => [ '000-u'  ],
+	'Redo'                                                   => [ 'C00-C-r'],
+	
+	# elements group
+	# --------------
+	'Insert from clipboard'                                  => [ '000-p' ],
+	'Copy to clipboard'                                      => [ '000-y' ],
+	'Export to clipboard & primary as ascii'                 => [ '000-Y' ],
+	
+	'Edit selected element'                                  => [ '000-Enter' ],
+	'Change elements foreground color'                       => [ '000-c' ],
+	'Change elements background color'                       => [ '000-C' ],
+	'Select all elements'                                    => [ 'C00-C-s' ],
+	'Deselect all elements'                                  => [ 'C00-C-l' ],
+	# 'Select connected elements'                              => [ '' ],
+	'Select next element'                                    => [ '000-n' ],
+	'Select previous element'                                => [ '000-N' ],
+	'Select next element move mouse'                         => [ '000-Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
+	'Select previous element move mouse'                     => [ '00S-S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
+	
+	'Delete selected elements'                               => [ '000-d' ],
+	
+	'Resize element narrower'                                => [ '000-1' ],
+	'Resize element taller'                                  => [ '000-2' ],
+	'Resize element shorter'                                 => [ '000-3' ],
+	'Resize element wider'                                   => [ '000-4' ],
+	
+	'Move selected elements left'                            => [ '000-h' ],
+	'Move selected elements right'                           => [ '000-l' ],
+	'Move selected elements up'                              => [ '000-k' ],
+	'Move selected elements down'                            => [ '000-j' ],
+	
+	# mouse group
+	# -----------
+	'Toggle mouse'                                           => [ "000-'" ],
+	'Mouse right-click'                                      => [ '000-ä' ],
+	'Mouse left-click'                                       => [ '000-ö' ],
+	'Mouse shift-left-click'                                 => [ '000-Ö' ],
+	'Mouse ctl-left-click'                                   => [ 'C00-ö' ],
+	'Mouse alt-left-click'                                   => [ '0A0-ö' ],
+	
+	# 'Mouse drag left'                                        => [ '000-H' ],
+	# 'Mouse drag right'                                       => [ '000-L' ],
+	# 'Mouse drag up'                                          => [ '000-K' ],
+	# 'Mouse drag down'                                        => [ '000-J' ],
+	'Mouse drag left'                                        => [ '0A0-A-Left'  ] ,
+	'Mouse drag right'                                       => [ '0A0-A-Right' ] ,
+	'Mouse drag up'                                          => [ '0A0-A-Up'    ] ,
+	'Mouse drag down'                                        => [ '0A0-A-Down'  ] ,
+	# 'Mouse on element id'                                    => '?',
+	# 'Quick link'                                             => '?',
+	
 	'command group'=> 
 		{
 		SHORTCUTS => '000-:',
 		
-		'load test file'                                   => [ '000-t', \&load_test_file, 'test.asciio' ],
-		# 'Help'                                           => 'h',
-		# 'Display keyboard mapping'                       => 'k',
-		# 'Display commands'                               => 'c',
-		# 'Display action files'                           => 'f',
+		'load test file'                                 => [ '000-t', \&load_test_file, 'test.asciio' ],
+		'Help'                                           => [ '000-h' ],
+		'Display keyboard mapping'                       => [ '000-k' ],
+		'Display commands'                               => [ '000-c' ],
+		'Display action files'                           => [ '000-f' ],
 		
-		# 'Open'                                           => 'e',
-		# 'Save'                                           => 'w',
-		# 'SaveAs'                                         => 'W',
+		'Open'                                           => [ '000-e' ],
+		'Save'                                           => [ '000-w' ],
+		'SaveAs'                                         => [ '000-W' ],
 		'Quit'                                           => [ '000-q' ],
 		'Quit no save'                                   => [ '000-Q' ],
 		},
-
-	'Undo'                                           => [ '000-u'  ],
-	'Redo'                                           => [ 'C00-C-r'],
-	
-	# elements group
-	# --------------
-	'Insert from clipboard'                         => [ '000-p' ],
-	'Copy to clipboard'                             => [ '000-y' ],
-	'Export to clipboard & primary as ascii'        => [ '000-Y' ],
-	
-	# 'Edit selected element'                          => 'Return',
-	# 'Change elements foreground color'               => 'ec',
-	# 'Change elements background color'               => 'eC',
-	'Select all elements'                           => [ 'C00-C-s'   ],
-	'Deselect all elements'                         => [ 'C00-C-l'   ],
-	# 'Select connected elements'                      => '',
-	'Select next element'                           => [ '000-n' ],
-	'Select previous element'                       => [ '000-N' ],
-	'Select next element move mouse'                => [ '000-Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
-	'Select previous element move mouse'            => [ '00S-S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
-	
-	# 'Delete selected elements'                       => 'dd',
-	
-	'Resize element narrower'                       => [ '000-1' ],
-	'Resize element taller'                         => [ '000-2' ],
-	'Resize element shorter'                        => [ '000-3' ],
-	'Resize element wider'                          => [ '000-4' ],
-	
-	'Move selected elements left'                   => [ '000-h' ],
-	'Move selected elements right'                  => [ '000-l' ],
-	'Move selected elements up'                     => [ '000-k' ],
-	'Move selected elements down'                   => [ '000-j' ],
-	
-	# mouse group
-	# -----------
-	'Toggle mouse'                                  => [ "000-'" ],
-	'Mouse right-click'                             => [ '000-ä' ],
-	'Mouse left-click'                              => [ '000-ö' ],
-	'Mouse shift-left-click'                        => [ '000-Ö' ],
-	'Mouse ctl-left-click'                          => [ 'C00-ö' ],
-	'Mouse alt-left-click'                          => [ '0A0-ö' ],
-
-	# 'Mouse drag down'                               => [ '000-J' ],
-	# 'Mouse drag left'                               => [ '000-H' ],
-	# 'Mouse drag right'                              => [ '000-L' ],
-	# 'Mouse drag up'                                 => [ '000-K' ],
-	'Mouse drag left'                               => [ '0A0-A-Left'  ] ,
-	'Mouse drag right'                              => [ '0A0-A-Right' ] ,
-	'Mouse drag up'                                 => [ '0A0-A-Up'    ] ,
-	'Mouse drag down'                               => [ '0A0-A-Down'  ] ,
-	# 'Mouse on element id'                            => 'ge',
-	# 'Quick link'                                     => 'shift+button_press-1',
 	
 	'arrow group' => 
 		{
 		SHORTCUTS => '000-a',
 		
-		# 'Append multi_wirl section'                      => 's',
-		# 'Insert multi_wirl section'                      => 'S',
-		# 'Prepend multi_wirl section'                     => '?',
-		# 'Remove last section from multi_wirl'            => '?',
-		# 'Change arrow direction'                         => 'd',
-		# 'Flip arrow start and end'                       => 'a',
+		'Append multi_wirl section'                      => [ '000-s' ],
+		'Insert multi_wirl section'                      => [ '000-S' ],
+		'Change arrow direction'                         => [ '000-d' ],
+		'Flip arrow start and end'                       => [ '000-a' ],
+		# 'Prepend multi_wirl section'                     => [ '000-?' ],
+		# 'Remove last section from multi_wirl'            => [ '000-?' ],
 		},
 	
 	'Add objects group' => 
 		{
 		SHORTCUTS => '000-i',
 		
-		# 'Add group object type 1'                        => 'ig',
-		# 'Add group object type 2'                        => 'ig',
+		'Add group object type 1'                        => [ '000-g' ],
+		'Add group object type 2'                        => [ '000-g' ],
 		
-		# 'Import from primary to box'                     => 'y',
-		# 'Import from clipboard to box'                   => 'Y',
-		# 'External command output in a box'               => 'x',
-		# 'External command output in a box no frame'      => 'X',
-		# 'Insert from file'                               => 'f',
+		'Import from primary to box'                     => [ '000-y' ],
+		'Import from clipboard to box'                   => [ '000-Y' ],
+		'External command output in a box'               => [ '000-x' ],
+		'External command output in a box no frame'      => [ '000-X' ],
+		'Insert from file'                               => [ '000-f' ],
 		
 		'Add box'                                        => [ '000-b' ],
 		# 'Create multiple box elements from description'  => [ '000-M'],
@@ -162,21 +162,21 @@ register_action_handlers
 		{
 		SHORTCUTS => '000-S',
 		
-		# 'Load slides'                                    => 'l',
-		# 'previous slide'                                 => 'N',
-		# 'next slide'                                     => 'n',
-		# 'first slide'                                    => 'g',
+		'Load slides'                                    => [ '000-l' ],
+		'previous slide'                                 => [ '000-N' ],
+		'next slide'                                     => [ '000-n' ],
+		'first slide'                                    => [ '000-g' ],
 		},
 	
 	'debug group' => 
 		{
 		SHORTCUTS => '000-D',
-		# 'Display undo stack statistics'                  => 'S',
-		# 'Dump self'                                      => 's' ,
-		# 'Dump all elements'                              => 'e',
-		# 'Dump selected elements'                         => 'E',
-		# 'Display numbered objects'                       => 't',
-		# 'Test'                                           => 'o',
+		'Display undo stack statistics'                  => [ '000-S' ],
+		'Dump self'                                      => [ '000-s' ] ,
+		'Dump all elements'                              => [ '000-e' ],
+		'Dump selected elements'                         => [ '000-E' ],
+		'Display numbered objects'                       => [ '000-t' ],
+		'Test'                                           => [ '000-o' ],
 		},
 	) ;
 

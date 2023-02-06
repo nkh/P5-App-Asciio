@@ -172,7 +172,7 @@ if(@selected_elements)
 
 $self->deselect_all_elements() ;
 $self->select_elements(1, $next_element) ;
-@$self{'MOUSE_X', 'MOUSE_Y'} = @$next_element{'X', 'Y'} if $move_mouse ;
+@$self{'MOUSE_X', 'MOUSE_Y', 'PREVIOUS_X', 'PREVIOUS_Y'} = map { @$next_element{'X', 'Y'} } 1 .. 2 if $move_mouse ;
 
 $self->update_display() ;
 }

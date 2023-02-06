@@ -2,6 +2,17 @@
 test
 	check mouse ctl/alt/shif left cick in cursor mode correspond to mouse mode
 
+text interface
+	colors
+	menus
+	dialogues
+	mouse clicks
+		lef/rigt
+		drag
+	
+	cursor positioning when moving objects
+	display when object is outside viewport
+
 actions
 	- add stencils dynamically
 	

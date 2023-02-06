@@ -60,7 +60,7 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 	
 	push @context_menu_entries, 
 		[
-		'/Rotate text', 
+		'/rotate text', 
 		sub {$element->rotate_text() ;},
 		] ;
 		
@@ -73,7 +73,7 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 		
 	push @context_menu_entries, 
 		[
-			'/Box type/dash', 
+			'/box type/dash', 
 			\&change_box_type,
 			{
 			ELEMENT => $element, 
@@ -82,7 +82,7 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 		], 
 		
 		[
-			'/Box type/dot', 
+			'/box type/dot', 
 			\&change_box_type,
 			{
 			ELEMENT => $element, 
@@ -90,7 +90,7 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 			}
 		], 
 		[
-			'/Box type/star', 
+			'/box type/star', 
 			\&change_box_type,
 			{
 			ELEMENT => $element, 
@@ -111,20 +111,20 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 		
 	if($element->is_border_connection_allowed())
 		{
-		push @context_menu_entries, ["/Disable border connection", sub {$element->allow_border_connection(0) ;}] ;
+		push @context_menu_entries, ["/disable border connection", sub {$element->allow_border_connection(0) ;}] ;
 		}
 	else
 		{
-		push @context_menu_entries, ["/Enable border connection", sub {$element->allow_border_connection(1) ;}] ;
+		push @context_menu_entries, ["/enable border connection", sub {$element->allow_border_connection(1) ;}] ;
 		}
 		
 	if($element->is_auto_shrink())
 		{
-		push @context_menu_entries, ["/Disable auto shrink", sub {$element->flip_auto_shrink() ;}] ;
+		push @context_menu_entries, ["/disable auto shrink", sub {$element->flip_auto_shrink() ;}] ;
 		}
 	else
 		{
-		push @context_menu_entries, ["/Enable auto shrink", sub {$element->shrink() ; $element->flip_auto_shrink() ; }] ;
+		push @context_menu_entries, ["/enable auto shrink", sub {$element->shrink() ; $element->flip_auto_shrink() ; }] ;
 		}
 	}
 	

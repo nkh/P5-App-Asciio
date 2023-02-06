@@ -24,6 +24,7 @@ my @menu_items ;
 for my $element (@{$self->{ELEMENT_TYPES}})
 	{
 	(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
+	# $name_with_underscore = ucfirst $name_with_underscore ;
 	
 	push @menu_items, 
 		[ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef],
@@ -41,7 +42,7 @@ push @menu_items,
 	(
 	['/File/open',     undef , sub {$self->run_actions_by_name('Open') ;},      0 , '<Item>', undef],
 	['/File/save',     undef , sub {$self->run_actions_by_name('Save') ;},      0 , '<Item>', undef],
-	[ '/File/save as', undef , sub {$self->run_actions_by_name(['Save', 1]) ;}, 0 , '<Item>', undef],
+	['/File/save as',  undef , sub {$self->run_actions_by_name(['Save', 1]) ;}, 0 , '<Item>', undef],
 	) ;
 
 use App::Asciio::Io ;
@@ -63,16 +64,16 @@ my ($root, $menu_entry_definitions) = @_ ;
 
 my %menus ;
 
-for my $menu_entry_definition (@$menu_entry_definitions)
+for my $menu_entry_definition (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map { [$_, $_->[0]] } @$menu_entry_definitions)
 	{
 	my ($path, undef, $sub, undef, $item, undef) = @$menu_entry_definition ;
 	
 	$path =~ s~^/~~ or die "Menu path doesn't start at root" ;
 	my @path_elements = split m~/~, $path ;
 	my $name = pop @path_elements ;
-
+	
 	my $container = $root ;
-
+	
 	for my $path_element (@path_elements)
 		{
 		if(exists $menus{$path_element})
@@ -90,7 +91,6 @@ for my $menu_entry_definition (@$menu_entry_definitions)
 			$menu_item->set_submenu($menu) ;
 			
 			$container->append($menu_item) ;
-				
 			$container = $menu 
 			}
 		}

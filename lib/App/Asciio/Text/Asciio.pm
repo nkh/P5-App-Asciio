@@ -40,8 +40,6 @@ return($self) ;
 }
 
 #-----------------------------------------------------------------------------
-# use Term::ANSIColor qw(:constants) ;
-# $Term::ANSIColor::AUTORESET = 1 ;
 
 use Term::Size::Any qw(chars) ;
 # use Term::ANSIColor ;
@@ -421,14 +419,15 @@ return($modifiers) ;
 #-----------------------------------------------------------------------------
 
 use Term::ReadKey;
-use Term::TermKey qw( FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
 
 sub exit
 {
 my ($self) = @_ ;
 
 ReadMode('normal') ;
+print "\e[2J\e[H" ;
 print "\e[?25h" ;
+print "\e[?1000h" ;
 
 exit ;
 }
