@@ -122,6 +122,8 @@ register_action_handlers
 		'Add text'                                       => [ '000-t' ],
 		'Add angled arrow'                               => [ '000-A' ],
 		'Add shrink box'                                 => [ '000-B' ],
+		'Add exec box'                                   => [ '000-e' ],
+		'Add exec box no border'                         => [ '000-E' ],
 		},
 	
 	'grouping group' => 

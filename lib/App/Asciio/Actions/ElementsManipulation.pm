@@ -386,6 +386,7 @@ $self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
+use Scalar::Util ;
 
 sub shrink_box
 {
@@ -399,10 +400,10 @@ if(@selected_elements)
 	
 	for my $element (@selected_elements)
 		{
-		$element->shrink() if 'App::Asciio::stripes::editable_box2' eq ref $element ;
+		$element->shrink() if $element->isa('App::Asciio::stripes::editable_box2') ;
 		}
 	}
-	
+
 $self->update_display() ;
 }
 

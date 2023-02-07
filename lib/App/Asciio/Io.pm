@@ -53,7 +53,7 @@ if
 			$self,
 			$file_name,
 			) ;
-		
+	
 	$self->load_self($saved_self) ; # resurrect from mummified
 	$self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} = $handler_data ;
 	}
@@ -98,7 +98,7 @@ return $title ;
 
 #-----------------------------------------------------------------------------
 
- Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT => 
+Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT => 
 	qw
 		(
 		widget  
@@ -282,19 +282,18 @@ if
 			$file_name,
 			$self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA},
 			) ;
-	
 	}
 else
 	{
 	if($self->{CREATE_BACKUP} && -e $file_name)
 		{
 		use File::Copy;
-		copy($file_name,"$file_name.bak") or die "save_with_type: Copy failed while making backup copy: $!";		
+		copy($file_name,"$file_name.bak") or die "save_with_type: Copy failed while making backup copy: $!" ;
 		}
 		
 	$title = $file_name ;
 	write_file($file_name, compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
-	}	
+	}
 	
 return $title ;
 }

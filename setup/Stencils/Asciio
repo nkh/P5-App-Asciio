@@ -64,6 +64,23 @@ create_element
 	EDITABLE => 1,
 	) ,
 
+create_element
+	(
+	NAME => 'Boxes/exec',
+	CLASS => 'App::Asciio::stripes::exec_box',
+	TEXT_ONLY => '',
+	EDITABLE => 1,
+	) ,
+
+create_element
+	(
+	NAME => 'Boxes/exec no border',
+	CLASS => 'App::Asciio::stripes::exec_box',
+	TEXT_ONLY => '$',
+	EDITABLE => 1,
+	NO_BORDER => 1,
+	) ,
+
 create_box(NAME => 'Scale/1_to_10_vertical',   TEXT_ONLY => "1\n2\n3\n4\n5\n6\n7\n8\n9\n0",) ,
 create_box(NAME => 'Scale/1_to_50_horizontal', TEXT_ONLY => '1___5____0____5____0____5____0____5____0____5____0', ),
 create_box(NAME => 'Scale/1_to_10_horizontal', TEXT_ONLY => '1234567890',),

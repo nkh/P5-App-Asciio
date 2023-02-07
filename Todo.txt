@@ -10,45 +10,15 @@ text interface
 	
 	cursor positioning when moving objects
 	display when object is outside viewport
+	
+	vim script
+		open file under cursor
 
 actions
 	- add stencils dynamically
-	
-	- re-parsable asciio output
-		- in asciio that opens a text box where compact format can be pasted
-			asciio creates the objects on top of what's in the current session
-		
-		- open/import a compact format file
-			- if the file extentions is cf_asciio, the file is content are created
-			- parse the file for asciio object sections
-				if multiple sections are found, groups are created
-		
-		- save current selection to compact format
-			- save all if no selection
-			- add preview to file
-			- groups are saved in different sections
-		
-		- options to save compact format to clipboard when text is copied
-		
-		- $EDITOR function to open the compact format data in asciio
-		
-		- command line option to load a file or read data from stdin
-		
-		[type_id, x, y, [ [x, y, text], ...]]
-			[editable_box2, 28, 10, [[0, 0, '.---.\n|   |\n'---'],],
-			[editable_box2, 23, 6, [[0, 0, '.-------------------------------------.\n|  ...
-		
-		10 times the two boxes above (9.4 Kb), is 196 bytes compressed with xz,  268 bytes in base64, plus 10 bytes for commenting and Asciio tag
-		
-		# /Td6WFoAAATm1rRGAgAhARYAAAB0L+Wj4CVNAINdAC2ZSIa5noBxnZW0yqIaz72vVRjjgUzDGiy3
-		# Po3E8bwwy7VQE/zFZFk8FHevfr/c6NoV0cAfrJzC5Vh0AAwb7zaQTJFHsnC1eZQAMYtHQlS4jFEU
-		# JFwWj6O/0IZDP5A1uKJrx3w5LcogFPthz6Z8VJOmAvB6IhlEWmPofBNv7LcHAg8AAAClewlSPWXT
-		# UQABnwHOSgAA2Mia+bHEZ/sCAAAAAARZWg==Asciio
-			
-		base 64 format '\s?\S+\s(*.)' to make it possible to find the b64 in text with comments
 
 objects
-	exec-box
+	#exec-box
 		remembers the commands that generated the output
 	
 		table object
@@ -69,15 +39,6 @@ objects
 
 display
 	dialogs must use monospace font
-	
-	Terminal UI
-		use external programs for menus and dialogs
-		fzf to the max
-		no sub menus, shortcut for each sub menu
-		
-		how do we make object dialogs, specially those which contain tables or multiple elements to set?
-		
-		new keyboard handler
 	
 	panning
 	

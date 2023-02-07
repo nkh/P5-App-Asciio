@@ -25,7 +25,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
@@ -53,7 +53,7 @@ for my $line (split("\n", $text_only))
 	$text_width  = max($text_width, length($line)) ;
 	push @lines, $line ;
 	}
-	
+
 my ($title_width,  @title_lines) = (0) ;
 
 $title_text = '' unless defined $title_text ;
@@ -140,9 +140,12 @@ sub get_box_frame_size_overhead
 my ($box_type) = @_ ;
 
 my @displayed_elements = grep { $_->[$DISPLAY] } @{$box_type} ;
-my $extra_width = max(0, map {length} map {$_->[$LEFT]} @displayed_elements)
-				+ max(0, map {length} map {$_->[$RIGHT]} @displayed_elements) ;
-				
+
+my $extra_width = $box_type->[$BODY_SEPARATOR][$DISPLAY] 
+			? max(0, map { length } map {$_->[$LEFT]} @displayed_elements)
+				+ max(0, map { length } map {$_->[$RIGHT]} @displayed_elements)
+			: 0 ;
+
 my $extra_height = 0 ;
 
 for ($TOP, $TITLE_SEPARATOR, $BOTTOM)
@@ -184,7 +187,7 @@ if($box_type->[$TITLE_SEPARATOR][$DISPLAY])
 			. $title_right 
 			. "\n" ;
 	}
-	
+
 $box_left = $box_type->[$BODY_SEPARATOR][$LEFT] if($box_type->[$BODY_SEPARATOR][$DISPLAY]) ;
 $box_right = $box_type->[$BODY_SEPARATOR][$RIGHT] if($box_type->[$BODY_SEPARATOR][$DISPLAY]) ;
 
@@ -484,7 +487,7 @@ sub rotate_text
 my ($self) = @_ ;
 
 my $text = make_vertical_text($self->{TEXT_ONLY})  ;
-	
+
 $self->set_text($self->{TITLE}, $text) ;
 $self->shrink() ;
 

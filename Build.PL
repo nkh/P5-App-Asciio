@@ -45,6 +45,7 @@ lib/App/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/stripes/rhombus.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/stripes/single_stripe.pm
+lib/App/Asciio/stripes/exec_box.pm
 lib/App/Asciio/stripes/stripes.pm
 lib/App/Asciio/stripes/group.pm
 
@@ -56,6 +57,7 @@ lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 
 lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
+lib/App/Asciio/GTK/Asciio/stripes/editable_exec_box.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
@@ -69,6 +71,7 @@ lib/App/Asciio/Text/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/Text/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/Text/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/Text/Asciio/stripes/editable_box2.pm
+lib/App/Asciio/Text/Asciio/stripes/editable_exec_box.pm
 );
 
 for(@pm_files)

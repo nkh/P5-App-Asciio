@@ -42,6 +42,8 @@ my %box_types =
 	) ;
 
 #----------------------------------------------------------------------------------------------
+use Scalar::Util ;
+use App::Asciio::stripes::exec_box ;
 
 sub box_context_menu
 {
@@ -52,7 +54,7 @@ my ($character_width, $character_height) = $self->get_character_size() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
-if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $selected_elements[0])
+if(@selected_elements == 1 && $selected_elements[0]->isa('App::Asciio::stripes::editable_box2'))
 	{
 	my $element = $selected_elements[0] ;
 	
@@ -60,18 +62,16 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 	
 	push @context_menu_entries, 
 		[
-		'/rotate text', 
-		sub {$element->rotate_text() ;},
-		] ;
+			'/rotate text', 
+			sub { print $element ; $element->rotate_text() },
+		], 
 		
-	push @context_menu_entries, 
 		[
-		'/box selected element', 
-		\&box_selected_element,
-		{ ELEMENT => $element},
+			'/box selected element', 
+			\&box_selected_element,
+			{ ELEMENT => $element},
 		] ;
 		
-	push @context_menu_entries, 
 		[
 			'/box type/dash', 
 			\&change_box_type,
@@ -89,6 +89,7 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 			TYPE => 'dot',
 			}
 		], 
+		
 		[
 			'/box type/star', 
 			\&change_box_type,
@@ -96,9 +97,8 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::editable_box2' eq ref $sele
 			ELEMENT => $element, 
 			TYPE => 'star',
 			}
-		] ;
+		], 
 		
-	push @context_menu_entries, 
 		[
 		$element->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
 		sub 

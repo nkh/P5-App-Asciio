@@ -332,7 +332,7 @@ if(defined $text && $text ne '')
 	my ($separator) = split("\n", $text) ;
 	
 	$text =~ s/$separator\n// ;
-
+	
 	my @new_elements ;
 	
 	for my $element_text (split("$separator\n", $text))
@@ -383,7 +383,7 @@ $self->{DISPLAY_GRID} ^=1 ;
 delete $self->{CACHE}{GRID} ;
 $self->update_display() ;
 }
-	
+
 #----------------------------------------------------------------------------------------------
 
 sub transparent_elements
@@ -392,7 +392,7 @@ my ($self) = @_ ;
 $self->{OPAQUE_ELEMENTS} ^=1 ;
 $self->update_display() ;
 }
-	
+
 #----------------------------------------------------------------------------------------------
 
 sub external_command_output
@@ -440,7 +440,7 @@ if(defined $command && $command ne '')
 					}) ;
 		
 	$self->add_element_at($new_element, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-
+	
 	$self->update_display() ;
 	}
 }
