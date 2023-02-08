@@ -131,6 +131,7 @@ lib/App/Asciio/Text/Asciio/Menues.pm
 
 setup/Text/setup.ini
 setup/Text/actions/vim_bindings.pl
+setup/Text/asciio_object/basic.pl
 
 
 

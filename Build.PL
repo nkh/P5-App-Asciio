@@ -117,6 +117,7 @@ setup/GTK/import_export/png.pl
 
 setup/Text/setup.ini
 setup/Text/actions/vim_bindings.pl
+setup/Text/asciio_object/basic.pl
 ) ;
 
 for(@setup_lib)

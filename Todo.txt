@@ -7,12 +7,30 @@ text interface
 	
 	cursor positioning when moving objects
 	display when object is outside viewport
+	mouse selection area
 	
 	vim script
 		open file under cursor
 
 actions
-	- add stencils dynamically
+	add stencils dynamically
+	
+	copy between instances
+		save snapshot of selected object in temporary file
+		put name of temporary file in clipboard
+	
+	presentation mode
+		accept a directory as input
+			show slides based on sort order or order.slide.txt
+		allow saving of modified slides
+		allow deletion and insertion of slides
+			what if the slides are under git control?
+		extra window to show slide order and modify it (and the slides maybe)
+		extra slide menu (through actions)
+			open
+			save
+			insert
+			delete
 
 objects
 	any orientation text
@@ -31,30 +49,14 @@ display
 	
 	scrollbars
 	
-	? generate "nice looking" graph
+	generate "nice looking" graph
 		- interface to ditaa
-		- HTML document?!
-		- save as pdf and printing
+		- svgbob
+		- save as pdf
 		- use ANSI stencil
-			
-	
-	presentation mode
-		accept a directory as input
-			show slides based on sort order or order.slide.txt
-		allow saving of modified slides
-		allow deletion and insertion of slides
-			what if the slides are under git control?
-		extra window to show slide order and modify it (and the slides maybe)
-		extra slide menu (through actions)
-			open
-			save
-			insert
-			delete
 
 architecture
 	handle unicode (remove write_file)
-	
-	copy elements to the system clipboard to allow copies between instances
 	
 	handle multiple versions with one of the following mechanisms:
 		- git/embed git::PurePerl 

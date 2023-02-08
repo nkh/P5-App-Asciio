@@ -7,6 +7,7 @@ use warnings;
 
 use Data::TreeDumper ;
 use IO::Prompter ;
+use Term::ANSIColor qw(colorvalid) ;
 
 #-----------------------------------------------------------------------------
 
@@ -16,8 +17,12 @@ my ($self, $previous_color) = @_ ;
 
 print "\e[2J\e[H\e[?25h" ;
 
-my $color = prompt "color [red, yellow, blue]:", -complete => ['red', 'yellow', 'blue'] ;
-return $color // '' ;
+my $color = prompt "ANSI color name:", -complete => [qw(on bold black  red  green  yellow  blue  magenta  cyan  white rgb ansi grey)], -default => '' ;
+$color //= '' ;
+
+$color = '' unless colorvalid($color) ;
+
+return $color ;
 }
 
 #-----------------------------------------------------------------------------

@@ -3,12 +3,13 @@ package App::Asciio::Text ;
 
 use base qw(App::Asciio) ;
 
-$|++ ;
-
 use strict;
 use warnings;
 
 use List::MoreUtils qw(minmax) ;
+use Term::Size::Any qw(chars) ;
+use Term::ANSIColor ;
+
 
 use App::Asciio::Text::Asciio::stripes::editable_arrow2;
 use App::Asciio::Text::Asciio::stripes::wirl_arrow ;
@@ -42,9 +43,6 @@ return($self) ;
 
 #-----------------------------------------------------------------------------
 
-use Term::Size::Any qw(chars) ;
-# use Term::ANSIColor ;
-
 sub update_display 
 {
 my ($self) = @_;
@@ -67,27 +65,25 @@ if($self->{DISPLAY_GRID})
 		
 		if($self->{DISPLAY_GRID})
 			{
+			my $color = color($self->get_color('grid')) ;
+			
 			for my $line (0 .. $ROWS)
 				{
 				next if $line % 10 ;
 				
-				# $gc->set_source_rgb(@{$self->get_color($color)});
-				
-				$surface .= "\e[$line;0H\e[2;49;90m" . '-' x $COLS ;
+				$surface .= "\e[$line;0H${color}" . '-' x $COLS ;
 				}
 			
 			for my $line (0 .. $COLS)
 				{
 				next if $line % 10 ;
 				
-				# $gc->set_source_rgb(@{$self->get_color($color)});
-				
-				$surface .= "\e[$_;${line}H\e[2;49;90m" . '|' for (1 .. $ROWS) ;
+				$surface .= "\e[$_;${line}H$color|" for (1 .. $ROWS) ;
 				}
 			
 			$surface .= "\e[m" ;
 			}
-	
+		
 		$grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} = $surface ;
 		}
 	
@@ -97,18 +93,18 @@ if($self->{DISPLAY_GRID})
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
 	{
-	# $gc->set_source_rgb(@{$self->get_color('ruler_line')});
+	my $color = color($self->get_color('ruler_line')) ;
 	
 	if($line->{TYPE} eq 'VERTICAL')
 		{
-		print "\e[$_;$line->{POSITION}H\e[2;49;96m" . '|' for (1 .. $ROWS) ;
+		print "\e[$_;$line->{POSITION}H$color|" for (1 .. $ROWS) ;
 		}
 	else
 		{
 		my $column = 0 ;
 		my $line =  $line->{POSITION} ;
 		
-		print "\e[$line;${column}H\e[2;49;96m" . '-' x $COLS ;
+		print "\e[$line;${column}H$color" . '-' x $COLS ;
 		}
 	
 	print "\e[m" ;
@@ -129,7 +125,7 @@ for my $element (@{$self->{ELEMENTS}})
 		{
 		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
 			{
-			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
+			$background_color = $element->{GROUP}[-1]{GROUP_COLOR} ;
 			}
 		else
 			{
@@ -142,7 +138,7 @@ for my $element (@{$self->{ELEMENTS}})
 			{
 			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
 				{
-				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
+				$background_color = $element->{GROUP}[-1]{GROUP_COLOR} ;
 				}
 			else
 				{
@@ -178,8 +174,8 @@ for my $element (@{$self->{ELEMENTS}})
 				
 				unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
 					{
-					# $gc->set_source_rgb(@{$foreground_color});
-					$surface .= "\e[7;49;94m" if $is_selected ;
+					$surface .= color($foreground_color) . color($background_color) ;
+					$surface .= color($self->get_color('selected_element_background')) if $is_selected ;
 					
 					if($self->{NUMBERED_OBJECTS})
 						{
@@ -214,14 +210,14 @@ for my $element (@{$self->{ELEMENTS}})
 # draw connections
 my (%connected_connections, %connected_connectors) ;
 
-# $gc->set_source_rgb(@{$self->get_color('connector_point')});
-my $connector_point_rendering = "\e[32mO\e[m" ;
+my $connector_point_color = color($self->get_color('connector_point'));
+my $connector_point_rendering = "${connector_point_color}O\e[m" ;
 
-# $gc->set_source_rgb(@{$self->get_color('connection_point')});
-my $connection_point_rendering = "\e[33mo\e[m" ;
+my $connection_point_color = color($self->get_color('connection_point'));
+my $connection_point_rendering = "${connection_point_color}o\e[m" ;
 
-# $gc->set_source_rgb(@{$self->get_color('extra_point')});
-my $extra_point_rendering = "\e[34m#\e[m" ;
+my $extra_point_color = color($self->get_color('extra_point'));
+my $extra_point_rendering = "$extra_point_color#\e[m" ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
@@ -282,7 +278,8 @@ if ($self->{MOUSE_TOGGLE})
 			{
 			$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
 			
-			my $connection_rendering = "\e[31mc\e[m" ;
+			my $connection_color = color($self->get_color('connection'));
+			my $connection_rendering = "${connection_color}c\e[m" ;
 			
 			my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
 			my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
@@ -292,12 +289,12 @@ if ($self->{MOUSE_TOGGLE})
 	}
 
 # draw new connections
-my $connection_rendering = "\e[31mc\e[m" ;
+my $new_connection_color = color($self->get_color('new_connection'));
+my $connection_rendering = "${new_connection_color}c\e[m" ;
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	{
 	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
 	
-	# $gc->set_source_rgb(@{$self->get_color('new_connection')});
 	my $column = $end_connection->{X} + $new_connection->{CONNECTED}{X} + 1 ;
 	my $line = $end_connection->{Y} + $new_connection->{CONNECTED}{Y} + 1 ;
 	print "\e[$line;${column}H" . $connection_rendering;
@@ -340,10 +337,10 @@ print "\e[3;81H@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
-	# $gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
+	my $color = color($self->get_color('mouse_rectangle')) ;
 	
 	my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
-	print "\e[$line;${column}H\e[31mX" ; 
+	print "\e[$line;${column}H${color}X" ; 
 	}
 
 print "\e[m" ;
