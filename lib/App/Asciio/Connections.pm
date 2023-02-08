@@ -18,7 +18,6 @@ sub connect_elements
 my ($self, @elements) = @_ ;
 
 my @possible_connections = $self->get_possible_connections(@elements) ;
-#~ $self->show_dump_window(\@possible_connections, "\@possible_connections for @elements") ;
 
 $self->add_connections(@possible_connections) ;
 }
@@ -50,7 +49,7 @@ for my $element (@elements)
 	
 	last unless @connectors ;
 	
-	#optimize search by eliminating those elements that are too far
+	# optimize search by eliminating those elements that are too far
 	for my $connectee (reverse @{$self->{ELEMENTS}})
 		{
 		next if $connectee == $element ; # dont connect to self
@@ -58,11 +57,11 @@ for my $element (@elements)
 		for my $connector (@connectors)
 			{
 			my @connections = $connectee->match_connector
-										(
-										# translate coordinates to connectee reference
-										($element->{X} - $connectee->{X}) +  $connector->{X},
-										($element->{Y} - $connectee->{Y}) +  $connector->{Y},
-										) ;
+							(
+							# translate coordinates to connectee reference
+							($element->{X} - $connectee->{X}) +  $connector->{X},
+							($element->{Y} - $connectee->{Y}) +  $connector->{Y},
+							) ;
 			
 			# make connection if possible. connect to a single point
 			if(defined $connections[0] && ! exists $connected_connectors{$element.$connector->{NAME}})

@@ -55,16 +55,22 @@ register_action_handlers
 	'Mouse shift-left-click'                                 => [ '000-Ö' ],
 	'Mouse ctl-left-click'                                   => [ 'C00-ö' ],
 	'Mouse alt-left-click'                                   => [ '0A0-ö' ],
+	'Mouse on element id'                                    => [ '000-?' ],
 	
-	'Mouse drag left 2'                                      => [ '000-H', \&App::Asciio::Actions::Mouse::mouse_drag_left  ],
-	'Mouse drag right 2'                                     => [ '000-L', \&App::Asciio::Actions::Mouse::mouse_drag_right ],
-	'Mouse drag up 2'                                        => [ '000-K', \&App::Asciio::Actions::Mouse::mouse_drag_up    ],
-	'Mouse drag down 2'                                      => [ '000-J', \&App::Asciio::Actions::Mouse::mouse_drag_down  ],
 	'Mouse drag left'                                        => [ '0A0-A-Left'  ],
 	'Mouse drag right'                                       => [ '0A0-A-Right' ],
 	'Mouse drag up'                                          => [ '0A0-A-Up'    ],
 	'Mouse drag down'                                        => [ '0A0-A-Down'  ],
-	'Mouse on element id'                                    => [ '000-?' ],
+	
+	'Mouse drag left 2'                                      => [ '0A0-A-ö', \&App::Asciio::Actions::Mouse::mouse_drag_left  ],
+	'Mouse drag right 2'                                     => [ '0A0-A-ä', \&App::Asciio::Actions::Mouse::mouse_drag_right ],
+	'Mouse drag up 2'                                        => [ '0A0-A-å', \&App::Asciio::Actions::Mouse::mouse_drag_up    ],
+	'Mouse drag down 2'                                      => [ '0A0-A--', \&App::Asciio::Actions::Mouse::mouse_drag_down  ],
+	
+	'Mouse drag left 3'                                      => [ '000-H', \&App::Asciio::Actions::Mouse::mouse_drag_left  ],
+	'Mouse drag right 3'                                     => [ '000-L', \&App::Asciio::Actions::Mouse::mouse_drag_right ],
+	'Mouse drag up 3'                                        => [ '000-K', \&App::Asciio::Actions::Mouse::mouse_drag_up    ],
+	'Mouse drag down 3'                                      => [ '000-J', \&App::Asciio::Actions::Mouse::mouse_drag_down  ],
 	
 	'command group'=> 
 		{

@@ -3,34 +3,16 @@ test
 	check mouse ctl/alt/shif, left cick, drag,  ...  in cursor mode correspond to mouse mode
 
 text interface
-	colors
-	
-	cursor positioning when moving objects
-	display when object is outside viewport
 	mouse selection area
+	
+	screen flicker
+		# reduce number of separate prints
+		print to buffer, handling \H, diff with previous and only update changes
 	
 	vim script
 		open file under cursor
 
 actions
-	add stencils dynamically
-	
-	copy between instances
-		save snapshot of selected object in temporary file
-		put name of temporary file in clipboard
-	
-	presentation mode
-		accept a directory as input
-			show slides based on sort order or order.slide.txt
-		allow saving of modified slides
-		allow deletion and insertion of slides
-			what if the slides are under git control?
-		extra window to show slide order and modify it (and the slides maybe)
-		extra slide menu (through actions)
-			open
-			save
-			insert
-			delete
 
 objects
 	any orientation text
@@ -40,54 +22,40 @@ objects
 	
 	angle arrow dialog does nothing
 	
-	merge arrows and split-arrow
-	
 	more than one resize handle
 
 display
-	panning
-	
 	scrollbars
 	
 	generate "nice looking" graph
-		- interface to ditaa
-		- svgbob
-		- save as pdf
+		- interface to ditaa|svgbob
 		- use ANSI stencil
+	
+	support other languages
 
 architecture
 	handle unicode (remove write_file)
 	
-	handle multiple versions with one of the following mechanisms:
-		- git/embed git::PurePerl 
-		- use PAR 
-		- multiple directories
+	handle multiple binary versions
 
 optimization 
-	selecting an object takes long time when there are many objects
+	Selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 			need limits for arrow types
+		
+		Zbuffer/bit masks
+			when rendering stripes, keep list of objects per cell
+				IE: quadrant size is 1 cell
 	
 	update_display called everytime mouse changes grid cell, even if nothing close to grid cell
 		optimize by first looking if there will be changes, IE within an object, even if not on object
 		if object has changed, compute changed window, extent of all objects that have been changed plus their extent ....
 		we may still get an event where everything needs to be redrawn, IE: other window overlapped Asciios window 
-	
-		#App::Asciio::stripes::editable_arrow2=HASH(0x559c42d63638) (no extents)
-		#App::Asciio::stripes::angled_arrow=HASH(0x559c42e0bf80) (no extents)
-		#App::Asciio::stripes::if_box=HASH(0x559c42ccd3f8) (no extents)
-		#App::Asciio::stripes::process_box=HASH(0x559c42cd3dc0) (no extents)
-		App::Asciio::stripes::rhombus=HASH(0x559c42d79c08) (no extents)
-	
-	Zbuffer/bit masks
-		when rendering stripes, keep list of objects per cell
-			IE: quadrant size is 1 cell
+			use CHANGED field which is not a boolean but an index
+			
 	
 	Connection optimizer
-		- no optimization needed for unchanged objects
-			- asciio must keep track of changed objects
-				- but we must not be intruisive
-					- md5 ??
+		use CHANGED field which is not a boolean but an index
 		
 		auto connection using A* module http://search.cpan.org/~acdalton/AI-Pathfinding-AStar-0.10/
 			- orthogonal or orthogonal and diagonal arrows

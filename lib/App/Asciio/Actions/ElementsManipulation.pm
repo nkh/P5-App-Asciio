@@ -1,6 +1,7 @@
 package App::Asciio::Actions::ElementsManipulation ;
 
 use App::Asciio::stripes::group ;
+use Scalar::Util ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -270,25 +271,8 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-if($self->{MOUSE_TOGGLE})
-	{
-	if($self->{MOUSE_X} >= $offset)
-		{
-		$self->{MOUSE_X} -= $offset ;
-		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
-		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
-		$self->{DRAGGING} = '' ;
-		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
-		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
-		}
-	}
-else
-	{
-	$self->create_undo_snapshot() ;
-	$self->move_elements(-$offset, 0, $self->get_selected_elements(1)) ;
-	}
+$self->create_undo_snapshot() ;
+$self->move_elements(-$offset, 0, $self->get_selected_elements(1)) ;
 
 $self->update_display() ;
 }
@@ -301,24 +285,8 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-if($self->{MOUSE_TOGGLE})
-	{
-	if($self->{MOUSE_X} < 300)
-		{
-		$self->{MOUSE_X} += $offset ;
-		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
-		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
-		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
-		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
-		}
-	}
-else
-	{
-	$self->create_undo_snapshot() ;
-	$self->move_elements($offset, 0, $self->get_selected_elements(1)) ;
-	}
+$self->create_undo_snapshot() ;
+$self->move_elements($offset, 0, $self->get_selected_elements(1)) ;
 
 $self->update_display() ;
 }
@@ -331,25 +299,8 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-if($self->{MOUSE_TOGGLE})
-	{
-	if($self->{MOUSE_Y} >= $offset)
-		{
-		$self->{MOUSE_Y} -= $offset ;
-		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
-		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
-		$self->{DRAGGING} = '' ;
-		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
-		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
-		}
-	}
-else
-	{
-	$self->create_undo_snapshot() ;
-	$self->move_elements(0, -$offset, $self->get_selected_elements(1)) ;
-	}
+$self->create_undo_snapshot() ;
+$self->move_elements(0, -$offset, $self->get_selected_elements(1)) ;
 
 $self->update_display() ;
 }
@@ -362,31 +313,13 @@ my ($self, $offset) = @_ ;
 
 $offset = 1 unless defined $offset ;
 
-if($self->{MOUSE_TOGGLE})
-	{
-	if($self->{MOUSE_Y} < 200)
-		{
-		$self->{MOUSE_Y} += $offset ;
-		$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
-		$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
-		$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
-		$self->{DRAGGING} = '' ;
-		$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
-		$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
-		}
-	}
-else
-	{
-	$self->create_undo_snapshot() ;
-	$self->move_elements(0, $offset, $self->get_selected_elements(1)) ;
-	}
+$self->create_undo_snapshot() ;
+$self->move_elements(0, $offset, $self->get_selected_elements(1)) ;
 
 $self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
-use Scalar::Util ;
 
 sub shrink_box
 {

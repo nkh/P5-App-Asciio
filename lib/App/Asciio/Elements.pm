@@ -201,6 +201,22 @@ my ($self, $x_offset, $y_offset, @elements) = @_ ;
 
 my %selected_elements = map { $_ => 1} @elements ;
 
+if($self->{MOUSE_TOGGLE})
+	{
+	$self->{MOUSE_X} += $x_offset ;
+	$self->{MOUSE_Y} += $y_offset ;
+	
+	$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
+	$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
+	$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
+	$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
+	
+	$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
+	$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
+	
+	$self->{DRAGGING} = '' ;
+	}
+
 for my $element (@elements)
 	{
 	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
@@ -287,12 +303,12 @@ for my $element (@elements)
 				}
 			}
 		}
-		
+	
 	for my $connection (@{$self->{CONNECTIONS}})
 		{
 		delete $connection->{FIXED} ;
 		}
-			
+	
 	$self->{MODIFIED }++ ;
 	}
 }
@@ -368,7 +384,7 @@ for my $connection ($self->get_connected($selected_element))
 		$self->delete_connections($connection) ;
 		}
 	}
-	
+
 return($x_offset, $y_offset, $resized_connector_name) ;
 }
 
@@ -422,7 +438,7 @@ for my $element (@{$self->{ELEMENTS}})
 		$element = undef ;
 		}
 	}
-	
+
 @{$self->{ELEMENTS}} = grep { defined $_} @{$self->{ELEMENTS}} ;
 
 $self->{MODIFIED }++ ;
@@ -442,8 +458,7 @@ if($self->is_connected($selected_element))
 	# disconnect current connections
 	$self->delete_connections_containing($selected_element) ;
 	}
-	
-#~ !!! TODO if not already connected to them (same connection)
+
 $self->connect_elements($selected_element) ; # connect to new elements if any
 
 for my $connection ($self->get_connected($selected_element))
@@ -498,7 +513,7 @@ for my $connection ($self->get_connected($selected_element))
 		
 	#~ TODO fix the other connection as move does above
 	}
-	
+
 $self->{MODIFIED }++ ;
 }
 
@@ -577,7 +592,7 @@ for my $element (@{$self->{ELEMENTS}})
 			}
 		}
 	}
-	
+
 delete $self->{SELECTION_INDEX} unless $self->get_selected_elements(1) ;
 }
 
@@ -646,7 +661,7 @@ for my $strip (@{$element->get_stripes()})
 		last ;
 		}
 	}
-	
+
 return($is_under) ;
 }
 
@@ -694,7 +709,7 @@ for my $strip (@{$element->get_stripes()})
 		last
 		}
 	}
-	
+
 return($is_under) ;
 }
 

@@ -648,43 +648,28 @@ if ($event->{STATE} eq "dragging-button1")
 		
 		if(@selected_elements <= 1)
 			{
-			if(defined $first_element)
-				{
-				$self->{DRAGGING} = $first_element->get_selection_action
+			$self->{DRAGGING} = defined $first_element
+						? $first_element->get_selection_action
 									(
 									$self->{PREVIOUS_X} - $first_element->{X},
 									$self->{PREVIOUS_Y} - $first_element->{Y},
-									);
-									
-				}
-			else
-				{
-				$self->{DRAGGING} = 'select' ;
-				}
+									)
+						: 'select' ;
 			}
 		else
 			{
-			if(defined $first_element)
-				{
-				$self->{DRAGGING} = 'move' ;
-				}
-			else
-				{
-				$self->{DRAGGING} = 'select' ;
-				}
+			$self->{DRAGGING} = defined $first_element ? 'move' : 'select' ;
 			}
-		
 		}
-	
-	if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
-	elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
-	elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
 	
 	if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 		{
+		if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
+		elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
+		elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
+		
 		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-		$self->{PREVIOUS_X} = $x ;
-		$self->{PREVIOUS_Y} = $y ;
+		($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 		}
 	}
 else
@@ -694,15 +679,9 @@ else
 		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 		$self->{PREVIOUS_X} = $x ;
 		$self->{PREVIOUS_Y} = $y ;
-		$self->update_display() ;
 		}
 	}
 
-# if ($event->{STATE} eq "dragging-button2") 
-# 	{
-# 	$self->select_element_event($x, $y, $self->{MIDDLE_BUTTON_SELECTION_FILTER} || sub{1}) ;
-# 	}
-	
 return 1;
 }
 
@@ -713,34 +692,28 @@ sub select_element_event
 my ($self, $x, $y, $filter) = @_ ;
 
 my ($x_offset, $y_offset) = ($x - $self->{PREVIOUS_X},  $y - $self->{PREVIOUS_Y}) ;
-	
-if($x_offset != 0 || $y_offset != 0)
-	{
-	$self->{SELECTION_RECTANGLE}{END_X} = $x ;
-	$self->{SELECTION_RECTANGLE}{END_Y} = $y ;
-	
-	$filter = sub {1} unless defined $filter ;
-	
-	$self->select_elements
-		(
-		1,
-		grep
-			{ $filter->($_) }
-		grep # elements within selection rectangle
-			{
-			$self->element_completely_within_rectangle
-				(
-				$_,
-				$self->{SELECTION_RECTANGLE},
-				)
-			} @{$self->{ELEMENTS}}
-		)  ;
-	
-	$self->update_display();
-	
-	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-	}
+
+$self->{SELECTION_RECTANGLE}{END_X} = $x ;
+$self->{SELECTION_RECTANGLE}{END_Y} = $y ;
+
+$filter = sub {1} unless defined $filter ;
+
+$self->select_elements
+	(
+	1,
+	grep
+		{ $filter->($_) }
+	grep # elements within selection rectangle
+		{
+		$self->element_completely_within_rectangle
+			(
+			$_,
+			$self->{SELECTION_RECTANGLE},
+			)
+		} @{$self->{ELEMENTS}}
+	)  ;
+
+$self->update_display();
 }
 
 #-----------------------------------------------------------------------------
@@ -751,16 +724,10 @@ my ($self, $x, $y) = @_;
 
 my ($x_offset, $y_offset) = ($x - $self->{PREVIOUS_X},  $y - $self->{PREVIOUS_Y}) ;
 
-if($x_offset != 0 || $y_offset != 0)
-	{
-	my @selected_elements = $self->get_selected_elements(1) ;
-	
-	$self->move_elements($x_offset, $y_offset, @selected_elements) ;
-	$self->update_display();
-	
-	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-	}
+my @selected_elements = $self->get_selected_elements(1) ;
+
+$self->move_elements($x_offset, $y_offset, @selected_elements) ;
+$self->update_display();
 }
 
 #-----------------------------------------------------------------------------
@@ -771,24 +738,18 @@ my ($self, $x, $y) = @_ ;
 
 my ($x_offset, $y_offset) = ($x - $self->{PREVIOUS_X},  $y - $self->{PREVIOUS_Y}) ;
 
-if($x_offset != 0 || $y_offset != 0)
-	{
-	my ($selected_element) = $self->get_selected_elements(1) ;
-	
-	$self->{RESIZE_CONNECTOR_NAME} =
-		$self->resize_element
-				(
-				$self->{PREVIOUS_X} - $selected_element->{X}, $self->{PREVIOUS_Y} - $selected_element->{Y} ,
-				$x - $selected_element->{X}, $y - $selected_element->{Y} ,
-				$selected_element,
-				$self->{RESIZE_CONNECTOR_NAME},
-				) ;
-				
-	$self->update_display();
-	
-	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-	}
+my ($selected_element) = $self->get_selected_elements(1) ;
+
+$self->{RESIZE_CONNECTOR_NAME} =
+	$self->resize_element
+			(
+			$self->{PREVIOUS_X} - $selected_element->{X}, $self->{PREVIOUS_Y} - $selected_element->{Y} ,
+			$x - $selected_element->{X}, $y - $selected_element->{Y} ,
+			$selected_element,
+			$self->{RESIZE_CONNECTOR_NAME},
+			) ;
+			
+$self->update_display();
 }
 
 #-----------------------------------------------------------------------------

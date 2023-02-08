@@ -54,6 +54,8 @@ my ($COLS, $ROWS) = chars ;
 print "\e[?25l" ; # hide cursor
 print "\e[2J\e[H" ;
 
+my $screen_rendering = '' ;
+
 # draw background
 if($self->{DISPLAY_GRID})
 	{
@@ -87,7 +89,7 @@ if($self->{DISPLAY_GRID})
 		$grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} = $surface ;
 		}
 	
-	print $grid_rendering ;
+	$screen_rendering .= $grid_rendering ;
 	}
 
 # draw ruler lines
@@ -97,17 +99,17 @@ for my $line (@{$self->{RULER_LINES}})
 	
 	if($line->{TYPE} eq 'VERTICAL')
 		{
-		print "\e[$_;$line->{POSITION}H$color|" for (1 .. $ROWS) ;
+		$screen_rendering .= "\e[$_;$line->{POSITION}H$color|" for (1 .. $ROWS) ;
 		}
 	else
 		{
 		my $column = 0 ;
 		my $line =  $line->{POSITION} ;
 		
-		print "\e[$line;${column}H$color" . '-' x $COLS ;
+		$screen_rendering .= "\e[$line;${column}H$color" . '-' x $COLS ;
 		}
 	
-	print "\e[m" ;
+	$screen_rendering .= "\e[m" ;
 	}
 
 # draw elements
@@ -170,12 +172,13 @@ for my $element (@{$self->{ELEMENTS}})
 				{
 				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
 				
+				my $strip_color = 
 				my $surface = '';
 				
 				unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
 					{
-					$surface .= color($foreground_color) . color($background_color) ;
-					$surface .= color($self->get_color('selected_element_background')) if $is_selected ;
+					$strip_color .= color($foreground_color) . color($background_color) ;
+					$strip_color .= color($self->get_color('selected_element_background')) if $is_selected ;
 					
 					if($self->{NUMBERED_OBJECTS})
 						{
@@ -186,13 +189,11 @@ for my $element (@{$self->{ELEMENTS}})
 						$surface .= $line ;
 						}
 					
-					$surface .= "\e[m" ;
-					
-					$self->{CACHE}{STRIPS}{$color_set}{$line} = $surface ; # keep reference
+					$self->{CACHE}{STRIPS}{$color_set}{$line} = [$strip_color, $surface] ; # keep reference
 					}
 				
 				my $strip_rendering = $self->{CACHE}{STRIPS}{$color_set}{$line} ;
-				push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
+				push @renderings, [@{$strip_rendering}, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
 				}
 			}
 		
@@ -201,9 +202,19 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	for my $rendering (@$renderings)
 		{
-		my $column = $element->{X} + $rendering->[1] + 1;
-		my $line =  $element->{Y} + $rendering->[2] + 1 ;
-		print "\e[$line;${column}H" . $rendering->[0] ;
+		my $stripe = $rendering->[1] ;
+		my $column = $rendering->[2] + $element->{X} + 1;
+		my $line   = $rendering->[3] + $element->{Y} + 1 ;
+		
+		next if $line < 1 || $line > $ROWS ;
+		next if $column > $COLS ;
+		next if $column < 1 && length($stripe) <= -$column ;
+		
+		# clip
+		$stripe = substr($stripe, -$column + 1) and $column = 1   if $column < 1 ;
+		$stripe = substr($stripe, 0, $COLS - ($column - 1))       if ($column - 1 ) + length($stripe) > $COLS ;
+		
+		$screen_rendering .= "\e[$line;${column}H" . $rendering->[0] . $stripe . "\e[m" ;
 		}
 	}
 
@@ -229,23 +240,32 @@ if ($self->{MOUSE_TOGGLE})
 			
 			my $column = $element->{X} + $connector->{X} + 1 ;
 			my $line = $connector->{Y} + $element->{Y} + 1 ;
-			print "\e[$line;${column}H" . $connector_point_rendering;
+			
+			$screen_rendering .= "\e[$line;${column}H" . $connector_point_rendering
+				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
 			}
 			
 		for my $extra_point ($element->get_extra_points())
 			{
 			my $column = $extra_point->{X}  + $element->{X} + 1 ;
 			my $line = $extra_point->{Y} + $element->{Y} + 1 ;
-			print "\e[$line;${column}H" . $extra_point_rendering;
+			
+			$screen_rendering .= "\e[$line;${column}H" . $extra_point_rendering
+				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
 			}
 		
-		for my $connection_point ($element->get_connection_points())
-			{
-			next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
-			
-			my $column = $connection_point->{X} + $element->{X} + 1 ;
-			my $line = $connection_point->{Y} + $element->{Y} + 1 ;
-			print "\e[$line;${column}H" . $connection_point_rendering;
+		if($self->{DRAW_CONNECTION_POINTS})
+				{
+				for my $connection_point ($element->get_connection_points())
+					{
+					next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
+					
+					my $column = $connection_point->{X} + $element->{X} + 1 ;
+					my $line = $connection_point->{Y} + $element->{Y} + 1 ;
+					
+					$screen_rendering .= "\e[$line;${column}H" . $connection_point_rendering
+					unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
+				}
 			}
 		}
 	
@@ -283,7 +303,9 @@ if ($self->{MOUSE_TOGGLE})
 			
 			my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
 			my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
-			print "\e[$line;${column}H" . $connection_rendering;
+			
+			$screen_rendering .= "\e[$line;${column}H" . $connection_rendering
+				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
 			}
 		}
 	}
@@ -297,7 +319,9 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	
 	my $column = $end_connection->{X} + $new_connection->{CONNECTED}{X} + 1 ;
 	my $line = $end_connection->{Y} + $new_connection->{CONNECTED}{Y} + 1 ;
-	print "\e[$line;${column}H" . $connection_rendering;
+	
+	$screen_rendering .= "\e[$line;${column}H" . $connection_rendering
+		unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
 	}
 
 delete $self->{NEW_CONNECTIONS} ;
@@ -321,31 +345,32 @@ if(0) #defined $self->{SELECTION_RECTANGLE}{END_X})
 		$height *= -1 ;
 		$start_y -= $height ;
 		}
-		
+	
 	# $gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
 	
-	print "\e[$start_y;${start_x}H" . "\e[30m" . ( '-' x $width) ;
-	print "\e[$start_y;" . ($start_x + $width) . "H" . "\e[30m" . ( '-' x $width) ;
-	print "\e[$_;${start_x}H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
-	print "\e[$_;" . ($start_x + $width) . "H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
+	$screen_rendering .= "\e[$start_y;${start_x}H" . "\e[30m" . ( '-' x $width) ;
+	$screen_rendering .= "\e[$start_y;" . ($start_x + $width) . "H" . "\e[30m" . ( '-' x $width) ;
+	$screen_rendering .= "\e[$_;${start_x}H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
+	$screen_rendering .= "\e[$_;" . ($start_x + $width) . "H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
 	
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 
-print "\e[2;81H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
-print "\e[3;81H@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
+$screen_rendering .= "\e[2;81H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
+$screen_rendering .= "\e[3;81H@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
 	my $color = color($self->get_color('mouse_rectangle')) ;
 	
-	my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
-	print "\e[$line;${column}H${color}X" ; 
+	unless($self->{MOUSE_X} < 0 || $self->{MOUSE_X} >= $COLS || $self->{MOUSE_Y} < 0 || $self->{MOUSE_Y} >= $ROWS)
+		{
+		my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
+		$screen_rendering .= "\e[$line;${column}H${color}X" ; 
+		}
 	}
 
-print "\e[m" ;
-
-return ;
+print $screen_rendering . "\e[m" ;
 }
 
 #-----------------------------------------------------------------------------
@@ -382,25 +407,6 @@ my $asciio_event =
 	KEY_NAME    => -1,
 	COORDINATES => [-1, -1],
 	} ;
-
-# $asciio_event->{BUTTON} = $event->button() if ref $event eq 'Gtk3::Gdk::EventButton' ;
-
-# if
-# 	(
-# 	$event_type eq "motion-notify"
-# 	|| ref $event eq "Gtk3::Gdk::EventButton" 
-# 	)
-# 	{
-# 	$asciio_event->{COORDINATES} = [$self->closest_character($event->get_coords())]  ;
-
-# 	if($event_type eq "motion-notify")
-# 		{
-# 		$asciio_event->{STATE} = "dragging-button1" if $event->state() >= "button1-mask" ;
-# 		$asciio_event->{STATE} = "dragging-button2" if $event->state() >= "button2-mask" ;
-# 		}
-# 	}
-
-# $asciio_event->{KEY_NAME} = Gtk3::Gdk::keyval_name($event->keyval) if $event_type eq 'key-press' ;
 
 return $asciio_event ;
 }

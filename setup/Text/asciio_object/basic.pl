@@ -1,6 +1,7 @@
 
-# use ANSI colors
+DRAW_CONNECTION_POINTS => 1,
 
+# use ANSI colors
 COLOR_SCHEMES =>
 	{
 	'night' =>
