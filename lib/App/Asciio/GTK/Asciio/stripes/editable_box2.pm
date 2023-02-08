@@ -44,6 +44,7 @@ $titleview->show;
 
 # box text 
 my $textview = Gtk3::TextView->new;
+$textview->modify_font (Pango::FontDescription->from_string ('monospace 10'));
 
 my $text_buffer = $textview->get_buffer;
 $text_buffer->insert($text_buffer->get_end_iter, $text);

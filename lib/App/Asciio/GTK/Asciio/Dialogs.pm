@@ -161,9 +161,6 @@ sub add_button_with_icon {
         $dialog->add_action_widget ($button, $response_id);
 }
 
-#
-# Create a button with a stock icon but with non-stock text.
-#
 sub create_button {
 	# code by Muppet
         my ($text, $stock_id) = @_;
@@ -191,7 +188,6 @@ sub create_button {
         return $button;
 }
 
-
 #-----------------------------------------------------------------------------
 
 sub display_edit_dialog
@@ -212,7 +208,6 @@ $buffer->insert ($buffer->get_end_iter, $text);
 
 $dialog->get_content_area->add ($textview) ;
 $textview->show;
-
 
 # Set up the dialog such that Ctrl+Return will activate the "ok"  response. Muppet
 
@@ -254,7 +249,6 @@ $file_chooser->destroy;
 
 return $file_name ;
 }
-
 
 #-----------------------------------------------------------------------------
 

@@ -31,32 +31,32 @@ our $VERSION = '1.7' ;
 
 App::Asciio - Plain ASCII diagram
 
-	                  |     |             |       |
-	          |       |     |      |      |       |
-	          |       |     |      |      |       |
-	          v       |     v      |      v       |
-	                  v            v              v
-		 _____                           _____      
-		/\  _  \                        /\  __ \    
-		\ \ \_\ \    ___     ___   _   _\ \ \ \ \   
-	----->	 \ \  __ \  /  __\  / ___\/\ \/\ \ \ \ \ \  ----->
-		  \ \ \ \ \/\__,  \/\ \___' \ \ \ \ \ \_\ \ 
-		   \ \_\ \_\/\____/\ \____/\ \_\ \_\ \_____\
-		    \/_/\/_/\/___/  \/___/  \/_/\/_/\/_____/
-	
-	          |             |             |     |
-	          |     |       |     |       |     |      |
-	          v     |       |     |       v     |      |
-		        |       v     |             |      |
-		        v             |             |      v
-		       		      v             v
-	(\_/)
-	(O.o) ASCII world domination is near!
-	(> <) 
+                          |     |             |       |
+                  |       |     |      |      |       |
+                  |       |     |      |      |       |
+                  v       |     v      |      v       |
+                          v            v              v
+             _____                           _____      
+            /\  _  \                        /\  __ \    
+            \ \ \_\ \    ___     ___   _   _\ \ \ \ \   
+  ----->     \ \  __ \  /  __\  / ___\/\ \/\ \ \ \ \ \  ----->
+              \ \ \ \ \/\__,  \/\ \___' \ \ \ \ \ \_\ \ 
+               \ \_\ \_\/\____/\ \____/\ \_\ \_\ \_____\
+                \/_/\/_/\/___/  \/___/  \/_/\/_/\/_____/
+        
+                  |             |             |     |
+                  |     |       |     |       |     | 
+                  v     |       |     |       |     |
+                    |   v       |     v       |     |
+                    v           |             |     v
+                                v             v
+        (\_/)
+        (O.o) ASCII world domination is near!
+        (> <) 
 
 =head1 SYNOPSIS
 
-	$> perl asciio.pl
+$> perl asciio.pl
 
 =head1 DESCRIPTION
 
@@ -69,7 +69,7 @@ The ASCII graphs can be saved as ASCII or in a format that allows you to modify 
 
 =head2 Asciio user interface
 
-	
+
             .-----------------------------------------------------------------.
             |                             Asciio                              |
             |-----------------------------------------------------------------|
@@ -90,7 +90,7 @@ The ASCII graphs can be saved as ASCII or in a format that allows you to modify 
                                     |
                                     |
                               context menu
-				   
+
 
 Press 'F1' for help; 'F2', 'F3', 'F4' for mappings.
 
@@ -184,7 +184,7 @@ A set of whirl arrows connected to each other
       /   |  \
      v    |   v
           v
-	
+
 
 =head3 box and text 
 
@@ -198,9 +198,7 @@ A set of whirl arrows connected to each other
                                  (\_/)               |
          edit_me                 (O.o)  <------------'
                                  (> <)
-				 
 
-You can also use the 'External commands in box' to direct an external command output to a box.
 
 =head3 "if" box and "process" box
 
@@ -219,8 +217,32 @@ be loaded when B<Asciio> starts.
 
 =head3 user element type
 
-For simple elements, put your design in a box. That should cover 90% of anyone's needs. You can look in 
-I<lib/stripes> for element implementation examples.
+For simple elements, put your design in a box. That should cover 95% of anyone's needs.
+
+Asciio has an "exec-box" object that lets you put the output of an external application
+in a box (with or without frame), in the example below the table is generated, if you already
+have text in a file you can use 'cat'' as the command. 
+
+
+   +------------+------------+------------+------------+
+   | input_size ‖ algorithmA | algorithmB | algorithmC |
+   +============+============+============+============+
+   |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |---------------.
+   +------------+------------+------------+------------+               v
+   |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |       .--------------.
+   +------------+------------+------------+------------+       |              |
+   |    250     ‖     -      |  80 min.   | 2.27 sec.  |-----. |              |
+   +------------+------------+------------+------------+     | |              |
+   |    1000    ‖     -      |     -      | 8.77 sec.  |     | '--------------'
+   +------------+------------+------------+------------+     |
+                                                             |
+                                                             v
+                                                     .--------------.
+                                                     |              |
+                                                     |              |
+                                                     |              |
+                                                     '--------------'
+
 
 =head2 Exporting to ASCII
 
@@ -230,7 +252,7 @@ Exporting to the clipboard is done with B<ctl + e>.
 
 =head1 EXAMPLES
 
-	
+
            User code ^            ^ OS code
                       \          /
                        \        /
@@ -240,8 +262,8 @@ Exporting to the clipboard is done with B<ctl + e>.
                        /        \
                       /          \
           User code  v            v OS code
-	  
-	
+
+
              .---.  .---. .---.  .---.    .---.  .---.
     OS API   '---'  '---' '---'  '---'    '---'  '---'
                |      |     |      |        |      |
@@ -259,7 +281,7 @@ Exporting to the clipboard is done with B<ctl + e>.
              .---------------------------------------.
              |                  HAL                  |
              '---------------------------------------'
-	     
+
 
 
                  
@@ -284,7 +306,7 @@ Exporting to the clipboard is done with B<ctl + e>.
                      \         .---------.
                       '--------| State 3 |
                                '---------'
-			       
+
 
                                         .--Base::Class::Derived_A
                                        /
@@ -960,5 +982,10 @@ YMMV, install gtk-perl and AsciiO from cpan.
 
 #------------------------------------------------------------------------------------------------------
 
-"ASCII world domination!"  ;
+"
+(\_/)
+(O.o)
+/> ASCII world domination!
+"  ;
+
 
