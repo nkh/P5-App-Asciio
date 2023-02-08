@@ -39,6 +39,7 @@ else
 	}
 
 $asciio->setup($setup_paths) ;
+$asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = \@_ ; print "\e[3;81H@_" } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 

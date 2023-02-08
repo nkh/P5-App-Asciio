@@ -56,8 +56,6 @@ my ($COLS, $ROWS) = chars ;
 print "\e[?25l" ; # hide cursor
 print "\e[2J\e[H" ;
 
-print "\e[1;50H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
-
 # draw background
 if($self->{DISPLAY_GRID})
 	{
@@ -337,6 +335,9 @@ if(0) #defined $self->{SELECTION_RECTANGLE}{END_X})
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 
+print "\e[2;81H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
+print "\e[3;81H@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
+
 if ($self->{MOUSE_TOGGLE})
 	{
 	# $gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
@@ -344,7 +345,7 @@ if ($self->{MOUSE_TOGGLE})
 	my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
 	print "\e[$line;${column}H\e[31mX" ; 
 	}
-	
+
 print "\e[m" ;
 
 return ;

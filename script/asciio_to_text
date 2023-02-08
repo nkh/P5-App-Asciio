@@ -27,7 +27,7 @@ else
 
 if(defined $asciio_config->{TARGETS}[0])
 	{
-	delete $asciio->{ACTION_VERBOSE} ;
+	local $asciio->{ACTION_VERBOSE} = undef ;
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	}
 	

@@ -31,6 +31,7 @@ $hpaned->set_border_width (3);
 my @asciios ;
 
 my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25) ;
+
 push @asciios, $asciio ;
 
 $hpaned->add1($asciio->{widget});
@@ -61,6 +62,7 @@ else
 	}
 
 $asciio->setup($setup_paths) ;
+$asciio->{ACTION_VERBOSE} = sub { print @_ } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 
@@ -74,7 +76,7 @@ $window->show();
 
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
-	
+
 #--------------------------------------------------------------------------
 
 $window->signal_connect (delete_event => \&delete_event, \@asciios) ;
@@ -89,12 +91,12 @@ for my $asciio (@{$asciios})
 	{
 	$should_save++ if $asciio->get_modified_state() ;
 	}
-	
+
 if($should_save) 
 	{
 	$answer = $asciios[0]->display_quit_dialog('asciio', ' ' x 25 . "Document is modified!\n\nAre you sure you want to quit and lose your changes?\n") ;
 	}
-	
+
 if($answer eq 'save_and_quit')
 	{
 	for my $asciio (@{$asciios})
@@ -104,7 +106,7 @@ if($answer eq 'save_and_quit')
 		$answer = 'cancel' if(! defined $saved_result[0][0] || $saved_result[0][0] eq '') ;
 		}
 	}
-	
+
 return $answer eq 'cancel';
 }
 
