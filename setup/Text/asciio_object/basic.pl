@@ -13,7 +13,6 @@ COLOR_SCHEMES =>
 		selected_element_background => 'reset',
 		element_background => 'reset',
 		element_foreground => 'reset' ,
-		selection_rectangle => 'reset',
 		group_colors =>
 			[
 			'on_red',
@@ -27,6 +26,7 @@ COLOR_SCHEMES =>
 		new_connection => 'reset',
 		extra_point => 'reset',
 		mouse_rectangle => 'reset',
+		selection_rectangle => 'reset',
 		}, 
 	'system' =>
 		{
@@ -37,7 +37,6 @@ COLOR_SCHEMES =>
 		selected_element_background => 'on_ansi31',
 		element_background => 'reset',
 		element_foreground => 'reset' ,
-		selection_rectangle => 'red',
 		group_colors =>
 			[
 			'on_ansi94',
@@ -51,5 +50,6 @@ COLOR_SCHEMES =>
 		extra_point => 'ansi31',
 		new_connection => 'red',
 		mouse_rectangle => 'red',
+		selection_rectangle => 'ansi31',
 		}, 
 	},

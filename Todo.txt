@@ -1,13 +1,9 @@
 
-test
-	check mouse ctl/alt/shif, left cick, drag,  ...  in cursor mode correspond to mouse mode
-
 text interface
-	mouse selection area
+	test mouse ctl/alt/shif, left cick, drag,  ...  in cursor mode correspond to mouse mode
 	
 	screen flicker
-		# reduce number of separate prints
-		print to buffer, handling \H, diff with previous and only update changes
+		print to buffer, handling \J \H
 	
 	vim script
 		open file under cursor

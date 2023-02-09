@@ -662,24 +662,21 @@ if ($event->{STATE} eq "dragging-button1")
 			}
 		}
 	
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+	
 	if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 		{
 		if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
 		elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
 		elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
 		
-		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 		($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 		}
 	}
 else
 	{
-	if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
-		{
-		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-		$self->{PREVIOUS_X} = $x ;
-		$self->{PREVIOUS_Y} = $y ;
-		}
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) if $self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y ;
 	}
 
 return 1;

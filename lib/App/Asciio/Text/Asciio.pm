@@ -69,18 +69,14 @@ if($self->{DISPLAY_GRID})
 			{
 			my $color = color($self->get_color('grid')) ;
 			
-			for my $line (0 .. $ROWS)
+			for my $line (1 .. $ROWS /10)
 				{
-				next if $line % 10 ;
-				
-				$surface .= "\e[$line;0H${color}" . '-' x $COLS ;
+				$surface .= "\e[" . ($line * 10) .";0H${color}" . '-' x $COLS ;
 				}
 			
-			for my $line (0 .. $COLS)
+			for my $line (1 .. $COLS / 10)
 				{
-				next if $line % 10 ;
-				
-				$surface .= "\e[$_;${line}H$color|" for (1 .. $ROWS) ;
+				$surface .= "\e[$_;" . (${line} * 10) . "H${color}|" for (1 .. $ROWS) ;
 				}
 			
 			$surface .= "\e[m" ;
@@ -326,38 +322,48 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 
 delete $self->{NEW_CONNECTIONS} ;
 
-# draw selection rectangle
-if(0) #defined $self->{SELECTION_RECTANGLE}{END_X})
+my $selection_rectangle = '' ;
+if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	{
-	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} ;
-	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} ;
-	my $width   = $self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X} ;
-	my $height  = $self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y} ; 
+	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} + 1 ;
+	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} + 1 ;
+	my $end_x   = $self->{SELECTION_RECTANGLE}{END_X} + 1 ;
+	my $end_y   = $self->{SELECTION_RECTANGLE}{END_Y} + 1 ;
 	
-	if($width < 0)
+	($start_x, $end_x) = ($end_x, $start_x) if $end_x < $start_x ;
+	($start_y, $end_y) = ($end_y, $start_y) if $end_y < $start_y ;
+	
+	my $width  = $end_x - $start_x + 1 ;
+	my $height = $end_y - $start_y + 1 ;
+	
+	$selection_rectangle = "$start_x - $start_y * $end_x - $end_y" ;
+	
+	my $color = color($self->get_color('selection_rectangle')) ;
+	$screen_rendering .= $color ;
+	
+	for ($start_y .. $start_y + $height - 1)
 		{
-		$width *= -1 ;
-		$start_x -= $width ;
-		}
+		next if $_ < 1 || $_ > $ROWS ;
 		
-	if($height < 0)
-		{
-		$height *= -1 ;
-		$start_y -= $height ;
+		$screen_rendering .= "\e[$_;${start_x}H|" if $start_x > 0 && $start_x <= $COLS ;
+		$screen_rendering .= "\e[$_;${end_x}H|"   if $end_x > 1   && $end_x <= $COLS ;
 		}
 	
-	# $gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
-	
-	$screen_rendering .= "\e[$start_y;${start_x}H" . "\e[30m" . ( '-' x $width) ;
-	$screen_rendering .= "\e[$start_y;" . ($start_x + $width) . "H" . "\e[30m" . ( '-' x $width) ;
-	$screen_rendering .= "\e[$_;${start_x}H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
-	$screen_rendering .= "\e[$_;" . ($start_x + $width) . "H" . "\e[30m" . '|' for ( $start_y .. $start_y + $height) ;
+	if($start_x <= $COLS && $end_x > 0)
+		{ 
+		my $top_bottom = '-' x $width ;
+		$top_bottom = substr($top_bottom, -$start_x + 1) and $start_x = 1 if $start_x < 1 ;
+		$top_bottom = substr($top_bottom, 0, ($COLS - $start_x) + 1) if $end_x > $COLS ;
+		
+		$screen_rendering .= "\e[$start_y;${start_x}H" . $top_bottom if $start_y > 0 && $start_y <= $ROWS ;
+		$screen_rendering .= "\e[$end_y;${start_x}H" . $top_bottom   if $end_y > 0   && $end_y <= $ROWS ;
+		}
 	
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 
-$screen_rendering .= "\e[2;81H$self->{MOUSE_Y} $self->{MOUSE_X}" ;
-$screen_rendering .= "\e[3;81H@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
+$screen_rendering .= "\e[2;81H\e[32m@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
+$screen_rendering .= "\e[3;81H$selection_rectangle" ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
@@ -370,7 +376,7 @@ if ($self->{MOUSE_TOGGLE})
 		}
 	}
 
-print $screen_rendering . "\e[m" ;
+print $screen_rendering ;
 }
 
 #-----------------------------------------------------------------------------
