@@ -295,7 +295,8 @@ if ($self->{MOUSE_TOGGLE})
 			$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
 			
 			my $connection_color = color($self->get_color('connection'));
-			my $connection_rendering = "${connection_color}c\e[m" ;
+			my $connection_char = $connector->{CHAR} // 'c' ;
+			my $connection_rendering = "${connection_color}$connection_char\e[m" ;
 			
 			my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
 			my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
@@ -362,9 +363,6 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
 
-$screen_rendering .= "\e[2;81H\e[32m@{$self->{LAST_ACTION}}" if defined $self->{LAST_ACTION} ;
-$screen_rendering .= "\e[3;81H$selection_rectangle" ;
-
 if ($self->{MOUSE_TOGGLE})
 	{
 	my $color = color($self->get_color('mouse_rectangle')) ;
@@ -376,7 +374,13 @@ if ($self->{MOUSE_TOGGLE})
 		}
 	}
 
-print $screen_rendering ;
+print $screen_rendering . "\e[m" ;
+
+if(defined $self->{ACTION_VERBOSE})
+	{
+	print "\e[2;81H\e[32m$self->{LAST_ACTION} " . length($screen_rendering) ;
+	print "\e[3;81H$selection_rectangle" ;
+	}
 }
 
 #-----------------------------------------------------------------------------

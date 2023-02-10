@@ -23,15 +23,15 @@ Readonly my $DEFAULT_ARROW_TYPE =>
 			['up', '|', '|', '', '', '^', 1],
 			['down', '|', '|', '', '', 'v', 1],
 			['left', '-', '-', '', '', '<', 1],
-			['upleft', '|', '|', '.', '-', '<', 1],
-			['leftup', '-', '-', '\'', '|', '^', 1],
-			['downleft', '|', '|', '\'', '-', '<', 1],
-			['leftdown', '-', '-', '.', '|', 'v', 1],
+			['up-left', '|', '|', '.', '-', '<', 1],
+			['left-up', '-', '-', '\'', '|', '^', 1],
+			['down-left', '|', '|', '\'', '-', '<', 1],
+			['left-down', '-', '-', '.', '|', 'v', 1],
 			['right', '-', '-','', '', '>', 1],
-			['upright', '|', '|', '.', '-', '>', 1],
-			['rightup', '-', '-', '\'', '|', '^', 1],
-			['downright', '|', '|', '\'', '-', '>', 1],
-			['rightdown', '-', '-', '.', '|', 'v', 1],
+			['up-right', '|', '|', '.', '-', '>', 1],
+			['right-up', '-', '-', '\'', '|', '^', 1],
+			['down-right', '|', '|', '\'', '-', '>', 1],
+			['right-down', '-', '-', '.', '|', 'v', 1],
 			['45', '/', '/', '', '', '^', 1, ],
 			['135', '\\', '\\', '', '', 'v', 1, ],
 			['225', '/', '/', '', '', 'v', 1, ],
@@ -460,10 +460,16 @@ for my $arrow(@{$self->{ARROWS}})
 			$start_connector->{X} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
 			$start_connector->{Y} += $self->{POINTS_OFFSETS}[$arrow_index][1] ;
 			$connection = $start_connector ;
+			
+			for my $arrow_type (@{$arrow->{ARROW_TYPE}})
+				{
+				$connection->{CHAR} = $arrow_type->[1] and last if $arrow->{DIRECTION} eq $arrow_type->[0] ;
+				}
+			
 			last ;
 			}
 		}
-		
+	
 	$end_connector->{NAME} .= "section_$arrow_index" ;
 	
 	if($name eq  $end_connector->{NAME})
@@ -471,9 +477,15 @@ for my $arrow(@{$self->{ARROWS}})
 		$end_connector->{X} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
 		$end_connector->{Y} += $self->{POINTS_OFFSETS}[$arrow_index][1] ;
 		$connection = $end_connector ;
+		
+		for my $arrow_type (@{$arrow->{ARROW_TYPE}})
+			{
+			$connection->{CHAR} = $arrow_type->[5] and last if $arrow->{DIRECTION} eq $arrow_type->[0] ;
+			}
+		
 		last ;
 		}
-		
+	
 	$arrow_index++ ;
 	}
 

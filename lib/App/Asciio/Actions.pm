@@ -43,7 +43,7 @@ for my $action (@actions)
 			
 			$self->{ACTION_VERBOSE}->
 				(
-				sprintf "%-20s %-40s [%s]\n", "$modifiers-$action_key", $action_group_name, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
+				sprintf "%-20s %-40s [%s]", "$modifiers-$action_key", $action_group_name, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
 				) if $self->{ACTION_VERBOSE} ;
 			
 			$self->{CURRENT_ACTIONS} = $self->{CURRENT_ACTIONS}{$action} ;
@@ -52,7 +52,7 @@ for my $action (@actions)
 			{
 			$self->{ACTION_VERBOSE}->
 				(
-				sprintf "%-20s %-40s [%s]\n", "$modifiers-$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN]
+				sprintf "%-20s %-40s [%s]", "$modifiers-$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN]
 				) if $self->{ACTION_VERBOSE} ;
 			
 			if(defined $self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS])
@@ -80,7 +80,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-20s\e[m\n", "$modifiers-$action_key") if $self->{ACTION_VERBOSE} ; 
+		$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-20s\e[m", "$modifiers-$action_key") if $self->{ACTION_VERBOSE} ; 
 		
 		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 		}
@@ -111,12 +111,12 @@ for my $action (@actions)
 		{
 		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
 			{
-			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action [group]\e[0m\n") if $self->{ACTION_VERBOSE} ;
+			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action [group]\e[0m") if $self->{ACTION_VERBOSE} ;
 			$current_actions_by_name = $self->{CURRENT_ACTIONS}{$action} ;
 			}
 		else
 			{
-			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action\e[0m\n") if $self->{ACTION_VERBOSE} ;
+			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action\e[0m") if $self->{ACTION_VERBOSE} ;
 			
 			if(defined $current_actions_by_name->{$action}[$ARGUMENTS])
 				{
@@ -141,7 +141,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[31m$action\e[0m\n") if $self->{ACTION_VERBOSE} ;
+		$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[31m$action\e[0m") if $self->{ACTION_VERBOSE} ;
 		last ;
 		}
 	}

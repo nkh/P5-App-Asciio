@@ -45,7 +45,7 @@ $asciio->run_actions_by_name(['Open', $title]) if defined $title ;
 $asciio->setup($setup_paths) ;
 $asciio->set_title($title) if defined $title ;
 
-$asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = \@_ ; } ;
+$asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = $_[0] ; } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 

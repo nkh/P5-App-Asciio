@@ -1,53 +1,51 @@
 
 text interface
-	test mouse ctl/alt/shif, left cick, drag,  ...  in cursor mode correspond to mouse mode
+	test mouse ctl/alt/shif, left cick, drag,  ... make cursor mode correspond to mouse mode
 	
 	vim script
 		open file under cursor
 
-actions
-
 objects
 	any orientation text
-		diagonal text, has direction, Ian's request
-		use as base for angled arrow
-		
 		call a sub that returns a text, sub gets direction and length
+		different sub used to implement angled-arrow
 	
 	angle arrow dialog does nothing
 
 display
+	use arrow connector colored to show connection
+	
 	scrollbars
 	
-	generate "nice looking" graph
-		- interface to ditaa|svgbob
-		- use ANSI stencil
+	interface to ditaa|svgbob/aasvg/goat
+	
+	use Unicode stencil
 	
 	support other languages
 
 architecture
-	handle unicode (remove write_file)
-	
 	handle multiple binary format versions
 
 optimization 
 	screen flicker
 		print to buffer, handling \J \H
+		cache the previous rendering
 	
 	Selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
-			need limits for arrow types
 		
 		Zbuffer/bit masks
 			when rendering stripes, keep list of objects per cell
 				IE: quadrant size is 1 cell
 	
-	update_display called everytime mouse changes grid cell, even if nothing close to grid cell
-		optimize by first looking if there will be changes, IE within an object, even if not on object
-		if object has changed, compute changed window, extent of all objects that have been changed plus their extent ....
-		we may still get an event where everything needs to be redrawn, IE: other window overlapped Asciios window 
-			use CHANGED field which is not a boolean but an index
-			
+	update_display called every time mouse changes grid cell
+		optimize by first looking if there are objects changes
+			use object CHANGED field which is not a boolean but an index
+			save CHANGED field for all objects wen doing an undo snapshot
+		
+		if object has changed, compute changed window
+		
+		we may still get an event where everything needs to be redrawn 
 	
 	Connection optimizer
 		use CHANGED field which is not a boolean but an index
@@ -70,16 +68,8 @@ optimization
 		optimize current arrow (A* pathfinder)
 	
 	do_stack serialization
-		=> diff + compress
-			# tests done
-			must have a reverse diff that can patch both ways or it's not worth it
-		let git do the work ?
-		
 		put ID to objects in ELEMENTS rather than serialized elements
 			large test shows time 0.2s vs 0.002s
 			
-			objects versions can be kept in memory or serialized separately if they
-			take too much space
-		
-		limit undo stack size
+			objects versions can be kept in memory or serialized separately
 
