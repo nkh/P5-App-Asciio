@@ -2,9 +2,6 @@
 text interface
 	test mouse ctl/alt/shif, left cick, drag,  ...  in cursor mode correspond to mouse mode
 	
-	screen flicker
-		print to buffer, handling \J \H
-	
 	vim script
 		open file under cursor
 
@@ -12,13 +9,12 @@ actions
 
 objects
 	any orientation text
-		diagonal text, Ian's request
-		options to keep it to diagonals or horizontal, vertical
+		diagonal text, has direction, Ian's request
 		use as base for angled arrow
+		
+		call a sub that returns a text, sub gets direction and length
 	
 	angle arrow dialog does nothing
-	
-	more than one resize handle
 
 display
 	scrollbars
@@ -32,9 +28,12 @@ display
 architecture
 	handle unicode (remove write_file)
 	
-	handle multiple binary versions
+	handle multiple binary format versions
 
 optimization 
+	screen flicker
+		print to buffer, handling \J \H
+	
 	Selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 			need limits for arrow types

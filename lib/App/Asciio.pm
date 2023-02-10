@@ -404,18 +404,18 @@ sub event_options_changed
 {
 my ($self) = @_;
 
-$self->{CURRENT_ACTIONS} = $self->{ACTIONS}  ;
+$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 
-$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE});
+$self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE}) ;
 }
 
 #-----------------------------------------------------------------------------
 
 sub exit
 {
-my ($self) = @_;
+my ($self, $code) = @_ ;
 
-exit ;
+exit ($code // 0) ;
 }
 
 #-----------------------------------------------------------------------------

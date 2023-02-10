@@ -21,12 +21,8 @@ my($self, $setup_ini_files) = @_ ;
 for my $setup_file (@{$setup_ini_files})
 	{
 	print "Initializing with '$setup_file'\n" if $self->{DISPLAY_SETUP_INFORMATION};
+	warn "Asciio: Warning: can't find setup data '$setup_file'\n" and next unless -e $setup_file ;
 	
-	unless(-e $setup_file)
-		{
-		warn "Asciio: Warning: can't find setup data '$setup_file'\n" and next ;
-		}
-		
 	push @{$self->{SETUP_PATHS}}, $setup_file ;
 	
 	my ($setup_name, $setup_path, $setup_ext) = File::Basename::fileparse($setup_file, ('\..*')) ;
@@ -43,7 +39,7 @@ for my $setup_file (@{$setup_ini_files})
 	
 	warn "can't load '$setup_file': $! $@\n" if $@ ;
 	}
-		
+	
 	$self->setup_stencils($setup_path, $ini_files->{STENCILS} || []) ;
 	$self->setup_hooks($setup_path, $ini_files->{HOOK_FILES} || []) ;
 	$self->setup_action_handlers($setup_path, $ini_files->{ACTION_FILES} || []) ;
@@ -400,7 +396,7 @@ for my $options_file (@{ $options_files })
 		{
 		$self->{$option_name} = $options{$option_name} ;
 		}
-		
+	
 	$self->{COLORS} = $options{COLOR_SCHEMES}{system} ;
 	
 	die "can't load setup file '$options_file': $! $@\n" if $@ ;

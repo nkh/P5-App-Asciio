@@ -433,14 +433,14 @@ use Term::ReadKey;
 
 sub exit
 {
-my ($self) = @_ ;
+my ($self, $code) = @_ ;
 
 ReadMode('normal') ;
 print "\e[2J\e[H" ;
 print "\e[?25h" ;
 print "\e[?1000h" ;
 
-exit ;
+exit ($code // 0) ;
 }
 
 #-----------------------------------------------------------------------------

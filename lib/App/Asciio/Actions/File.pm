@@ -38,7 +38,7 @@ unless(defined $file_name)
 	}
 
 if(defined $file_name && $file_name ne q[])
-	{			
+	{
 	my ($base_name, $path, $extension) = File::Basename::fileparse($file_name, ('\..*')) ;
 	$extension =~ s/^\.// ;
 	
@@ -132,7 +132,7 @@ if($user_answer ne 'cancel')
 		$self->update_display() ;
 		}
 	}
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -145,7 +145,7 @@ $file_name ||= $self->get_file_name('open') ;
 if(defined $file_name && $file_name ne q[])
 	{
 	my $asciio = new App::Asciio() ;
-
+	
 	use Module::Util qw(find_installed) ;
 	use File::Basename ;
 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
@@ -162,15 +162,11 @@ if(defined $file_name && $file_name ne q[])
 	
 	$self->run_actions_by_name(['Insert from clipboard', $x, $y]) ;
 	}
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 
-sub quit_no_save
-{
-my ($self) = @_ ;
-$self->exit() ;
-}
+sub quit_no_save { my ($self) = @_ ; $self->exit() ; }
 
 #----------------------------------------------------------------------------------------------
 
@@ -205,6 +201,8 @@ else
 	$self->exit() ;
 	}
 }
+
+#----------------------------------------------------------------------------------------------
 
 1 ;
 

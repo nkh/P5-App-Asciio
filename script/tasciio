@@ -1,7 +1,5 @@
 #!/usr/bin/env perl
 
-package main ;
-
 use strict;
 use warnings;
 
@@ -38,15 +36,18 @@ else
 		] ;
 	}
 
+my $title = $asciio_config->{TARGETS}[0] ;
+$asciio->run_actions_by_name(['Open', $title]) if defined $title ;
+
+# 'open' deserializes an asciio object with it's attributes, if the file
+# was saved by a different asciio object (GUI/TUI), the attributes in
+# the serialized object will not fit, run setup after 'open'
 $asciio->setup($setup_paths) ;
-$asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = \@_ ; print "\e[3;81H@_" } ;
+$asciio->set_title($title) if defined $title ;
+
+$asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = \@_ ; } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
-
-if(defined $asciio_config->{TARGETS}[0])
-	{
-	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
-	}
 
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
@@ -54,14 +55,13 @@ $asciio->run_script($asciio_config->{SCRIPT}) ;
 #--------------------------------------------------------------------------
 
 use Term::ReadKey;
-use Term::TermKey qw( FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
+use Term::TermKey qw(FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
  
 my $tk = Term::TermKey->new(\*STDIN);
  
 # ensure perl and libtermkey agree on Unicode handling
 binmode( STDOUT, ":encoding(UTF-8)" ) if $tk->get_flags & FLAG_UTF8; 
 
-print "\e[2J\e[H" ;
 $asciio->update_display() ;
 
 print "\e[?1003h" ; # get mouse events

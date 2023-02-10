@@ -71,7 +71,7 @@ else
 			die "load_file: can't load file '$file_name': $! $@\n" ;
 			}
 		
-		$self->load_self($saved_self) ; # resurect
+		$self->load_self($saved_self) ; # resurrect
 		delete $self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} ;
 		delete $self->{CACHE} ;
 		
