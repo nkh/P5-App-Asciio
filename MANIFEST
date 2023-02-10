@@ -21,6 +21,7 @@ setup/actions/mouse.pl
 setup/actions/new_elements.pl
 setup/actions/unsorted.pl
 setup/actions/context_menu_multi_wirl.pl
+setup/actions/context_menu_angled_arrow.pl
 setup/actions/context_menu_box.pl
 setup/actions/context_menu_rulers.pl
 setup/actions/colors.pl
@@ -71,7 +72,6 @@ lib/App/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
-lib/App/Asciio/stripes/rhombus.pm
 lib/App/Asciio/stripes/single_stripe.pm
 lib/App/Asciio/stripes/stripes.pm
 lib/App/Asciio/stripes/group.pm

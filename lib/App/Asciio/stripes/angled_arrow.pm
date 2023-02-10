@@ -19,15 +19,17 @@ Readonly my $DEFAULT_GLYPHS=>
 	'down' => [ '.', '|', '?', '?', "'", '?', '?'],
 	'left' => [ '-', '-', '?', '?', '-', '?', '?'],
 	'right' => [ '-', '-', '?', '?', '-', '?', '?'],
-	'upleft' => [ "'", '\\', '.', '-', '-', '|', "'"],
-	'leftup' => [ '-', '\\', "'", '-', '.', '|', "'"],
-	'downleft' => [ '.', '/', "'", '-', '-', '|', "'"],
-	'leftdown' => [ '-', '/', '.', '-', "'", '|', "'"],
-	'upright' => [ "'", '/', '.', '-', '-', '|', "'"],
-	'rightup' => [ '-', '/', "'", '-', '.', '|', "'"],
-	'downright' => [ '.', '\\', "'", '-', '-', '|', "'"],
-	'rightdown' => [ '-', '\\', '.', '-', "'", '|', "'"],
+	'up-left' => [ "'", '\\', '.', '-', '-', '|', "'"],
+	'left-up' => [ '-', '\\', "'", '-', '.', '|', "'"],
+	'down-left' => [ '.', '/', "'", '-', '-', '|', "'"],
+	'left-down' => [ '-', '/', '.', '-', "'", '|', "'"],
+	'up-right' => [ "'", '/', '.', '-', '-', '|', "'"],
+	'right-up' => [ '-', '/', "'", '-', '.', '|', "'"],
+	'down-right' => [ '.', '\\', "'", '-', '-', '|', "'"],
+	'right-down' => [ '-', '\\', '.', '-', "'", '|', "'"],
 	} ;
+
+#-----------------------------------------------------------------------------
 
 sub new
 {
@@ -57,38 +59,38 @@ my ($self, $glyphs, $end_x, $end_y, $direction, $editable) = @_ ;
 my ($ex1, $ey1, $ex2, $ey2) ;
 
 if ($end_x < 0)
-	{
-	$ex1 = $end_x ;
-	$ex2 = 1 ;
-	}
+    {
+    $ex1 = $end_x ;
+    $ex2 = 1 ;
+    }
 else
-	{
-	$ex1 = 0 ;
-	$ex2 = $end_x + 1 ;
-	}
+    {
+    $ex1 = 0 ;
+    $ex2 = $end_x + 1 ;
+    }
 
 if ($end_y < 0)
-	{
-	$ey1 = $end_y ;
-	$ey2 = 1 ;
-	}
+    {
+    $ey1 = $end_y ;
+    $ey2 = 1 ;
+    }
 else
-	{
-	$ey1 = 0 ;
-	$ey2 = $end_y + 1 ;
-	}
+    {
+    $ey1 = 0 ;
+    $ey2 = $end_y + 1 ;
+    }
 
 $self->set
-	(
-	GLYPHS => $glyphs,
-	STRIPES => $stripes,
-	WIDTH => $width,
-	HEIGHT => $height,
-	DIRECTION => $direction,
-	END_X => $end_x,
-	END_Y => $end_y,
-	EXTENTS => [$ex1, $ey1, $ex2, $ey2],
-	) ;
+    (
+    GLYPHS => $glyphs,
+    STRIPES => $stripes,
+    WIDTH => $width,
+    HEIGHT => $height,
+    DIRECTION => $direction,
+    END_X => $end_x,
+    END_Y => $end_y,
+    EXTENTS => [$ex1, $ey1, $ex2, $ey2],
+    ) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -132,7 +134,7 @@ $direction = $position_to_direction
 			[$end_y == 0 ? CENTER : $end_y < 0 ? UP : DOWN] ;
 
 my $drawing_sub = $direction_to_arrow{$direction} ;
-
+ 
 return($drawing_sub->($glyphs, $end_x, $end_y), $direction) ;
 }
 
@@ -303,8 +305,7 @@ return(\@stripes, $width, $height) ;
 sub draw_upright
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
-
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{upright}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'up-right'}} ;
 
 my ($width, $height) = ( $end_x + 1, 	-$end_y + 1) ;
 
@@ -438,7 +439,7 @@ sub draw_upleft
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{upleft}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'up-left'}} ;
 
 my ($width, $height) = ( -$end_x + 1, 	-$end_y + 1) ;
 
@@ -571,7 +572,7 @@ sub draw_leftup
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{leftup}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'left-up'}} ;
 
 my ($width, $height) = ( -$end_x + 1, 	-$end_y + 1) ;
 
@@ -686,7 +687,7 @@ sub draw_rightup
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{rightup}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'right-up'}} ;
 
 my ($width, $height) = ( $end_x + 1, 	-$end_y + 1) ;
 
@@ -817,7 +818,7 @@ sub draw_downleft
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{downleft}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'down-left'}} ;
 
 my ($width, $height) = ( -$end_x + 1,  $end_y + 1) ;
 
@@ -850,7 +851,8 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 			};
 		}
 		
-	my $left_text = $body_2 x (($width - $height) - 1)  ;
+	my $left_text = ''  ;
+	$left_text .= $body_2 x (($width - $height) - 1)  if $width > $height ;
 	
 	if($width > $height)
 		{
@@ -933,7 +935,7 @@ sub draw_leftdown
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{leftdown}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'left-down'}} ;
 
 my ($width, $height) = ( -$end_x + 1,  $end_y + 1) ;
 
@@ -945,7 +947,8 @@ my @stripes ;
 
 if($width >= $height) # enought horizontal length to have a proper diagonal up
 	{
-	my $start_body_connector = $connection . $body_2 x (($width - $height) - 1) ;
+	my $start_body_connector = $connection;
+	$start_body_connector .= $body_2 x (($width - $height) - 1) if $width > $height ;
 	
 	if($width > $height)
 		{
@@ -1050,7 +1053,7 @@ sub draw_downright
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{downright}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'down-right'}} ;
 
 my ($width, $height) = ( $end_x + 1,  $end_y + 1) ;
 
@@ -1182,15 +1185,12 @@ sub draw_rightdown
 {
 my ($glyphs, $end_x, $end_y) = @_ ;
 
-my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{rightdown}} ;
+my ($start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection) = @{$glyphs->{'right-down'}} ;
 
 my ($width, $height) = ( $end_x + 1,  $end_y + 1) ;
 
 my ($position_x, $position_y) = (0, 0) ;
 my @stripes ;
-
-#~ require Enbugger ;
-#~ Enbugger->stop ;
 
 if($end_x >= $end_y) # enought horizontal length to have a proper diagonal down
 	{
@@ -1350,11 +1350,14 @@ my ($self, $name) = @_ ;
 
 if($name eq 'start')
 	{
-	return( {X => 0, Y => 0, NAME => 'start'} ) ;
+	return( {X => 0, Y => 0, NAME => 'start', CHAR => $self->{GLYPHS}{$self->{DIRECTION}}[0]} ) if exists $self->{GLYPHS} ;
+	return( {X => 0, Y => 0, NAME => 'start', CHAR => '?'} ) ;
+
 	}
 elsif($name eq 'end')
 	{
-	return( {X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end'} ) ;
+	return( {X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end', CHAR => $self->{GLYPHS}{$self->{DIRECTION}}[4]} ) if exists $self->{GLYPHS} ;
+	return( {X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end', CHAR => '?'} ) ;
 	}
 else
 	{
@@ -1457,6 +1460,24 @@ else
 
 	return(0, 0, $self->{WIDTH}, $self->{HEIGHT}, 'end') ;
 	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_all_points
+{
+my ($self) = @_ ;
+
+$self->get_connector_points() ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_section_direction
+{
+my ($self, $section_index) = @_ ;
+
+return $self->{DIRECTION} ;
 }
 
 #-----------------------------------------------------------------------------

@@ -42,7 +42,6 @@ lib/App/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
-lib/App/Asciio/stripes/rhombus.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/stripes/single_stripe.pm
 lib/App/Asciio/stripes/exec_box.pm
@@ -94,6 +93,7 @@ setup/actions/unsorted.pl
 setup/actions/presentation.pl
 
 setup/actions/context_menu_multi_wirl.pl
+setup/actions/context_menu_angled_arrow.pl
 setup/actions/context_menu_box.pl
 setup/actions/context_menu_rulers.pl
 

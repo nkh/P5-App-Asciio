@@ -42,6 +42,7 @@ for my $connection (@{$connections})
 	if
 		(
 		ref $connection->{CONNECTED} eq 'App::Asciio::stripes::section_wirl_arrow'
+		|| ref $connection->{CONNECTED} eq 'App::Asciio::stripes::angled_arrow'
 		&& $connection->{CONNECTED}->is_autoconnect_enabled()
 		&& $connection->{CONNECTEE}->is_autoconnect_enabled()
 		)
