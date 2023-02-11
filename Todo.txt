@@ -19,7 +19,7 @@ display
 	
 	interface to ditaa|svgbob/aasvg/goat
 	
-	use Unicode stencil
+	use Unicode stencils?
 	
 	support other languages
 

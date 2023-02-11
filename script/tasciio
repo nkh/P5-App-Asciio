@@ -43,6 +43,36 @@ $asciio->run_actions_by_name(['Open', $title]) if defined $title ;
 # was saved by a different asciio object (GUI/TUI), the attributes in
 # the serialized object will not fit, run setup after 'open'
 $asciio->setup($setup_paths) ;
+
+# use Data::TreeDumper ;
+# use File::Slurp qw(append_file) ;
+# sub dump_shortcuts
+# {
+# my($container, $depth) = @_ ;
+# if('HASH' eq ref $container)
+# 	{
+# 	for my $key (sort keys %{$container})
+# 		{
+# 		if('ARRAY' eq ref $container->{$key})
+# 			{
+# 			append_file 'tasciio_shortcuts', (("\t" x $depth) . "$key\t\t\t\t$container->{$key}[5]\n") ;
+# 			}
+# 		else
+# 			{
+# 			append_file 'tasciio_shortcuts', "shortcut: $key\n" ;
+# 			dump_shortcuts($container->{$key}, $depth + 1) ;
+# 			}
+# 		}
+# 	}
+# else
+# 	{
+# 	append_file 'tasciio_shortcuts', "$container\n" ;
+# 	}
+# }
+
+# dump_shortcuts($asciio->{ACTIONS}, 0) ;
+# exit ;
+
 $asciio->set_title($title) if defined $title ;
 
 $asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = $_[0] ; } ;
@@ -58,6 +88,7 @@ use Term::ReadKey;
 use Term::TermKey qw(FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
  
 my $tk = Term::TermKey->new(\*STDIN);
+$asciio->{TK} = $tk ;
  
 # ensure perl and libtermkey agree on Unicode handling
 binmode( STDOUT, ":encoding(UTF-8)" ) if $tk->get_flags & FLAG_UTF8; 

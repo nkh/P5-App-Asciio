@@ -48,7 +48,7 @@ my ($self, $message) = @_ ;
 print "\e[2J\e[H\e[?25h" ;
 
 print "$message\n" ;
-prompt 'press key to continue ...' ;
+$a = prompt -1, 'press key to continue ...' ;
 $self->update_display() ;
 }
 

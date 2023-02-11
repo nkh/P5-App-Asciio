@@ -263,6 +263,18 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub mouse_move
+{
+my ($self, $offsets) = @_;
+my ($x_offset, $y_offset) = @{$offsets} ;
+
+$self->{MOUSE_X} += $x_offset ;
+$self->{MOUSE_Y} += $y_offset ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
 sub mouse_left_click
 {
 my ($self ) = @_;

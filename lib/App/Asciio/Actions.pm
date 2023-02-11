@@ -83,6 +83,7 @@ for my $action (@actions)
 		$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-20s\e[m", "$modifiers-$action_key") if $self->{ACTION_VERBOSE} ; 
 		
 		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+		$self->update_display() ;
 		}
 	}
 	

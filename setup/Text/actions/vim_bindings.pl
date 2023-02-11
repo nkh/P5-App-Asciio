@@ -1,14 +1,6 @@
 
 #----------------------------------------------------------------------------------------------
 
-# vim like shortcuts
-
-sub load_test_file
-{
-my ($self, $file_name) = @_ ;
-my $title = $self->load_file($file_name) ;
-}
-
 register_action_handlers
 	(
 	# general
@@ -55,7 +47,7 @@ register_action_handlers
 	'Mouse shift-left-click'                                 => [ '000-Ö' ],
 	'Mouse ctl-left-click'                                   => [ 'C00-ö' ],
 	'Mouse alt-left-click'                                   => [ '0A0-ö' ],
-	'Mouse on element id'                                    => [ '000-?' ],
+	'Mouse on element id'                                    => [ '000-000' ],
 	
 	'Mouse drag left'                                        => [ '0A0-A-Left'  ],
 	'Mouse drag right'                                       => [ '0A0-A-Right' ],
@@ -72,12 +64,17 @@ register_action_handlers
 	'Mouse drag up 3'                                        => [ '000-K', \&App::Asciio::Actions::Mouse::mouse_drag_up    ],
 	'Mouse drag down 3'                                      => [ '000-J', \&App::Asciio::Actions::Mouse::mouse_drag_down  ],
 	
+	'Mouse move left'                                        => [ 'C00-C-Left',  \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]  ],
+	'Mouse move right'                                       => [ 'C00-C-Right', \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]  ],
+	'Mouse move up'                                          => [ 'C00-C-Up',    \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]  ],
+	'Mouse move down'                                        => [ 'C00-C-Down',  \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]  ],
+	
 	'command group'=> 
 		{
 		SHORTCUTS => '000-:',
 		
-		'load test file'                                 => [ '000-t', \&load_test_file, 'test.asciio' ],
 		'Help'                                           => [ '000-h' ],
+		'Display manpage'                                => [ '000-m', sub { my ($self) = @_ ; system('perldoc', 'App::Asciio') ; $self->update_display() ; } ],
 		'Display keyboard mapping'                       => [ '000-k' ],
 		'Display commands'                               => [ '000-c' ],
 		'Display action files'                           => [ '000-f' ],
@@ -97,7 +94,7 @@ register_action_handlers
 		'Append multi_wirl section'                      => [ '000-s' ],
 		'Insert multi_wirl section'                      => [ '000-S' ],
 		'Change arrow direction'                         => [ '000-d' ],
-		'Flip arrow start and end'                       => [ '000-a' ],
+		'Flip arrow start and end'                       => [ '000-f' ],
 		# 'Prepend multi_wirl section'                     => [ '000-?' ],
 		# 'Remove last section from multi_wirl'            => [ '000-?' ],
 		},
@@ -121,6 +118,7 @@ register_action_handlers
 		
 		'Add arrow'                                      => [ '000-a' ],
 		'Add connector'                                  => [ '000-c' ],
+		'Add help box'                                   => [ '000-h' ],
 		'Add if'                                         => [ '000-i' ],
 		'Add process'                                    => [ '000-p' ],
 		'Add vertical ruler'                             => [ '000-r' ],

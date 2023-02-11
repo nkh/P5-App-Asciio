@@ -14,7 +14,8 @@ register_action_handlers
 	'Add exec box no border' => [ '00S-E', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/exec no border', 1]  ],
 	'Add arrow'              => [ '000-a', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/wirl_arrow', 0]            ],
 	'Add angled arrow'       => [ '00S-A', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/angled_arrow', 0]          ],
-	'Add connector   '       => [ '000-c', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/connector', 0]             ],
+	'Add connector'          => [ '000-c', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/connector', 0]             ],
+	'Add help box'           => [ 'C00-h', \&App::Asciio::Actions::Elements::add_help_box,                                             ],
 	) ;
 	
 #----------------------------------------------------------------------------------------------
