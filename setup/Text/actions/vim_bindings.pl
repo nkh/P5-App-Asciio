@@ -17,19 +17,19 @@ register_action_handlers
 	'Change elements background color'                       => [ '000-C' ],
 	
 	# selection
-	'Select all elements'                                    => [ 'C00-C-s' ],
-	'Deselect all elements'                                  => [ 'C00-C-l' ],
-	'Select connected elements'                              => [ 'C00-C-w' ],
+	'Select all elements'                                    => [ '000-V' ],
+	'Deselect all elements'                                  => [ '000-Escape' ],
+	'Select connected elements'                              => [ '000-v' ],
 	'Select next element'                                    => [ '000-n' ],
 	'Select previous element'                                => [ '000-N' ],
 	'Select next element move mouse'                         => [ '000-Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
 	'Select previous element move mouse'                     => [ '00S-S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
 	
 	# sizing
-	'Resize element narrower'                                => [ '000-1' ],
-	'Resize element taller'                                  => [ '000-2' ],
-	'Resize element shorter'                                 => [ '000-3' ],
-	'Resize element wider'                                   => [ '000-4' ],
+	# 'Make element narrower'                                  => [ '000-1' ],
+	# 'Make element taller'                                    => [ '000-2' ],
+	# 'Make element shorter'                                   => [ '000-3' ],
+	# 'Make element wider'                                     => [ '000-4' ],
 	'Shrink box'                                             => [ '000-s' ],
 	
 	# movement
@@ -69,7 +69,7 @@ register_action_handlers
 	'Mouse move up'                                          => [ 'C00-C-Up',    \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]  ],
 	'Mouse move down'                                        => [ 'C00-C-Down',  \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]  ],
 	
-	'command group'=> 
+	'command mode'=> 
 		{
 		SHORTCUTS => '000-:',
 		
@@ -87,7 +87,7 @@ register_action_handlers
 		'Quit no save'                                   => [ '000-Q' ],
 		},
 	
-	'arrow group' => 
+	'arrow commands' => 
 		{
 		SHORTCUTS => '000-a',
 		
@@ -96,15 +96,12 @@ register_action_handlers
 		'Change arrow direction'                         => [ '000-d' ],
 		'Flip arrow start and end'                       => [ '000-f' ],
 		# 'Prepend multi_wirl section'                     => [ '000-?' ],
-		# 'Remove last section from multi_wirl'            => [ '000-?' ],
+		'Remove last section from multi_wirl'            => [ '000-A-s' ],
 		},
 	
-	'Add objects group' => 
+	'Insert commands' => 
 		{
 		SHORTCUTS => '000-i',
-		
-		'Add group object type 1'                        => [ '000-g' ],
-		'Add group object type 2'                        => [ '000-g' ],
 		
 		'Import from primary to box'                     => [ '000-y' ],
 		'Import from clipboard to box'                   => [ '000-Y' ],
@@ -123,7 +120,6 @@ register_action_handlers
 		'Add process'                                    => [ '000-p' ],
 		'Add vertical ruler'                             => [ '000-r' ],
 		'Add horizontal ruler'                           => [ '000-R' ],
-		# 'Delete rulers'                                  => [ '000-r' ],
 		'Add text'                                       => [ '000-t' ],
 		'Add angled arrow'                               => [ '000-A' ],
 		'Add shrink box'                                 => [ '000-B' ],
@@ -131,11 +127,15 @@ register_action_handlers
 		'Add exec box no border'                         => [ '000-E' ],
 		},
 	
-	'grouping group' => 
+	'Delete rulers'                                          => [ '000-A-r' ], 
+	
+	'grouping commands' => 
 		{
 		SHORTCUTS => '000-g',
 		
 		'Group selected elements'                        => [ '000-g' ],
+		'Add group object type 1'                        => [ '000-1' ],
+		'Add group object type 2'                        => [ '000-2' ],
 		'Ungroup selected elements'                      => [ '000-u' ],
 		'Ungroup group-object'                           => [ '000-u' ],
 		'Move selected elements to the back'             => [ '000-b' ],
@@ -143,7 +143,16 @@ register_action_handlers
 		'Temporary move selected element to the front'   => [ '000-F' ],
 		},
 	
-	'display group' => 
+	'stripes-group commands' => 
+		{
+		SHORTCUTS => '000-A-g',
+		
+		'create stripes group'                           => ['000-g'],
+		'create one stripe group'                        => ['000-1'],
+		'ungroup stripes group'                          => ['000-u'],
+		},
+	
+	'display commands' => 
 		{
 		SHORTCUTS => '000-z',
 		
@@ -154,7 +163,7 @@ register_action_handlers
 		'Flip transparent element background'            => [ '000-t' ],
 		},
 	
-	'align group' => 
+	'align commands' => 
 		{
 		SHORTCUTS => '000-A',
 		
@@ -166,7 +175,7 @@ register_action_handlers
 		'Align top'                                      => [ '000-t' ],
 		},
 	
-	'slides group' => 
+	'slides commands' => 
 		{
 		SHORTCUTS => '000-S',
 		
@@ -176,7 +185,7 @@ register_action_handlers
 		'first slide'                                    => [ '000-g' ],
 		},
 	
-	'debug group' => 
+	'debug commands' => 
 		{
 		SHORTCUTS => '000-D',
 		

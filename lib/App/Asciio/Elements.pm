@@ -201,22 +201,6 @@ my ($self, $x_offset, $y_offset, @elements) = @_ ;
 
 my %selected_elements = map { $_ => 1} @elements ;
 
-if($self->{MOUSE_TOGGLE})
-	{
-	$self->{MOUSE_X} += $x_offset ;
-	$self->{MOUSE_Y} += $y_offset ;
-	
-	$self->{SELECTION_RECTANGLE}{START_X} = $self->{MOUSE_X} ;
-	$self->{SELECTION_RECTANGLE}{END_X} = $self->{MOUSE_X} ;
-	$self->{SELECTION_RECTANGLE}{START_Y} = $self->{MOUSE_Y} ;
-	$self->{SELECTION_RECTANGLE}{END_Y} = $self->{MOUSE_Y} ;
-	
-	$self->{PREVIOUS_Y} = $self->{MOUSE_Y} ;
-	$self->{PREVIOUS_X} = $self->{MOUSE_X} ;
-	
-	$self->{DRAGGING} = '' ;
-	}
-
 for my $element (@elements)
 	{
 	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;

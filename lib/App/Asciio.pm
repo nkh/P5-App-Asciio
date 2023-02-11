@@ -1,8 +1,6 @@
 
 package App::Asciio ;
 
-$|++ ;
-
 use strict;
 use warnings;
 
@@ -27,128 +25,81 @@ our $VERSION = '1.7' ;
 
 #-----------------------------------------------------------------------------
 
+=encoding utf8
+
 =head1 NAME 
 
-App::Asciio - Plain ASCII diagram
+     ___              _ _ ____
+    /   |  __________(_|_) __ \
+   / /| | / ___/ ___/ / / / / /
+  / ___ |(__  ) /__/ / / /_/ /
+ /_/  |_/____/\___/_/_/\____/
 
-                          |     |             |       |
-                  |       |     |      |      |       |
-                  |       |     |      |      |       |
-                  v       |     v      |      v       |
-                          v            v              v
-             _____                           _____      
-            /\  _  \                        /\  __ \    
-            \ \ \_\ \    ___     ___   _   _\ \ \ \ \   
-  ----->     \ \  __ \  /  __\  / ___\/\ \/\ \ \ \ \ \  ----->
-              \ \ \ \ \/\__,  \/\ \___' \ \ \ \ \ \_\ \ 
-               \ \_\ \_\/\____/\ \____/\ \_\ \_\ \_____\
-                \/_/\/_/\/___/  \/___/  \/_/\/_/\/_____/
-        
-                  |             |             |     |
-                  |     |       |     |       |     | 
-                  v     |       |     |       |     |
-                    |   v       |     v       |     |
-                    v           |             |     v
-                                v             v
-        (\_/)
-        (O.o) ASCII world domination is near!
-        (> <) 
 
 =head1 SYNOPSIS
 
-$> perl asciio.pl
+    $> asciio
+
 
 =head1 DESCRIPTION
 
-This application allows you to draw ASCII diagrams in a simple graphical interface.
+This application allows you to draw ASCII diagrams in a TUI or GUI.
 
-The ASCII graphs can be saved as ASCII or in a format that allows you to modify them later.
+The diagrams can be saved as ASCII or in a binary format that allows you to open and modify them later.
+
+The TUI has vim-like shortcuts which are different from the GUI. Both can be modified.
 
 
 =head1 DOCUMENTATION
 
-=head2 Asciio user interface
+=head2 Keyboard Shortcuts
+
+    Shortcuts and commands are in the TUI/GUI COMMANDS sections below.
+
+=head2 User Interface
+
+      .-----------------------------------------------------------------.
+      | ............................................................... |
+      | ..............-------------..------------..--------------...... |
+      | .............| stencils  > || asciio   > || box          |..... |
+      | .............| Rulers    > || computer > || text         |..... |
+      | .............| File      > || people   > || wirl_arrow   |..... |
+ grid-------->.......'-------------'| divers   > || axis         |..... |
+      | ......................^.....'------------'| boxes      > |..... |
+      | ......................|...................| rulers     > |..... |
+      | ......................|...................'--------------'..... |
+      | ......................|........................................ |
+      '-----------------------|-----------------------------------------'
+                              |
+               context menu access some commands
 
 
-            .-----------------------------------------------------------------.
-            |                             Asciio                              |
-            |-----------------------------------------------------------------|
-            | ............................................................... |
-            | ..............-------------..------------..--------------...... |
-            | .............| stencils  > || asciio   > || box          |..... |
-            | .............| Rulers    > || computer > || text         |..... |
-            | .............| File      > || people   > || wirl_arrow   |..... |
-     grid---------->.......'-------------'| divers   > || axis         |..... |
-            | ......................^.....'------------'| boxes      > |..... |
-            | ......................|...................| rulers     > |..... |
-            | ......................|...................'--------------'..... |
-            | ......................|........................................ |
-            | ......................|........................................ |
-            | ......................|........................................ |
-            | ......................|........................................ |
-            '-----------------------|-----------------------------------------'
-                                    |
-                                    |
-                              context menu
+=head2 Exporting to ASCII
 
+You can export to a file in ASCII format but using the B<.txt> extension.
 
-Press 'F1' for help; 'F2', 'F3', 'F4' for mappings.
+You can also export to the clipboard.
 
-=head2 Context menu
+=head1 Elements
 
-The context menu allows to access to B<Asciio> commands.
+=head3 wirl-arrow
 
-=head2 Keyboard shortcuts
+Rotating the end clockwise or counter-clockwise changes its direction.
 
-All the keyboad commands definitions can be found under I<asciio/setup/actions/>. Among the commands
-implemented are:
+            ^
+            |              ^  
+            |     ------.   \            
+            |           |    \              
+            '-------    |     \         
+                        |      \        
+  ---------->           |       '-------
+                        |   
+                        |   
+                        v  
+                  
+=head3 multi section wirl-arrow
 
-=over 2
-
-=item * select all
-
-=item * delete
-
-=item * undo
-
-=item * group/ungroup
-
-=item * open / save
-
-=item * local clipboard operations
-
-=item * send to front/back
-
-=item * insert arrow, boxes, text
-
-=item * ...
-
-=back
-
-=head2 Elements
-
-=head3 wirl arrow
-
-An arrow that tries to do what you want. Rotating the end clockwise or counter-clockwise changes its direction
-
-               ^
-               |
-               |    --------.
-               |            |
-               '-------     |
-                            |
- O-------------X     /      |
-                    /       |
-                   /        |
-                  /         v
-                 /
-                /
-               v
-	       
-
-=head3 multi section wirl arrow
-
-A set of whirl arrows connected to each other
+A set of whirl arrows connected to each other.
 
  .----------.                       .
  |          |                \     / \
@@ -160,8 +111,7 @@ A set of whirl arrows connected to each other
     '--------'               '-------'
     
 
-
-=head3 angled arrow and axis
+=head3 angled-arrow and axis
 
    -------.         .-------
            \       /
@@ -185,22 +135,20 @@ A set of whirl arrows connected to each other
      v    |   v
           v
 
-
 =head3 box and text 
 
-                 .----------.
-                 |  title   |
-  .----------.   |----------|   ************
-  |          |   | body 1   |   *          *
-  '----------'   | body 2   |   ************
-                 '----------'
-                                             anything in a box
-                                 (\_/)               |
-         edit_me                 (O.o)  <------------'
-                                 (> <)
+                .----------.
+                |  title   |
+ .----------.   |----------|   ************
+ |          |   | body 1   |   *          *
+ '----------'   | body 2   |   ************
+                '----------'
+                                        any text in a box
+                            (\_/)               |
+        edit_me             (O.o)  <------------'
+                            (> <)
 
-
-=head3 "if" box and "process" box
+=head3 if-box and process-box
 
                         ____________
    .--------------.     \           \
@@ -210,12 +158,7 @@ A set of whirl arrows connected to each other
    '--------------'     /___________/    /_________/
    
 
-=head3 user stencils
-
-Take a look at I<setup/stencils/computer> for a stencil example. Stencils listed in I<setup/setup.ini> will
-be loaded when B<Asciio> starts.
-
-=head3 user element type
+=head3 user elements and exec-boxes 
 
 For simple elements, put your design in a box. That should cover 95% of anyone's needs.
 
@@ -224,135 +167,414 @@ in a box (with or without frame), in the example below the table is generated, i
 have text in a file you can use 'cat'' as the command. 
 
 
-   +------------+------------+------------+------------+
-   | input_size ‖ algorithmA | algorithmB | algorithmC |
-   +============+============+============+============+
-   |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |---------------.
-   +------------+------------+------------+------------+               v
-   |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |       .--------------.
-   +------------+------------+------------+------------+       |              |
-   |    250     ‖     -      |  80 min.   | 2.27 sec.  |-----. |              |
-   +------------+------------+------------+------------+     | |              |
-   |    1000    ‖     -      |     -      | 8.77 sec.  |     | '--------------'
-   +------------+------------+------------+------------+     |
-                                                             |
-                                                             v
-                                                     .--------------.
-                                                     |              |
-                                                     |              |
-                                                     |              |
-                                                     '--------------'
-
-
-=head2 Exporting to ASCII
-
-You can export to a file in ASCII format but using the B<.txt> extension.
-
-Exporting to the clipboard is done with B<ctl + e>.
+  +------------+------------+------------+------------+
+  | input_size ‖ algorithmA | algorithmB | algorithmC |
+  +============+============+============+============+
+  |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |---------------.
+  +------------+------------+------------+------------+               v
+  |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |       .--------------.
+  +------------+------------+------------+------------+       |              |
+  |    250     ‖     -      |  80 min.   | 2.27 sec.  |-----. |              |
+  +------------+------------+------------+------------+     | |              |
+  |    1000    ‖     -      |     -      | 8.77 sec.  |     | '--------------'
+  +------------+------------+------------+------------+     |
+                                                            |
+                                                            v
+                                                    .--------------.
+                                                    |              |
+                                                    |              |
+                                                    |              |
+                                                    '--------------'
 
 =head1 EXAMPLES
 
 
-           User code ^            ^ OS code
-                      \          /
-                       \        /
-                        \      /
-           User code <----Mode----->OS code
-                        /      \
-                       /        \
-                      /          \
-          User code  v            v OS code
+        User code ^            ^ OS code
+                   \          /
+                    \        /
+                     \      /
+        User code <----Mode----->OS code
+                     /      \
+                    /        \
+                   /          \
+       User code  v            v OS code
 
 
-             .---.  .---. .---.  .---.    .---.  .---.
-    OS API   '---'  '---' '---'  '---'    '---'  '---'
-               |      |     |      |        |      |
-               v      v     |      v        |      v
-             .------------. | .-----------. |  .-----.
-             | Filesystem | | | Scheduler | |  | MMU |
-             '------------' | '-----------' |  '-----'
-                    |       |      |        |
-                    v       |      |        v
-                 .----.     |      |    .---------.
-                 | IO |<----'      |    | Network |
-                 '----'            |    '---------'
-                    |              |         |
-                    v              v         v
-             .---------------------------------------.
-             |                  HAL                  |
-             '---------------------------------------'
+          .---.  .---. .---.  .---.    .---.  .---.
+ OS API   '---'  '---' '---'  '---'    '---'  '---'
+            |      |     |      |        |      |
+            v      v     |      v        |      v
+          .------------. | .-----------. |  .-----.
+          | Filesystem | | | Scheduler | |  | MMU |
+          '------------' | '-----------' |  '-----'
+                 |       |      |        |
+                 v       |      |        v
+              .----.     |      |    .---------.
+              | IO |<----'      |    | Network |
+              '----'            |    '---------'
+                 |              |         |
+                 v              v         v
+          .---------------------------------------.
+          |                  HAL                  |
+          '---------------------------------------'
 
 
-
-                 
-                 .---------.  .---------.
-                 | State 1 |  | State 2 |
-                 '---------'  '---------'
-                    ^   \         ^  \
-                   /     \       /    \
-                  /       \     /      \
-                 /         \   /        \
-                /           \ /          \
-               /             v            v
-            ******        ******        ******
-            * T1 *        * T2 *        * T3 *
-            ******        ******        ******
-               ^             ^             /
-                \             \           /
-                 \             \         /
-                  \             \       / stimuli
-                   \             \     /
-                    \             \   v
-                     \         .---------.
-                      '--------| State 3 |
-                               '---------'
-
-
-                                        .--Base::Class::Derived_A
-                                       /
-                                      .----Base::Class::Derived_B    
-      Something--------.             /         \
-                        \           /           '---Base::Class::Derived::More
-      Something::else    \         /             \
-            \             \       /               '-Base::Class::Derived::Deeper
-             \             \     /
-              \             \   .-----------Base::Class::Derived_C 
-               \             \ /
-                '-------Base::Class
-                       /   \ \ \
-                      '     \ \ \
-                      |      \ \ '---The::Latest
-                     /|       \ \      \
- With::Some::fantasy' '        \ \      '----The::Latest::Greatest
-                     /|         \ \
-         More::Stuff' '          \ '-I::Am::Running::Out::Of::Ideas
-                     /|           \
-         More::Stuff' '            \
-                     /              '---Last::One
-         More::Stuff'
+                                   .--Base::Class::Derived_A
+                                  /
+                                 .----Base::Class::Derived_B    
+ Something--------.             /    \
+                   \           /      '---Base::Class::Derived::More
+ Something::else    \         /        \
+       \             \       /          '-Base::Class::Derived::Deeper
+        \             \     /
+         \             \   .-----------Base::Class::Derived_C 
+          \             \ /
+           '-------Base::Class
+                  /   \ \ \
+                 '     \ \ \
+                 |      \ \ '---The::Latest
+                /|       \ \      \
+   Some::things' '        \ \      '----The::Latest::Greatest
+                /|         \ \
+    More::Stuff' '          \ '-I::Am::Running::Out::Of::Ideas
+                /|           \
+    More::Stuff' '            \
+                /              '---Last::One
+    More::Stuff'
 
 
    ____[]
   | ___ |
   ||   ||  device
   ||___||  loads
-  | ooo |------------------------------------------------------------.
-  | ooo |    |                          |                            |
-  | ooo |    |                          |                            |
-  '_____'    |                          |                            |
-             |                          |                            |
-             v                          v                            v
-   .-------------------.  .---------------------------.    .-------------------.
-   | Loadable module C |  |     Loadable module A     |    | Loadable module B |
-   '-------------------'  |---------------------------|    |   (instrumented)  |
-             |            |         .-----.           |    '-------------------'
-             '--------------------->| A.o |           |              |
-                 calls    |         '-----'           |              |
-                          |    .------------------.   |              |
-                          |    | A.instrumented.o |<-----------------'
-                          |    '------------------'   |    calls
-                          '---------------------------'
+  | ooo |----.-------------------------.--------------------------.
+  | ooo |    |                         |                          |
+  '_____'    |                         |                          |
+             v                         v                          v
+   .-------------------.  .--------------------------.  .-------------------.
+   | Loadable module C |  |    Loadable module A     |  | Loadable module B |
+   '-------------------'  |--------------------------|  |   (instrumented)  |
+             |            |        .-----.           |  '-------------------'
+             '-------------------->| A.o |           |            |
+                 calls    |        '-----'           |            |
+                          |   .------------------.   |            |
+                          |   | A.instrumented.o |<---------------'
+                          |   '------------------'   |    calls
+                          '--------------------------'
 
+
+=head1 TUI COMMANDS
+
+ «Enter»            Edit selected element
+
+ «d»                Delete selected element(s)
+
+ «u»                Undo
+
+ «C»-r              Redo
+
+ «.»                Quick link
+
+ «r»                Add vertical ruler
+
+ «A-r»              Add horizontal ruler
+
+ «R»                Remove rulers
+
+ Moving elements:
+
+=over 4
+
+ «h»                Move selected elements left
+
+ «j»                Move selected elements down
+
+ «k»                Move selected elements up
+
+ «l»                Move selected elements right
+
+=back
+
+ Selecting elements:
+
+=over 4
+
+ «n»                Select next element
+
+ «N»                Select previous element
+
+ «Tab»              Select next element move mouse
+
+ «V»                Select all elements
+
+ «v»                Select connected elements
+
+ «Escape»              Deselect all elements
+
+=back
+
+ Resizing elements:
+
+=over 4
+
+ «1»                Make element narrower
+
+ «2»                Make element taller
+
+ «3»                Make element shorter
+
+ «4»                Make element wider
+
+ «s»                Shrink box
+
+=back
+
+ Clipboard:
+
+=over 4
+
+ «Y»                Export to clipboard & primary as ascii
+
+ «y»                Copy to clipboard
+
+ «p»                Insert from clipboard
+
+=back
+
+ «:» command mode:
+
+=over 4
+
+ «q»                Quit
+
+ «Q»                Quit no save
+
+ «w»                Save
+
+ «W»                SaveAs
+
+ «e»                Open
+
+ «r»                Insert
+
+ «m»                Display manpage
+
+ «h»                Help
+
+ «c»                Display commands
+
+ «f»                Display action files
+
+ «k»                Display keyboard mapping
+
+=back
+
+ «i» Insert commands:
+
+=over 4
+
+ «A»                Add angled arrow
+
+ «a»                Add arrow
+
+ «B»                Add shrink box
+
+ «b»                Add box
+
+ «c»                Add connector
+
+ «E»                Add exec-box no border
+
+ «e»                Add exec-box
+
+ «f»                Insert from file
+
+ «g»                Add group object type 1
+
+ «h»                Add help box
+
+ «i»                Add if-box
+
+ «R»                Add horizontal ruler
+
+ «x»                External command output in a box
+
+ «X»                External command output in a box no frame
+
+ «Y»                Import from clipboard to box
+
+ «y»                Import from primary to box
+
+ «p»                Add process
+
+ «r»                Add vertical ruler
+
+ «t»                Add text
+
+=back
+
+ «a» arrow commands:
+
+=over 4
+
+ «S»                Insert multi-wirl section
+
+ «f»                Flip arrow start and end
+
+ «d»                Change arrow direction
+
+ «s»                Append multi-wirl sectioni
+
+ «A-s»              Remove last section from multi-wirl
+
+=back
+
+
+ «A» align commands:
+
+=over 4
+
+ «b»                Align bottom
+
+ «c»                Align center
+
+ «l»                Align left
+
+ «m»                Align middle
+
+ «r»                Align right
+
+ «t»                Align top
+
+=back
+
+ «g» grouping commands:
+
+=over 4
+
+ «g»                Group selected elements
+
+ «u»                Ungroup selected elements
+
+ «F»                Temporary move selected element to the front
+
+ «f»                Move selected elements to the front
+
+ «b»                Move selected elements to the back
+
+=back
+
+ «A-g» stripes-group commands:
+
+=over 4
+
+ «1»                Create one stripe group
+
+ «g»                Create stripes group
+
+ «u»                Ungroup stripes group
+
+=back
+
+ «z» display commands:
+
+=over 4
+
+ «C»                Change grid color
+
+ «c»                Change Asciio background color
+
+ «g»                Flip grid display
+
+ «s»                Flip color scheme
+
+ «t»                Flip transparent element background
+
+=back
+
+ «D» debug commands:
+
+=over 4
+
+ «E»                Dump selected elements
+
+ «e»                Dump all elements
+
+ «S»                Display undo stack statistics
+
+ «o»                Test
+
+ «s»                Dump self
+
+ «t»                Display numbered objects
+
+=back
+
+ «S» slides commands:
+
+=over 4
+
+ «N»                Previous slide
+
+ «g»                First slide
+
+ «l»                Load slides
+
+ «n»                Next slide
+
+=back
+
+Mouse emulation:
+
+=over 4
+
+ «'»                Toggle» mouse
+
+ «Ö»                Mouse shift-left-click
+
+ «ö»                Mouse left-click
+
+ «ä»                Mouse right-click
+
+ «H»                Mouse drag left 3
+
+ «J»                Mouse drag down 3
+
+ «K»                Mouse drag up 3
+
+ «L»                Mouse drag right 3
+
+ «Down»             Mouse drag down
+
+ «Left»             Mouse drag left
+
+ «Right»            Mouse drag right
+
+ «Up»               Mouse drag up
+
+ «A--»              Mouse drag down 2
+
+ «A-ä»              Mouse drag right 2
+
+ «A-å»              Mouse drag up 2
+
+ «A-ö»              Mouse drag left 2
+
+
+ «A-Down»           Mouse drag down
+
+ «A-Left»           Mouse drag left
+
+ «A-Right»          Mouse drag right
+
+ «A-Up»             Mouse drag up
+
+
+ «ö»                Mouse alt-left-click
+
+ «ö»                Mouse ctl-left-click
+
+=back
 
 =cut
 

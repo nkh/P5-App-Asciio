@@ -34,7 +34,7 @@ my ($self, $data, $title, @dumper_setup) = @_ ;
 print "\e[2J\e[H\e[?25h" ;
 
 print DumpTree $data, @dumper_setup ;
-prompt 'press key to continue ...' ;
+$a = prompt -1, 'press key to continue ...' ;
 $self->update_display() ;
 }
 
