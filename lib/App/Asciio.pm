@@ -293,6 +293,15 @@ have text in a file you can use 'cat'' as the command.
 
  «l»                Move selected elements right
 
+
+ «Left»             Move selected elements left
+
+ «Down»             Move selected elements down
+
+ «Up»               Move selected elements up
+
+ «Right»            Move selected elements right
+
 =back
 
  Selecting elements:
@@ -981,7 +990,7 @@ my $modifiers = $event->{MODIFIERS} ;
 my $key = $event->{KEY_NAME} ;
 
 $self->{EVENT} = $event ;
-$self->run_actions("$modifiers-$key") ;
+$self->run_actions("${modifiers}$key") ;
 
 return 0 ;
 }

@@ -606,7 +606,7 @@ my $modifiers = $key_modifiers =~ /control-mask/ ? 'C' : 0 ;
 $modifiers .= $key_modifiers =~ /mod1-mask/ ? 'A' : 0 ;
 $modifiers .= $key_modifiers =~ /shift-mask/ ? 'S' : 0 ;
 
-return($modifiers) ;
+return("$modifiers-") ;
 }
 
 #-----------------------------------------------------------------------------

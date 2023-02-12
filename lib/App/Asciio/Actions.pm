@@ -31,7 +31,7 @@ for my $action (@actions)
 		($action, @arguments) = @{ $action } ;
 		}
 		
-	my ($modifiers, $action_key) = $action =~ /(...)-(.*)/ ;
+	my ($modifiers, $action_key) = $action =~ /(...-)?(.*)/ ;
 	
 	my $action = encode('utf8', $action) ;
 	
@@ -43,7 +43,7 @@ for my $action (@actions)
 			
 			$self->{ACTION_VERBOSE}->
 				(
-				sprintf "%-20s %-40s [%s]", "$modifiers-$action_key", $action_group_name, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
+				sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $action_group_name, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
 				) if $self->{ACTION_VERBOSE} ;
 			
 			$self->{CURRENT_ACTIONS} = $self->{CURRENT_ACTIONS}{$action} ;
@@ -52,7 +52,7 @@ for my $action (@actions)
 			{
 			$self->{ACTION_VERBOSE}->
 				(
-				sprintf "%-20s %-40s [%s]", "$modifiers-$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN]
+				sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN]
 				) if $self->{ACTION_VERBOSE} ;
 			
 			if(defined $self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS])
@@ -80,7 +80,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-20s\e[m", "$modifiers-$action_key") if $self->{ACTION_VERBOSE} ; 
+		$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-20s\e[m", "${modifiers}$action_key") if $self->{ACTION_VERBOSE} ; 
 		
 		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 		$self->update_display() ;

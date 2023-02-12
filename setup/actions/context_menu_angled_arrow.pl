@@ -5,7 +5,7 @@ use App::Asciio::Actions::Multiwirl ;
 
 register_action_handlers
 	(
-	'Angled arrow context_menu'  => ['000-000', sub { 1 }, undef, \&angled_arrow_context_menu ],
+	'Angled arrow context_menu'  => ['angled arrow context menu', undef, undef, \&angled_arrow_context_menu ],
 	) ;
 
 #----------------------------------------------------------------------------------------------

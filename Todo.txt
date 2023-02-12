@@ -1,6 +1,7 @@
 
 text interface
-	test mouse ctl/alt/shif, left cick, drag,  ... make cursor mode correspond to mouse mode
+	mouse selection drag must reset position when mouse moves but doesn't drag
+	
 	
 	vim script
 		open file under cursor
@@ -30,6 +31,7 @@ optimization
 	screen flicker
 		print to buffer, handling \J \H
 		cache the previous rendering
+		https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036
 	
 	Selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?

@@ -62,35 +62,6 @@ else
 	}
 
 $asciio->setup($setup_paths) ;
-
-# use Data::TreeDumper ;
-# use File::Slurp ;
-# sub dump_shortcuts
-# {
-# my($container, $depth) = @_ ;
-# if('HASH' eq ref $container)
-# 	{
-# 	for my $key (sort keys %{$container})
-# 		{
-# 		if('ARRAY' eq ref $container->{$key})
-# 			{
-# 			append_file 'asciio_shortcuts', (("\t" x $depth) . "$key\t\t\t\t$container->{$key}[5]\n") ;
-# 			}
-# 		else
-# 			{
-# 			append_file 'asciio_shortcuts', "shortcut: $key\n" ;
-# 			dump_shortcuts($container->{$key}, $depth + 1) ;
-# 			}
-# 		}
-# 	}
-# else
-# 	{
-# 	append_file 'asciio_shortcuts', "$container\n" ;
-# 	}
-# }
-
-# dump_shortcuts($asciio->{ACTIONS}, 0) ;
-
 $asciio->{ACTION_VERBOSE} = sub { print "@_\n" } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;

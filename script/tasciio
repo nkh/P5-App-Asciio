@@ -44,37 +44,7 @@ $asciio->run_actions_by_name(['Open', $title]) if defined $title ;
 # the serialized object will not fit, run setup after 'open'
 $asciio->setup($setup_paths) ;
 
-# use Data::TreeDumper ;
-# use File::Slurp qw(append_file) ;
-# sub dump_shortcuts
-# {
-# my($container, $depth) = @_ ;
-# if('HASH' eq ref $container)
-# 	{
-# 	for my $key (sort keys %{$container})
-# 		{
-# 		if('ARRAY' eq ref $container->{$key})
-# 			{
-# 			append_file 'tasciio_shortcuts', (("\t" x $depth) . "$key\t\t\t\t$container->{$key}[5]\n") ;
-# 			}
-# 		else
-# 			{
-# 			append_file 'tasciio_shortcuts', "shortcut: $key\n" ;
-# 			dump_shortcuts($container->{$key}, $depth + 1) ;
-# 			}
-# 		}
-# 	}
-# else
-# 	{
-# 	append_file 'tasciio_shortcuts', "$container\n" ;
-# 	}
-# }
-
-# dump_shortcuts($asciio->{ACTIONS}, 0) ;
-# exit ;
-
 $asciio->set_title($title) if defined $title ;
-
 $asciio->{ACTION_VERBOSE} = sub { $asciio->{LAST_ACTION} = $_[0] ; } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
@@ -118,13 +88,9 @@ while (1)
 		}
 	else
 		{
-		my $modifiers  = $key->modifier_ctrl  ? 'C' : 0 ;
-		   $modifiers .= $key->modifier_alt   ? 'A' : 0 ;
-		   $modifiers .= $key->modifier_shift ? 'S' : 0 ;
-		
 		my $key_name = $tk->format_key($key, 0) ;
 		
-		$asciio->key_press_event($key_name, $modifiers) ;
+		$asciio->key_press_event($key_name, '') ;
 		}
 	}
 
