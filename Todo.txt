@@ -2,9 +2,11 @@
 text interface
 	mouse selection drag must reset position when mouse moves but doesn't drag
 	
-	
 	vim script
 		open file under cursor
+
+
+	clipboard function need implementation
 
 objects
 	any orientation text

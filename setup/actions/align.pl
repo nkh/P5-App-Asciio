@@ -5,9 +5,9 @@ use App::Asciio::Actions::Align ;
 
 register_action_handlers
 	(
-	'Align objects'=> 
+	'align gui commands' => 
 		{
-		SHORTCUTS => '0A0-a',
+		SHORTCUTS => '000-A',
 		
 		'Align left'   => ['000-l', \&App::Asciio::Actions::Align::align, 'left'  ],
 		'Align center' => ['000-c', \&App::Asciio::Actions::Align::align, 'center'],

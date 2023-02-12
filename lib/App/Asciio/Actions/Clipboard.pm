@@ -30,8 +30,8 @@ my $elements_and_connections =
 	
 $self->{CLIPBOARD} = Clone::clone($elements_and_connections) ;
 $self->{CACHE} = $cache ;
-} ;	
-	
+}
+
 #----------------------------------------------------------------------------------------------
 
 sub insert_from_clipboard
@@ -41,7 +41,7 @@ my ($self, $x_offset, $y_offset) = @_ ;
 if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 	{
 	$self->create_undo_snapshot() ;
-
+	
 	$self->deselect_all_elements() ;
 		
 	unless(defined $x_offset)
@@ -49,15 +49,15 @@ if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 		my $min_x = min(map {$_->{X}} @{$self->{CLIPBOARD}{ELEMENTS}}) ;
 		$x_offset = $min_x - $self->{MOUSE_X} ;
 		}
-
+	
 	unless(defined $y_offset)
 		{
 		my $min_y = min(map {$_->{Y}} @{$self->{CLIPBOARD}{ELEMENTS}}) ;
 		$y_offset = $min_y  - $self->{MOUSE_Y} ;
 		}
-
+	
 	my %new_group ;
-
+	
 	for my $element (@{$self->{CLIPBOARD}{ELEMENTS}})
 		{
 		@$element{'X', 'Y'}= ($element->{X} - $x_offset, $element->{Y} - $y_offset) ;
@@ -79,16 +79,15 @@ if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 			delete $element->{GROUP} ;
 			}
 		}
-
+	
 	my $clipboard = Clone::clone($self->{CLIPBOARD}) ;
-
+	
 	$self->add_elements_no_connection(@{$clipboard->{ELEMENTS}}) ;
 	$self->add_connections(@{$clipboard->{CONNECTIONS}}) ;
-
+	
 	$self->update_display() ;
 	}
-} ;	
-	
+}
 
 #----------------------------------------------------------------------------------------------
 

@@ -9,8 +9,10 @@ register_action_handlers
 	'Insert from clipboard'                                  => [ 'p' ],
 	'Copy to clipboard'                                      => [ 'y' ],
 	'Export to clipboard & primary as ascii'                 => [ 'Y' ],
+	'Remove rulers'                                          => [ 'A-r' ], 
 	
 	# elements
+	'Quick link'                                             => [ '.' ],
 	'Edit selected element'                                  => [ 'Enter' ],
 	'Delete selected elements'                               => [ 'd' ],
 	'Change elements foreground color'                       => [ 'c' ],
@@ -26,10 +28,10 @@ register_action_handlers
 	'Select previous element move mouse'                     => [ 'S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
 	
 	# sizing
-	# 'Make element narrower'                                  => [ '1' ],
-	# 'Make element taller'                                    => [ '2' ],
-	# 'Make element shorter'                                   => [ '3' ],
-	# 'Make element wider'                                     => [ '4' ],
+	'Make element narrower'                                  => [ '1' ],
+	'Make element taller'                                    => [ '2' ],
+	'Make element shorter'                                   => [ '3' ],
+	'Make element wider'                                     => [ '4' ],
 	'Shrink box'                                             => [ 's' ],
 	
 	# movement
@@ -45,7 +47,6 @@ register_action_handlers
 	
 	# mouse
 	'Toggle mouse'                                           => [ "'" ],
-	'Quick link'                                             => [ '.' ],
 	
 	'Mouse right-click'                                      => [ 'ä' ],
 	'Mouse left-click'                                       => [ 'ö' ],
@@ -92,24 +93,14 @@ register_action_handlers
 		'Quit no save'                                   => [ 'Q' ],
 		},
 	
-	'arrow commands' => 
-		{
-		SHORTCUTS => 'a',
-		
-		'Append multi_wirl section'                      => [ 's' ],
-		'Insert multi_wirl section'                      => [ 'S' ],
-		'Change arrow direction'                         => [ 'd' ],
-		'Flip arrow start and end'                       => [ 'f' ],
-		# 'Prepend multi_wirl section'                     => [ '?' ],
-		'Remove last section from multi_wirl'            => [ 'A-s' ],
-		},
-	
 	'Insert commands' => 
 		{
 		SHORTCUTS => 'i',
 		
-		'Import from primary to box'                     => [ 'y' ],
-		'Import from clipboard to box'                   => [ 'Y' ],
+		# below need sub that 's not gtk3 dependent
+		# 'Import from primary to box'                     => [ 'y' ],
+		# 'Import from clipboard to box'                   => [ 'Y' ],
+		
 		'External command output in a box'               => [ 'x' ],
 		'External command output in a box no frame'      => [ 'X' ],
 		'Insert from file'                               => [ 'f' ],
@@ -132,15 +123,23 @@ register_action_handlers
 		'Add exec box no border'                         => [ 'E' ],
 		},
 	
-	'Delete rulers'                                          => [ 'A-r' ], 
+	'arrow commands' => 
+		{
+		SHORTCUTS => 'a',
+		
+		'Append multi_wirl section'                      => [ 's' ],
+		'Insert multi_wirl section'                      => [ 'S' ],
+		'Change arrow direction'                         => [ 'd' ],
+		'Flip arrow start and end'                       => [ 'f' ],
+		'Prepend multi_wirl section'                     => [ 'p' ],
+		'Remove last section from multi_wirl'            => [ 'A-s' ],
+		},
 	
 	'grouping commands' => 
 		{
 		SHORTCUTS => 'g',
 		
 		'Group selected elements'                        => [ 'g' ],
-		'Add group object type 1'                        => [ '1' ],
-		'Add group object type 2'                        => [ '2' ],
 		'Ungroup selected elements'                      => [ 'u' ],
 		'Ungroup group-object'                           => [ 'u' ],
 		'Move selected elements to the back'             => [ 'b' ],
@@ -194,7 +193,7 @@ register_action_handlers
 		{
 		SHORTCUTS => 'D',
 		
-		'Display undo stack statistics'                  => [ 'S' ],
+		'Display undo stack statistics'                  => [ 'u' ],
 		'Dump self'                                      => [ 's' ] ,
 		'Dump all elements'                              => [ 'e' ],
 		'Dump selected elements'                         => [ 'E' ],

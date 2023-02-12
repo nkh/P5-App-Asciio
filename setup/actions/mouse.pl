@@ -6,7 +6,7 @@ use App::Asciio::Actions::Multiwirl ;
 
 register_action_handlers
 	(
-	'Quick link'              => ['00S-button_press-1', \&App::Asciio::Actions::Mouse::quick_link                    ] ,
+	'Quick link'              => [['00S-button_press-1', '000-.'], \&App::Asciio::Actions::Mouse::quick_link                    ] ,
 	'Insert flex point'       => ['0A0-button_press-1', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section ],
 	
 	# 'left button pressed'     => ['000-button_press-1', \&left_button_pressed                                        ] ,

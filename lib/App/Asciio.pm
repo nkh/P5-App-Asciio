@@ -342,11 +342,11 @@ have text in a file you can use 'cat'' as the command.
 
 =over 4
 
- «Y»                Export to clipboard & primary as ascii
-
  «y»                Copy to clipboard
 
  «p»                Insert from clipboard
+
+ «Y»                Export to clipboard & primary as ascii
 
 =back
 
@@ -410,9 +410,9 @@ have text in a file you can use 'cat'' as the command.
 
  «X»                External command output in a box no frame
 
- «Y»                Import from clipboard to box
+ «???»              Import from clipboard to box
 
- «y»                Import from primary to box
+ «???»              Import from primary to box
 
  «p»                Add process
 
@@ -982,6 +982,8 @@ $self->update_display();
 
 #-----------------------------------------------------------------------------
 
+my %ignored_keys = map { $_ => 1 } qw(000-Shift_L 000-Shift_R) ;
+
 sub key_press_event
 {
 my ($self, $event)= @_;
@@ -990,7 +992,8 @@ my $modifiers = $event->{MODIFIERS} ;
 my $key = $event->{KEY_NAME} ;
 
 $self->{EVENT} = $event ;
-$self->run_actions("${modifiers}$key") ;
+
+$self->run_actions("${modifiers}$key") unless exists $ignored_keys{"${modifiers}$key"} ;
 
 return 0 ;
 }

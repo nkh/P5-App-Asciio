@@ -81,6 +81,8 @@ my @setup_lib=
 qw(
 setup/setup.ini
 
+setup/actions/default_bindings.pl
+
 setup/actions/align.pl
 setup/actions/clipboard.pl
 setup/actions/debug.pl
