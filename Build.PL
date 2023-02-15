@@ -83,22 +83,6 @@ setup/setup.ini
 
 setup/actions/default_bindings.pl
 
-setup/actions/align.pl
-setup/actions/clipboard.pl
-setup/actions/debug.pl
-setup/actions/elements_manipulation.pl
-setup/actions/file.pl
-setup/actions/mouse.pl
-setup/actions/new_elements.pl
-setup/actions/colors.pl
-setup/actions/unsorted.pl
-setup/actions/presentation.pl
-
-setup/actions/context_menu_multi_wirl.pl
-setup/actions/context_menu_angled_arrow.pl
-setup/actions/context_menu_box.pl
-setup/actions/context_menu_rulers.pl
-
 setup/asciio_object/basic.pl
 setup/hooks/canonize_connections.pl
 

@@ -752,7 +752,7 @@ if($self->exists_action("${modifiers}-button_release"))
 
 if(defined $self->{MODIFIED_INDEX} && defined $self->{MODIFIED} && $self->{MODIFIED_INDEX} == $self->{MODIFIED})
 	{
-	$self->pop_undo_buffer(1) ; # no changes
+	$self-pop_undo_buffer(1) ; # no changes
 	}
 
 $self->update_display();
@@ -773,9 +773,9 @@ $self->{MODIFIED_INDEX} = $self->{MODIFIED} ;
 my $modifiers = $event->{MODIFIERS} ;
 my $button = $event->{BUTTON} ;
 
-if($self->exists_action("${modifiers}-button_press-$button"))
+if($self->exists_action("${modifiers}button_press-$button"))
 	{
-	$self->run_actions(["${modifiers}-button_press-$button", $event]) ;
+	$self->run_actions(["${modifiers}button_press-$button", $event]) ;
 	return 1 ;
 	}
 
@@ -797,11 +797,9 @@ if($event->{TYPE} eq '2button-press')
 
 if($event->{BUTTON} == 1) 
 	{
-	my $modifiers = $event->{MODIFIERS} ;
-	
 	my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
 	
-	if ($modifiers eq 'C00')
+	if ($modifiers eq 'C00-')
 		{
 		if(defined $first_element)
 			{
@@ -809,22 +807,23 @@ if($event->{BUTTON} == 1)
 			}
 		}
 	
-	if ($modifiers eq '0A0')
+	if ($modifiers eq '0A0-')
 		{
 		if(defined $first_element)
 			{
+			$self->select_elements(1, $first_element) ;
 			$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
 			}
 		}
 	
-	if ($modifiers eq '000')
+	if ($modifiers eq '000-')
 		{
 		if(defined $first_element)
 			{
 			unless($self->is_element_selected($first_element))
 				{
 				# make the element under cursor the only selected element
-				$self->select_elements(0, @{$self->{ELEMENTS}}) ;
+				$self->deselect_all_elements() ;
 				$self->select_elements(1, $first_element) ;
 				}
 			}

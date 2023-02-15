@@ -35,15 +35,10 @@ register_action_handlers
 	'Shrink box'                                             => [ 's' ],
 	
 	# movement
-	'Move selected elements left'                            => ['Left'],
-	'Move selected elements right'                           => ['Right'],
-	'Move selected elements up'                              => ['Up'],
-	'Move selected elements down'                            => ['Down'],
-	
-	'Move selected elements left 2'                          => ['h', \&App::Asciio::Actions::ElementsManipulation::move_selection_left],
-	'Move selected elements right 2'                         => ['l', \&App::Asciio::Actions::ElementsManipulation::move_selection_right],
-	'Move selected elements up 2'                            => ['k', \&App::Asciio::Actions::ElementsManipulation::move_selection_up],
-	'Move selected elements down 2'                          => ['j', \&App::Asciio::Actions::ElementsManipulation::move_selection_down],
+	'Move selected elements left'                            => [['h', 'Left']],
+	'Move selected elements right'                           => [['l', 'Right']],
+	'Move selected elements up'                              => [['k', 'Up']],
+	'Move selected elements down'                            => [['j', 'Down']],
 	
 	# mouse
 	'Toggle mouse'                                           => [ "'" ],
@@ -55,20 +50,10 @@ register_action_handlers
 	'Mouse alt-left-click'                                   => [ 'ö' ],
 	'Mouse on element id'                                    => [ '000' ],
 	
-	'Mouse drag left'                                        => [ 'A-Left'  ],
-	'Mouse drag right'                                       => [ 'A-Right' ],
-	'Mouse drag up'                                          => [ 'A-Up'    ],
-	'Mouse drag down'                                        => [ 'A-Down'  ],
-	
-	'Mouse drag left 2'                                      => [ 'A-ö', \&App::Asciio::Actions::Mouse::mouse_drag_left  ],
-	'Mouse drag right 2'                                     => [ 'A-ä', \&App::Asciio::Actions::Mouse::mouse_drag_right ],
-	'Mouse drag up 2'                                        => [ 'A-å', \&App::Asciio::Actions::Mouse::mouse_drag_up    ],
-	'Mouse drag down 2'                                      => [ 'A--', \&App::Asciio::Actions::Mouse::mouse_drag_down  ],
-	
-	'Mouse drag left 3'                                      => [ 'H', \&App::Asciio::Actions::Mouse::mouse_drag_left  ],
-	'Mouse drag right 3'                                     => [ 'L', \&App::Asciio::Actions::Mouse::mouse_drag_right ],
-	'Mouse drag up 3'                                        => [ 'K', \&App::Asciio::Actions::Mouse::mouse_drag_up    ],
-	'Mouse drag down 3'                                      => [ 'J', \&App::Asciio::Actions::Mouse::mouse_drag_down  ],
+	'Mouse drag left'                                        => [ [ 'A-ö', 'H', 'A-Left' ]  ],
+	'Mouse drag right'                                       => [ [ 'A-ä', 'L', 'A-Right'] ],
+	'Mouse drag up'                                          => [ [ 'A-å', 'K', 'A-Up'  ]  ],
+	'Mouse drag down'                                        => [ [ 'A--', 'J', 'A-Down']  ],
 	
 	'Mouse move left'                                        => [ 'C-Left',  \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]  ],
 	'Mouse move right'                                       => [ 'C-Right', \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]  ],

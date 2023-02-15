@@ -189,7 +189,7 @@ if($event->{TYPE} eq '2button-press')
 		$self->edit_element($selected_element) ;
 		$self->update_display();
 		}
-		
+	
 	return 1 ;
 	}
 
@@ -199,6 +199,7 @@ if($event->{BUTTON} == 1)
 	
 	my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
 	
+	print "mod: $modifiers'\n" ;
 	if ($modifiers eq 'C00')
 		{
 		if(defined $first_element)

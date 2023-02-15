@@ -21,8 +21,8 @@ register_action_handlers
 'Redo'                             => [['C00-y', 'C00-r'],            \&App::Asciio::Actions::Unsorted::redo    ],
 'Zoom in'                          => ['000-plus',                    \&App::Asciio::Actions::Unsorted::zoom, 1 ],
 'Zoom out'                         => ['000-minus',                   \&App::Asciio::Actions::Unsorted::zoom, -1],
-'Copy to clipboard'                => [ ['C00-c', 'C00-Insert', 'y'], \&App::Asciio::Actions::Clipboard::copy_to_clipboard    ],
-'Insert from clipboard'            => [ ['C00-v', '00S-Insert', 'p'], \&App::Asciio::Actions::Clipboard::insert_from_clipboard],
+'Copy to clipboard'                => [['C00-c', 'C00-Insert', 'y'],  \&App::Asciio::Actions::Clipboard::copy_to_clipboard    ],
+'Insert from clipboard'            => [['C00-v', '00S-Insert', 'p'],  \&App::Asciio::Actions::Clipboard::insert_from_clipboard],
 
 'Change elements foreground color' => ['000-c', \&App::Asciio::Actions::Colors::change_elements_colors, 0     ],
 'Change elements background color' => ['000-C', \&App::Asciio::Actions::Colors::change_elements_colors, 1     ],
@@ -58,7 +58,7 @@ register_action_handlers
 'Make element wider'               => ['000-4',            \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [1,  0]              ],
 
 'Quick link'                       => [['00S-button_press-1', '000-period', '.'], \&App::Asciio::Actions::Mouse::quick_link                    ] ,
-'Insert flex point'                => ['0A0-button_press-1', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section ],
+'Insert flex point'                => ['0AS-button_press-1', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section ],
 
 # 'left button pressed'              => ['000-button_press-1', \&left_button_pressed                                        ] ,
 
