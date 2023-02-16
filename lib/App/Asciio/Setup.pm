@@ -192,8 +192,7 @@ for my $action_file (@{ $action_files })
 			$shortcuts = [$shortcuts_definition]  ;
 			}
 		
-		
-		for my $shortcut (@$shortcuts)	
+		for my $shortcut (@$shortcuts)
 			{
 			if(exists $self->{ACTIONS}{$shortcut})
 				{
@@ -205,6 +204,15 @@ for my $action_file (@{ $action_files })
 			# print "\e[32maction_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
 			$self->{ACTIONS}{$shortcut} = $action_handler ;
 			
+			if ('ARRAY' eq ref $action_handler)
+				{
+				if (! defined $action_handler->[$CODE] && ! defined $action_handler->[$CONTEXT_MENU_SUB])
+					{
+					print "\e[32mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
+					delete $self->{ACTIONS}{$shortcut} ;
+					}
+				}
+			
 			if(defined $group_name)
 				{
 				$self->{ACTIONS}{$shortcut}{GROUP_NAME} = $group_name ;
@@ -214,6 +222,8 @@ for my $action_file (@{ $action_files })
 			}
 		}
 	}
+
+# use IO::Prompter ; $a = prompt -1, 'Finished registering actions ...' ;
 }
 
 sub check_action_by_name
@@ -317,14 +327,14 @@ for my $name (keys %{$action_handler_definition})
 		{
 		$shortcuts = [$shortcuts_definition]  ;
 		}
-		
-	for my $shortcut (@$shortcuts)	
+	
+	for my $shortcut (@$shortcuts)
 		{
 		if(exists $handler{$shortcut})
 			{
 			print "Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n" ;
 			}
-			
+		
 		# print "\e[32maction_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
 		$handler{$shortcut} =  $action_handler ;
 		
@@ -334,7 +344,7 @@ for my $name (keys %{$action_handler_definition})
 			}
 		}
 	}
-	
+
 return \%handler ;
 }
 

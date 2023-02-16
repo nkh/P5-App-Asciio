@@ -1,11 +1,8 @@
 
 text interface
-	mouse selection drag must reset position when mouse moves but doesn't drag
-	
 	vim script
 		open file under cursor
-
-
+	
 	clipboard function need implementation
 
 objects
@@ -16,8 +13,6 @@ objects
 	angle arrow dialog does nothing
 
 display
-	use arrow connector colored to show connection
-	
 	scrollbars
 	
 	interface to ditaa|svgbob/aasvg/goat

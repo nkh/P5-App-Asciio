@@ -8,11 +8,10 @@ register_action_handlers
 	'Redo'                                                   => [ 'C-r'],
 	'Insert from clipboard'                                  => [ 'p' ],
 	'Copy to clipboard'                                      => [ 'y' ],
-	'Export to clipboard & primary as ascii'                 => [ 'Y' ],
+	# 'Export to clipboard & primary as ascii'                 => [ 'Y' ],
 	'Remove rulers'                                          => [ 'A-r' ], 
 	
 	# elements
-	'Quick link'                                             => [ '.' ],
 	'Edit selected element'                                  => [ 'Enter' ],
 	'Delete selected elements'                               => [ 'd' ],
 	'Change elements foreground color'                       => [ 'c' ],
@@ -35,30 +34,31 @@ register_action_handlers
 	'Shrink box'                                             => [ 's' ],
 	
 	# movement
-	'Move selected elements left'                            => [['h', 'Left']],
-	'Move selected elements right'                           => [['l', 'Right']],
-	'Move selected elements up'                              => [['k', 'Up']],
-	'Move selected elements down'                            => [['j', 'Down']],
+	'Move selected elements left'                            => [ ['h', 'Left'] ],
+	'Move selected elements right'                           => [ ['l', 'Right'] ],
+	'Move selected elements up'                              => [ ['k', 'Up'] ],
+	'Move selected elements down'                            => [ ['j', 'Down'] ],
 	
 	# mouse
-	'Toggle mouse'                                           => [ "'" ],
-	
 	'Mouse right-click'                                      => [ 'ä' ],
 	'Mouse left-click'                                       => [ 'ö' ],
-	'Mouse shift-left-click'                                 => [ 'Ö' ],
-	'Mouse ctl-left-click'                                   => [ 'ö' ],
-	'Mouse alt-left-click'                                   => [ 'ö' ],
+	
+	# 'Mouse ctl-left-click'                                   => [ '???' ],
+	# 'Mouse alt-left-click'                                   => [ '???' ],
+	'Mouse quick link'                                       => [ ['A-ö', '.'] ],
+	'Mouse duplicate elements'                               => [ ['A-Ö', ','] ],
+
 	'Mouse on element id'                                    => [ '000' ],
 	
-	'Mouse drag left'                                        => [ [ 'A-ö', 'H', 'A-Left' ]  ],
-	'Mouse drag right'                                       => [ [ 'A-ä', 'L', 'A-Right'] ],
-	'Mouse drag up'                                          => [ [ 'A-å', 'K', 'A-Up'  ]  ],
-	'Mouse drag down'                                        => [ [ 'A--', 'J', 'A-Down']  ],
+	'Mouse emulation drag left'                              => [ [ 'H', 'A-Left' ] ],
+	'Mouse emulation drag right'                             => [ [ 'L', 'A-Right'] ],
+	'Mouse emulation drag up'                                => [ [ 'K', 'A-Up'  ]  ],
+	'Mouse emulation drag down'                              => [ [ 'J', 'A-Down']  ],
 	
-	'Mouse move left'                                        => [ 'C-Left',  \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]  ],
-	'Mouse move right'                                       => [ 'C-Right', \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]  ],
-	'Mouse move up'                                          => [ 'C-Up',    \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]  ],
-	'Mouse move down'                                        => [ 'C-Down',  \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]  ],
+	'Mouse emulation move left'                              => [ 'C-Left' ],
+	'Mouse emulation move right'                             => [ 'C-Right' ],
+	'Mouse emulation move up'                                => [ 'C-Up' ],
+	'Mouse emulation move down'                              => [ 'C-Down' ],
 	
 	'command mode'=> 
 		{

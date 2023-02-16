@@ -12,24 +12,123 @@ Readonly my $PREFERED_DIRECTION => 'right-down' ; # or 'down-right' ;
 
 #----------------------------------------------------------------------------------------------
 
-sub quick_link
+sub toggle_mouse
+{
+my ($self) = @_;
+
+$self->{MOUSE_TOGGLE} ^= 1 ;
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_move
+{
+my ($self, $offsets) = @_;
+my ($x_offset, $y_offset) = @{$offsets} ;
+
+($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+
+$self->{MOUSE_X} += $x_offset ;
+$self->{MOUSE_Y} += $y_offset ;
+
+($self->{SELECTION_RECTANGLE}{START_X}, $self->{SELECTION_RECTANGLE}{START_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+($self->{SELECTION_RECTANGLE}{END_X}, $self->{SELECTION_RECTANGLE}{END_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_left_click
+{
+my ($self) = @_;
+my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
+
+my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
+
+if(defined $first_element)
+	{
+	unless($self->is_element_selected($first_element))
+		{
+		# make the element under cursor the only selected element
+		$self->deselect_all_elements() ;
+		$self->select_elements(1, $first_element) ;
+		}
+	}
+else
+	{
+	$self->deselect_all_elements()  ;
+	}
+
+$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_shift_left_click
 {
 my ($self) = @_ ;
 
+# shift left click should expand the selected elements
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_duplicate_element
+{
+my ($self) = @_ ;
+my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
+
+my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
+
+$self->select_elements(1, $first_element) if defined $first_element ;
+
+$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
+}
+
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_ctl_left_click
+{
+my ($self) = @_ ;
+my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
+
+my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
+
+if(defined $first_element)
+	{
+	$self->create_undo_snapshot() ;
+	$self->select_elements_flip($first_element)
+	}
+
+$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub quick_link
+{
+my ($self) = @_ ;
+my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
+
 $self->create_undo_snapshot() ;
 
-my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
 my ($destination_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
 
 if($destination_element)
-{
-connect_to_destination_element($self, $destination_element, $x, $y) ;
-}
-else
-{
-# user clicked in void or un-linkable object
-my $new_box = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
-connect_to_destination_element($self, $new_box, $x, $y) ;
+	{
+	connect_to_destination_element($self, $destination_element, $x, $y) ;
+	}
+	else
+	{
+	# user clicked in void or un-linkable object
+	my $new_box = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
+	connect_to_destination_element($self, $new_box, $x, $y) ;
 	}
 }
 
@@ -171,292 +270,68 @@ if($unconnected_connector_name)
 
 #----------------------------------------------------------------------------------------------
 
-use List::MoreUtils qw(first_value) ;
-
-sub left_button_pressed
+sub mouse_right_click
 {
 my ($self, $event) = @_;
 
-my($x, $y) = @{$event->{COORDINATES}} ;
+$self->display_popup_menu($event) ; # display_popup_menu is handled by derived Asciio
+}
 
-if($event->{TYPE} eq '2button-press')
+#----------------------------------------------------------------------------------------------
+
+sub mouse_motion
+{
+my ($self, $event) = @_ ;
+
+my ($x, $y) = @{$event->{COORDINATES}}[0, 1] ;
+
+if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
 	{
-	my @element_over = grep { $self->is_over_element($_, $x, $y) } reverse @{$self->{ELEMENTS}} ;
-	
-	if(@element_over)
-		{
-		my $selected_element = $element_over[0] ;
-		$self->edit_element($selected_element) ;
-		$self->update_display();
-		}
-	
-	return 1 ;
+	mouse_drag($self, $x, $y) ;
+	return ;
 	}
 
-if($event->{BUTTON} == 1) 
+($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+}
+
+sub mouse_drag_left()  { my ($self) = @_ ; mouse_drag($self, $self->{MOUSE_X} - 1 , $self->{MOUSE_Y}) ; }
+sub mouse_drag_right() { my ($self) = @_ ; mouse_drag($self, $self->{MOUSE_X} + 1 , $self->{MOUSE_Y}) ; }
+sub mouse_drag_up()    { my ($self) = @_ ; mouse_drag($self, $self->{MOUSE_X},      $self->{MOUSE_Y} - 1) ; }
+sub mouse_drag_down()  { my ($self) = @_ ; mouse_drag($self, $self->{MOUSE_X},      $self->{MOUSE_Y} + 1) ; }
+
+sub mouse_drag
+{
+my ($self, $x, $y) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+my ($first_element) = first_value {$self->is_over_element($_, $self->{PREVIOUS_X}, $self->{PREVIOUS_Y})} reverse @selected_elements ;
+
+if(@selected_elements <= 1)
 	{
-	my $modifiers = $event->{MODIFIERS} ;
+	$self->{DRAGGING} = defined $first_element
+				? $first_element->get_selection_action
+							(
+							$self->{PREVIOUS_X} - $first_element->{X},
+							$self->{PREVIOUS_Y} - $first_element->{Y},
+							)
+				: 'select' ;
+	}
+else
+	{
+	$self->{DRAGGING} = defined $first_element ? 'move' : 'select' ;
+	}
+
+($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+
+if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
+	{
+	if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
+	elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
+	elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
 	
-	my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
-	
-	print "mod: $modifiers'\n" ;
-	if ($modifiers eq 'C00')
-		{
-		if(defined $first_element)
-			{
-			$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
-			}
-		}
-	else
-		{
-		if(defined $first_element)
-			{
-			 if ($modifiers eq '00S')
-				{
-				$self->select_elements_flip($first_element) ;
-				}
-			else
-				{
-				unless($self->is_element_selected($first_element))
-					{
-					# make the element under cursor the only selected element
-					$self->select_elements(0, @{$self->{ELEMENTS}}) ;
-					$self->select_elements(1, $first_element) ;
-					}
-				}
-			}
-		else
-			{
-			# deselect all
-			$self->deselect_all_elements()  if ($modifiers eq '000')  ;
-			}
-		}
-	
-	$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;
-	
-	$self->update_display();
+	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	}
-	
-if($event->{BUTTON} == 2) 
-	{
-	$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;
-	
-	$self->update_display();
-	}
-  
-if($event->{BUTTON} == 3) 
-	{
-	$self->display_popup_menu($event) ; # display_popup_menu is handled by derived Asciio
-	}
-
-# $self->update_display() ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub toggle_mouse
-{
-my ($self) = @_;
-
-$self->{MOUSE_TOGGLE} ^= 1 ;
-$self->update_display() ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_move
-{
-my ($self, $offsets) = @_;
-my ($x_offset, $y_offset) = @{$offsets} ;
-
-$self->{MOUSE_X} += $x_offset ;
-$self->{MOUSE_Y} += $y_offset ;
-
-$self->update_display() ;
-}
-
-#----------------------------------------------------------------------------------------------
-sub mouse_left_click
-{
-my ($self ) = @_;
-
-# use Data::TreeDumper ; print DumpTree \@_ ;
-
-if($self->{MOUSE_TOGGLE})
-	{
-	App::Asciio::button_press_event
-		(
-		$self,
-		{
-		BUTTON => 1,
-		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
-		KEY_NAME => -1,
-		MODIFIERS => '000',
-		STATE => '',
-		TYPE => 'button-press'
-		},
-		) ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_shift_left_click
-{
-my ($self ) = @_;
-
-if($self->{MOUSE_TOGGLE})
-	{
-	App::Asciio::button_press_event
-		(
-		$self,
-		{
-		BUTTON => 1,
-		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
-		KEY_NAME => -1,
-		MODIFIERS => '00S',
-		STATE => '',
-		TYPE => 'button-press'
-		},
-		) ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_ctl_left_click
-{
-my ($self ) = @_;
-
-if($self->{MOUSE_TOGGLE})
-	{
-	App::Asciio::button_press_event
-		(
-		$self,
-		{
-		BUTTON => 1,
-		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
-		KEY_NAME => -1,
-		MODIFIERS => 'C00',
-		STATE => '',
-		TYPE => 'button-press'
-		},
-		) ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_alt_left_click
-{
-my ($self ) = @_;
-
-if($self->{MOUSE_TOGGLE})
-	{
-	App::Asciio::button_press_event
-		(
-		$self,
-		{
-		BUTTON => 1,
-		COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} ], 
-		KEY_NAME => -1,
-		MODIFIERS => '0A0',
-		STATE => '',
-		TYPE => 'button-press'
-		},
-		) ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_right_click
-{
-my ($self) = @_;
-
-$self->display_popup_menu($self->{EVENT}) ; # display_popup_menu is handled by derived Asciio
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_drag_left()
-{
-my ($self) = @_ ;
-
-App::Asciio::motion_notify_event
-	(
-	$self,
-	{
-	BUTTON => 1,
-	COORDINATES => [ $self->{MOUSE_X} - 1 , $self->{MOUSE_Y} ], 
-	KEY_NAME => -1,
-	MODIFIERS => '00S',
-	STATE => "dragging-button1",
-	TYPE => 'button-press'
-	},
-	) ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_drag_right()
-{
-my ($self) = @_ ;
-
-App::Asciio::motion_notify_event
-	(
-	$self,
-	{
-	BUTTON => 1,
-	COORDINATES => [ $self->{MOUSE_X} + 1 , $self->{MOUSE_Y} ], 
-	KEY_NAME => -1,
-	MODIFIERS => '000',
-	STATE => "dragging-button1",
-	TYPE => 'button-press'
-	},
-	) ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_drag_up()
-{
-my ($self) = @_ ;
-
-App::Asciio::motion_notify_event
-	(
-	$self,
-	{
-	BUTTON => 1,
-	COORDINATES => [ $self->{MOUSE_X}, $self->{MOUSE_Y} - 1 ], 
-	KEY_NAME => -1,
-	MODIFIERS => '000',
-	STATE => "dragging-button1",
-	TYPE => 'button-press'
-	},
-	) ;
-
-
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub mouse_drag_down()
-{
-my ($self) = @_ ;
-
-App::Asciio::motion_notify_event
-	(
-	$self,
-	{
-	BUTTON => 1,
-	COORDINATES => [ $self->{MOUSE_X} , $self->{MOUSE_Y} + 1 ], 
-	KEY_NAME => -1,
-	MODIFIERS => '000',
-	STATE => "dragging-button1",
-	TYPE => 'button-press'
-	},
-	) ;
 }
 
 #----------------------------------------------------------------------------------------------

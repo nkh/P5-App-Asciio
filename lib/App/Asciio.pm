@@ -275,6 +275,8 @@ have text in a file you can use 'cat'' as the command.
 
  «.»                Quick link
 
+ «,»                Quick copy
+
  «r»                Add vertical ruler
 
  «A-r»              Add horizontal ruler
@@ -561,14 +563,6 @@ Mouse emulation:
 
  «Up»               Mouse drag up
 
- «A--»              Mouse drag down 2
-
- «A-ä»              Mouse drag right 2
-
- «A-å»              Mouse drag up 2
-
- «A-ö»              Mouse drag left 2
-
 
  «A-Down»           Mouse drag down
 
@@ -752,7 +746,7 @@ if($self->exists_action("${modifiers}-button_release"))
 
 if(defined $self->{MODIFIED_INDEX} && defined $self->{MODIFIED} && $self->{MODIFIED_INDEX} == $self->{MODIFIED})
 	{
-	$self-pop_undo_buffer(1) ; # no changes
+	$self->pop_undo_buffer(1) ; # no changes
 	}
 
 $self->update_display();
@@ -778,79 +772,6 @@ if($self->exists_action("${modifiers}button_press-$button"))
 	$self->run_actions(["${modifiers}button_press-$button", $event]) ;
 	return 1 ;
 	}
-
-my($x, $y) = @{$event->{COORDINATES}} ;
-
-if($event->{TYPE} eq '2button-press')
-	{
-	my @element_over = grep { $self->is_over_element($_, $x, $y) } reverse @{$self->{ELEMENTS}} ;
-	
-	if(@element_over)
-		{
-		my $selected_element = $element_over[0] ;
-		$self->edit_element($selected_element) ;
-		$self->update_display();
-		}
-		
-	return 1 ;
-	}
-
-if($event->{BUTTON} == 1) 
-	{
-	my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
-	
-	if ($modifiers eq 'C00-')
-		{
-		if(defined $first_element)
-			{
-			$self->select_elements_flip($first_element) ;
-			}
-		}
-	
-	if ($modifiers eq '0A0-')
-		{
-		if(defined $first_element)
-			{
-			$self->select_elements(1, $first_element) ;
-			$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
-			}
-		}
-	
-	if ($modifiers eq '000-')
-		{
-		if(defined $first_element)
-			{
-			unless($self->is_element_selected($first_element))
-				{
-				# make the element under cursor the only selected element
-				$self->deselect_all_elements() ;
-				$self->select_elements(1, $first_element) ;
-				}
-			}
-		else
-			{
-			$self->deselect_all_elements()  ;
-			}
-		}
-	
-	$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;
-	
-	$self->update_display();
-	}
-
-if($event->{BUTTON} == 2) 
-	{
-	$self->{SELECTION_RECTANGLE} = {START_X => $x , START_Y => $y} ;
-	
-	$self->update_display();
-	}
-  
-if($event->{BUTTON} == 3) 
-	{
-	$self->display_popup_menu($event) ; # display_popup_menu is handled by derived Asciio
-	}
-
-return 1;
 }
 
 #-----------------------------------------------------------------------------
@@ -863,53 +784,18 @@ my $button = $event->{BUTTON} ;
 my($x, $y) = @{$event->{COORDINATES}} ;
 my $modifiers = $event->{MODIFIERS} ; 
 
-if($self->exists_action("${modifiers}motion_notify"))
+if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
-	$self->run_actions(["${modifiers}-motion_notify", $event]) ;
-	return 1 ;
-	}
-
-if ($event->{STATE} eq "dragging-button1") 
-	{
-	if($self->{DRAGGING} eq '')
+	if($self->exists_action("${modifiers}motion_notify"))
 		{
-		my @selected_elements = $self->get_selected_elements(1) ;
-		my ($first_element) = first_value {$self->is_over_element($_, $self->{PREVIOUS_X}, $self->{PREVIOUS_Y})} reverse @selected_elements ;
-		
-		if(@selected_elements <= 1)
-			{
-			$self->{DRAGGING} = defined $first_element
-						? $first_element->get_selection_action
-									(
-									$self->{PREVIOUS_X} - $first_element->{X},
-									$self->{PREVIOUS_Y} - $first_element->{Y},
-									)
-						: 'select' ;
-			}
-		else
-			{
-			$self->{DRAGGING} = defined $first_element ? 'move' : 'select' ;
-			}
+		$self->run_actions(["${modifiers}motion_notify", $event]) ;
+		return 1 ;
 		}
 	
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-	
-	if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
-		{
-		if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
-		elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
-		elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
-		
-		($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
-		}
-	}
-else
-	{
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
-	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) if $self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y ;
+	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	}
 
-return 1;
+($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -990,11 +876,9 @@ my ($self, $event)= @_;
 my $modifiers = $event->{MODIFIERS} ;
 my $key = $event->{KEY_NAME} ;
 
-$self->{EVENT} = $event ;
+$self->{CACHE}{ORIGINAL_EVENT} = $event ;
 
 $self->run_actions("${modifiers}$key") unless exists $ignored_keys{"${modifiers}$key"} ;
-
-return 0 ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1104,41 +988,15 @@ Ports for the older gtk2 version exist, gtk3 not yet.
 
 =head2 Windows
 
-B<Asciio> is part of the B<camelbox> distribution and can be found here: L<http://code.google.com/p/camelbox/>. Install, run AsciiO from the 'bin' directory.
+nd old version came witht the "Camel-box" distributions, you are better off running in WSL or in a docker image
 
-      .-------------------------------.
-     /                               /|
-    /     camelbox for win32        / |
-   /                               /  |
-  /                               /   |
- .-------------------------------.    |
- |  ______\\_,                   |    |
- | (_. _ o_ _/                   |    |
- |  '-' \_. /                    |    |
- |      /  /                     |    |
- |     /  /    .--.  .--.        |    |
- |    (  (    / '' \/ '' \   "   |    |
- |     \  \_.'            \   )  |    |
- |     ||               _  './   |    |
- |      |\   \     ___.'\  /     |    |
- |        '-./   .'    \ |/      |    |
- |           \| /       )|\      |    |
- |            |/       // \\     |    .
- |            |\    __//   \\__  |   /
- |           //\\  /__/  mrf\__| |  /
- |       .--_/  \_--.            | /
- |      /__/      \__\           |/      
- '-------------------------------'
-
-B<camelbox> is a great distribution for windows. I hope it will merge with X-berry series of Perl distributions.
-
-=head1 Mac OsX
+=head2 Mac OsX
 
 This works too (and I have screenshots to prove it :). I don't own a mac and the mac user hasn't send me how to do it yet.
 
-=head1 other unices
+=head2 Docker Image
 
-YMMV, install gtk-perl and AsciiO from cpan.
+There are docker images made by third parties, use a search engine for the latest. (example image: https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb).
 
 =head1 SEE ALSO
 

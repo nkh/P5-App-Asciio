@@ -514,45 +514,10 @@ return TRUE;
 
 #-----------------------------------------------------------------------------
 
-sub button_release_event 
-{
-my ($widget, $event, $self) = @_ ;
-
-$self->SUPER::button_release_event($self->create_asciio_event($event)) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub button_press_event 
-{
-my ($widget, $event, $self) = @_ ;
-
-my $asciio_event = $self->create_asciio_event($event) ;
-
-$self->SUPER::button_press_event($asciio_event, $event) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub motion_notify_event 
-{
-my ($widget, $event, $self) = @_ ;
-
-my $asciio_event = $self->create_asciio_event($event) ;
-
-$self->SUPER::motion_notify_event($asciio_event) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub key_press_event
-{
-my ($widget, $event, $self)= @_;
-
-my $asciio_event = $self->create_asciio_event($event) ;
-
-$self->SUPER::key_press_event($asciio_event) ;
-}
+sub button_release_event { my (undef, $event, $self) = @_ ; $self->SUPER::button_release_event($self->create_asciio_event($event)) ; }
+sub button_press_event   { my (undef, $event, $self) = @_ ; $self->SUPER::button_press_event($self->create_asciio_event($event)) ; }
+sub motion_notify_event  { my (undef, $event, $self) = @_ ; $self->SUPER::motion_notify_event($self->create_asciio_event($event)) ; }
+sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
 
 #-----------------------------------------------------------------------------
 
@@ -603,8 +568,8 @@ my ($event) = @_ ;
 my $key_modifiers = $event->state() ;
 
 my $modifiers = $key_modifiers =~ /control-mask/ ? 'C' : 0 ;
-$modifiers .= $key_modifiers =~ /mod1-mask/ ? 'A' : 0 ;
-$modifiers .= $key_modifiers =~ /shift-mask/ ? 'S' : 0 ;
+$modifiers   .= $key_modifiers =~ /mod1-mask/    ? 'A' : 0 ;
+$modifiers   .= $key_modifiers =~ /shift-mask/   ? 'S' : 0 ;
 
 return("$modifiers-") ;
 }
