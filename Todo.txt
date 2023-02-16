@@ -25,11 +25,6 @@ architecture
 	handle multiple binary format versions
 
 optimization 
-	screen flicker
-		print to buffer, handling \J \H
-		cache the previous rendering
-		https://gist.github.com/christianparpart/d8a62cc1ab659194337d73e399004036
-	
 	Selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 		

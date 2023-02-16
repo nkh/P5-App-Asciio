@@ -43,69 +43,123 @@ return($self) ;
 
 #-----------------------------------------------------------------------------
 
+sub render_text
+{
+my ($text_array) = @_ ;
+
+my $rendering = '' ;
+my ($text, $previous_color , $color) = ('', '', '') ;
+
+my ($COLS, $ROWS) = chars ;
+for my $line (1 .. $ROWS)
+	{
+	my $line_ref = $text_array->[$line] ;
+	
+	for my $character (1 .. $COLS)
+		{
+		($text, $color) = @{$line_ref->[$character]} ;
+		
+		$rendering .= "\e[m$color" if $color ne $previous_color ;
+		$previous_color = $color ;
+		
+		$rendering .= $text ;
+		}
+	}
+
+print $rendering ;
+print "\e[m" ;
+}
+
+use Time::HiRes qw(gettimeofday) ;
+
+use Sereal qw(get_sereal_decoder get_sereal_encoder) ;
+use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+
+my ($grid_setup_text, $grid_rendered) ;
+my $encoder = get_sereal_encoder({compress => SRL_ZLIB}) ;
+my $decoder = get_sereal_decoder() ;
+
 sub update_display 
 {
 my ($self) = @_;
 
 $self->SUPER::update_display() ;
 
+my $timing = '' ;
+my $t00 = my $t0 = gettimeofday();
+
 my ($COLS, $ROWS) = chars ;
 
-print "\e[?25l" ; # hide cursor
-print "\e[2J\e[H" ;
+print "\e[?25l\e[H" ; # hide cursor, reset position to 1,1
 
-my $screen_rendering = '' ;
+my $text_array = [] ;
 
-# draw background
+if(defined $grid_setup_text)
+	{
+	$text_array = $decoder->decode($grid_setup_text) ;
+	}
+else
+	{
+	for my $line (1 .. $ROWS)
+		{
+		$text_array->[$line] = [] ;
+		for my $column (1 .. $COLS)
+			{
+			$text_array->[$line][$column] = [' ', ''] ;
+			}
+		}
+	
+	$grid_setup_text = $encoder->encode($text_array) ;
+	}
+
+# draw background, TODO: caching is not checked for change in DISPLAY_GRID
 if($self->{DISPLAY_GRID})
 	{
-	my $grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} ;
-	
-	unless (defined $grid_rendering)
+	unless(defined $grid_rendered)
 		{
-		my $surface= '' ;
-		
 		if($self->{DISPLAY_GRID})
 			{
 			my $color = color($self->get_color('grid')) ;
 			
 			for my $line (1 .. $ROWS /10)
 				{
-				$surface .= "\e[" . ($line * 10) .";0H${color}" . '-' x $COLS ;
+				for (1 .. $COLS)
+					{
+					$text_array->[$line * 10][$_] = ['-', $color] ;
+					}
 				}
 			
 			for my $line (1 .. $COLS / 10)
 				{
-				$surface .= "\e[$_;" . (${line} * 10) . "H${color}|" for (1 .. $ROWS) ;
+				for (1 .. $ROWS)
+					{
+					$text_array->[$_][$line * 10] = ['|', $color] ;
+					}
 				}
-			
-			$surface .= "\e[m" ;
 			}
 		
-		$grid_rendering = $self->{CACHE}{"GRID-$COLS-$ROWS"} = $surface ;
+		$grid_setup_text = $encoder->encode($text_array) ;
+		$grid_rendered++ ;
 		}
-	
-	$screen_rendering .= $grid_rendering ;
 	}
 
+my $te = Time::HiRes::gettimeofday();
+$timing .= sprintf("setup: %.4f ", $te - $t0);
+$t0 = $te;
+
 # draw ruler lines
-for my $line (@{$self->{RULER_LINES}})
+for my $ruler (@{$self->{RULER_LINES}})
 	{
 	my $color = color($self->get_color('ruler_line')) ;
 	
-	if($line->{TYPE} eq 'VERTICAL')
+	if($ruler->{TYPE} eq 'VERTICAL')
 		{
-		$screen_rendering .= "\e[$_;$line->{POSITION}H$color|" for (1 .. $ROWS) ;
+		$text_array->[$_][$ruler->{POSITION}] = ['|', $color] for (1 .. $ROWS) ;
 		}
 	else
 		{
-		my $column = 0 ;
-		my $line =  $line->{POSITION} ;
-		
-		$screen_rendering .= "\e[$line;${column}H$color" . '-' x $COLS ;
+		$text_array->[$ruler->{POSITION}][$_] = ['-', $color] for (1 .. $COLS) ;
 		}
-	
-	$screen_rendering .= "\e[m" ;
 	}
 
 # draw elements
@@ -153,7 +207,7 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
 	
-	unless (defined $renderings)
+	if(1)
 		{
 		my @renderings ;
 		
@@ -168,32 +222,37 @@ for my $element (@{$self->{ELEMENTS}})
 				{
 				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
 				
-				my $strip_color = 
-				my $surface = '';
-				
-				unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
+				my $strip_color = '' ;
+				if(1)
 					{
 					$strip_color .= color($foreground_color) . color($background_color) ;
 					$strip_color .= color($self->get_color('selected_element_background')) if $is_selected ;
 					
 					if($self->{NUMBERED_OBJECTS})
 						{
-						$surface .= ' ' x ( $strip->{WIDTH} - length("$element_index)")) . $element_index ;
+						# for (1 .. $strip->{WIDTH})
+						# 	{
+						# 	$text_array->[$element->{Y} + $strip->{Y_OFFSET}][$element->{X} + $strip->{X_OFFSET} + $_] = ['X', $strip_color] ;
+						# 	}
 						}
 					else
 						{
-						$surface .= $line ;
+						my $character_index = 0 ;
+						for (split //, $line)
+							{
+							$character_index++ ;
+							
+							my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index + 1 ;
+							my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
+							
+							$text_array->[$Y][$X] = [$_, $strip_color] ;
+							}
 						}
-					
-					$self->{CACHE}{STRIPS}{$color_set}{$line} = [$strip_color, $surface] ; # keep reference
 					}
 				
-				my $strip_rendering = $self->{CACHE}{STRIPS}{$color_set}{$line} ;
-				push @renderings, [@{$strip_rendering}, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
+				$line_index++ ;
 				}
 			}
-		
-		$renderings = $element->{CACHE}{RENDERING}{$color_set} = \@renderings ;
 		}
 	
 	for my $rendering (@$renderings)
@@ -209,22 +268,24 @@ for my $element (@{$self->{ELEMENTS}})
 		# clip
 		$stripe = substr($stripe, -$column + 1) and $column = 1   if $column < 1 ;
 		$stripe = substr($stripe, 0, $COLS - ($column - 1))       if ($column - 1 ) + length($stripe) > $COLS ;
-		
-		$screen_rendering .= "\e[$line;${column}H" . $rendering->[0] . $stripe . "\e[m" ;
 		}
 	}
+
+$te = Time::HiRes::gettimeofday();
+$timing .= sprintf("elements: %.4f ", $te - $t0);
+$t0 = $te;
 
 # draw connections
 my (%connected_connections, %connected_connectors) ;
 
 my $connector_point_color = color($self->get_color('connector_point'));
-my $connector_point_rendering = "${connector_point_color}O\e[m" ;
+my $connector_point_rendering = "O" ;
 
 my $connection_point_color = color($self->get_color('connection_point'));
-my $connection_point_rendering = "${connection_point_color}o\e[m" ;
+my $connection_point_rendering = "o" ;
 
 my $extra_point_color = color($self->get_color('extra_point'));
-my $extra_point_rendering = "$extra_point_color#\e[m" ;
+my $extra_point_rendering = "#" ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
@@ -237,8 +298,10 @@ if ($self->{MOUSE_TOGGLE})
 			my $column = $element->{X} + $connector->{X} + 1 ;
 			my $line = $connector->{Y} + $element->{Y} + 1 ;
 			
-			$screen_rendering .= "\e[$line;${column}H" . $connector_point_rendering
-				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
+			unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+				{
+				$text_array->[$line][$column] = [$connector_point_rendering, $connector_point_color] ;
+				}
 			}
 			
 		for my $extra_point ($element->get_extra_points())
@@ -246,8 +309,10 @@ if ($self->{MOUSE_TOGGLE})
 			my $column = $extra_point->{X}  + $element->{X} + 1 ;
 			my $line = $extra_point->{Y} + $element->{Y} + 1 ;
 			
-			$screen_rendering .= "\e[$line;${column}H" . $extra_point_rendering
-				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
+			unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+				{
+				$text_array->[$line][$column] = [$extra_point_rendering, $extra_point_color] ;
+				}
 			}
 		
 		if($self->{DRAW_CONNECTION_POINTS})
@@ -259,8 +324,10 @@ if ($self->{MOUSE_TOGGLE})
 					my $column = $connection_point->{X} + $element->{X} + 1 ;
 					my $line = $connection_point->{Y} + $element->{Y} + 1 ;
 					
-					$screen_rendering .= "\e[$line;${column}H" . $connection_point_rendering
-					unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
+					unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+						{
+						$text_array->[$line][$column] = [$connection_point_rendering, $connector_point_color] ;
+						}
 				}
 			}
 		}
@@ -296,20 +363,22 @@ if ($self->{MOUSE_TOGGLE})
 			
 			my $connection_color = color($self->get_color('connection'));
 			my $connection_char = $connector->{CHAR} // 'c' ;
-			my $connection_rendering = "${connection_color}$connection_char\e[m" ;
+			my $connection_rendering = "$connection_char" ;
 			
 			my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
 			my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
 			
-			$screen_rendering .= "\e[$line;${column}H" . $connection_rendering
-				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
+			unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+				{
+				$text_array->[$line][$column] = [$connection_rendering, $connection_color] ;
+				}
 			}
 		}
 	}
 
 # draw new connections
 my $new_connection_color = color($self->get_color('new_connection'));
-my $connection_rendering = "${new_connection_color}c\e[m" ;
+my $connection_rendering = "c" ;
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	{
 	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
@@ -317,8 +386,10 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	my $column = $end_connection->{X} + $new_connection->{CONNECTED}{X} + 1 ;
 	my $line = $end_connection->{Y} + $new_connection->{CONNECTED}{Y} + 1 ;
 	
-	$screen_rendering .= "\e[$line;${column}H" . $connection_rendering
-		unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS) ;
+	unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+			{
+			$text_array->[$line][$column] = [$connection_rendering, $new_connection_color] ;
+			}
 	}
 
 delete $self->{NEW_CONNECTIONS} ;
@@ -340,14 +411,20 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	$selection_rectangle = "$start_x - $start_y * $end_x - $end_y" ;
 	
 	my $color = color($self->get_color('selection_rectangle')) ;
-	$screen_rendering .= $color ;
 	
 	for ($start_y .. $start_y + $height - 1)
 		{
 		next if $_ < 1 || $_ > $ROWS ;
 		
-		$screen_rendering .= "\e[$_;${start_x}H|" if $start_x > 0 && $start_x <= $COLS ;
-		$screen_rendering .= "\e[$_;${end_x}H|"   if $end_x > 1   && $end_x <= $COLS ;
+		if($start_x > 0 && $start_x <= $COLS)
+			{
+			$text_array->[$_][$start_x] = ['|', $color] ;
+			}
+		
+		if($end_x > 1  && $end_x <= $COLS)
+			{
+			$text_array->[$_][$end_x] = ['|', $color] ;
+			}
 		}
 	
 	if($start_x <= $COLS && $end_x > 0)
@@ -356,8 +433,26 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 		$top_bottom = substr($top_bottom, -$start_x + 1) and $start_x = 1 if $start_x < 1 ;
 		$top_bottom = substr($top_bottom, 0, ($COLS - $start_x) + 1) if $end_x > $COLS ;
 		
-		$screen_rendering .= "\e[$start_y;${start_x}H" . $top_bottom if $start_y > 0 && $start_y <= $ROWS ;
-		$screen_rendering .= "\e[$end_y;${start_x}H" . $top_bottom   if $end_y > 0   && $end_y <= $ROWS ;
+		if($start_y > 0 && $start_y <= $ROWS)
+			{
+			my $character_index = 0 ;
+			for (1 .. length($top_bottom))
+				{
+				$text_array->[$start_y][$start_x + $character_index] = ['-', $color] ;
+				$character_index++ ;
+				}
+			}
+		
+		if($end_y > 0 && $end_y <= $ROWS)
+			{
+			my $character_index = 0 ;
+			for (1 .. length($top_bottom))
+				{
+				$text_array->[$end_y][$start_x + $character_index] = ['-', $color] ;
+				
+				$character_index++ ;
+				}
+			}
 		}
 	
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
@@ -370,16 +465,22 @@ if ($self->{MOUSE_TOGGLE})
 	unless($self->{MOUSE_X} < 0 || $self->{MOUSE_X} >= $COLS || $self->{MOUSE_Y} < 0 || $self->{MOUSE_Y} >= $ROWS)
 		{
 		my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
-		$screen_rendering .= "\e[$line;${column}H${color}X" ; 
+		
+		$text_array->[$line][$column] = ['X', $color] ;
 		}
 	}
 
-print $screen_rendering . "\e[m" ;
+render_text($text_array) ;
+
+$te = Time::HiRes::gettimeofday();
+$timing .= sprintf("render: %.4f ", $te - $t0);
+$timing .= sprintf("total: %.4f ", $te - $t00);
 
 if(defined $self->{ACTION_VERBOSE})
 	{
-	print "\e[2;81H\e[32m$self->{LAST_ACTION} " . length($screen_rendering) ;
+	print "\e[2;81H\e[32m$self->{LAST_ACTION} " ;
 	print "\e[3;81H$selection_rectangle" ;
+	print "\e[4;81Htiming: $timing" ;
 	}
 }
 
