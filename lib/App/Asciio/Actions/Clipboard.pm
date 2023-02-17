@@ -91,5 +91,64 @@ if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 
 #----------------------------------------------------------------------------------------------
 
+sub export_to_clipboard_as_ascii
+{
+my ($self) = @_ ;
+
+open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
+local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
+
+print CLIPBOARD $self->transform_elements_to_ascii_buffer($self->get_selected_elements(1)) ;
+close CLIPBOARD ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_primary_to_box
+{
+my ($self) = @_ ;
+
+my $ascii = qx~xsel -p -o~ ;
+
+my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+$element->set_text('', $ascii) ;
+$self->select_elements(1, $element) ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_primary_to_text
+{
+my ($self) = @_ ;
+
+my $ascii = qx~xsel -p -o~ ;
+
+my $element = $self->add_new_element_named('Stencils/Asciio/text', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+$element->set_text('', $ascii) ;
+$self->select_elements(1, $element) ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_clipboard_to_box
+{
+my ($self) = @_ ;
+
+my $ascii = qx~xsel -b -o~ ;
+
+my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+$element->set_text('', $ascii) ;
+$self->select_elements(1, $element) ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+
 1 ;
 

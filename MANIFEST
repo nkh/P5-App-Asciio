@@ -100,7 +100,6 @@ lib/App/Asciio/GTK/Asciio/stripes/editable_exec_box.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 
 setup/GTK/setup.ini
-setup/GTK/actions/clipboard.pl
 setup/GTK/import_export/png.pl
 
 

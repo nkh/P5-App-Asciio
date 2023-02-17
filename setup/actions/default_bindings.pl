@@ -23,6 +23,11 @@ register_action_handlers
 'Zoom out'                                             => ['000-minus',                   \&App::Asciio::Actions::Unsorted::zoom, -1                                     ],
 'Copy to clipboard'                                    => [['C00-c', 'C00-Insert', 'y'],  \&App::Asciio::Actions::Clipboard::copy_to_clipboard                           ],
 'Insert from clipboard'                                => [['C00-v', '00S-Insert', 'p'],  \&App::Asciio::Actions::Clipboard::insert_from_clipboard                       ],
+'Export to clipboard & primary as ascii'               => [['C00-e', '00S-Y', 'Y'],       \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii                ],
+'Import from primary to box'                           => [['C0S-V', '00S-P', 'P'],       \&App::Asciio::Actions::Clipboard::import_from_primary_to_box                  ],
+'Import from primary to text'                          => [['0A0-p','A-P'],               \&App::Asciio::Actions::Clipboard::import_from_primary_to_text                 ],
+# 'Import from clipboard to box'                         => [ '???' ,                       \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                ],
+
 
 'Change elements foreground color'                     => ['000-c',                       \&App::Asciio::Actions::Colors::change_elements_colors, 0                      ],
 'Change elements background color'                     => ['000-C',                       \&App::Asciio::Actions::Colors::change_elements_colors, 1                      ],
@@ -67,7 +72,7 @@ register_action_handlers
 'Mouse quick link'                                     => [['0A0-button_press-1', '000-period'], \&App::Asciio::Actions::Mouse::quick_link                               ],
 'Mouse duplicate elements'                             => [['0AS-button_press-1', '000-comma'],  \&App::Asciio::Actions::Mouse::mouse_duplicate_element                  ],
 
-'Insert flex point'                                    => ['0AS-button_press-1',          \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
+'Insert flex point'                                    => ['CA0-button_press-1',          \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
 
 'Mouse motion'                                         => ['000-motion_notify',           \&App::Asciio::Actions::Mouse::mouse_motion                                    ], 
         
@@ -183,10 +188,6 @@ register_action_handlers
 'Insert default commands' => 
 	{
 	SHORTCUTS => '000-i',
-	
-	# need subs that are not gtk3 dependent
-	# 'Import from primary to box'                   => [ '???' ],
-	# 'Import from clipboard to box'                 => [ '???' ],
 	
 	'External command output in a box'             => ['000-x', \&App::Asciio::Actions::Unsorted::external_command_output, 1                    ],
 	'External command output in a box no frame'    => ['00S-X', \&App::Asciio::Actions::Unsorted::external_command_output, 0                    ],

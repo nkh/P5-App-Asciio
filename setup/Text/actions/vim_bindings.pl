@@ -8,7 +8,12 @@ register_action_handlers
 	'Redo'                                                   => [ 'C-r'],
 	'Insert from clipboard'                                  => [ 'p' ],
 	'Copy to clipboard'                                      => [ 'y' ],
-	# 'Export to clipboard & primary as ascii'                 => [ 'Y' ],
+	
+	'Export to clipboard & primary as ascii'                 => [ 'Y' ],
+	'Import from primary to box'                             => [ 'P' ],
+	'Import from primary to text'                            => [ 'A-P' ],
+	# 'Import from clipboard to box'                           => [ '' ],
+	
 	'Remove rulers'                                          => [ 'A-r' ], 
 	
 	# elements
@@ -81,10 +86,6 @@ register_action_handlers
 	'Insert commands' => 
 		{
 		SHORTCUTS => 'i',
-		
-		# below need sub that 's not gtk3 dependent
-		# 'Import from primary to box'                     => [ 'y' ],
-		# 'Import from clipboard to box'                   => [ 'Y' ],
 		
 		'External command output in a box'               => [ 'x' ],
 		'External command output in a box no frame'      => [ 'X' ],

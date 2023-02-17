@@ -96,7 +96,6 @@ setup/Stencils/People
 setup/Stencils/Divers
 
 setup/GTK/setup.ini
-setup/GTK/actions/clipboard.pl
 setup/GTK/import_export/png.pl
 
 setup/Text/setup.ini

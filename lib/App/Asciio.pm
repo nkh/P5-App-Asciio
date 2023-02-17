@@ -350,6 +350,10 @@ have text in a file you can use 'cat'' as the command.
 
  «Y»                Export to clipboard & primary as ascii
 
+ «P»                Import from primary to box
+
+ «A-P»              Import from primary to text
+
 =back
 
  «:» command mode:
@@ -411,10 +415,6 @@ have text in a file you can use 'cat'' as the command.
  «x»                External command output in a box
 
  «X»                External command output in a box no frame
-
- «???»              Import from clipboard to box
-
- «???»              Import from primary to box
 
  «p»                Add process
 
