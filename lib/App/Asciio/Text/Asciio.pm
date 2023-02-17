@@ -9,7 +9,9 @@ use warnings;
 use List::MoreUtils qw(minmax) ;
 use Term::Size::Any qw(chars) ;
 use Term::ANSIColor ;
-
+use Time::HiRes qw(gettimeofday) ;
+use Sereal qw(get_sereal_decoder get_sereal_encoder) ;
+use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
 use App::Asciio::Text::Asciio::stripes::editable_arrow2;
 use App::Asciio::Text::Asciio::stripes::wirl_arrow ;
@@ -45,12 +47,11 @@ return($self) ;
 
 sub render_text
 {
-my ($text_array) = @_ ;
+my ($text_array, $COLS, $ROWS) = @_ ;
 
 my $rendering = '' ;
 my ($text, $previous_color , $color) = ('', '', '') ;
 
-my ($COLS, $ROWS) = chars ;
 for my $line (1 .. $ROWS)
 	{
 	my $line_ref = $text_array->[$line] ;
@@ -70,12 +71,9 @@ print $rendering ;
 print "\e[m" ;
 }
 
-use Time::HiRes qw(gettimeofday) ;
+#-----------------------------------------------------------------------------
 
-use Sereal qw(get_sereal_decoder get_sereal_encoder) ;
-use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
-
-my ($grid_setup_text, $grid_rendered) ;
+my ($grid_setup_text, $background_rendered, $grid_rendered) ;
 my $encoder = get_sereal_encoder({compress => SRL_ZLIB}) ;
 my $decoder = get_sereal_decoder() ;
 
@@ -85,16 +83,15 @@ my ($self) = @_;
 
 $self->SUPER::update_display() ;
 
-my $timing = '' ;
-my $t00 = my $t0 = gettimeofday();
-
 my ($COLS, $ROWS) = chars ;
+my $rows_cols = "$ROWS-$COLS" ; # cache tag
 
 print "\e[?25l\e[H" ; # hide cursor, reset position to 1,1
 
 my $text_array = [] ;
 
-if(defined $grid_setup_text)
+# draw background
+if(defined $background_rendered && $background_rendered eq $rows_cols)
 	{
 	$text_array = $decoder->decode($grid_setup_text) ;
 	}
@@ -102,7 +99,6 @@ else
 	{
 	for my $line (1 .. $ROWS)
 		{
-		$text_array->[$line] = [] ;
 		for my $column (1 .. $COLS)
 			{
 			$text_array->[$line][$column] = [' ', ''] ;
@@ -110,12 +106,12 @@ else
 		}
 	
 	$grid_setup_text = $encoder->encode($text_array) ;
+	$background_rendered = $rows_cols ;
 	}
 
-# draw background, TODO: caching is not checked for change in DISPLAY_GRID
 if($self->{DISPLAY_GRID})
 	{
-	unless(defined $grid_rendered)
+	unless(defined $grid_rendered && $grid_rendered eq $rows_cols)
 		{
 		if($self->{DISPLAY_GRID})
 			{
@@ -139,13 +135,9 @@ if($self->{DISPLAY_GRID})
 			}
 		
 		$grid_setup_text = $encoder->encode($text_array) ;
-		$grid_rendered++ ;
+		$grid_rendered = $rows_cols ;
 		}
 	}
-
-my $te = Time::HiRes::gettimeofday();
-$timing .= sprintf("setup: %.4f ", $te - $t0);
-$t0 = $te;
 
 # draw ruler lines
 for my $ruler (@{$self->{RULER_LINES}})
@@ -205,75 +197,40 @@ for my $element (@{$self->{ELEMENTS}})
 			. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
 			. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
 	
-	my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
+	my $stripes = $element->get_stripes() ;
+	# $self->update_quadrants($element) ;
 	
-	if(1)
+	for my $strip (@{$stripes})
 		{
-		my @renderings ;
+		my $line_index = 0 ;
 		
-		my $stripes = $element->get_stripes() ;
-		# $self->update_quadrants($element) ;
-		
-		for my $strip (@{$stripes})
+		for my $line (split /\n/, $strip->{TEXT})
 			{
-			my $line_index = 0 ;
+			my $strip_color  = color($foreground_color) . color($background_color) ;
+			   $strip_color .= color($self->get_color('selected_element_background')) if $is_selected ;
 			
-			for my $line (split /\n/, $strip->{TEXT})
+			my $line_length = length $line ;
+			$line = sprintf "%0${line_length}d", $element_index if $self->{NUMBERED_OBJECTS} ;
+			
+			my $character_index = 0 ;
+			
+			for (split //, $line)
 				{
-				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
+				$character_index++ ;
 				
-				my $strip_color = '' ;
-				if(1)
-					{
-					$strip_color .= color($foreground_color) . color($background_color) ;
-					$strip_color .= color($self->get_color('selected_element_background')) if $is_selected ;
-					
-					if($self->{NUMBERED_OBJECTS})
-						{
-						# for (1 .. $strip->{WIDTH})
-						# 	{
-						# 	$text_array->[$element->{Y} + $strip->{Y_OFFSET}][$element->{X} + $strip->{X_OFFSET} + $_] = ['X', $strip_color] ;
-						# 	}
-						}
-					else
-						{
-						my $character_index = 0 ;
-						for (split //, $line)
-							{
-							$character_index++ ;
-							
-							my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index + 1 ;
-							my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
-							
-							$text_array->[$Y][$X] = [$_, $strip_color] ;
-							}
-						}
-					}
+				my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index + 1 ;
+				next if $Y < 1 || $Y > $ROWS ;
 				
-				$line_index++ ;
+				my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
+				next if $X < 1 || $X > $COLS ;
+				
+				$text_array->[$Y][$X] = [$_, $strip_color] ;
 				}
+			
+			$line_index++ ;
 			}
 		}
-	
-	for my $rendering (@$renderings)
-		{
-		my $stripe = $rendering->[1] ;
-		my $column = $rendering->[2] + $element->{X} + 1;
-		my $line   = $rendering->[3] + $element->{Y} + 1 ;
-		
-		next if $line < 1 || $line > $ROWS ;
-		next if $column > $COLS ;
-		next if $column < 1 && length($stripe) <= -$column ;
-		
-		# clip
-		$stripe = substr($stripe, -$column + 1) and $column = 1   if $column < 1 ;
-		$stripe = substr($stripe, 0, $COLS - ($column - 1))       if ($column - 1 ) + length($stripe) > $COLS ;
-		}
 	}
-
-$te = Time::HiRes::gettimeofday();
-$timing .= sprintf("elements: %.4f ", $te - $t0);
-$t0 = $te;
 
 # draw connections
 my (%connected_connections, %connected_connectors) ;
@@ -326,7 +283,7 @@ if ($self->{MOUSE_TOGGLE})
 					
 					unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
 						{
-						$text_array->[$line][$column] = [$connection_point_rendering, $connector_point_color] ;
+						$text_array->[$line][$column] = [$connection_point_rendering, $connection_point_color] ;
 						}
 				}
 			}
@@ -416,15 +373,8 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 		{
 		next if $_ < 1 || $_ > $ROWS ;
 		
-		if($start_x > 0 && $start_x <= $COLS)
-			{
-			$text_array->[$_][$start_x] = ['|', $color] ;
-			}
-		
-		if($end_x > 1  && $end_x <= $COLS)
-			{
-			$text_array->[$_][$end_x] = ['|', $color] ;
-			}
+		$text_array->[$_][$start_x] = ['|', $color] if $start_x > 0 && $start_x <= $COLS ;
+		$text_array->[$_][$end_x]   = ['|', $color] if $end_x > 1   && $end_x <= $COLS ;
 		}
 	
 	if($start_x <= $COLS && $end_x > 0)
@@ -449,7 +399,6 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 			for (1 .. length($top_bottom))
 				{
 				$text_array->[$end_y][$start_x + $character_index] = ['-', $color] ;
-				
 				$character_index++ ;
 				}
 			}
@@ -460,27 +409,16 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 
 if ($self->{MOUSE_TOGGLE})
 	{
-	my $color = color($self->get_color('mouse_rectangle')) ;
-	
-	unless($self->{MOUSE_X} < 0 || $self->{MOUSE_X} >= $COLS || $self->{MOUSE_Y} < 0 || $self->{MOUSE_Y} >= $ROWS)
-		{
-		my $line = $self->{MOUSE_Y} + 1 ; my $column = $self->{MOUSE_X} + 1 ;
-		
-		$text_array->[$line][$column] = ['X', $color] ;
-		}
+	$text_array->[$self->{MOUSE_Y} + 1][$self->{MOUSE_X} + 1] = ['X', color($self->get_color('mouse_rectangle'))]
+		unless($self->{MOUSE_X} < 0 || $self->{MOUSE_X} >= $COLS || $self->{MOUSE_Y} < 0 || $self->{MOUSE_Y} >= $ROWS) ;
 	}
 
-render_text($text_array) ;
-
-$te = Time::HiRes::gettimeofday();
-$timing .= sprintf("render: %.4f ", $te - $t0);
-$timing .= sprintf("total: %.4f ", $te - $t00);
+render_text($text_array, $COLS, $ROWS) ;
 
 if(defined $self->{ACTION_VERBOSE})
 	{
 	print "\e[2;81H\e[32m$self->{LAST_ACTION} " ;
 	print "\e[3;81H$selection_rectangle" ;
-	print "\e[4;81Htiming: $timing" ;
 	}
 }
 
