@@ -37,7 +37,7 @@ if($self->{DO_STACK_POINTER} >= @{$self->{DO_STACK}})
 	{
 	$self->{DO_STACK_POINTER} = @{$self->{DO_STACK}} - 1 ;
 	}
-	
+
 $self->do($self->{DO_STACK_POINTER}) ;
 }
 
@@ -57,7 +57,7 @@ if($self->{DO_STACK_POINTER} == @{$self->{DO_STACK}})
 	{
 	$self->create_undo_snapshot() ;
 	}
-	
+
 $self->{DO_STACK_POINTER} = $new_stack_pointer ;
 
 $self->do($new_stack_pointer) ;

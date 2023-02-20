@@ -7,40 +7,32 @@ sub display_help
 {
 my ($self) = @_ ;
 
-
 $self->display_message_modal(<<EOM) ;
 
-Very short help:
+"alt+lef_mouse" "."         Quick link:
 
-k show the keyboard mapping
-CTL+SHIFT+k 
-	
-b, Add a box
-B, Add a box, edit the text directly
-CTL+m, Add multiple boxes in one shot
+"ib",                       insert a box
+"it",                       Add a text element
 
-t, Add a text element
-CTL+SHIFT+M, Add multiple texts in one shot
+"iB"                        Add multiple boxes
+"iT"                        Add multiple texts
 
-quick link:
-	select a box, SHIFT+left-mouse
-		link to element under cursor
-		create element if none under cursor
-	
-a, add a wirl arrow (AsciiO arrow)
-SHIFT+A, add an angled arrow
-d, change the direction of the arrows (selection)
-f, flip the arrows (selection)
+"ia"                        Add a wirl arrow
+"ad"                        Change arrow direction
+"af"                        Flip the arrows
 
 
-CTL+click, copy elements
-SHIFT+click: add elements to the selection
+"ctl-a" "V"                 Select all elements
+"ctl-c/ctl-v" "y/p"         Copy/Paste elements
 
-CTL+g, group elements
-CTL+u, ungroup object
+"gg"                        Group selected elements
+"gu"                        Group object
 
-Mouse right button shows a context menu.
-Double click shows the element editing dialog
+"double-click/enter"        Edit object
+
+"right-clik"                Show context menu.
+
+"none" ":m"                 Displays manpage
 
 EOM
 }

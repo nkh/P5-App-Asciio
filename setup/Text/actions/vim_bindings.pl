@@ -92,7 +92,7 @@ register_action_handlers
 		'Insert from file'                               => [ 'f' ],
 		
 		'Add box'                                        => [ 'b' ],
-		# 'Create multiple box elements from description'  => [ 'M'],
+		# 'Create multiple box elements from description'  => [ 'B'],
 		# 'Create multiple text elements from description' => [ 'T'],
 		
 		'Add arrow'                                      => [ 'a' ],
@@ -104,7 +104,7 @@ register_action_handlers
 		'Add horizontal ruler'                           => [ 'R' ],
 		'Add text'                                       => [ 't' ],
 		'Add angled arrow'                               => [ 'A' ],
-		'Add shrink box'                                 => [ 'B' ],
+		'Add shrink box'                                 => [ 'A-b' ],
 		'Add exec box'                                   => [ 'e' ],
 		'Add exec box no border'                         => [ 'E' ],
 		},

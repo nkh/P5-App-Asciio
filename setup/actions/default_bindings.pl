@@ -98,7 +98,7 @@ register_action_handlers
 
 'Mouse on element id'                                  => ['000-m',                       \&App::Asciio::Actions::Mouse::mouse_on_element_id                             ],
 
-'Angled arrow context_menu'                            => ['context menu', undef, undef,  \&angled_arrow_context_menu                                                    ],
+'Angled arrow context_menu'                            => ['context menu', undef, undef,  \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu                   ],
 'box_context_menu'                                     => ['context_menu', undef, undef,  \&App::Asciio::Actions::Box::box_context_menu                                  ],
 
 'grouping default commands' => 
@@ -172,7 +172,7 @@ register_action_handlers
 	{
 	SHORTCUTS => '00S-colon',
 	
-	# 'Help'                                         => [ 'h' ],
+	'Help'                                         => ['000-h', \&App::Asciio::Actions::Unsorted::display_help            ],
 	'Display keyboard mapping'                     => ['000-k', \&App::Asciio::Actions::Unsorted::display_keyboard_mapping],
 	'Display commands'                             => ['000-c', \&App::Asciio::Actions::Unsorted::display_commands        ],
 	'Display action files'                         => ['000-f', \&App::Asciio::Actions::Unsorted::display_action_files    ],
@@ -194,13 +194,13 @@ register_action_handlers
 	
 	# 'Insert from file'     => [ 'f' ], ???
 	
-	'Create multiple box elements from a text description'  => ['00S-M', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1],
+	'Create multiple box elements from a text description'  => ['00S-B', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1],
 	'Create multiple text elements from a text description' => ['00S-T', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0],
 	
 	'Add vertical ruler'                           => [ '000-r', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'},  \&App::Asciio::Actions::Ruler::rulers_context_menu ],
 	'Add horizontal ruler'                         => [ '00S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                       ],
 	'Add box'                                      => [ '000-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/box', 0]                   ],
-	'Add shrink box'                               => [ '00S-B', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/shrink_box', 1]            ],
+	'Add shrink box'                               => [ '0A0-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/shrink_box', 1]            ],
 	'Add text'                                     => [ '000-t', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/text', 1]                  ],
 	'Add if'                                       => [ '000-i', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/if', 1]              ],
 	'Add process'                                  => [ '000-p', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/process', 1]         ],
@@ -223,34 +223,6 @@ register_action_handlers
 	},
 
 ) ;
-
-#----------------------------------------------------------------------------------------------
-
-sub angled_arrow_context_menu
-{
-my ($self, $popup_x, $popup_y) = @_ ;
-my @context_menu_entries ;
-
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::angled_arrow' eq ref $selected_elements[0])
-	{
-	my $element = $selected_elements[0] ;
-	
-	push @context_menu_entries, 
-		[
-		$selected_elements[0]->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
-		sub 
-			{
-			$self->create_undo_snapshot() ;
-			$selected_elements[0]->enable_autoconnect(! $selected_elements[0]->is_autoconnect_enabled()) ;
-			$self->update_display() ;
-			}
-		] ;
-	}
-
-return(@context_menu_entries) ;
-}
 
 #----------------------------------------------------------------------------------------------
 

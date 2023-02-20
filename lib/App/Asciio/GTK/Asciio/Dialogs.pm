@@ -89,10 +89,12 @@ my $dialog = Gtk3::MessageDialog->new
 	(
 	$window,
 	'destroy-with-parent' ,
-	'info' ,
+	'other' ,
 	'close' ,
 	$message ,
 	) ;
+
+$dialog->modify_font (Pango::FontDescription->from_string ('monospace 10'));
 
 $dialog->signal_connect(response => sub { $dialog->destroy ; 1 }) ;
 $dialog->run() ;
