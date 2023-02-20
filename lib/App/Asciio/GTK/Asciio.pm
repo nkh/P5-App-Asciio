@@ -546,7 +546,7 @@ if
 	)
 	{
 	$asciio_event->{COORDINATES} = [$self->closest_character($event->get_coords())]  ;
-
+	
 	if($event_type eq "motion-notify")
 		{
 		$asciio_event->{STATE} = "dragging-button1" if $event->state() >= "button1-mask" ;

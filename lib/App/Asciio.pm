@@ -767,9 +767,9 @@ $self->{MODIFIED_INDEX} = $self->{MODIFIED} ;
 my $modifiers = $event->{MODIFIERS} ;
 my $button = $event->{BUTTON} ;
 
-if($self->exists_action("${modifiers}button_press-$button"))
+if($self->exists_action("${modifiers}$event->{TYPE}-$button"))
 	{
-	$self->run_actions(["${modifiers}button_press-$button", $event]) ;
+	$self->run_actions(["${modifiers}$event->{TYPE}-$button", $event]) ;
 	return 1 ;
 	}
 }
