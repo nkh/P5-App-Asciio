@@ -97,8 +97,11 @@ register_action_handlers
 
 'Mouse on element id'                                  => ['000-m',                              \&App::Asciio::Actions::Mouse::mouse_on_element_id                             ],
 
-'Angled arrow context_menu'                            => ['context menu', undef, undef,         \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu                   ],
-'box_context_menu'                                     => ['context_menu', undef, undef,         \&App::Asciio::Actions::Box::box_context_menu                                  ],
+# context menus 
+'Box context_menu'                                     => ['bo_context_menu', undef, undef,      \&App::Asciio::Actions::Box::box_context_menu                                  ],
+'Multi_wirl context_menu'                              => ['mw_context_menu', undef, undef,      \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu                     ],
+'Angled arrow context_menu'                            => ['aa_ontext menu',  undef, undef,      \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu                   ],
+'Ruler context_menu'                                   => ['ru_context_menu', undef, undef,      \&App::Asciio::Actions::Ruler::rulers_context_menu                             ],
 
 'grouping default commands' => 
 	{
@@ -148,12 +151,12 @@ register_action_handlers
 	{
 	SHORTCUTS => '000-a',
 	
-	'Change arrow direction'                       => ['000-d', \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction                                                 ],
-	'Flip arrow start and end'                     => ['000-f', \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                                                        ],
-	'Append multi_wirl section'                    => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section, undef,  \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu],
-	'Insert multi_wirl section'                    => ['000-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                                                         ],
-	'Prepend multi_wirl section'                   => ['0A0-s', \&App::Asciio::Actions::Multiwirl::prepend_section                                                                   ],
-	'Remove last section from multi_wirl'          => ['C00-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow                                       ],
+	'Change arrow direction'                       => ['000-d', \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction           ],
+	'Flip arrow start and end'                     => ['000-f', \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                  ],
+	'Append multi_wirl section'                    => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section,                             ],
+	'Insert multi_wirl section'                    => ['000-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
+	'Prepend multi_wirl section'                   => ['0A0-s', \&App::Asciio::Actions::Multiwirl::prepend_section                             ],
+	'Remove last section from multi_wirl'          => ['C00-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow ],
 	},
 
 'debug default commands' => 
@@ -197,19 +200,19 @@ register_action_handlers
 	'Create multiple box elements from a text description'  => ['00S-B', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1],
 	'Create multiple text elements from a text description' => ['00S-T', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0],
 	
-	'Add vertical ruler'                           => [ '000-r', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'},  \&App::Asciio::Actions::Ruler::rulers_context_menu ],
-	'Add horizontal ruler'                         => [ '00S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                       ],
-	'Add box'                                      => [ '000-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/box', 0]                   ],
-	'Add shrink box'                               => [ '0A0-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/shrink_box', 1]            ],
-	'Add text'                                     => [ '000-t', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/text', 1]                  ],
-	'Add if'                                       => [ '000-i', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/if', 1]              ],
-	'Add process'                                  => [ '000-p', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/process', 1]         ],
-	'Add exec box'                                 => [ '000-e', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/exec', 1]            ],
-	'Add exec box no border'                       => [ '00S-E', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/exec no border', 1]  ],
-	'Add arrow'                                    => [ '000-a', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/wirl_arrow', 0]            ],
-	'Add angled arrow'                             => [ '00S-A', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/angled_arrow', 0]          ],
-	'Add connector'                                => [ '000-c', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/connector', 0]             ],
-	'Add help box'                                 => [ '000-h', \&App::Asciio::Actions::Elements::add_help_box,                                             ],
+	'Add vertical ruler'                           => [ '000-r', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}                            ],
+	'Add horizontal ruler'                         => [ '00S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                     ],
+	'Add box'                                      => [ '000-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/box', 0]                 ],
+	'Add shrink box'                               => [ '0A0-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/shrink_box', 1]          ],
+	'Add text'                                     => [ '000-t', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/text', 1]                ],
+	'Add if'                                       => [ '000-i', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/if', 1]            ],
+	'Add process'                                  => [ '000-p', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/process', 1]       ],
+	'Add exec box'                                 => [ '000-e', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/exec', 1]          ],
+	'Add exec box no border'                       => [ '00S-E', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/exec no border', 1]],
+	'Add arrow'                                    => [ '000-a', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/wirl_arrow', 0]          ],
+	'Add angled arrow'                             => [ '00S-A', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/angled_arrow', 0]        ],
+	'Add connector'                                => [ '000-c', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/connector', 0]           ],
+	'Add help box'                                 => [ '000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],
 	},
 
 'slides default commands' => 

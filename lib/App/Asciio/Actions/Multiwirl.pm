@@ -163,8 +163,7 @@ my @selected_elements = $self->get_selected_elements(1) ;
 if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
 	{
 	my $element = $selected_elements[0] ;
-	
-	my ($x, $y) = $self->closest_character($popup_x - ($element->{X} * $character_width) , $popup_y - ($element->{Y} * $character_height)) ;
+	my ($x, $y) = ($popup_x - $element->{X} , $popup_y - $element->{Y}) ;
 	
 	push @context_menu_entries, 
 		[
