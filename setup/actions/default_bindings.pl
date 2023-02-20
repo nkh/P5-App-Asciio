@@ -31,7 +31,6 @@ register_action_handlers
 
 'Change elements foreground color'                     => ['000-c',                       \&App::Asciio::Actions::Colors::change_elements_colors, 0                      ],
 'Change elements background color'                     => ['000-C',                       \&App::Asciio::Actions::Colors::change_elements_colors, 1                      ],
-'Flip arrow start and end'                             => ['000-f',                       \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                  ],
 'Remove rulers'                                        => ['0A0-r',                       \&App::Asciio::Actions::Ruler::remove_ruler                                    ],
 
 'Select next element'                                  => [['000-Tab', '000-n'],          \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0] ],
@@ -150,6 +149,7 @@ register_action_handlers
 	SHORTCUTS => '000-a',
 	
 	'Change arrow direction'                       => ['000-d', \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction                                                 ],
+	'Flip arrow start and end'                     => ['000-f', \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                                                        ],
 	'Append multi_wirl section'                    => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section, undef,  \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu],
 	'Insert multi_wirl section'                    => ['000-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                                                         ],
 	'Prepend multi_wirl section'                   => ['0A0-s', \&App::Asciio::Actions::Multiwirl::prepend_section                                                                   ],

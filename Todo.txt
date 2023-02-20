@@ -2,8 +2,8 @@
 text interface
 	vim script
 		open file under cursor
-	
-	clipboard function need implementation
+
+	dialogs, 
 
 objects
 	any orientation text

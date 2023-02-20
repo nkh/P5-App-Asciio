@@ -82,7 +82,7 @@ if(defined $new_self)
 	if($@)
 		{
 		use File::Slurp ;
-		write_file('undo_error.pl', $new_self ) ;
+		write_file('undo_error.pl', $saved_self ) ;
 		die "Can't undo! $@\n" ;
 		}
 	else
@@ -90,6 +90,7 @@ if(defined $new_self)
 		$self->load_self($saved_self) ;
 		($self->{DO_STACK_POINTER}, $self->{DO_STACK}) = ($do_stack_pointer, $do_stack) ;
 		$self->set_modified_state(1) ;
+		
 		$self->update_display() ;
 		}
 	}

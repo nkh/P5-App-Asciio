@@ -16,7 +16,7 @@ my $rows = $self->{BOX_TYPE} ;
 
 print "\e[2J\e[H\e[?25h" ;
 
-my $input = prompt "new title: ", -default => $title ;
+my $input = prompt "old title: $title\nnew title: ", -default => $title ;
 if($input)
 	{
 	$input =~ s/\r$// ;
@@ -31,7 +31,7 @@ else
 my $title_separator = $self->{BOX_TYPE}[1] ;
 $title_separator->[0] = prompt "title_sepearator [y/n]: ", -y1 ;
 
-$input = prompt "new text: ", -default => $text ;
+$input = prompt "old text: $text\nnew text: ", -default => $text ;
 if($input)
 	{$input =~ s/\r$// ;
 	$input =~ s/\\n/\n/g ;

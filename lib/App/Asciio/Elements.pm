@@ -19,19 +19,11 @@ use App::Asciio::Connections ;
 
 #-----------------------------------------------------------------------------
 
-sub set_modified_state
-{
-my ($self, $state) = @_ ;
-$self->{MODIFIED} = $state ;
-}
+sub set_modified_state { my ($self, $state) = @_ ; $self->{MODIFIED} = $state ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_modified_state
-{
-my ($self) = @_ ;
-$self->{MODIFIED} ;
-}
+sub get_modified_state { my ($self) = @_ ; $self->{MODIFIED} ; }
 
 #-----------------------------------------------------------------------------
 

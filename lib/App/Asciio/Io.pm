@@ -111,6 +111,7 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		CACHE
 		COLORS
 		ACTION_VERBOSE
+		DO_STACK_POINTER DO_STACK
 		) ;
 
 sub load_self
@@ -237,12 +238,12 @@ local $self->{HOOKS} = [] ;
 local $self->{CURRENT_ACTIONS} = [] ;
 local $self->{ACTIONS_BY_NAME} = [] ;
 local $self->{DO_STACK} = undef ;
+local $self->{DO_STACK_POINTER} = undef ;
 local $self->{IMPORT_EXPORT_HANDLERS} = undef ;
 local $self->{MODIFIED} => 0 ;
 local $self->{TITLE} = '' ;
 local $self->{CREATE_BACKUP} = undef ;
 local $self->{MIDDLE_BUTTON_SELECTION_FILTER} = undef ;
-local $self->{CACHE} = undef ;
 local $self->{ELEMENT_TYPES} = undef ;
 local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
@@ -255,7 +256,7 @@ for my $element (@{$self->{ELEMENTS}})
 	}
 
 $self->{CACHE}{ENCODER} = my $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
-local $self->{CACHE}{ENCODER} = undef ;
+local $self->{CACHE} = undef ;
 
 my $serialized = $encoder->encode($self) ;
 

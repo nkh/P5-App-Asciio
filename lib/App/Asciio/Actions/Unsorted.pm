@@ -20,10 +20,18 @@ $self->display_message_modal(<<EOM) ;
 "ia"                        Add a wirl arrow
 "ad"                        Change arrow direction
 "af"                        Flip the arrows
+"as"                        Append multi_wirl section
 
+"ctl-z" "u"                 Undo
+"ctl-y" "ctl-r"             Redo
 
+"tab" "n"                   Select next element
 "ctl-a" "V"                 Select all elements
+
 "ctl-c/ctl-v" "y/p"         Copy/Paste elements
+"ctl-e" "Y"                 Export as ascii
+"ctl-V" "P"                 Import to box
+"alt-p" "A-P"               Import to text
 
 "gg"                        Group selected elements
 "gu"                        Group object
@@ -31,6 +39,13 @@ $self->display_message_modal(<<EOM) ;
 "double-click/enter"        Edit object
 
 "right-clik"                Show context menu.
+
+"+" "none"                  Zoom in
+"-" "none"                  Zoom out
+
+":e"                        Open
+":w"                        Save
+":q"                        Quit
 
 "none" ":m"                 Displays manpage
 

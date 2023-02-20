@@ -58,7 +58,7 @@ use Term::ReadKey;
 use Term::TermKey qw(FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
  
 my $tk = Term::TermKey->new(\*STDIN);
-$asciio->{TK} = $tk ;
+$asciio->{CACHE}{TK} = $tk ;
  
 # ensure perl and libtermkey agree on Unicode handling
 binmode( STDOUT, ":encoding(UTF-8)" ) if $tk->get_flags & FLAG_UTF8; 
