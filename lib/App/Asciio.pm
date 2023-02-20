@@ -18,6 +18,7 @@ use App::Asciio::Undo ;
 use App::Asciio::Io ;
 use App::Asciio::Ascii ;
 use App::Asciio::Options ;
+use App::Asciio::Actions ;
 
 #-----------------------------------------------------------------------------
 
@@ -601,7 +602,7 @@ my $self =
 		
 		PREVIOUS_X => 0, PREVIOUS_Y => 0,
 		MOUSE_X => 0, MOUSE_Y => 0,
-		DRAGGING => '',
+		DRAGGING => undef,
 		SELECTION_RECTANGLE =>{START_X => 0, START_Y => 0},
 		
 		ACTIONS => {},
@@ -736,13 +737,15 @@ sub button_release_event
 {
 my ($self, $event) = @_ ;
 
+my $button = $event->{BUTTON} ;
 my $modifiers = $event->{MODIFIERS} ;
 
-if($self->exists_action("${modifiers}-button_release"))
+if($self->exists_action("${modifiers}$event->{TYPE}-$button"))
 	{
-	$self->run_actions(["${modifiers}-button_release", $event]) ;
-	return 1 ;
+	$self->run_actions(["${modifiers}$event->{TYPE}-$button", $event]) ;
 	}
+
+undef $self->{DRAGGING} ;
 
 if(defined $self->{MODIFIED_INDEX} && defined $self->{MODIFIED} && $self->{MODIFIED_INDEX} == $self->{MODIFIED})
 	{
@@ -758,20 +761,16 @@ sub button_press_event
 {
 my ($self, $event) = @_ ;
 
-$self->{DRAGGING} = '' ;
+undef $self->{DRAGGING} ;
 delete $self->{RESIZE_CONNECTOR_NAME} ;
 
 $self->create_undo_snapshot() ;
 $self->{MODIFIED_INDEX} = $self->{MODIFIED} ;
 
-my $modifiers = $event->{MODIFIERS} ;
 my $button = $event->{BUTTON} ;
+my $modifiers = $event->{MODIFIERS} ;
 
-if($self->exists_action("${modifiers}$event->{TYPE}-$button"))
-	{
-	$self->run_actions(["${modifiers}$event->{TYPE}-$button", $event]) ;
-	return 1 ;
-	}
+$self->run_actions(["${modifiers}$event->{TYPE}-$button", $event]) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -786,11 +785,7 @@ my $modifiers = $event->{MODIFIERS} ;
 
 if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
-	if($self->exists_action("${modifiers}motion_notify"))
-		{
-		$self->run_actions(["${modifiers}motion_notify", $event]) ;
-		return 1 ;
-		}
+	$self->run_actions(["${modifiers}motion_notify", $event]) ;
 	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	}

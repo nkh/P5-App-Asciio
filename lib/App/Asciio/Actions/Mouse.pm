@@ -309,13 +309,16 @@ my ($first_element) = first_value {$self->is_over_element($_, $self->{PREVIOUS_X
 
 if(@selected_elements <= 1)
 	{
-	$self->{DRAGGING} = defined $first_element
-				? $first_element->get_selection_action
-							(
-							$self->{PREVIOUS_X} - $first_element->{X},
-							$self->{PREVIOUS_Y} - $first_element->{Y},
-							)
-				: 'select' ;
+ 	if(! defined $self->{DRAGGING})
+		{
+		$self->{DRAGGING} = defined $first_element
+					? $first_element->get_selection_action
+								(
+								$self->{PREVIOUS_X} - $first_element->{X},
+								$self->{PREVIOUS_Y} - $first_element->{Y},
+								)
+					: 'select' ;
+		}
 	}
 else
 	{
