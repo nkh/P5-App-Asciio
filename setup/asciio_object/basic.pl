@@ -1,4 +1,4 @@
-FONT_FAMILY => 'Monospace',
+FONT_FAMILY => 'sarasa mono sc',
 FONT_SIZE => '14',
 TAB_AS_SPACES => '    ',
 DISPLAY_GRID => 1,

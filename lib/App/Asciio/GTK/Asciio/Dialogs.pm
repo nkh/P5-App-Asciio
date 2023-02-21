@@ -94,7 +94,7 @@ my $dialog = Gtk3::MessageDialog->new
 	$message ,
 	) ;
 
-$dialog->modify_font (Pango::FontDescription->from_string ('monospace 10'));
+$dialog->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 10'));
 
 $dialog->signal_connect(response => sub { $dialog->destroy ; 1 }) ;
 $dialog->run() ;
@@ -248,7 +248,7 @@ my $file_chooser = Gtk3::FileChooserDialog->new
 $file_name = $file_chooser->get_filename if ('ok' eq $file_chooser->run) ;
 	
 $file_chooser->destroy;
-
+Encode::_utf8_on($file_name);
 return $file_name ;
 }
 

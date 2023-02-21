@@ -44,7 +44,7 @@ $titleview->show;
 
 # box text 
 my $textview = Gtk3::TextView->new;
-$textview->modify_font (Pango::FontDescription->from_string ('monospace 10'));
+$textview->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 10'));
 
 my $text_buffer = $textview->get_buffer;
 $text_buffer->insert($text_buffer->get_end_iter, $text);
@@ -52,7 +52,7 @@ $text_buffer->insert($text_buffer->get_end_iter, $text);
 $vbox->add ($textview) ;
 $textview->show() ;
 
-# Focus and select, code by Tian
+#ï¿½Focus and select, code by Tian
 $text_buffer->select_range($text_buffer->get_start_iter, $text_buffer->get_end_iter);
 $textview->grab_focus() ;
 

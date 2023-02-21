@@ -24,7 +24,6 @@ my @menu_items ;
 for my $element (@{$self->{ELEMENT_TYPES}})
 	{
 	(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
-	# $name_with_underscore = ucfirst $name_with_underscore ;
 	
 	push @menu_items, 
 		[ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef],
@@ -40,22 +39,22 @@ for my $menu_entry (@{$self->get_context_menu_entries($popup_x, $popup_y)})
 
 push @menu_items, 
 	(
-	['/File/open',     undef , sub {$self->run_actions_by_name('Open') ;},      0 , '<Item>', undef],
-	['/File/save',     undef , sub {$self->run_actions_by_name('Save') ;},      0 , '<Item>', undef],
-	['/File/save as',  undef , sub {$self->run_actions_by_name(['Save', 1]) ;}, 0 , '<Item>', undef],
+	['/File/open',     undef , sub { $self->run_actions_by_name('Open') ; },      0 , '<Item>', undef],
+	['/File/save',     undef , sub { $self->run_actions_by_name('Save') ; },      0 , '<Item>', undef],
+	['/File/save as',  undef , sub { $self->run_actions_by_name(['Save', 1]) ; }, 0 , '<Item>', undef],
 	) ;
 
 use App::Asciio::Io ;
 if($self->get_selected_elements(1) == 1)
 	{
 	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&App::Asciio::save_stencil), 0 , '<Item>', undef ] ;
-	}	
+	}
 
 my $menu = Gtk3::Menu->new() ;
 
 insert_menu_items($menu, \@menu_items) ;
 
-$menu->popup(undef, undef, undef, undef, $event->{BUTTON}, 0) ;
+$menu->popup(undef, undef, undef, undef, $event->{BUTTON}, $event->{TIME}) ;
 }
 
 sub insert_menu_items
@@ -66,7 +65,7 @@ my %menus ;
 
 for my $menu_entry_definition (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map { [$_, $_->[0]] } @$menu_entry_definitions)
 	{
-	my ($path, undef, $sub, undef, $item, undef) = @$menu_entry_definition ;
+	my ($path, undef, $sub, undef, $item) = @$menu_entry_definition ;
 	
 	$path =~ s~^/~~ or die "Menu path doesn't start at root" ;
 	my @path_elements = split m~/~, $path ;
@@ -95,9 +94,10 @@ for my $menu_entry_definition (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map 
 			}
 		}
 	
-	my $menu_item=Gtk3::MenuItem->new($name);
-	$menu_item->signal_connect('activate'=> $sub);
+	my $menu_item=Gtk3::MenuItem->new($name) ;
+	$menu_item->signal_connect('activate' => $sub);
 	$menu_item->show() ;
+	
 	$container->append($menu_item) ;
 	}
 }

@@ -1,4 +1,5 @@
 
+use utf8 ;
 package App::Asciio::Actions::Box ;
 
 #----------------------------------------------------------------------------------------------
@@ -63,14 +64,14 @@ if(@selected_elements == 1 && $selected_elements[0]->isa('App::Asciio::stripes::
 	push @context_menu_entries, 
 		[
 			'/rotate text', 
-			sub { print $element ; $element->rotate_text() },
+			sub { print $element ; $element->rotate_text() ; $self->update_display() ; },
 		], 
 		
 		[
 			'/box selected element', 
 			\&box_selected_element,
 			{ ELEMENT => $element},
-		] ;
+		],
 		
 		[
 			'/box type/dash', 

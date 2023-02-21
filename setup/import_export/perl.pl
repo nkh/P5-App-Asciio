@@ -6,6 +6,9 @@ use Data::Dumper ;
 use List::Util qw(max);
 use File::Basename ;
 
+use utf8 ;
+use App::Asciio::Toolfunc ;
+
 #~ use Compress::LZF ':compress';
 use Compress::Bzip2 qw(:all :utilities :gzip);
 use MIME::Base64 ();
@@ -138,7 +141,7 @@ my ($base_name, $path, $extension) = File::Basename::fileparse($file, ('\..*')) 
 my $file_name = $base_name . $extension ;
 
 my @ascii_representation = $self->transform_elements_to_ascii_array() ;
-my $longest_line =  max( map{length} @ascii_representation) ;
+my $longest_line =  max( map{physical_length $_} @ascii_representation) ;
 
 my $compressed_self = compress($self->serialize_self() .  '$VAR1 ;') ;
 
@@ -158,7 +161,7 @@ print POD "=for asciio $longest_line $base_name\n\n" ;
 
 for my $diagram_line (@ascii_representation)
 	{
-	my $padding = ' ' x ($longest_line - length($diagram_line)) ;
+	my $padding = ' ' x ($longest_line - physical_length($diagram_line)) ;
 	my $base64_chunk = substr($base64, 0, $base64_chunk_size, '') || '' ;
 	
 	print POD ' ' ,  $diagram_line, $padding, $BASE64_HEADER, $base64_chunk, "\n"

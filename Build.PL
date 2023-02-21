@@ -10,6 +10,7 @@ my @split_modules ;
 my @pm_files = qw(
 lib/App/Asciio.pm
 
+lib/App/Asciio/Toolfunc.pm
 lib/App/Asciio/Actions.pm
 lib/App/Asciio/Ascii.pm
 lib/App/Asciio/Connections.pm

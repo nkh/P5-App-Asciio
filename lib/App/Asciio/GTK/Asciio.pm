@@ -529,6 +529,7 @@ my $event_type= $event->type() ;
 
 my $asciio_event =
 	{
+	TIME        => $event->time(),
 	TYPE        => "$event_type",
 	STATE       => '',
 	MODIFIERS   => get_key_modifiers($event),
