@@ -39,104 +39,52 @@ our $VERSION = '1.7' ;
 
 =head1 SYNOPSIS
 
-    $> asciio
+$> asciio [file.asciio]               # GUI application using Gtk3
 
+$> tasciio [file.asciio]              # TUI application    
+
+$> asciio_to_text file.asciio         # converts asciio files to ASCII
 
 =head1 DESCRIPTION
 
-This application allows you to draw ASCII diagrams in a TUI or GUI.
+Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams can be
+saved as ASCII text or in a format that allows you to modify them later.
 
-The diagrams can be saved as ASCII or in a binary format that allows you to open and modify them later.
+Diagrams consist of boxes and text elements connected by arrows. Boxes stay
+connected when you move them around.
 
-The TUI has vim-like shortcuts which are different from the GUI. Both can be modified.
 
+Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that
+are usually found in GUI applications; bindings can be modified.
 
 =head1 DOCUMENTATION
 
-=head2 Keyboard Shortcuts
+=head2 GUI
 
-    Shortcuts and commands are in the TUI/GUI COMMANDS sections below.
-
-=head2 User Interface
-
-      .-----------------------------------------------------------------.
-      | ............................................................... |
-      | ..............-------------..------------..--------------...... |
-      | .............| stencils  > || asciio   > || box          |..... |
-      | .............| Rulers    > || computer > || text         |..... |
-      | .............| File      > || people   > || wirl_arrow   |..... |
- grid-------->.......'-------------'| divers   > || axis         |..... |
-      | ......................^.....'------------'| boxes      > |..... |
-      | ......................|...................| rulers     > |..... |
-      | ......................|...................'--------------'..... |
-      | ......................|........................................ |
-      '-----------------------|-----------------------------------------'
-                              |
-               context menu access some commands
-
+      .-------------------------------------------------------------.
+      | ........................................................... |
+      | ..........-------------..------------..--------------...... |
+      | .........| stencils  > || asciio   > || box          |..... |
+      | .........| Rulers    > || computer > || text         |..... |
+      | .........| File      > || people   > || wirl_arrow   |..... |
+ grid----->......'-------------'| divers   > || axis         |..... |
+      | ..................^.....'------------'| ...          |..... |
+      | ..................|...................'--------------'..... |
+      | ..................|........................................ |
+      '-------------------|-----------------------------------------'
+                          |
+           context menu access some commands
+           most are accessed through the keyboard
 
 =head2 Exporting to ASCII
 
-You can export to a file in ASCII format but using the B<.txt> extension.
+You can export to a file in ASCII by using a '.txt' file extension.
 
-You can also export to the clipboard.
+You can also export the selection, in ASCII, to the Primary clipboard.
 
-=head1 Elements
+=head2 Elements
 
-=head3 wirl-arrow
-
-Rotating the end clockwise or counter-clockwise changes its direction.
-
-            ^
-            |              ^  
-            |     ------.   \            
-            |           |    \              
-            '-------    |     \         
-                        |      \        
-  ---------->           |       '-------
-                        |   
-                        |   
-                        v  
-                  
-=head3 multi section wirl-arrow
-
-A set of whirl arrows connected to each other.
-
- .----------.                       .
- |          |                \     / \
-    .-------'           ^     \   /   \
-    |                    \     \ /     \
-    |   .----------->     \     '       .
-    |   '----.             \           /
-    |        |              \         /
-    '--------'               '-------'
-    
-
-=head3 angled-arrow and axis
-
-   -------.         .-------
-           \       /
-            \     /
-             \   /
- 
-             /   \
-            /     \
-           /       \
-    ------'         '-------
-    
-          ^
-     ^    |    ^
-      \   |   /
-       \  |  /
-        \ | /
- <-------- -------->
-        / |\
-       /  | \
-      /   |  \
-     v    |   v
-          v
-
-=head3 box and text 
+=head3 boxes and text 
 
                 .----------.
                 |  title   |
@@ -144,62 +92,81 @@ A set of whirl arrows connected to each other.
  |          |   | body 1   |   *          *
  '----------'   | body 2   |   ************
                 '----------'
-                                        any text in a box
-                            (\_/)               |
-        edit_me             (O.o)  <------------'
+                                      any text
+                            (\_/)         |
+        text                (O.o)  <------'
                             (> <)
 
 =head3 if-box and process-box
 
-                        ____________
-   .--------------.     \           \
-  / a == b         \     \           \   __________
- (    &&            )     ) process   )  \         \
-  \ 'string' ne '' /     /           /    ) process )
-   '--------------'     /___________/    /_________/
+                       
+   .--------------.    
+  / a == b         \     __________
+ (    &&            )    \         \
+  \ 'string' ne '' /      ) process )
+   '--------------'      /_________/
    
 
-=head3 user elements and exec-boxes 
+=head3 user boxes and exec-boxes 
 
-For simple elements, put your design in a box. That should cover 95% of anyone's needs.
+For simple elements, put your design in a box, with or without a frame.
 
-Asciio has an "exec-box" object that lets you put the output of an external application
-in a box (with or without frame), in the example below the table is generated, if you already
-have text in a file you can use 'cat'' as the command. 
-
+The an "exec-box" object that lets you put the output of an external
+application in a box, in the example below the table is generated, if you
+already have text in a file you can use 'cat your_file' as the command. 
 
   +------------+------------+------------+------------+
   | input_size ‖ algorithmA | algorithmB | algorithmC |
   +============+============+============+============+
-  |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |---------------.
-  +------------+------------+------------+------------+               v
-  |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |       .--------------.
-  +------------+------------+------------+------------+       |              |
-  |    250     ‖     -      |  80 min.   | 2.27 sec.  |-----. |              |
-  +------------+------------+------------+------------+     | |              |
-  |    1000    ‖     -      |     -      | 8.77 sec.  |     | '--------------'
-  +------------+------------+------------+------------+     |
-                                                            |
-                                                            v
-                                                    .--------------.
-                                                    |              |
-                                                    |              |
-                                                    |              |
-                                                    '--------------'
+  |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |
+  +------------+------------+------------+------------+
+  |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |
+  +------------+------------+------------+------------+
+  |    250     ‖     -      |  80 min.   | 2.27 sec.  |
+  +------------+------------+------------+------------+
 
-=head1 EXAMPLES
+=head3 wirl-arrow
 
+Rotating the end clockwise or counter-clockwise changes its direction.
 
-        User code ^            ^ OS code
-                   \          /
-                    \        /
-                     \      /
-        User code <----Mode----->OS code
-                     /      \
-                    /        \
-                   /          \
-       User code  v            v OS code
+        ^
+        |            ^  
+        |    -----.   \            
+        '------   |    \         
+  ------>         |     '-------
+                  |   
+                  v  
+                  
+=head3 multi section wirl-arrow
 
+A set of whirl arrows connected to each other.
+
+ .----------.                     .
+ |          |                \   / \
+    .-------'           ^     \ /   \
+    |   .----------->    \     '     .
+    |   '----.            \          /
+    |        |             \        /
+    '--------'              '------'
+    
+
+=head3 angled-arrow and axis
+
+   -------.       .-------
+           \     /
+            \   /
+
+            /   \
+           /     \
+    ------'       '-------
+  
+ ^
+ |   ^
+ |  /
+ | /
+  -------->
+
+=head2 Examples
 
           .---.  .---. .---.  .---.    .---.  .---.
  OS API   '---'  '---' '---'  '---'    '---'  '---'
@@ -220,51 +187,36 @@ have text in a file you can use 'cat'' as the command.
           '---------------------------------------'
 
 
-                                   .--Base::Class::Derived_A
-                                  /
-                                 .----Base::Class::Derived_B    
- Something--------.             /    \
-                   \           /      '---Base::Class::Derived::More
- Something::else    \         /        \
-       \             \       /          '-Base::Class::Derived::Deeper
-        \             \     /
-         \             \   .-----------Base::Class::Derived_C 
-          \             \ /
+                                  
+                             .----Base::Class::Derived_B
+                            /
+ Something::Else           /
+         \                .-------Base::Class::Derived_C 
+          \              /
            '-------Base::Class
-                  /   \ \ \
-                 '     \ \ \
-                 |      \ \ '---The::Latest
-                /|       \ \      \
-   Some::things' '        \ \      '----The::Latest::Greatest
-                /|         \ \
-    More::Stuff' '          \ '-I::Am::Running::Out::Of::Ideas
-                /|           \
-    More::Stuff' '            \
-                /              '---Last::One
-    More::Stuff'
+                    '       \
+                   /         '----Latest::Greatest
+     Some::Thing--'                                           
 
+  _____ 
+ | ___ |
+ ||   ||  
+ ||___|| load
+ | ooo |--.------------------.------------------------.
+ '_____'  |                  |                        |
+          v                  v                        v
+  .----------.  .--------------------------.  .----------------.
+  | module C |  |         module A         |  |    module B    |
+  '----------'  |--------------------------|  | (instrumented) |
+       |        |        .-----.           |  '----------------'
+       '---------------->| A.o |           |          |
+                |        '-----'           |          |
+                |   .------------------.   |          |
+                |   | A.instrumented.o |<-------------'
+                |   '------------------'   |
+                '--------------------------'
 
-   ____[]
-  | ___ |
-  ||   ||  device
-  ||___||  loads
-  | ooo |----.-------------------------.--------------------------.
-  | ooo |    |                         |                          |
-  '_____'    |                         |                          |
-             v                         v                          v
-   .-------------------.  .--------------------------.  .-------------------.
-   | Loadable module C |  |    Loadable module A     |  | Loadable module B |
-   '-------------------'  |--------------------------|  |   (instrumented)  |
-             |            |        .-----.           |  '-------------------'
-             '-------------------->| A.o |           |            |
-                 calls    |        '-----'           |            |
-                          |   .------------------.   |            |
-                          |   | A.instrumented.o |<---------------'
-                          |   '------------------'   |    calls
-                          '--------------------------'
-
-
-=head1 TUI COMMANDS
+=head2 Bindings
 
  «Enter»            Edit selected element
 
@@ -321,7 +273,7 @@ have text in a file you can use 'cat'' as the command.
 
  «v»                Select connected elements
 
- «Escape»              Deselect all elements
+ «Escape»           Deselect all elements
 
 =back
 
@@ -357,7 +309,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «:» command mode:
+ «:» command group:
 
 =over 4
 
@@ -385,7 +337,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «i» Insert commands:
+ «i» Insert group:
 
 =over 4
 
@@ -425,7 +377,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «a» arrow commands:
+ «a» arrow group:
 
 =over 4
 
@@ -442,7 +394,7 @@ have text in a file you can use 'cat'' as the command.
 =back
 
 
- «A» align commands:
+ «A» align group:
 
 =over 4
 
@@ -460,7 +412,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «g» grouping commands:
+ «g» grouping group:
 
 =over 4
 
@@ -476,7 +428,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «A-g» stripes-group commands:
+ «A-g» stripes-group group:
 
 =over 4
 
@@ -488,7 +440,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «z» display commands:
+ «z» display group:
 
 =over 4
 
@@ -504,7 +456,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «D» debug commands:
+ «D» debug group:
 
 =over 4
 
@@ -522,7 +474,7 @@ have text in a file you can use 'cat'' as the command.
 
 =back
 
- «S» slides commands:
+ «S» slides group:
 
 =over 4
 
@@ -580,6 +532,61 @@ Mouse emulation:
 
 =back
 
+=head2 GUI extra bindings
+
+ «C00-a»            Select all elements
+
+ «C00-c»            Copy to clipboard
+
+ «C00-v»            Insert from clipboard
+
+ «C00-e»            Export to clipboard & primary as ascii
+
+ «C0S-V»            Import from primary to box
+
+ «C00-z»            Undo
+
+ «C00-y»            Redo
+
+ «+»                Zoom in
+
+ «-»                Zoom out
+
+ «double-click»     Edit selected element
+
+ «C00-button-1»     Add to delection
+
+ «0A0-button-1»     Quick link
+
+ «0AS-button-1»     Duplicate elements
+
+ «CA0-button-1»     Insert flex point
+
+=head1 Asciio and Vim 
+
+You can call Asciio from vim and insert your diagram.
+
+    map  <leader><leader>a :call TAsciio()<cr>
+
+    function! TAsciio()
+        let line = getline('.')
+
+        let tempn = tempname()
+        let tempnt = tempn . '.txt'
+        let temp = shellescape(tempn)
+        let tempt = shellescape(tempnt)
+
+        exec "normal i Asciio_file:" . tempn . "\<Esc>"
+
+        if ! has("gui_running")
+        exec "silent !mkdir -p $(dirname " . temp . ")" 
+        exec "silent !cp ~/.config/Asciio/templates/empty.asciio ". temp . "; tasciio " . temp . "; asciio_to_text " . temp . " >" . tempt 
+        exec "read " . tempnt
+        endif
+
+        redraw!
+    endfunction
+
 =cut
 
 sub new
@@ -612,7 +619,7 @@ my $self =
 		COLORS => {},
 		
 		NEXT_GROUP_COLOR => 0, 
-			
+		
 		WORK_DIRECTORY => '.asciio_work_dir',
 		CREATE_BACKUP => 1,
 		MODIFIED => 0,
@@ -683,43 +690,6 @@ sub update_display
 my ($self) = @_;
 
 $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub get_grid_usage
-{
-my ($self) = @_;
-
-my %cost_map ;
-
-# todo: keep previous cost map and update only changed elements
-
-for my $element (@{$self->{ELEMENTS}})
-	{
-	for my $strip (@{$element->get_stripes()})
-		{
-		my $x_offset = $element->{X} + $strip->{X_OFFSET} ;
-		my $y_offset = $element->{Y} + $strip->{Y_OFFSET} ;
-		
-		my $string_offset = 0 ;
-		
-		for my $string ( split /\n/, $strip->{TEXT})
-			{
-			for (0 .. length($string) - 1 )
-				{
-				my $x_offset_line = $x_offset + $_ ;
-				my $y_offset_line = ($y_offset + $string_offset)  ;
-				
-				$cost_map{"$x_offset_line.$y_offset_line"} = 0 ;
-				}
-				
-			$string_offset++ ;
-			}
-		}
-	}
-
-return \%cost_map ;
 }
 
 #-----------------------------------------------------------------------------
@@ -906,7 +876,7 @@ else
 sub set_character_size
 {
 my ($self, $width, $height) = @_ ;
-	
+
 ($self->{USER_CHARACTER_WIDTH}, $self->{USER_CHARACTER_HEIGHT}) = ($width, $height) ;
 }
 
@@ -941,57 +911,24 @@ gnome libraries, gtk, gtk-perl for the gtk version
 
 =head1 BUGS AND LIMITATIONS
 
-Undoubtedly many as I wrote this as a fun little project where I used no design nor 'methodic' whatsoever.
+Please report errors at  https://github.com/nkh/P5-App-Asciio/issues.
 
 =head1 AUTHOR
 
 	Khemir Nadim ibn Hamouda
+	https://github.com/nkh
 	CPAN ID: NKH
-	mailto:nadim@khemir.net
 
 =head1 LICENSE AND COPYRIGHT
 
-This program is free software; you can redistribute
-it and/or modify it under the same terms as Perl itself.
-
-Special thanks go to the Muppet, the gtk-perl group, and Gabor Szabo for their help.
-
-Adam Kennedy coined the name.
-
-=head1 SUPPORTED OSes
-
-=head2 Gentoo
-
-I run gentoo, packages to install gtk-perl exist. Install Asciio with cpan.
-
-=head2 FreeBSD
-
-FreeBSD users can now install asciio either by package:
-
-$ pkg_add -r asciio
-
-or from source (out of the ports system) by:
-
-$ cd /usr/ports/graphics/asciio
-$ make install clean
-
-Thanks to Emanuel Haupt.
-
-=head2 Ubuntu and Debian
-
-Ports for the older gtk2 version exist, gtk3 not yet.
-
-=head2 Windows
-
-nd old version came witht the "Camel-box" distributions, you are better off running in WSL or in a docker image
-
-=head2 Mac OsX
-
-This works too (and I have screenshots to prove it :). I don't own a mac and the mac user hasn't send me how to do it yet.
+This program is free software; you can redistribute it and/or modify it under
+the same terms as Perl itself.
 
 =head2 Docker Image
 
-There are docker images made by third parties, use a search engine for the latest. (example image: https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb).
+There are docker images made by third parties, use a search engine for the latest.
+
+example image: https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb
 
 =head1 SEE ALSO
 
@@ -1000,13 +937,10 @@ There are docker images made by third parties, use a search engine for the lates
 	http://ditaa.sourceforge.net/
 	http://www.codeproject.com/KB/macros/codeplotter.aspx
 	http://search.cpan.org/~jpierce/Text-FIGlet-1.06/FIGlet.pm
-	http://www.fossildraw.com/?gclid=CLanxZXxoJECFRYYEAodnBS8Dg (doesn't always respond)
-	
 	http://www.ascii-art.de (used some entries as base for the network stencil)
-	http://c2.com/cgi/wiki?UmlAsciiArt
 	http://www.textfiles.com/art/
 	http://www2.b3ta.com/_bunny/texbunny.gif
-	
+
 
      *\o_               _o/*
       /  *             *  \
@@ -1030,6 +964,6 @@ There are docker images made by third parties, use a search engine for the lates
 (\_/)
 (O.o)
 /> ASCII world domination!
-"  ;
+"
 
 
