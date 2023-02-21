@@ -1,5 +1,7 @@
 
 package App::Asciio::Actions::File ;
+use utf8;
+use Encode;
 
 #----------------------------------------------------------------------------------------------
 
@@ -10,6 +12,7 @@ use File::Basename ;
 sub save
 {
 my ($self, $as, $type, $file_name) = @_ ;
+Encode::_utf8_on($file_name);
 
 unless(defined $file_name)
 	{
@@ -90,6 +93,7 @@ return $file_name ;
 sub open
 {
 my ($self, $file_name) = @_ ;
+$file_name = decode('utf-8', $file_name);
 
 my $user_answer = '' ;
 

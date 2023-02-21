@@ -21,7 +21,7 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	my $text = $stripe->{TEXT} ;
 	
 	my $width = 0 ;
-	map {$width  = $width < length($_) ? length($_)  : $width} split("\n", $text) ;
+	map {$width  = $width < physical_length($_) ? physical_length($_)  : $width} split("\n", $text) ;
 	
 	my $height = ($text =~ tr[\n][\n]) + 1 ;
 	

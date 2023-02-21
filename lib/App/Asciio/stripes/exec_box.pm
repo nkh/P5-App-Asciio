@@ -1,5 +1,7 @@
 
 package App::Asciio::stripes::exec_box ;
+use utf8;
+use Encode;
 
 use base App::Asciio::stripes::editable_box2 ;
 
@@ -78,6 +80,9 @@ else
 	}
 
 print "cmd $command -> $output\n" ;
+
+$output = decode("utf-8", $output) ;
+$output =~ s/\r//g;
 
 App::Asciio::stripes::editable_box2::setup
 	(

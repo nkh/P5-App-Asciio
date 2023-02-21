@@ -221,7 +221,7 @@ if(defined $name && $name ne q[])
 		delete $stencil->{Y} ;
 		$stencil->{NAME} = $name;
 		
-		write_file($file_name, Dumper [$stencil]) ;
+		write_file_utf8($file_name, Dumper [$stencil]) ;
 		}
 	}
 }

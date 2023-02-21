@@ -24,7 +24,7 @@ sub setup
 my ($self, $text) = @_ ;
 
 my $width = 0 ;
-map {$width  = $width < length($_) ? length($_)  : $width} split("\n", $text) ;
+map {$width  = $width < physical_length($_) ? physical_length($_)  : $width} split("\n", $text) ;
 
 my $height = ($text =~ tr[\n][\n]) + 1 ;
 

@@ -1,5 +1,7 @@
 
 package App::Asciio::Actions::Unsorted ;
+use utf8;
+use Encode;
 
 #----------------------------------------------------------------------------------------------
 
@@ -437,6 +439,10 @@ if(defined $command && $command ne '')
 		}
 		
 	use App::Asciio::stripes::editable_box2 ;
+
+	$output = decode("utf-8", $output);
+	$output =~ s/\r//g;
+
 	my $new_element = new App::Asciio::stripes::editable_box2
 					({
 					TEXT_ONLY => $output,

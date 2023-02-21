@@ -2,6 +2,8 @@ package App::Asciio::Actions::Clipboard ;
 
 #----------------------------------------------------------------------------------------------
 
+use utf8;
+use Encode;
 use List::Util qw(min max) ;
 
 sub copy_to_clipboard
@@ -139,6 +141,8 @@ sub import_from_clipboard_to_box
 my ($self) = @_ ;
 
 my $ascii = qx~xsel -b -o~ ;
+$ascii = decode("utf-8", $ascii);
+$ascii =~ s/\r//g;
 
 my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 $element->set_text('', $ascii) ;

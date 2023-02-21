@@ -4,11 +4,15 @@ package App::Asciio ;
 use strict;
 use warnings;
 
+use utf8;
+use Encode;
+
 use Data::TreeDumper ;
 use Clone;
 use List::Util qw(min max first) ;
 use List::MoreUtils qw(any minmax first_value) ;
 
+use App::Asciio::Toolfunc ;
 use App::Asciio::Setup ;
 use App::Asciio::Dialogs ;
 use App::Asciio::Elements ;
@@ -600,7 +604,7 @@ my $self =
 		ELEMENTS => [],
 		CONNECTIONS => [],
 		CLIPBOARD => {},
-		FONT_FAMILY => 'Monospace',
+		FONT_FAMILY => 'sarasa mono sc',
 		FONT_SIZE => '10',
 		TAB_AS_SPACES => '   ',
 		OPAQUE_ELEMENTS => 1,
@@ -663,6 +667,7 @@ defined $title and $self->{TITLE} = $title ;
 sub get_title
 {
 my ($self) = @_;
+Encode::_utf8_on($self->{TITLE});
 $self->{TITLE} ;
 }
 
@@ -672,7 +677,7 @@ sub set_font
 {
 my ($self, $font_family, $font_size) = @_;
 
-$self->{FONT_FAMILY} = $font_family || 'Monospace';
+$self->{FONT_FAMILY} = $font_family || 'sarasa mono sc';
 $self->{FONT_SIZE} = $font_size || 10 ;
 }
 
