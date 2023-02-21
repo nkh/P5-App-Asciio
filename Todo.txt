@@ -3,6 +3,8 @@ text interface
 	vim script
 		open file under cursor
 
+	must have two user configs for GUI and TUI as colors differ in type
+
 objects
 	any orientation text
 		call a sub that returns a text, sub gets direction and length
