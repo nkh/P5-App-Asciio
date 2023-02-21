@@ -34,6 +34,7 @@ for my $setup_file (@{$setup_ini_files})
 	$ini_files = $context->eval
 				(
 				PRE_CODE => "use strict;\nuse warnings;\n",
+				INSTALL_VARIABLES =>[[ '$ASCIIO_UI'  => $self->{UI}]] ,
 				CODE_FROM_FILE => $setup_file,
 				) ;
 	

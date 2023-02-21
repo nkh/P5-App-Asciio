@@ -190,7 +190,7 @@ for my $element (@{$self->{ELEMENTS}})
 				}
 			}
 		}
-			
+		
 	$foreground_color //= $self->get_color('element_foreground') ;
 	
 	my $color_set = $is_selected . '-'

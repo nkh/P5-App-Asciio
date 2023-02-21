@@ -8,9 +8,9 @@
 
 # SYNOPSIS
 
-         ___              ___ ____
-        /   |  __________(_|_) __ \
-       / /| | / ___/ ___/ / / / / /
+         ___                     
+        /   |  __________________
+       / /| | / ___/ ___/ / / __ \
       / ___ |(__  ) /__/ / / /_/ /
      /_/  |_/____/\___/_/_/\____/
 
@@ -161,15 +161,15 @@ A set of whirl arrows connected to each other.
 
 
                                   
-                                 .----Base::Class::Derived_B
+                                 .-Base::Class::Derived_B
                                 /
      Something::Else           /
-             \                .-------Base::Class::Derived_C 
+             \                .----Base::Class::Derived_C 
               \              /
-               '-------Base::Class
-                        '       \
-                       /         '----Latest::Greatest
-         Some::Thing--'                                           
+               '----Base::Class
+                     '       \
+                    /         '----Latest::Greatest
+      Some::Thing--'                                           
 
       _____ 
      | ___ |

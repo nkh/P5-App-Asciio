@@ -31,6 +31,7 @@ $hpaned->set_border_width (3);
 my @asciios ;
 
 my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25) ;
+$asciio->{UI} = 'GUI' ;
 
 push @asciios, $asciio ;
 

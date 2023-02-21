@@ -11,6 +11,7 @@ use File::Basename ;
 #-----------------------------------------------------------------------------
 
 my $asciio = App::Asciio::Text->new(50, 25) ;
+$asciio->{UI} = 'TUI' ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
