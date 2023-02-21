@@ -53,7 +53,7 @@ for my $action (@actions)
 			$self->{ACTION_VERBOSE}->
 				(
 				sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN]
-				) if $self->{ACTION_VERBOSE} ;
+				) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}[$NAME] ne 'Mouse motion' ;
 			
 			if(defined $self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS])
 				{

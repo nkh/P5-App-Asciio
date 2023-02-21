@@ -3,7 +3,7 @@ text interface
 	vim script
 		open file under cursor
 
-	dialogs, 
+	dialogs
 
 objects
 	any orientation text

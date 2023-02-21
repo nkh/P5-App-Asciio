@@ -61,7 +61,7 @@ sub rulers_context_menu
 my ($self, $popup_x, $popup_y) = @_ ;
 my @context_menu_entries ;
 
-my ($x, $y) = $self->closest_character($popup_x, $popup_y) ;
+my ($x, $y) = ($popup_x, $popup_y) ;
 
 my $vertical = {TYPE => 'VERTICAL', POSITION => $x} ;
 my $horizontal = {TYPE => 'HORIZONTAL', POSITION => $y} ;
