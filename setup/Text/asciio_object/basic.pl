@@ -2,6 +2,10 @@
 DRAW_CONNECTION_POINTS => 1,
 ACTION_VERBOSE => 0,
 LAST_ACTION => '',
+DIALOGS => 
+	{
+	#BOX_EDIT => '',
+	},
 
 # use ANSI colors
 COLOR_SCHEMES =>
