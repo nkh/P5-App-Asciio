@@ -204,12 +204,27 @@ my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
 $dialog->set_default_size (300, 150);
 $dialog->add_button ('gtk-ok' => 'ok');
 
+my $vbox = Gtk3::VBox->new(FALSE, 5) ;
+$vbox->pack_start(Gtk3::Label->new(""), FALSE, FALSE, 0) ;
+$vbox->add(Gtk3::Label->new("")) ;
+
 my $textview = Gtk3::TextView->new;
+$textview->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 12'));
 my $buffer = $textview->get_buffer;
 $buffer->insert ($buffer->get_end_iter, $text);
 
-$dialog->get_content_area->add ($textview) ;
-$textview->show;
+my $scroller = Gtk3::ScrolledWindow->new();
+$scroller->set_hexpand(TRUE);
+$scroller->set_vexpand(TRUE);
+$scroller->add($textview);
+$vbox->add($scroller);
+
+$textview->show();
+$scroller->show();
+$vbox->show();
+
+$dialog->get_content_area->add ($vbox) ;
+
 
 # Set up the dialog such that Ctrl+Return will activate the "ok"  response. Muppet
 

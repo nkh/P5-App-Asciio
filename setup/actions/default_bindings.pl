@@ -26,7 +26,8 @@ register_action_handlers
 'Export to clipboard & primary as ascii'               => [['C00-e', '00S-Y', 'Y'],              \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii                ],
 'Import from primary to box'                           => [['C0S-V', '00S-P', 'P'],              \&App::Asciio::Actions::Clipboard::import_from_primary_to_box                  ],
 'Import from primary to text'                          => [['0A0-p','A-P'],                      \&App::Asciio::Actions::Clipboard::import_from_primary_to_text                 ],
-# 'Import from clipboard to box'                         => [ '???' ,                              \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                ],
+'Import from clipboard to box'                         => [ '0AS-E' ,                       \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                ],
+'Import from clipboard to text'                        => [ '0AS-T' ,                       \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text                ],
 
 
 'Change elements foreground color'                     => ['000-c',                              \&App::Asciio::Actions::Colors::change_elements_colors, 0                      ],

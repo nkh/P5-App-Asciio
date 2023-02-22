@@ -1,7 +1,7 @@
 
-package App::Asciio::stripes::editable_box2 ;
+package App::Asciio::stripes::rhombus ;
 
-use base App::Asciio::stripes::single_stripe ;
+use base App::Asciio::stripes::stripes ;
 use App::Asciio::GTK::Asciio::Boxfuncs ;
 
 use strict;
@@ -14,7 +14,7 @@ use Glib qw(TRUE FALSE);
 
 sub display_box_edit_dialog
 {
-my ($self, $title, $text) = @_ ;
+my ($self, $text) = @_ ;
 
 my $rows = $self->{BOX_TYPE} ;
 	
@@ -30,19 +30,9 @@ $vbox->add(Gtk3::Label->new (""));
 my $treeview = Gtk3::TreeView->new_with_model(create_model($rows));
 $treeview->set_rules_hint(TRUE);
 $treeview->get_selection->set_mode('single');
-add_columns($treeview, $rows);
+add_columns($treeview, $rows, 'no show');
 
 $vbox->add($treeview);
-
-# box title
-my $titleview = Gtk3::TextView->new;
-$titleview->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 12'));
-my $title_buffer = $titleview->get_buffer ;
-$title_buffer->insert($title_buffer->get_end_iter, $title);
-
-$vbox->add($titleview);
-
-$titleview->show();
 
 # box text 
 my $textview = Gtk3::TextView->new;
@@ -71,11 +61,12 @@ $dialog->get_content_area()->add($vbox) ;
 $dialog->run() ;
 
 my $new_text =  $textview->get_buffer->get_text($text_buffer->get_start_iter, $text_buffer->get_end_iter, TRUE) ;
-my $new_title =  $titleview->get_buffer->get_text($title_buffer->get_start_iter, $title_buffer->get_end_iter, TRUE) ;
 
 $dialog->destroy ;
 
-return($new_text, $new_title) ;
+return $new_text ;
 }
+
+#-----------------------------------------------------------------------------
 
 1 ;

@@ -604,7 +604,7 @@ my $self =
 		ELEMENTS => [],
 		CONNECTIONS => [],
 		CLIPBOARD => {},
-		FONT_FAMILY => 'sarasa mono sc',
+		FONT_FAMILY => 'Monospace',
 		FONT_SIZE => '10',
 		TAB_AS_SPACES => '   ',
 		OPAQUE_ELEMENTS => 1,
@@ -677,7 +677,7 @@ sub set_font
 {
 my ($self, $font_family, $font_size) = @_;
 
-$self->{FONT_FAMILY} = $font_family || 'sarasa mono sc';
+$self->{FONT_FAMILY} = $font_family || 'Monospace';
 $self->{FONT_SIZE} = $font_size || 10 ;
 }
 

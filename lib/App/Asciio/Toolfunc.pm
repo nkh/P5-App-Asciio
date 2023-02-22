@@ -3,14 +3,11 @@ package App::Asciio::Toolfunc ;
 
 require Exporter;
 @ISA = qw(Exporter);
-@EXPORT = qw(physical_length write_file_utf8);
+@EXPORT = qw(physical_length write_file_utf8 make_vertical_text);
 
 use strict;
 use warnings;
-use Encode;
 use utf8;
-
-
 
 #~ cnt number of cjk characters
 #~ chinese u3400-u4db5 u4e00-u9fa5 
@@ -34,9 +31,42 @@ sub write_file_utf8 {
 	close $fh ;
 }
 
-
 #-----------------------------------------------------------------------------
 
+sub make_vertical_text
+{
+my ($text) = @_ ;
 
+my @lines = map{[split '', $_]} split "\n", $text ;
+
+my $vertical = '' ;
+my $found_character = 1 ;
+my $index = 0 ;
+
+while($found_character)
+	{
+	my $line ;
+	$found_character = 0 ;
+	
+	for(@lines)
+		{
+		if(defined $_->[$index])
+			{
+			$line.= $_->[$index] ;
+			$found_character++ ;
+			}
+		else
+			{
+			$line .= ' ' ;
+			}
+		}
+	
+	$line =~ s/\s+$//; 
+	$vertical .= "$line\n" if $found_character ;
+	$index++ ;
+	}
+
+return $vertical ;
+}
 
 1 ;

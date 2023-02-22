@@ -136,19 +136,35 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub import_from_clipboard_to_box
+sub import_from_clipboard
 {
-my ($self) = @_ ;
+my ($self, $obj) = @_ ;
 
 my $ascii = qx~xsel -b -o~ ;
 $ascii = decode("utf-8", $ascii);
 $ascii =~ s/\r//g;
 
-my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('Stencils/Asciio/' . $obj, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 $element->set_text('', $ascii) ;
 $self->select_elements(1, $element) ;
 
 $self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_clipboard_to_box
+{
+my ($self) = @_ ;
+import_from_clipboard($self, 'box');
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub import_from_clipboard_to_text
+{
+my ($self) = @_ ;
+import_from_clipboard($self, 'text');
 }
 
 #----------------------------------------------------------------------------------------------

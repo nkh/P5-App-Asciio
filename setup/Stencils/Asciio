@@ -56,7 +56,14 @@ create_element
 	EDITABLE => 1,
 	) ,
 
-
+create_element
+	(
+	NAME => 'Shape/rhombus',
+	CLASS => 'App::Asciio::stripes::rhombus',
+	RESIZABLE => 1,
+	EDITABLE => 1,
+	TEXT_ONLY => '', 
+	) ,
 
 create_element
 	(
@@ -73,6 +80,22 @@ create_element
 	TEXT_ONLY => '$',
 	EDITABLE => 1,
 	NO_BORDER => 1,
+	) ,
+
+create_element
+	(
+	NAME => 'Shape/triangle/down',
+	CLASS => 'App::Asciio::stripes::triangle_down',
+	RESIZABLE => 1,
+	EDITABLE => 0,
+	) ,
+
+create_element
+	(
+	NAME => 'Shape/triangle/up',
+	CLASS => 'App::Asciio::stripes::triangle_up',
+	RESIZABLE => 1,
+	EDITABLE => 0,
 	) ,
 
 create_box(NAME => 'Scale/1_to_10_vertical',   TEXT_ONLY => "1\n2\n3\n4\n5\n6\n7\n8\n9\n0",) ,
