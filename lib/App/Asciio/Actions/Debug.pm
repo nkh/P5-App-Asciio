@@ -14,7 +14,7 @@ my ($self) = @_ ;
 my $size = sum(map { length } @{$self->{DO_STACK}}) || 0 ;
 
 local $self->{DO_STACK} = scalar(@{$self->{DO_STACK}})  . " [$size]";
-	
+
 #~ print Data::TreeDumper::DumpTree $self ;
 $self->show_dump_window($self, 'asciio') ;
 }
@@ -51,6 +51,8 @@ $self->run_actions_by_name(['Insert', 0, 0, 'insert_error.asciio']) ;
 
 $self->update_display() ;
 }
+
+#----------------------------------------------------------------------------------------------
 
 1 ;
 

@@ -17,7 +17,7 @@ for my $element($self->get_selected_elements(1))
 		? $element->set_background_color($color) 
 		: $element->set_foreground_color($color) ;
 	}
-	
+
 $self->update_display() ;
 }
 
@@ -33,7 +33,7 @@ $self->create_undo_snapshot() ;
 
 delete $self->{CACHE}{GRID} ;
 $self->{COLORS}{background} = $color ;
-	
+
 $self->update_display() ;
 }
 
@@ -49,7 +49,7 @@ $self->create_undo_snapshot() ;
 
 delete $self->{CACHE}{GRID} ;
 $self->{COLORS}{grid} = $color ;
-	
+
 $self->update_display() ;
 }
 

@@ -27,44 +27,21 @@ if(@selected_elements == 1)
 sub change_arrow_direction
 {
 my ($self) = @_ ;
-
-$self->create_undo_snapshot() ;
 my $changes_made = 0 ;
 
-# App::Asciio::stripes::section_wirl_arrow
-my @elements_to_redirect =  grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1) ;
-
-if(@elements_to_redirect)
+for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1))
 	{
-	$changes_made++ ;
-	for (@elements_to_redirect)
-		{
-		$_->change_section_direction($self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y}) ;
-		}
+	$self->create_undo_snapshot() unless $changes_made++ ;
+	$_->change_section_direction($self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y}) ;
 	}
 
-
-# App::Asciio::stripes::angled_arrow
-@elements_to_redirect =  grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} $self->get_selected_elements(1) ;
-
-if(@elements_to_redirect)
+for (grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} $self->get_selected_elements(1))
 	{
-	$changes_made++ ;
-	for (@elements_to_redirect)
-		{
-		$_->change_direction() ;
-		}
+	$self->create_undo_snapshot() unless $changes_made++ ;
+	$_->change_direction() ;
 	}
 
-# all
-if($changes_made)
-	{
-	$self->update_display()  ;
-	}
-else
-	{
-	$self->pop_undo_buffer(1) ;
-	}
+$self->update_display() if $changes_made ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -72,71 +49,56 @@ else
 sub flip_arrow_ends
 {
 my ($self) = @_ ;
+my $changes_made = 0 ;
 
-my @elements_to_flip =  
+my %reverse_direction = 
+	(
+	'up', => 'down',
+	'right' => 'left',
+	'down' => 'up',
+	'left' => 'right'
+	) ;
+
+for
+	(
 	grep 
 		{
 		my @connectors = $_->get_connector_points() ; 
 		
-		      ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'
+		   ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'
 		&& $_->get_number_of_sections() == 1
 		&& @connectors > 0 ;
-		} $self->get_selected_elements(1) ;
-
-if(@elements_to_flip)
+		} $self->get_selected_elements(1)
+	)
 	{
-	$self->create_undo_snapshot() ;
+	$self->create_undo_snapshot() unless $changes_made++ ;
 	
-	my %reverse_direction = 
-		(
-		'up', => 'down',
-		'right' => 'left',
-		'down' => 'up',
-		'left' => 'right'
-		) ;
-		
-	for (@elements_to_flip)
+	my $new_direction = $_->get_section_direction(0) ;
+	
+	if($new_direction =~ /(.*)-(.*)/)
 		{
-		# create one with ends swapped
-		my $new_direction = $_->get_section_direction(0) ;
-		
-		if($new_direction =~ /(.*)-(.*)/)
-			{
-			my ($start_direction, $end_direction) = ($1, $2) ;
-			$new_direction = $reverse_direction{$end_direction} . '-' . $reverse_direction{$start_direction} ;
-			}
-		else
-			{
-			$new_direction = $reverse_direction{$new_direction} ;
-			}
-		
-		my ($start_connector, $end_connector) = $_->get_connector_points() ;
-		my $arrow = new App::Asciio::stripes::section_wirl_arrow
-						({
-						%{$_},
-						POINTS => 
-							[
-								[
-								- $end_connector->{X},
-								- $end_connector->{Y},
-								$new_direction,
-								]
-							],
-						DIRECTION => $new_direction,
-						}) ;
-		
-		#add new element, connects automatically
-		$self->add_element_at($arrow, $_->{X} + $end_connector->{X}, $_->{Y} + $end_connector->{Y}) ;
-		
-		# remove element
-		$self->delete_elements($_) ;
-		
-		# keep the element selected
-		$self->select_elements(1, $arrow) ;
+		my ($start_direction, $end_direction) = ($1, $2) ;
+		$new_direction = $reverse_direction{$end_direction} . '-' . $reverse_direction{$start_direction} ;
+		}
+	else
+		{
+		$new_direction = $reverse_direction{$new_direction} ;
 		}
 	
-	$self->update_display() ;
+	my ($start_connector, $end_connector) = $_->get_connector_points() ;
+	my $arrow = new App::Asciio::stripes::section_wirl_arrow
+					({
+					%{$_},
+					POINTS => [ [ - $end_connector->{X}, - $end_connector->{Y}, $new_direction, ] ],
+					DIRECTION => $new_direction,
+					}) ;
+	
+	$self->add_element_at($arrow, $_->{X} + $end_connector->{X}, $_->{Y} + $end_connector->{Y}) ;
+	$self->delete_elements($_) ;
+	$self->select_elements(1, $arrow) ;
 	}
+
+$self->update_display() if $changes_made ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -183,16 +145,14 @@ $self->update_display() ;
 sub select_element_by_id
 {
 my ($self) = @_ ;
-
 my $id = $self->display_edit_dialog('element id', '', $self) ;
 
-return unless exists $self->{ELEMENTS}[$id - 1] ;
-
-$self->create_undo_snapshot() ;
-
-$self->select_elements_flip($self->{ELEMENTS}[$id - 1]) ;
-
-$self->update_display() ;
+if(exists $self->{ELEMENTS}[$id - 1])
+	{
+	$self->create_undo_snapshot() ;
+	$self->select_elements_flip($self->{ELEMENTS}[$id - 1]) ;
+	$self->update_display() ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -358,7 +318,7 @@ if(@selected_elements >= 2)
 		push @{$element->{'GROUP'}}, $group  ;
 		}
 	}
-	
+
 $self->update_display() ;
 }
 
@@ -392,7 +352,7 @@ if(@selected_elements)
 	$self->create_undo_snapshot() ;
 	$self->move_elements_to_front(@selected_elements) ;
 	}
-	
+
 $self->update_display() ;
 }
 
@@ -409,7 +369,7 @@ if(@selected_elements)
 	$self->create_undo_snapshot() ;
 	$self->move_elements_to_back(@selected_elements) ;
 	}
-	
+
 $self->update_display() ;
 }
 
@@ -432,7 +392,7 @@ if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front})
 			
 			splice @{$self->{ELEMENTS}}, $current_position, 1 ;
 			splice @{$self->{ELEMENTS}}, $position, 0, $element ;
-	
+i			
 			$self->update_display() ;
 			last ;
 			}
