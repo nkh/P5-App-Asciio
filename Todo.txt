@@ -11,13 +11,9 @@ objects
 	angle arrow dialog does nothing
 
 display
-	scrollbars
-	
 	interface to ditaa|svgbob/aasvg/goat
 	
 	use Unicode stencils?
-	
-	support Unicode languages
 
 architecture
 	handle multiple binary format versions

@@ -1,5 +1,9 @@
 FONT_FAMILY => 'sarasa mono sc',
-FONT_SIZE => '12',
+FONT_SIZE => 12,
+FONT_MIN => 9,
+
+ZOOM_STEP => 3,
+
 TAB_AS_SPACES => '    ',
 DISPLAY_GRID => 1,
 DISPLAY_GRID2 => 1,

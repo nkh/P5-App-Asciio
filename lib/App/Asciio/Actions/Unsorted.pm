@@ -1,8 +1,10 @@
 
 package App::Asciio::Actions::Unsorted ;
-use App::Asciio::Toolfunc ;
-use utf8;
-use Encode;
+
+use strict ;
+use warnings ;
+use utf8 ;
+use Encode ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -65,6 +67,18 @@ my ($self, $direction) = @_ ;
 my ($family, $size) = $self->get_font() ;
 
 $self->set_font($family, $size + $direction) ;
+
+my $zoom_step = $self->{ZOOM_STEP} // 1 ;
+my $font_min = $self->{FONT_MIN} // 1  ;
+
+$size += ($direction * $zoom_step) ;
+
+my $remainder = $size % $zoom_step ;
+$size += $zoom_step - $remainder if $remainder ;
+
+$size = $font_min if $size < $font_min ;
+
+$self->set_font($family, $size);
 
 $self->invalidate_rendering_cache() ;
 $self->update_display() ;
