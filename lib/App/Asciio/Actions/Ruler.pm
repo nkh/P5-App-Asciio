@@ -23,7 +23,7 @@ else
 	{
 	$data = Clone::clone$data_argument ;
 	}
-	
+
 if(! defined $data->{POSITION})
 	{
 	if($data->{TYPE} eq 'VERTICAL')
@@ -48,7 +48,7 @@ sub remove_ruler
 my ($self, $data) = @_ ;
 
 $data = {TYPE => 'VERTICAL', POSITION => $self->{MOUSE_X}} unless defined $data ;
-	
+
 $self->create_undo_snapshot() ;
 $self->remove_ruler_lines($data) ;
 $self->update_display();

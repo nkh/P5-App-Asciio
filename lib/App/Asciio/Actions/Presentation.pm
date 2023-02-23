@@ -5,12 +5,7 @@ package App::Asciio::Actions::Presentation ;
 
 my ($slides, $current_slide) ;
 
-#----------------------------------------------------------------------------------------------
-
 sub get_slides { return $slides ; }
-
-#----------------------------------------------------------------------------------------------
-
 sub get_current_slide { return $current_slide ; }
 
 #----------------------------------------------------------------------------------------------
@@ -27,7 +22,7 @@ if(defined $file_name && $file_name ne q{})
 	# load slides
 	$slides = do $file_name or die $@ ;
 	$current_slide = 0 ;
-
+	
 	# run first slide
 	$slides->[$current_slide]->($self) ;
 	$self->deselect_all_elements() ;

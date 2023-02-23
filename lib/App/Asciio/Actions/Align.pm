@@ -27,7 +27,7 @@ for ($alignment)
 			}
 		last ;
 		} ;
-		
+	
 	$_ eq 'center' and do
 		{
 		my $left = min( map{$_->{X}} @elements_to_move) ;
@@ -74,7 +74,7 @@ for ($alignment)
 			}
 		last ;
 		} ;
-		
+	
 	$_ eq 'right' and do
 		{
 		my $right = max
@@ -94,7 +94,7 @@ for ($alignment)
 			}
 		last ;
 		} ;
-		
+	
 	$_ eq 'top' and do
 		{
 		my $top = min( map{$_->{Y}} @elements_to_move) ;
@@ -105,7 +105,7 @@ for ($alignment)
 			}
 		last ;
 		} ;
-		
+	
 	$_ eq 'middle' and do
 		{
 		my $top = min( map{$_->{Y}} @elements_to_move) ;
@@ -152,7 +152,7 @@ for ($alignment)
 			}
 		last ;
 		} ;
-		
+	
 	$_ eq 'bottom' and do
 		{
 		my $bottom = max

@@ -116,8 +116,8 @@ for my $action (keys %{$actions})
 	if('ARRAY' eq ref $actions->{$action})
 		{
 		my $shortcut =  ref $actions->{$action}[0] eq '' 
-						? $actions->{$action}[0] 
-						:  '[' . join('/', @{$actions->{$action}[0]}) . ']';
+					? $actions->{$action}[0] 
+					: '[' . join('/', @{$actions->{$action}[0]}) . ']';
 		
 		$keyboard_mapping->{$shortcut . ' => ' . $action} = {FILE=> $actions->{$action}[6]} ;
 		}
@@ -151,10 +151,10 @@ my ($self) = @_ ;
 my $commands = get_commands($self->{ACTIONS_BY_NAME}) ;
 
 $self->show_dump_window
-		(
-		$commands,
-		'commands:',
-		DISPLAY_ADDRESS => 0,
+	(
+	$commands,
+	'commands:',
+	DISPLAY_ADDRESS => 0,
 		)
 }
 
@@ -170,8 +170,8 @@ for my $action (keys %{$actions})
 	if('ARRAY' eq ref $actions->{$action})
 		{
 		my $shortcut =  ref $actions->{$action}[0] eq '' 
-						? $actions->{$action}[0] 
-						:  '[' . join('/', @{$actions->{$action}[0]}) . ']';
+			? $actions->{$action}[0] 
+			: '[' . join('/', @{$actions->{$action}[0]}) . ']';
 		
 		$commands->{$action . " [$shortcut]"} = {FILE=> $actions->{$action}[6]} ;
 		}
@@ -205,14 +205,6 @@ my $actions_per_file = {} ;
 
 generate_keyboard_mapping_text_dump($self->{ACTIONS_BY_NAME}, $actions_per_file) ;
 
-#~ print Data::TreeDumper::DumpTree 
-		#~ $actions_per_file,
-		#~ 'Action files:',
-		#~ DISPLAY_ADDRESS => 0,
-		#~ GLYPHS => ['  ', '  ', '  ', '  '],
-		#~ NO_NO_ELEMENTS => 1,
-		#~ FILTER => \&filter_keyboard_mapping ;
-		
 $self->show_dump_window
 		(
 		$actions_per_file,
@@ -255,7 +247,7 @@ if('HASH' eq ref $s)
 		
 	return('HASH', \%hash, @keys) ;
 	}
-	
+
 return(Data::TreeDumper::DefaultNodesToDisplay($s)) ;
 }
 
@@ -274,7 +266,7 @@ for my $action (keys %{$key_mapping})
 	elsif('HASH' eq ref $key_mapping->{$action})
 		{
 		my $sub_actions = {} ;
-			
+		
 		{
 		local $key_mapping->{$action}{GROUP_NAME} = undef ;
 		local $key_mapping->{$action}{ORIGIN} = undef ;
@@ -289,7 +281,7 @@ for my $action (keys %{$key_mapping})
 		my $shortcuts = $key_mapping->{$action}{SHORTCUTS} ;
 		$shortcuts = join(' ', @{$key_mapping->{$action}{SHORTCUTS}}) 
 			if('ARRAY' eq ref $key_mapping->{$action}{SHORTCUTS}) ;
-				
+		
 		$actions_per_file->{$key_mapping->{$action}{ORIGIN}}{"group: $action [$shortcuts]"} 
 			= $sub_actions->{$key_mapping->{$action}{ORIGIN}} ;
 		}
@@ -360,7 +352,7 @@ if(defined $text && $text ne '')
 							EDITABLE => 1,
 							RESIZABLE => 1,
 							}) ;
-							
+		
 		if(! $boxed)
 			{
 			my $box_type = $new_element->get_box_type() ;

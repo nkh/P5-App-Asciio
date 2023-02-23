@@ -1,4 +1,6 @@
 package App::Asciio::Actions::Clipboard ;
+use strict ;
+use warnings ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -15,7 +17,7 @@ $self->invalidate_rendering_cache() ;
 my @selected_elements = $self->get_selected_elements(1) ;
 return unless @selected_elements ;
 
-my %selected_elements = map { $_ => 1} @selected_elements ;
+my %selected_elements = map { $_ => 1 } @selected_elements ;
 
 my @connections =
 	grep 
@@ -29,7 +31,7 @@ my $elements_and_connections =
 	ELEMENTS =>  \@selected_elements,
 	CONNECTIONS => \@connections ,
 	};
-	
+
 $self->{CLIPBOARD} = Clone::clone($elements_and_connections) ;
 $self->{CACHE} = $cache ;
 }
@@ -45,7 +47,7 @@ if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 	$self->create_undo_snapshot() ;
 	
 	$self->deselect_all_elements() ;
-		
+	
 	unless(defined $x_offset)
 		{
 		my $min_x = min(map {$_->{X}} @{$self->{CLIPBOARD}{ELEMENTS}}) ;
@@ -63,7 +65,7 @@ if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 	for my $element (@{$self->{CLIPBOARD}{ELEMENTS}})
 		{
 		@$element{'X', 'Y'}= ($element->{X} - $x_offset, $element->{Y} - $y_offset) ;
-					
+		
 		if(exists $element->{GROUP} && scalar(@{$element->{GROUP}}) > 0)
 			{
 			my $group = $element->{GROUP}[-1] ;
