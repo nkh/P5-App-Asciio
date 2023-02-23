@@ -94,7 +94,7 @@ my $dialog = Gtk3::MessageDialog->new
 	$message ,
 	) ;
 
-$dialog->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 10'));
+$dialog->modify_font(Pango::FontDescription->from_string($self->get_font_as_string()));
 
 $dialog->signal_connect(response => sub { $dialog->destroy ; 1 }) ;
 $dialog->run() ;
@@ -194,7 +194,7 @@ sub create_button {
 
 sub display_edit_dialog
 {
-my ($self, $title, $text) = @_ ;
+my ($self, $title, $text, $asciio) = @_ ;
 
 $text ='' unless defined $text ;
 
@@ -209,7 +209,7 @@ $vbox->pack_start(Gtk3::Label->new(""), FALSE, FALSE, 0) ;
 $vbox->add(Gtk3::Label->new("")) ;
 
 my $textview = Gtk3::TextView->new;
-$textview->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 12'));
+$textview->modify_font(Pango::FontDescription->from_string($asciio->get_font_as_string()));
 my $buffer = $textview->get_buffer;
 $buffer->insert ($buffer->get_end_iter, $text);
 

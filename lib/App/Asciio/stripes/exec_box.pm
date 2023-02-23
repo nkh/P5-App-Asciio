@@ -108,7 +108,7 @@ return unless $self->{EDITABLE} ;
 
 my $text = $self->{TEXT_ONLY} ;
 
-($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $self->{COMMAND} // '') ;
+($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $self->{COMMAND} // '', $asciio) ;
 
 my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
 

@@ -343,7 +343,7 @@ sub mouse_on_element_id
 {
 my ($self) = @_ ;
 
-my $id = $self->display_edit_dialog('element id', '') ;
+my $id = $self->display_edit_dialog('element id', '', $self) ;
 $id = "$id" + 0 ;
 
 return unless exists $self->{ELEMENTS}[$id - 1] ;

@@ -688,6 +688,13 @@ my ($self) = @_;
 return($self->{FONT_FAMILY},  $self->{FONT_SIZE}) ;
 }
 
+sub get_font_as_string
+{
+my ($self) = @_;
+
+return("$self->{FONT_FAMILY} $self->{FONT_SIZE}") ;
+}
+
 #-----------------------------------------------------------------------------
 
 sub update_display 

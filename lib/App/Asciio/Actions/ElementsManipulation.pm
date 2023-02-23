@@ -184,7 +184,7 @@ sub select_element_by_id
 {
 my ($self) = @_ ;
 
-my $id = $self->display_edit_dialog('element id', '') ;
+my $id = $self->display_edit_dialog('element id', '', $self) ;
 
 return unless exists $self->{ELEMENTS}[$id - 1] ;
 

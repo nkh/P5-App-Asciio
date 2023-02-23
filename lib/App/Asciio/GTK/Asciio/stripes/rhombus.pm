@@ -14,7 +14,7 @@ use Glib qw(TRUE FALSE);
 
 sub display_box_edit_dialog
 {
-my ($self, $text) = @_ ;
+my ($self, $text, undef, $asciio) = @_ ;
 
 my $rows = $self->{BOX_TYPE} ;
 	
@@ -36,7 +36,7 @@ $vbox->add($treeview);
 
 # box text 
 my $textview = Gtk3::TextView->new;
-$textview->modify_font (Pango::FontDescription->from_string ('sarasa mono sc 12'));
+$textview->modify_font(Pango::FontDescription->from_string($asciio->get_font_as_string()));
 
 my $text_buffer = $textview->get_buffer;
 $text_buffer->insert($text_buffer->get_end_iter, $text);

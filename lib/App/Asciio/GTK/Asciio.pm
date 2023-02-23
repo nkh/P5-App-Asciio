@@ -263,7 +263,7 @@ for my $element (@{$self->{ELEMENTS}})
 						{
 						my $layout = Pango::Cairo::create_layout($gc) ;
 						
-						my $font_description = Pango::FontDescription->from_string($self->{FONT_FAMILY} . ' ' . $self->{FONT_SIZE}) ;
+						my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 						$layout->set_font_description($font_description) ;
 						$layout->set_text($line) ;
 						Pango::Cairo::show_layout($gc, $layout);

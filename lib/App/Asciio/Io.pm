@@ -185,7 +185,7 @@ sub save_stencil
 {
 my ($self) = @_ ;
 
-my $name = $self->display_edit_dialog('stencil name') ;
+my $name = $self->display_edit_dialog('stencil name', '', $self) ;
 
 if(defined $name && $name ne q[])
 	{

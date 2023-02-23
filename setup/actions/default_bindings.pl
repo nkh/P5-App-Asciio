@@ -137,7 +137,7 @@ register_action_handlers
 	# spread vertically	# spread horizontally # adjacent vert # adjacent hor # stack
 	},
 
-'change default color'=> 
+'change default color/font'=> 
 	{
 	SHORTCUTS => '000-z',
 	
@@ -146,6 +146,7 @@ register_action_handlers
 	'Flip color scheme'                            => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme       ],
 	'Flip transparent element background'          => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements  ],
 	'Flip grid display'                            => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display     ],
+	'Change font'                                  => ['000-f', \&App::Asciio::Actions::Unsorted::change_font           ],
 	},
 
 'arrow default commands' => 

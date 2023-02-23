@@ -1,6 +1,6 @@
-FONT_FAMILY => 'sarasa mono sc',
+FONT_FAMILY => 'Monospace',
 FONT_SIZE => 12,
-FONT_MIN => 9,
+FONT_MIN => 3,
 
 ZOOM_STEP => 3,
 
@@ -98,8 +98,8 @@ RULER_LINES =>
 		POSITION => 50,
 		NAME => 'BOTTOM_50',
 		},
-	], 
-	
+	],
+
 WORK_DIRECTORY => '.asciio_work_dir',
 CREATE_BACKUP => 1,
 DISPLAY_SETUP_INFORMATION => 0,

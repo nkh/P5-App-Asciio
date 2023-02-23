@@ -472,7 +472,7 @@ return unless $self->{EDITABLE} ;
 my $text_only = $self->{TEXT_ONLY} ;
 $text_only = make_vertical_text($text_only)  if $self->{VERTICAL_TEXT} ;
 
-$text_only = $self->display_box_edit_dialog($text_only) ;
+$text_only = $self->display_box_edit_dialog($text_only, '', $asciio) ;
 
 my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
 $text_only =~ s/\t/$tab_as_space/g ;

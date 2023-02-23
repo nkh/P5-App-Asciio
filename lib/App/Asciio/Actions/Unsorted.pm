@@ -303,22 +303,11 @@ for my $action (keys %{$key_mapping})
 
 #----------------------------------------------------------------------------------------------
 
-sub undo
-{
-my ($self) = @_ ;
-
-$self->undo(1) ;
-}
+sub undo { my ($self) = @_ ; $self->undo(1) ; }
 
 #----------------------------------------------------------------------------------------------
 
-sub redo
-{
-my ($self) = @_ ;
-
-$self->redo(1) ;
-}
-
+sub redo { my ($self) = @_ ; $self->redo(1) ; }
 
 #----------------------------------------------------------------------------------------------
 
@@ -347,7 +336,7 @@ sub insert_multiple_boxes_from_text_description
 {
 my ($self, $boxed) = @_ ;
 
-my $text = $self->display_edit_dialog('multiple objects from input', "\ntext\ntext\ntext\ntext" ) ;
+my $text = $self->display_edit_dialog('multiple objects from input', "\ntext\ntext\ntext\ntext", $self) ;
 
 if(defined $text && $text ne '')
 	{
@@ -426,7 +415,7 @@ my ($self, $in_box) = @_ ;
 
 $self->create_undo_snapshot() ;
 
-my $command = $self->display_edit_dialog('Enter command', '') ;
+my $command = $self->display_edit_dialog('Enter command', '', $self) ;
 
 if(defined $command && $command ne '')
 	{
@@ -455,10 +444,10 @@ if(defined $command && $command ne '')
 		}
 		
 	use App::Asciio::stripes::editable_box2 ;
-
+	
 	$output = decode("utf-8", $output);
 	$output =~ s/\r//g;
-
+	
 	my $new_element = new App::Asciio::stripes::editable_box2
 					({
 					TEXT_ONLY => $output,
@@ -472,6 +461,30 @@ if(defined $command && $command ne '')
 	
 	$self->update_display() ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub change_font
+{
+my ($self) = @_ ;
+
+my ($family, $size) = $self->get_font() ;
+if($family eq 'Monospace')
+	{
+	$self->set_font('sarasa mono sc', 12) ;
+	$self->{FONT_MIN} = 9 ;
+	$self->{ZOOM_STEP} = 3 ;
+	}
+else
+	{
+	$self->set_font('Monospace', 12) ;
+	$self->{FONT_MIN} = 3 ;
+	$self->{ZOOM_STEP} = 1 ;
+	}
+
+$self->invalidate_rendering_cache() ;
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------

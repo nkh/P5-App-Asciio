@@ -4,6 +4,8 @@ text interface
 		open file under cursor
 
 objects
+	quick move with keyboard
+	
 	any orientation text
 		call a sub that returns a text, sub gets direction and length
 		different sub used to implement angled-arrow

@@ -265,7 +265,7 @@ my ($self, $asciio) = @_ ;
 
 return unless $self->{EDITABLE} ;
 
-my ($text) = $asciio->display_edit_dialog('if object', $self->{TEXT_ONLY}) ;
+my ($text) = $asciio->display_edit_dialog('if object', $self->{TEXT_ONLY}, $asciio) ;
 
 $text //= $self->{TEXT} ;
 
