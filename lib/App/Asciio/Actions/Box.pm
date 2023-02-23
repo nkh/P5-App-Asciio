@@ -6,16 +6,16 @@ package App::Asciio::Actions::Box ;
 
 use Readonly ;
 
-Readonly my  $TOP => 0 ;
-Readonly my  $TITLE_SEPARATOR => 1 ;
-Readonly my  $BODY_SEPARATOR => 2 ;
-Readonly my  $BOTTOM => 3;
+Readonly my $TOP => 0 ;
+Readonly my $TITLE_SEPARATOR => 1 ;
+Readonly my $BODY_SEPARATOR => 2 ;
+Readonly my $BOTTOM => 3;
 
-Readonly my  $DISPLAY => 0 ;
-Readonly my  $NAME => 1 ;
-Readonly my  $LEFT => 2 ;
-Readonly my  $BODY => 3 ;
-Readonly my  $RIGHT => 4 ;
+Readonly my $DISPLAY => 0 ;
+Readonly my $NAME => 1 ;
+Readonly my $LEFT => 2 ;
+Readonly my $BODY => 3 ;
+Readonly my $RIGHT => 4 ;
 
 my %box_types = 
 	(
@@ -40,28 +40,7 @@ my %box_types =
 			[1, 'body separator', '* ', '*', ' *', 1, ], 
 			[1, 'bottom', '*', '*', '*', 1, ],
 		],
-	unicode_right_angle_light =>
-		[
-			[1, 'top', '┌', '-', '┐', 1, ],
-			[0, 'title separator', '|', '-', '|', 1, ],
-			[1, 'body separator', '| ', '|', ' |', 1, ], 
-			[1, 'bottom', '└', '-', '┘', 1, ],
-		],
-	unicode_fillet_light =>
-		[
-			[1, 'top', '╭', '-', '╮', 1, ],
-			[0, 'title separator', '|', '-', '|', 1, ],
-			[1, 'body separator', '| ', '|', ' |', 1, ], 
-			[1, 'bottom', '╰', '-', '╯', 1, ],
-		],
-	unicode_right_angle =>
-		[
-			[1, 'top', '┌', '─', '┐', 1, ],
-			[0, 'title separator', '│', '─', '│', 1, ],
-			[1, 'body separator', '│ ', '│', ' │', 1, ], 
-			[1, 'bottom', '└', '─', '┘', 1, ],
-		],
-	unicode_fillet =>
+	unicode =>
 		[
 			[1, 'top', '╭', '─', '╮', 1, ],
 			[0, 'title separator', '│', '─', '│', 1, ],
@@ -75,14 +54,14 @@ my %box_types =
 			[1, 'body separator', '∘ ', '∘', ' ∘', 1, ], 
 			[1, 'bottom', '∘', '∘', '∘', 1, ],
 		],
-	unicode_math_big_parantheses =>
+	unicode_math_parantheses =>
 		[
 			[1, 'top', '⎛', ' ', '⎞', 1, ],
 			[0, 'title separator', '│', '─', '│', 1, ],
 			[1, 'body separator', '⎜ ', '│', ' ⎟', 1, ], 
 			[1, 'bottom', '⎝', ' ', '⎠', 1, ],
 		],
-	math_big_parantheses =>
+	math_parantheses =>
 		[
 			[1, 'top', '/', ' ', '\\', 1, ],
 			[0, 'title separator', '│', '─', '│', 1, ],
@@ -114,32 +93,33 @@ my %box_types =
 			[1, 'bottom', ' ', '\'', ' ', 1, ] ,
 		],
 	triangle_up_normal =>
-	[
-		['top', '.', ], 
-		['middle', '/', '\\', ],
-		['bottom', '\'', '-', '\'', ] ,
-	] ,
+		[
+			['top', '.', ], 
+			['middle', '/', '\\', ],
+			['bottom', '\'', '-', '\'', ] ,
+		] ,
 	triangle_up_dot =>
-	[
-		['top', '.', ], 
-		['middle', '.', '.', ],
-		['bottom', '\'', '.', '\'', ] ,
-	] ,
+		[
+			['top', '.', ], 
+			['middle', '.', '.', ],
+			['bottom', '\'', '.', '\'', ] ,
+		] ,
 	triangle_down_normal =>
-	[
-		['top', '.', '-', '.', ], 
-		['middle', '\\', '/',  ],
-		['bottom', '\'', ] ,
-	] ,
+		[
+			['top', '.', '-', '.', ], 
+			['middle', '\\', '/',  ],
+			['bottom', '\'', ] ,
+		] ,
 	triangle_down_dot =>
-	[
-		['top', '.', '.', '.', ], 
-		['middle', '.', '.',  ],
-		['bottom', '\'', ] ,
-	] ,
+		[
+			['top', '.', '.', '.', ], 
+			['middle', '.', '.',  ],
+			['bottom', '\'', ] ,
+		] ,
 	) ;
 
 #----------------------------------------------------------------------------------------------
+
 use Scalar::Util ;
 use App::Asciio::stripes::exec_box ;
 
@@ -151,195 +131,49 @@ my @context_menu_entries ;
 my ($character_width, $character_height) = $self->get_character_size() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
+my $element = $selected_elements[0] ;
 
-if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_up' eq ref $selected_elements[0]))
-{
-	my $element = $selected_elements[0] ;
-	my ($x, $y) = $self->closest_character($popup_x - ($element->{X} * $character_width) , $popup_y - ($element->{Y} * $character_height)) ;
-	push @context_menu_entries, 
-		[
-			'/box type/normal', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'triangle_up_normal',
-			}
-		], 
-		
-		[
-			'/box type/dot', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'triangle_up_dot',
-			}
-		] ;
-	return(@context_menu_entries) ;
-}
-
-if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_down' eq ref $selected_elements[0]))
-{
-	my $element = $selected_elements[0] ;
-	my ($x, $y) = $self->closest_character($popup_x - ($element->{X} * $character_width) , $popup_y - ($element->{Y} * $character_height)) ;
-	push @context_menu_entries, 
-		[
-			'/box type/normal', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'triangle_down_normal',
-			}
-		], 
-		
-		[
-			'/box type/dot', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'triangle_down_dot',
-			}
-		] ;
-	return(@context_menu_entries) ;
-}
-
-if(@selected_elements == 1 && 
-	($selected_elements[0]->isa('App::Asciio::stripes::editable_box2') || 
-	 'App::Asciio::stripes::rhombus' eq ref $selected_elements[0]))
+if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_up' eq ref $elements))
 	{
-	my $element = $selected_elements[0] ;
-	
-	my ($x, $y) = $self->closest_character($popup_x - ($element->{X} * $character_width) , $popup_y - ($element->{Y} * $character_height)) ;
-	
 	push @context_menu_entries, 
-		[
-		'/rotate text', 
-		sub { $element->rotate_text() ; $self->update_display() ; },
-		] ;
-		
-	push @context_menu_entries, 
-		[
-		'/box selected element', 
-		\&box_selected_element,
-		{ ELEMENT => $element},
-		] ;
-	
-	if('App::Asciio::stripes::rhombus' eq ref $selected_elements[0]) {
-	push @context_menu_entries, 
-		[
-			'/box type/normal', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'rhombus_normal',
-			}
-		], 
-		
-		[
-			'/box type/unicode_slash', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'rhombus_unicode_slash',
-			}
-		], 
-		
-		[
-			'/box type/sparseness', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'rhombus_sparseness',
-			}
-		] ;
-	} else {
-	push @context_menu_entries, 
-		[
-			'/box type/dash', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'dash',
-			}
-		], 
-		
-		[
-			'/box type/dot', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'dot',
-			}
-		], 
-		
-		[
-			'/box type/star', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'star',
-			}
-		],
-		[
-			'/box type/unicode_right_angle_light', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'unicode_right_angle_light',
-			}
-		], 
-		[
-			'/box type/unicode_fillet_light', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'unicode_fillet_light',
-			}
-		],
-		[
-			'/box type/unicode_right_angle', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'unicode_right_angle',
-			}
-		], 
-		[
-			'/box type/unicode_fillet', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'unicode_fillet',
-			}
-		], 
-		[
-			'/box type/unicode_hollow_dot', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'unicode_hollow_dot',
-			}
-		], 
-		[
-			'/box type/unicode_math_big_parantheses', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'unicode_math_big_parantheses',
-			}
-		], 
-		[
-			'/box type/math_big_parantheses', 
-			\&change_box_type,
-			{
-			ELEMENT => $element, 
-			TYPE => 'math_big_parantheses',
-			}
-		] ;
+		[ '/box type/normal', \&change_box_type, { ELEMENT => $element, TYPE => 'triangle_up_normal' } ], 
+		[ '/box type/dot',    \&change_box_type, { ELEMENT => $element, TYPE => 'triangle_up_dot' } ] ;
 	}
-		
+
+if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_down' eq ref $element))
+	{
 	push @context_menu_entries, 
+		[ '/box type/normal', \&change_box_type, { ELEMENT => $element, TYPE => 'triangle_down_normal' } ], 
+		[ '/box type/dot',    \&change_box_type, { ELEMENT => $element, TYPE => 'triangle_down_dot' } ] ;
+	}
+
+if(@selected_elements == 1 && ($element->isa('App::Asciio::stripes::editable_box2') || 'App::Asciio::stripes::rhombus' eq ref $element))
+	{
+	if('App::Asciio::stripes::rhombus' eq ref $element)
+		{
+		push @context_menu_entries, 
+			[ '/box type/normal',        \&change_box_type, { ELEMENT => $element, TYPE => 'rhombus_normal' } ], 
+			[ '/box type/unicode_slash', \&change_box_type, { ELEMENT => $element, TYPE => 'rhombus_unicode_slash' } ], 
+			[ '/box type/sparseness',    \&change_box_type, { ELEMENT => $element, TYPE => 'rhombus_sparseness' } ] ;
+		}
+	else
+		{
+		push @context_menu_entries, 
+			[ '/box selected element',              \&box_selected_element, { ELEMENT => $element} ],
+			[ '/box type/dash',                     \&change_box_type,      { ELEMENT => $element, TYPE => 'dash' } ], 
+			[ '/box type/dot',                      \&change_box_type,      { ELEMENT => $element, TYPE => 'dot' } ], 
+			[ '/box type/star',                     \&change_box_type,      { ELEMENT => $element, TYPE => 'star' } ],
+			[ '/box type/math_parantheses',         \&change_box_type,      { ELEMENT => $element, TYPE => 'math_parantheses' } ],
+			[ '/box type/unicode',                  \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode' } ], 
+			[ '/box type/unicode_hollow_dot',       \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_hollow_dot' } ], 
+			[ '/box type/unicode_math_parantheses', \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_math_parantheses' } ] ;
+		}
+	
+	push @context_menu_entries,
+		[ '/rotate text', sub { $element->rotate_text() ; $self->update_display() ; } ],
 		[
 		$element->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
+		
 		sub 
 			{
 			$self->create_undo_snapshot() ;
@@ -347,27 +181,17 @@ if(@selected_elements == 1 &&
 			$self->update_display() ;
 			}
 		] ;
-		
-	if($element->is_border_connection_allowed())
-		{
-		push @context_menu_entries, ["/disable border connection", sub {$element->allow_border_connection(0) ;}] ;
-		}
-	else
-		{
-		push @context_menu_entries, ["/enable border connection", sub {$element->allow_border_connection(1) ;}] ;
-		}
-		
-	if($element->is_auto_shrink())
-		{
-		push @context_menu_entries, ["/disable auto shrink", sub {$element->flip_auto_shrink() ;}] ;
-		}
-	else
-		{
-		push @context_menu_entries, ["/enable auto shrink", sub {$element->shrink() ; $element->flip_auto_shrink() ; }] ;
-		}
-	}
 	
-return(@context_menu_entries) ;
+	$element->is_border_connection_allowed()
+		? push @context_menu_entries, ["/disable border connection", sub {$element->allow_border_connection(0) ;}]
+		: push @context_menu_entries, ["/enable border connection",  sub {$element->allow_border_connection(1) ;}] ;
+	
+	$element->is_auto_shrink()
+		? push @context_menu_entries, ["/disable auto shrink", sub {$element->flip_auto_shrink() ;}]
+		: push @context_menu_entries, ["/enable auto shrink",  sub {$element->shrink() ; $element->flip_auto_shrink() ; }] ;
+	}
+
+return @context_menu_entries ;
 }
 
 #----------------------------------------------------------------------------------------------

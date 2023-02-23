@@ -106,7 +106,7 @@ if(defined $connector && defined $connection)
 	
 	my $connector_x_offset = $connection_x - $connector_x ;
 	my $connector_y_offset = $connection_y - $connector_y ;
-
+	
 	my ($x_offset, $y_offset, $width, $height, $new_connector) = 
 		$connected->move_connector
 			(

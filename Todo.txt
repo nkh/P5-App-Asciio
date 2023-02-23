@@ -1,7 +1,5 @@
 
 text interface
-	quick move with keyboard
-	
 	vim script
 		open file under cursor
 

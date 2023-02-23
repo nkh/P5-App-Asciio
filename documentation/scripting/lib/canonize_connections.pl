@@ -65,7 +65,7 @@ if($connection->{CONNECTOR}{NAME} eq $end_name)
 	# end connector
 	my ($connectee_x, $connectee_y, $connectee_width, $connectee_hight) = 
 		($connectee->{X}, $connectee->{Y}, $connectee->get_size()) ;
-
+	
 	my $connected_x = $connected->{X} + $connectors[-2]{X};
 	my $connected_y = $connected->{Y} + $connectors[-2]{Y};
 	
@@ -143,10 +143,10 @@ else
 	# start connector
 	my ($connectee_x, $connectee_y, $connectee_width, $connectee_hight) = 
 		($connectee->{X}, $connectee->{Y}, $connectee->get_size()) ;
-
+	
 	my $end_connector_x = $connected->{X} + $connectors[1]{X};
 	my $end_connector_y = $connected->{Y} + $connectors[1]{Y} ;
-
+	
 	if($end_connector_x < $connectee_x)
 		{
 		# arrow ends on left of the box
@@ -221,13 +221,13 @@ my($asciio_connection, $connection_name, $connector_name, $hint) = @_ ;
 if($asciio_connection->{CONNECTION}{NAME} ne $connection_name)
 	{
 	my ($connected, $connectee) = ($asciio_connection->{CONNECTED},  $asciio_connection->{CONNECTEE}) ;
-
+	
 	my ($connection) = $connectee->get_named_connection($connection_name) ;
 	my ($connector) = $connected->get_named_connection($connector_name) ;
-
+	
 	my $x_offset_to_connection = ($connectee->{X} + $connection->{X}) - ($connected->{X} + $connector->{X}) ;
 	my $y_offset_to_connection =  ($connectee->{Y} + $connection->{Y}) - ($connected->{Y} + $connector->{Y}) ;
-
+	
 	# move connector
 	#~ print "reconnect: $connection_name $connector_name\n" ;
 	my ($x_offset, $y_offset, $width, $height, $new_connector) = 
@@ -241,5 +241,3 @@ if($asciio_connection->{CONNECTION}{NAME} ne $connection_name)
 	}
 }
 
-	
-	
