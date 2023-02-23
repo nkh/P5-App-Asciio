@@ -25,7 +25,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
@@ -77,38 +77,47 @@ my (@stripes, $strip_text, $width, $x_offset, $left_center_x, $resize_point_x) ;
 
 # divided into 3 parts
 # up middle down
-if($height % 2 == 0) {
+if($height % 2 == 0)
+	{
 	$left_center_x = int($height / 2) - 2;
-} else {
+	}
+else
+	{
 	$left_center_x = int($height / 2) - 1;
-}
+	}
+
 $resize_point_x = $element_width - 2 ;
+
 for my $line (@lines)
 	{
-		if($y_offset == 0) {
-			$width = 1 ;
-			$strip_text = $box_type->[0][1] ;
-			$x_offset = $half_elament_width ;
-		} elsif($y_offset == $height - 1) {
-			$width = $element_width ;
-			$strip_text = $box_type->[2][1] . $box_type->[2][2] x ($width - 2) . $box_type->[2][3] ;
-			$x_offset = 0 ;
-		} else {
-			$width = 2 * $y_offset + 1 ;
-			$strip_text = $box_type->[1][1] . ' ' x ($width - 2) . $box_type->[1][2] ;
-			$x_offset = $half_elament_width - $y_offset ;
+	if($y_offset == 0)
+		{
+		$width = 1 ;
+		$strip_text = $box_type->[0][1] ;
+		$x_offset = $half_elament_width ;
 		}
-
-		push @stripes,
-			{
-			'HEIGHT' => 1,
-			'TEXT' => $strip_text,
-			#~ for Future unicode support
-			'WIDTH' => physical_length($strip_text) ,
-			'X_OFFSET' => $x_offset,
-			'Y_OFFSET' => $y_offset,
-			} ;
-		$y_offset++ ;
+	elsif($y_offset == $height - 1)
+		{
+		$width = $element_width ;
+		$strip_text = $box_type->[2][1] . $box_type->[2][2] x ($width - 2) . $box_type->[2][3] ;
+		$x_offset = 0 ;
+		}
+	else
+		{
+		$width = 2 * $y_offset + 1 ;
+		$strip_text = $box_type->[1][1] . ' ' x ($width - 2) . $box_type->[1][2] ;
+		$x_offset = $half_elament_width - $y_offset ;
+		}
+	
+	push @stripes,
+		{
+		'HEIGHT' => 1,
+		'TEXT' => $strip_text,
+		'WIDTH' => usc_length($strip_text) ,
+		'X_OFFSET' => $x_offset,
+		'Y_OFFSET' => $y_offset,
+		} ;
+	$y_offset++ ;
 	}
 
 $self->set
@@ -132,16 +141,9 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-if	(
-	($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 2)
-	)
-	{
-	'resize' ;
-	}
-else
-	{
-	'move' ;
-	}
+($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 2)
+	? 'resize'
+	: 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -161,7 +163,7 @@ elsif($x == $middle_width && $y == $self->{HEIGHT})
 	{
 	return {X =>  $x, Y => $y, NAME => 'bottom_center'} ;
 	}
-if($x == $self->{LEFT_CENTER_X} && $y == $middle_height)
+elsif($x == $self->{LEFT_CENTER_X} && $y == $middle_height)
 	{
 	return {X =>  $x, Y => $y, NAME => 'left_center'} ;
 	}
@@ -192,11 +194,9 @@ my $middle_width = int($self->{WIDTH} / 2)  ;
 my $middle_height = int($self->{HEIGHT} / 2) ;
 my $right_x ;
 
-if($self->{HEIGHT} % 2 == 0) {
-	$right_x = $self->{WIDTH} - int($self->{HEIGHT} / 2) + 1 ;
-} else {
-	$right_x = $self->{WIDTH} - int($self->{HEIGHT} / 2) ;
-}
+($self->{HEIGHT} % 2 == 0)
+	? $right_x = $self->{WIDTH} - int($self->{HEIGHT} / 2) + 1
+	: $right_x = $self->{WIDTH} - int($self->{HEIGHT} / 2) ;
 
 return
 	(
@@ -212,10 +212,8 @@ return
 sub get_extra_points
 {
 my ($self) = @_ ;
-return
-	(
-	{X =>  $self->{RESIZE_POINT_X}, Y => $self->{HEIGHT} - 2 , NAME => 'resize'},
-	) ;
+
+return ( {X =>  $self->{RESIZE_POINT_X}, Y => $self->{HEIGHT} - 2 , NAME => 'resize'} ) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -241,11 +239,13 @@ elsif($name eq 'left_center')
 elsif($name eq 'right_center')
 	{
 	if($self->{HEIGHT} % 2 == 0) 
-	{
+		{
 		return {X =>  $self->{WIDTH} - int($self->{HEIGHT} / 2) + 1, Y => $middle_height, NAME => 'right_center'},
-	} else {
+		}
+	else
+		{
 		return {X =>  $self->{WIDTH} - int($self->{HEIGHT} / 2), Y => $middle_height, NAME => 'right_center'},
-	}
+		}
 	}
 else
 	{
@@ -262,7 +262,8 @@ my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;
 my $new_end_x = $new_x ;
 my $new_end_y = $new_y ;
 
-if($reference_x == -1 && $reference_y == -1) {
+if($reference_x == -1 && $reference_y == -1)
+	{
 	$self->setup
 		(
 		$self->{TEXT_ONLY},
@@ -271,7 +272,9 @@ if($reference_x == -1 && $reference_y == -1) {
 		$self->{EDITABLE}, $self->{RESIZABLE},
 		$self->{BOX_TYPE}
 		) ;
-} else {
+	}
+else
+	{
 	if($new_end_x >= 0 &&  $new_end_y >= 0)
 		{
 		$self->setup
@@ -283,23 +286,20 @@ if($reference_x == -1 && $reference_y == -1) {
 			$self->{BOX_TYPE}
 			) ;
 		}
-		
-	
 	}
+
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 }
 
 #-----------------------------------------------------------------------------
-sub get_box_type
-{
-my ($self) = @_ ;
-return($self->{BOX_TYPE})  ;
-}
+
+sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
 
 #-----------------------------------------------------------------------------
 sub set_box_type
 {
 my ($self, $box_type) = @_;
+
 $self->setup
 		(
 		$self->{TEXT_ONLY},
@@ -312,17 +312,14 @@ $self->setup
 
 #-----------------------------------------------------------------------------
 
-sub get_text
-{
-my ($self) = @_ ;
-return($self->{TEXT_ONLY}) ;
-}
+sub get_text { my ($self) = @_ ; return($self->{TEXT_ONLY}) ; }
 
 #-----------------------------------------------------------------------------
 
 sub set_text
 {
 my ($self, $text) = @_ ;
+
 $self->setup
 		(
 		$text,

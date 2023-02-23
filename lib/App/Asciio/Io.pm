@@ -19,7 +19,6 @@ use Sereal qw(
     encode_sereal
     decode_sereal
 ) ;
-
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
 #-----------------------------------------------------------------------------
@@ -33,9 +32,7 @@ return unless defined $file_name ;
 my ($base_name, $path, $extension) = File::Basename::fileparse($file_name, ('\..*')) ;
 $extension =~ s/^\.// ;
 
-my $type =  $extension ne q{}
-			? $extension
-			: 'internal_asciio_format';
+my $type = $extension ne q{} ? $extension : 'internal_asciio_format';
 
 my $title ;
 
@@ -67,7 +64,7 @@ else
 		
 		if($@)
 			{
-			write_file("failed_resurection_source.pl", $serialized_self) ;
+			write_file("failed_resurection_source.pl", {binmode => ':utf8'}, $serialized_self) ;
 			die "load_file: can't load file '$file_name': $! $@\n" ;
 			}
 		
@@ -190,7 +187,7 @@ my $name = $self->display_edit_dialog('stencil name', '', $self) ;
 if(defined $name && $name ne q[])
 	{
 	my $file_name = $self->get_file_name('save') ;
-
+	
 	if(defined $file_name && $file_name ne q[])
 		{
 		if(-e $file_name)
@@ -204,7 +201,7 @@ if(defined $name && $name ne q[])
 			$file_name = undef unless $override eq 'yes' ;
 			}
 		}
-
+	
 	if(defined $file_name && $file_name ne q[])
 		{
 		use Data::Dumper ;
@@ -221,7 +218,7 @@ if(defined $name && $name ne q[])
 		delete $stencil->{Y} ;
 		$stencil->{NAME} = $name;
 		
-		write_file_utf8($file_name, Dumper [$stencil]) ;
+		write_file($file_name, {binmode => ':utf8'}, Dumper [$stencil]) ;
 		}
 	}
 }

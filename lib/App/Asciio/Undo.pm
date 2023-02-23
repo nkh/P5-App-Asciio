@@ -6,6 +6,7 @@ $|++ ;
 use strict;
 use warnings;
 
+use File::Slurp ;
 use Compress::Bzip2 qw(:all :utilities :gzip);
 use Sereal qw(
     get_sereal_decoder
@@ -81,8 +82,7 @@ if(defined $new_self)
 	
 	if($@)
 		{
-		use File::Slurp ;
-		write_file_utf8('undo_error.pl', $saved_self ) ;
+		write_file('undo_error.pl', {binmode => ':utf8'}, $saved_self) ;
 		die "Can't undo! $@\n" ;
 		}
 	else

@@ -13,29 +13,25 @@ use App::Asciio::stripes::wirl_arrow ;
 
 #-----------------------------------------------------------------------------
 
-# the idea is to reuse wirl arrow implementation as much as possible
-
-#-----------------------------------------------------------------------------
-
 Readonly my $DEFAULT_ARROW_TYPE =>
 			[
-			['origin', '', '*', '', '', '', 1],
-			['up', '|', '|', '', '', '^', 1],
-			['down', '|', '|', '', '', 'v', 1],
-			['left', '-', '-', '', '', '<', 1],
-			['up-left', '|', '|', '.', '-', '<', 1],
-			['left-up', '-', '-', '\'', '|', '^', 1],
-			['down-left', '|', '|', '\'', '-', '<', 1],
-			['left-down', '-', '-', '.', '|', 'v', 1],
-			['right', '-', '-','', '', '>', 1],
-			['up-right', '|', '|', '.', '-', '>', 1],
-			['right-up', '-', '-', '\'', '|', '^', 1],
-			['down-right', '|', '|', '\'', '-', '>', 1],
-			['right-down', '-', '-', '.', '|', 'v', 1],
-			['45', '/', '/', '', '', '^', 1, ],
-			['135', '\\', '\\', '', '', 'v', 1, ],
-			['225', '/', '/', '', '', 'v', 1, ],
-			['315', '\\', '\\', '', '', '^', 1, ],
+			['origin',       '',  '*',   '',  '',  '', 1],
+			['up',          '|',  '|',   '',  '', '^', 1],
+			['down',        '|',  '|',   '',  '', 'v', 1],
+			['left',        '-',  '-',   '',  '', '<', 1],
+			['up-left',     '|',  '|',  '.', '-', '<', 1],
+			['left-up',     '-',  '-', '\'', '|', '^', 1],
+			['down-left',   '|',  '|', '\'', '-', '<', 1],
+			['left-down',   '-',  '-',  '.', '|', 'v', 1],
+			['right',       '-',  '-',   '',  '', '>', 1],
+			['up-right',    '|',  '|',  '.', '-', '>', 1],
+			['right-up',    '-',  '-', '\'', '|', '^', 1],
+			['down-right',  '|',  '|', '\'', '-', '>', 1],
+			['right-down',  '-',  '-',  '.', '|', 'v', 1],
+			['45',          '/',  '/',   '',  '', '^', 1],
+			['135',        '\\', '\\',   '',  '', 'v', 1],
+			['225',         '/',  '/',   '',  '', 'v', 1],
+			['315',        '\\', '\\',   '',  '', '^', 1],
 			] ;
 
 # constants for connector overlays
@@ -95,13 +91,13 @@ if('ARRAY' eq ref $points && @{$points} > 0)
 					ALLOW_DIAGONAL_LINES => $allow_diagonal_lines,
 					EDITABLE => $editable,
 					}) ;
-						
+		
 		$points_offsets->[$arrow_index++] = [$start_x, $start_y] ;
 		
 		push @{$arrows},  $arrow ;
 		($start_x, $start_y) = ($x, $y) ;
 		}
-		
+	
 	$self->set
 		(
 		POINTS_OFFSETS => $points_offsets,
@@ -115,7 +111,7 @@ if('ARRAY' eq ref $points && @{$points} > 0)
 		NOT_CONNECTABLE_START => $not_connectable_start,
 		NOT_CONNECTABLE_END => $not_connectable_end,
 		) ;
-		
+	
 	my ($width, $height) = $self->get_width_and_height() ;
 	$self->set
 			(
@@ -142,7 +138,7 @@ my %diagonal_non_diagonal_to_overlay_character =
 	(map {$_ => q{.}} qw( down-right right-down up-left left-up)), 
 	(map {$_ => q{'}} qw( down-left left-down up-right right-up)), 
 	) ;
-	
+
 sub get_stripes
 {
 my ($self) = @_ ;
@@ -152,7 +148,7 @@ my $stripes = $self->{CACHE}{STRIPES} ;
 unless (defined $stripes)
 	{
 	my @stripes ;
-
+	
 	my $arrow_index = 0 ;
 	for my $arrow(@{$self->{ARROWS}})
 		{
@@ -170,12 +166,12 @@ unless (defined $stripes)
 			
 		$arrow_index++ ;
 		}
-
+	
 	# handle connections
 	my ($previous_direction) = ($self->{ARROWS}[0]{DIRECTION} =~ /^([^-]+)/) ;
-
+	
 	my $previous_was_diagonal ;
-
+	
 	$arrow_index = 0 ;
 	for my $arrow(@{$self->{ARROWS}})
 		{
@@ -214,7 +210,7 @@ unless (defined $stripes)
 				# previous non diagonal or two diagonals not going in the same direction
 				$connection  = ($d1 eq 'up' || (defined $d2 && $d2 eq 'up')) ?  q{'} : q{.} ;
 				}
-					
+			
 			$previous_was_diagonal = $arrow->{DIRECTION} ;
 			}
 		else
@@ -261,11 +257,11 @@ unless (defined $stripes)
 						}
 					}
 				}
-				
+			
 			$previous_direction = defined $d2 ? $d2 : $d1 ;
 			$previous_was_diagonal = undef ;
 			}
-			
+		
 		if($arrow_index != 0 && defined $connection) # first character of the first section is always right
 			{
 			# overlay the first character of this arrow
@@ -278,10 +274,10 @@ unless (defined $stripes)
 				Y_OFFSET => $self->{POINTS_OFFSETS}[$arrow_index][1],
 				} ;
 			}
-			
+		
 		$arrow_index++ ;
 		}
-
+	
 	$stripes = $self->{CACHE}{STRIPES} = \@stripes ;
 	}
 
@@ -309,7 +305,7 @@ for my $arrow(@{$self->{ARROWS}})
 		$action = 'resize' ;
 		last ;
 		}
-		
+	
 	$end_connector->{X} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
 	$end_connector->{Y} += $self->{POINTS_OFFSETS}[$arrow_index][1] ;
 	
@@ -318,7 +314,7 @@ for my $arrow(@{$self->{ARROWS}})
 		$action = 'resize' ;
 		last ;
 		}
-		
+	
 	$arrow_index++ ;
 	}
 
@@ -393,6 +389,8 @@ push @connector_points, $all_connector_points[-1] unless $self->{NOT_CONNECTABLE
 return(@connector_points) ;
 }
 
+#-----------------------------------------------------------------------------
+
 sub get_extra_points
 {
 my ($self) = @_ ;
@@ -404,6 +402,8 @@ pop @all_connector_points  unless $self->{NOT_CONNECTABLE_END} ;
 	
 return(@all_connector_points) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub get_all_points
 {
@@ -577,7 +577,7 @@ if(defined $start_element)
 			$is_start++  ;
 			}
 		}
-
+	
 	if($is_start)
 		{
 		#~ print "Moving start connector\n" ;
@@ -634,7 +634,7 @@ if(defined $start_element)
 			}
 		}
 	}
-	
+
 my ($width, $height) = $self->get_width_and_height() ;
 $self->set(WIDTH => $width, HEIGHT => $height) ;
 
@@ -644,7 +644,7 @@ return($start_x_offset, $start_y_offset, $width, $height, $connector_name_array)
 sub find_elements_for_connector_at
 {
 my ($self, $reference_x, $reference_y) = @_ ;
-	
+
 my ($start_element, $start_element_index, $end_element, $end_element_index, $connector_name, $wirl_connector_name) ;
 
 my $arrow_index = 0 ;
@@ -659,13 +659,13 @@ for my $arrow(@{$self->{ARROWS}})
 		$connector_name =  $wirl_connector_name . "section_$arrow_index" ;
 		last ;
 		}
-		
+	
 	if(defined $start_element)
 		{
 		($end_element, $end_element_index) = ($arrow, $arrow_index) ;
 		last ;
 		}
-		
+	
 	if
 		(
 		   $reference_x == $end_connector->{X} + $self->{POINTS_OFFSETS}[$arrow_index][0]
@@ -676,7 +676,7 @@ for my $arrow(@{$self->{ARROWS}})
 		$wirl_connector_name = $end_connector->{NAME} ;
 		$connector_name =  $wirl_connector_name . "section_$arrow_index" ;
 		}
-		
+	
 	$arrow_index++ ;
 	}
 
@@ -701,32 +701,27 @@ for my $arrow(@{$self->{ARROWS}})
 		($start_element, $start_element_index) = ($arrow, $arrow_index) ;
 		last ;
 		}
-		
+	
 	if(defined $start_element)
 		{
 		($end_element, $end_element_index) = ($arrow, $arrow_index) ;
 		last ;
 		}
-		
+	
 	if($connector_name eq $end_connector->{NAME} . "section_$arrow_index")
 		{
 		($start_element, $start_element_index) = ($arrow, $arrow_index) ;
 		}
-		
+	
 	$arrow_index++ ;
 	}
-	
+
 return($start_element, $start_element_index, $end_element, $end_element_index, $connector_name_array) ;
 }
 
 #-----------------------------------------------------------------------------
 
-sub get_number_of_sections
-{
-my ($self) = @_ ;
-
-return scalar(@{$self->{ARROWS}}) ;
-}
+sub get_number_of_sections { my ($self) = @_ ; return scalar(@{$self->{ARROWS}}) ; }
 
 #-----------------------------------------------------------------------------
 
@@ -777,7 +772,7 @@ for my $arrow (@{$self->{ARROWS}})
 					ALLOW_DIAGONAL_LINES => $arrow->{ALLOW_DIAGONAL_LINES},
 					EDITABLE => $arrow->{EDITABLE},
 					}) ;
-			
+		
 		$self->{ARROWS}[$index] = $first_section ;
 		
 		my $new_section = new App::Asciio::stripes::wirl_arrow
@@ -792,10 +787,10 @@ for my $arrow (@{$self->{ARROWS}})
 					
 		splice @{$self->{ARROWS}}, $index + 1, 0, $new_section ;
 		splice @{$self->{POINTS_OFFSETS}}, $index + 1, 0, [$x_offset, $y_offset] ;
-
+		
 		last ;
 		}
-		
+	
 	$index++ ;
 	}
 }
@@ -826,7 +821,7 @@ for my $arrow(@{$self->{ARROWS}})
 	
 	$arrow_index++ ;
 	}
-	
+
 unshift @{$self->{POINTS_OFFSETS}}, [0, 0] ;
 unshift @{$self->{ARROWS}}, $arrow ;
 
@@ -862,7 +857,7 @@ $start_y += $end_connector->{Y} ;
 
 push @{$self->{POINTS_OFFSETS}}, [$start_x, $start_y] ;
 push @{$self->{ARROWS}}, $arrow ;
-		
+
 my ($width, $height) = $self->get_width_and_height() ;
 $self->set(WIDTH => $width, HEIGHT => $height,) ;
 }
@@ -879,7 +874,7 @@ delete $self->{CACHE} ;
 
 pop @{$self->{POINTS_OFFSETS}} ;
 pop @{$self->{ARROWS}} ;
-		
+
 my ($width, $height) = $self->get_width_and_height() ;
 $self->set(WIDTH => $width, HEIGHT => $height,) ;
 }
@@ -899,7 +894,7 @@ my $second_arrow_y_offset = $self->{POINTS_OFFSETS}[1][1] ;
 
 shift @{$self->{POINTS_OFFSETS}} ;
 shift @{$self->{ARROWS}} ;
-		
+
 my $arrow_index = 0 ;
 for my $arrow(@{$self->{ARROWS}})
 	{
@@ -908,7 +903,7 @@ for my $arrow(@{$self->{ARROWS}})
 	
 	$arrow_index++ ;
 	}
-	
+
 my ($width, $height) = $self->get_width_and_height() ;
 $self->set(WIDTH => $width, HEIGHT => $height,) ;
 
@@ -935,7 +930,7 @@ if(1 == @{$self->{ARROWS}})
 else
 	{
 	my $index = 0 ;
-
+	
 	for my $arrow(@{$self->{ARROWS}})
 		{
 		if
@@ -957,7 +952,7 @@ else
 				
 			last ;
 			}
-			
+		
 		$index++ ;
 		}
 	}
@@ -987,7 +982,7 @@ for my $strip (@{$element->get_stripes()})
 		last ;
 		}
 	}
-	
+
 return($is_under) ;
 }
 
@@ -1023,11 +1018,7 @@ return(($biggest_x - $smallest_x) + 1, ($biggest_y - $smallest_y) + 1) ;
 
 #-----------------------------------------------------------------------------
 
-sub get_arrow_type
-{
-my ($self) = @_ ;
-return($self->{ARROW_TYPE})  ;
-}
+sub get_arrow_type { my ($self) = @_ ; return($self->{ARROW_TYPE})  ; }
 
 #-----------------------------------------------------------------------------
 
@@ -1076,11 +1067,6 @@ return unless $self->{EDITABLE} ;
 delete $self->{CACHE} ;
 
 $self->display_arrow_edit_dialog() ;
-
-# add section
-# remove section
-
-# handle offset array
 }
 
 #-----------------------------------------------------------------------------

@@ -1,7 +1,7 @@
 
-#----------------------------------------------------------------------------------------------------------------------------
-
-use App::Asciio::Toolfunc ;
+use strict ;
+use warnings ;
+use File::Slurp ;
 
 #----------------------------------------------------------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ if($self->{CREATE_BACKUP} && -e $file)
 	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!" ;
 	}
 
-my $saved = write_file_utf8($file, $self->serialize_self(1) .'$VAR1 ;') ;
+my $saved = write_file($file, {binmode => ':utf8'}, $self->serialize_self(1) .'$VAR1 ;') ;
 
 return $saved ;
 }

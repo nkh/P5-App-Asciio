@@ -10,6 +10,8 @@ use Glib ':constants';
 use Gtk3 -init;
 use Glib qw(TRUE FALSE);
 
+#-----------------------------------------------------------------------------
+
 sub display_arrow_edit_dialog
 {
 my ($self) = @_ ;
@@ -52,7 +54,7 @@ my $model = Gtk3::ListStore->new(qw/Glib::String Glib::String Glib::String  Glib
 foreach my $row (@{$rows}) 
 	{
 	my $iter = $model->append;
-
+	
 	my $column = 0 ;
 	$model->set ($iter, map {$column++, $_} @{$row}) ;
 	}
@@ -76,6 +78,7 @@ $treeview->insert_column_with_attributes
 			-1, '', $row_renderer,
 			text => 0,
 			) ;
+
 my $column = $treeview->get_column(0) ;
 $column->set_sizing('fixed') ;
 $column->set_fixed_width(120) ;
@@ -86,7 +89,7 @@ for my $column_title('start', 'body', 'connection', 'body_2', 'end')
 	my $renderer = Gtk3::CellRendererText->new;
 	$renderer->signal_connect (edited => \&cell_edited, [$model, $rows]);
 	$renderer->set_data (column => $current_column );
-
+	
 	$treeview->insert_column_with_attributes 
 				(
 				-1, $column_title, $renderer,
@@ -119,12 +122,3 @@ $model->set($iter, $column, $new_text);
 #-----------------------------------------------------------------------------
 
 1 ;
-
-
-
-
-
-
-
-
-

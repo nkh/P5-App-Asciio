@@ -48,9 +48,6 @@ while($contains_switch) ;
 
 $asciio_config->{TARGETS} = \@targets ;
 
-#~ use Data::TreeDumper ;
-#~ print DumpTree $asciio_config ;
-
 return(1, '', $asciio_config) ;
 }
 

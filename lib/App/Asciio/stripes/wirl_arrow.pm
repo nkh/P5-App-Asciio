@@ -16,23 +16,23 @@ Readonly my $DEFAULT_ARROW_TYPE =>
 	[
 	#name: $start, $body, $connection, $body_2, $end
 	
-	['origin', '', '*', '', '', '', 1],
-	['up', '|', '|', '', '', '^', 1],
-	['down', '|', '|', '', '', 'v', 1],
-	['left', '-', '-', '', '', '<', 1],
-	['up-left', '|', '|', '.', '-', '<', 1],
-	['left-up', '-', '-', '\'', '|', '^', 1],
-	['down-left', '|', '|', '\'', '-', '<', 1],
-	['left-down', '-', '-', '.', '|', 'v', 1],
-	['right', '-', '-','', '', '>', 1],
-	['up-right', '|', '|', '.', '-', '>', 1],
-	['right-up', '-', '-', '\'', '|', '^', 1],
-	['down-right', '|', '|', '\'', '-', '>', 1],
-	['right-down', '-', '-', '.', '|', 'v', 1],
-	['45', '/', '/', '', '', '^', 1, ],
-	['135', '\\', '\\', '', '', 'v', 1, ],
-	['225', '/', '/', '', '', 'v', 1, ],
-	['315', '\\', '\\', '', '', '^', 1, ],
+	['origin',       '',  '*',   '',  '',  '', 1],
+	['up',          '|',  '|',   '',  '', '^', 1],
+	['down',        '|',  '|',   '',  '', 'v', 1],
+	['left',        '-',  '-',   '',  '', '<', 1],
+	['up-left',     '|',  '|',  '.', '-', '<', 1],
+	['left-up',     '-',  '-', '\'', '|', '^', 1],
+	['down-left',   '|',  '|', '\'', '-', '<', 1],
+	['left-down',   '-',  '-',  '.', '|', 'v', 1],
+	['right',       '-',  '-',   '',  '', '>', 1],
+	['up-right',    '|',  '|',  '.', '-', '>', 1],
+	['right-up',    '-',  '-', '\'', '|', '^', 1],
+	['down-right',  '|',  '|', '\'', '-', '>', 1],
+	['right-down',  '-',  '-',  '.', '|', 'v', 1],
+	['45',          '/',  '/',   '',  '', '^', 1],
+	['135',        '\\', '\\',   '',  '', 'v', 1],
+	['225',        ' /',  '/',   '',  '', 'v', 1],
+	['315',        '\\', '\\',   '',  '', '^', 1],
 	] ;
 
 sub new
@@ -40,7 +40,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{ARROW_TYPE} || Clone::clone($DEFAULT_ARROW_TYPE),
@@ -94,7 +94,7 @@ my %direction_to_arrow =
 	'down-right' => \&draw_downright,
 	'right-down' => \&draw_rightdown,
 	) ;
-	
+
 sub get_arrow
 {
 my ($arrow_type, $end_x, $end_y, $direction, $allow_diagonal_lines) = @_ ;
@@ -113,11 +113,13 @@ my @position_to_direction =
 	) ;
 
 $direction = $position_to_direction
-			[$end_x == 0 ? CENTER : $end_x < 0 ? LEFT : RIGHT]
-			[$end_y == 0 ? CENTER : $end_y < 0 ? UP : DOWN] ;
+		[$end_x == 0 ? CENTER : $end_x < 0 ? LEFT : RIGHT]
+		[$end_y == 0 ? CENTER : $end_y < 0 ? UP : DOWN] ;
 
 return($direction_to_arrow{$direction}->($arrow_type, $end_x, $end_y, $allow_diagonal_lines), $direction) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_down
 {
@@ -133,10 +135,12 @@ push @{$stripes},
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_origin
 {
@@ -152,10 +156,12 @@ push @{$stripes},
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return($stripes, $width, $height) ;
 } 
+
+#-----------------------------------------------------------------------------
 
 sub draw_up
 {
@@ -171,10 +177,12 @@ push @{$stripes},
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => $end_y, 
-	};
-	
+	} ;
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_left
 {
@@ -190,10 +198,12 @@ push @{$stripes},
 	'WIDTH' => $width,
 	'X_OFFSET' => $end_x,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_upleft # or 315
 {
@@ -223,11 +233,13 @@ else
 		'WIDTH' => $width - 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => $end_y ,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_leftup # or 315
 {
@@ -257,11 +269,13 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => $end_y ,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub get_315_stripes
 {
@@ -276,7 +290,7 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
+	} ;
 	
 for(my $xy = -$position - 1 ; $xy> 0 ; $xy--)
 	{
@@ -287,9 +301,9 @@ for(my $xy = -$position - 1 ; $xy> 0 ; $xy--)
 		'WIDTH' => 1,
 		'X_OFFSET' => -$xy,
 		'Y_OFFSET' => -$xy,
-		};
+		} ;
 	}
-	
+
 push @stripes,
 	{
 	'HEIGHT' => 1,
@@ -297,10 +311,12 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => $position ,
 	'Y_OFFSET' => $position ,
-	};
-	
+	} ;
+
 return(@stripes) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_downleft # or 225
 {
@@ -330,11 +346,13 @@ else
 		'WIDTH' => $width - 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => $end_y ,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_leftdown # or 225
 {
@@ -364,11 +382,13 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => 1 ,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub get_225_stripes
 {
@@ -383,8 +403,8 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 for(my $xy = -$position - 1 ; $xy> 0 ; $xy--)
 	{
 	push @stripes,
@@ -394,9 +414,9 @@ for(my $xy = -$position - 1 ; $xy> 0 ; $xy--)
 		'WIDTH' => 1,
 		'X_OFFSET' => -$xy,
 		'Y_OFFSET' => $xy,
-		};
+		} ;
 	}
-	
+
 push @stripes,
 	{
 	'HEIGHT' => 1,
@@ -404,10 +424,12 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => $position ,
 	'Y_OFFSET' => -$position ,
-	};
-	
+	} ;
+
 return(@stripes) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_right
 {
@@ -423,10 +445,12 @@ push @{$stripes},
 	'WIDTH' => $width,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_upright # or 45
 {
@@ -456,11 +480,13 @@ else
 		'WIDTH' => $end_x,
 		'X_OFFSET' => 1,
 		'Y_OFFSET' => $end_y,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_rightup # or 45
 {
@@ -490,11 +516,13 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => $end_y,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub get_45_stripes
 {
@@ -509,8 +537,8 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 for(my $xy = $position - 1 ; $xy > 0 ; $xy--)
 	{
 	push @stripes,
@@ -520,9 +548,9 @@ for(my $xy = $position - 1 ; $xy > 0 ; $xy--)
 		'WIDTH' => 1,
 		'X_OFFSET' => $xy,
 		'Y_OFFSET' => -$xy,
-		};
+		} ;
 	}
-	
+
 push @stripes,
 	{
 	'HEIGHT' => 1,
@@ -530,10 +558,12 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => $position ,
 	'Y_OFFSET' => -$position ,
-	};
-			
+	} ;
+
 return(@stripes) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_downright # or 135
 {
@@ -563,11 +593,13 @@ else
 		'WIDTH' => $width - 1,
 		'X_OFFSET' => 1,
 		'Y_OFFSET' => $end_y,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub draw_rightdown # or 135
 {
@@ -597,11 +629,13 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => 1,
-		};
+		} ;
 	}
-	
+
 return($stripes, $width, $height) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub get_135_stripes
 {
@@ -616,8 +650,8 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0 ,
 	'Y_OFFSET' => 0 ,
-	};
-	
+	} ;
+
 for(my $xy = 1 ; $xy < $position ; $xy++)
 	{
 	push @stripes,
@@ -627,9 +661,9 @@ for(my $xy = 1 ; $xy < $position ; $xy++)
 		'WIDTH' => 1,
 		'X_OFFSET' => $xy,
 		'Y_OFFSET' => $xy,
-		};
+		} ;
 	}
-	
+
 push @stripes,
 	{
 	'HEIGHT' => 1,
@@ -637,7 +671,7 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => $position,
 	'Y_OFFSET' => $position,
-	};
+	} ;
 
 return(@stripes) ;
 }
@@ -721,7 +755,7 @@ elsif($connector_name eq 'end')
 	{
 	my ($x_offset, $y_offset, $width, $height, undef) = 
 		$self->resize(-1, -1, $self->{END_X} + $x_offset, $self->{END_Y} + $y_offset, $hint) ;
-
+	
 	return 
 		$x_offset, $y_offset, $width, $height,
 		{X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end'} ;
@@ -764,16 +798,16 @@ if($is_start)
 	my $new_end_y = $self->{END_Y} - $y_offset ;
 	
 	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION},$self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
-
+	
 	return($x_offset, $y_offset, $self->{WIDTH}, $self->{HEIGHT}, 'start') ;
 	}
 else
 	{
 	my $new_end_x = $new_x ;
 	my $new_end_y = $new_y ;
-
+	
 	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
-
+	
 	return(0, 0, $self->{WIDTH}, $self->{HEIGHT}, 'end') ;
 	}
 }

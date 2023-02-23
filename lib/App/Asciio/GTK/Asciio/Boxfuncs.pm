@@ -23,7 +23,7 @@ my $model = Gtk3::ListStore->new(qw/Glib::Boolean Glib::String  Glib::String Gli
 foreach my $row (@{$rows}) 
 	{
 	my $iter = $model->append;
-
+	
 	my $column = 0 ;
 	$model->set($iter, map {$column++, $_} @{$row}) ;
 	}
@@ -49,7 +49,7 @@ my $column = Gtk3::TreeViewColumn->new_with_attributes
 			$renderer,
 			active => 0
 			) ;
-			
+
 $column->set_sizing('fixed') ;
 $column->set_fixed_width(70) ;
 $treeview->append_column($column) ;
@@ -67,7 +67,7 @@ for my $column_title('left', 'body', 'right')
 	my $renderer = Gtk3::CellRendererText->new;
 	$renderer->signal_connect (edited => \&cell_edited, [$model, $rows]);
 	$renderer->set_data (column => $current_column );
-
+	
 	$treeview->insert_column_with_attributes 
 				(
 				-1, $column_title, $renderer,

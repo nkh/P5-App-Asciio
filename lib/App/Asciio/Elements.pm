@@ -70,7 +70,7 @@ for my $ruler_line_to_remove (@ruler_lines_to_remove)
 			}
 		}
 	}
-	
+
 $self->{RULER_LINES} = [grep {! exists $removed{$_}} @{$self->{RULER_LINES}} ] ;
 }
 
@@ -95,7 +95,7 @@ for my $ruler_line_to_check (@ruler_lines_to_check)
 			}
 		}
 	}
-	
+
 return $exists ;
 }
 
@@ -486,8 +486,6 @@ for my $connection ($self->get_connected($selected_element))
 		{
 		$self->delete_connections($connection) ;
 		}
-		
-	#~ TODO fix the other connection as move does above
 	}
 
 $self->{MODIFIED }++ ;
@@ -548,7 +546,7 @@ for my $element (@elements)
 		$groups_to_select{$element->{GROUP}[-1]}++ ;
 		}
 	}
-	
+
 # select groups
 for my $element (@{$self->{ELEMENTS}}) 
 	{
@@ -662,7 +660,7 @@ if($height < 0)
 	$height *= -1 ;
 	$start_y -= $height ;
 	}
-	
+
 my $is_under = 1 ;
 
 for my $strip (@{$element->get_stripes()})
@@ -699,6 +697,8 @@ my ($character_width, $character_height) = $self->get_character_size() ;
 
 map {int($_ / $character_width)} @pixels ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub pixel_to_character_y
 {

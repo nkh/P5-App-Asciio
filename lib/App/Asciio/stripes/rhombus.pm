@@ -13,11 +13,11 @@ use Readonly ;
 
 Readonly my $DEFAULT_BOX_TYPE =>
 [
-	[1, 'top', ',', '\'', ',', 1, ], 
-	[1, 'top-middle', ',\'', '', '\',', 1, ],
-	[1, 'middle', ':', '', ':', 1, ],
-	[1, 'middle-bottom', '\',', '', ',\'', 1, ],
-	[1, 'bottom', '\'', ',', '\'', 1, ] ,
+	[1, 'top',           ',',   '\'', ',',   1, ], 
+	[1, 'top-middle',    ',\'',  '',  '\',', 1, ],
+	[1, 'middle',        ':',    '',  ':',   1, ],
+	[1, 'middle-bottom', '\',',  '',  ',\'', 1, ],
+	[1, 'bottom',        '\'',   ',', '\'',  1, ] ,
 ] ;
 
 #-----------------------------------------------------------------------------
@@ -27,7 +27,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
@@ -78,124 +78,154 @@ sub setup
 
 my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type, $auto_shrink) = @_ ;
 Readonly my $mini_row => 3 ; 
-if($auto_shrink) {
-	$end_y = -5 ;
-}
+
+$end_y = -5 if $auto_shrink ;
+
 # $number_of_lines must be odd
-if($end_y > 3 && ($end_y % 2) == 0) {
+if($end_y > 3 && ($end_y % 2) == 0)
+	{
 	$end_y++ ;
-}
+	}
+
 my $number_of_lines = max($mini_row, $end_y) ;
 my @text_lines;
-if($text_only) {
-	@text_lines = split("\n", $text_only) ;
-} else {
-	@text_lines = ('') ;
-}
 
-my $text_width = max(map {physical_length $_} @text_lines);
+if($text_only)
+	{
+	@text_lines = split("\n", $text_only) ;
+	}
+else
+	{
+	@text_lines = ('') ;
+	}
+
+my $text_width = max(map {usc_length $_} @text_lines);
 my $text_heigh = @text_lines;
 
 my ($element_width, $height);
 
-if($text_heigh % 2 == 0) {
+if($text_heigh % 2 == 0)
+	{
 	$element_width = $text_width + 2 + 2 * ($text_heigh - 1);
-} else {
+	}
+else
+	{
 	$element_width = $text_width + 2 + 2 * ($text_heigh - 2);
-}
+	}
 
-if($element_width % 2 == 0) {
+if($element_width % 2 == 0)
+	{
 	$height = int(($element_width + 1) / 2) + 2;
-} else {
+	}
+else
+	{
 	$height = int(($element_width + 1) / 2) + 1;
-}
+	}
 
 $height = max($number_of_lines, $height);
-if($height % 2 == 0) {
+if($height % 2 == 0)
+	{
 	$height++ ;
-}
+	}
 
 $element_width = $height * 2 - 1 ;
 my $start_text_row = int(($height - $text_heigh) / 2);
 my $half_line_num = int($height / 2);
 
-my @lines;
-
-push @lines, map {''} (1 .. $height);
-my $half_elament_width = int($element_width / 2);
-my $y_offset = 0;
+my $half_element_width = int($element_width / 2);
 
 my (@stripes, $strip_text, $width, $x_offset, $left_center_x, $resize_point_x, $text_offset) ;
 
 # divided into 5 parts
 # up up-middle middle middle-down down
 # minimal case up-middle and middle-down does not exist
-for my $line (@lines)
+for my $y_offset (0 .. $height - 1)
 	{
-		if($y_offset == 0) {
-			$width = 3 ;
-			$strip_text = $box_type->[0][2] . $box_type->[0][3] . $box_type->[0][4];
-			$x_offset = $half_elament_width - 1 ;
-		} elsif($y_offset < $half_line_num) {
-			$width = 3 + $y_offset * 4 ;
-			$x_offset = $half_elament_width - 1 - 2 * $y_offset ;
-			if($y_offset >= $start_text_row && @text_lines) {
-				my $tmp_text = shift @text_lines ;
-				unless($text_offset) {
-					$text_offset = $x_offset + 2;
-				}
-				my $padding = $text_offset - $x_offset - 2;
-				$padding = 0 if $padding < 0;
-				$strip_text = $box_type->[1][2] . (' ' x $padding) . $tmp_text . (' ' x ($width - 4 - physical_length($tmp_text) - $padding)) . $box_type->[1][4] ;
-			} else {
-				$strip_text = $box_type->[1][2] . (' ' x ($width - 4)) . $box_type->[1][4] ;
-			}
-		} elsif($y_offset == $half_line_num) {
-			$left_center_x = -1 ;
-			$width = $element_width ;
-			$x_offset = 0;
-			if($y_offset >= $start_text_row && @text_lines) {
-				my $tmp_text = shift @text_lines ;
-				unless($text_offset) {
-					$text_offset = $x_offset + 1;
-				}
-				my $padding = $text_offset - $x_offset - 1;
-				$padding = 0 if $padding < 0;
-				$strip_text = $box_type->[2][2] . (' ' x $padding) . $tmp_text . (' ' x ($element_width - 2 - physical_length($tmp_text) - $padding)) . $box_type->[2][4] ;
-			} else {
-				$strip_text = $box_type->[2][2] . (' ' x ($element_width - 2)) . $box_type->[2][4] ;
-			}
-		} elsif($y_offset < $height - 1) {
-			$width = 3 + ($height - $y_offset - 1) * 4 ;
-			$x_offset = $half_elament_width - 1 - 2 * ($height - $y_offset - 1) ;
-			if($y_offset >= $start_text_row && @text_lines) {
-				my $tmp_text = shift @text_lines ;
-				unless($text_offset) {
-					$text_offset = $x_offset + 2;
-				}
-				my $padding = $text_offset - $x_offset - 2;
-				$padding = 0 if $padding < 0;
-				$strip_text = $box_type->[3][2] . (' ' x $padding) . $tmp_text . (' ' x ($width - 4 - physical_length($tmp_text) - $padding)) . $box_type->[3][4] ;
-			} else {
-				$strip_text = $box_type->[3][2] . (' ' x ($width - 4)) . $box_type->[3][4] ;
-			}
-		} else {
-			$resize_point_x = $half_elament_width + 1 ;
-			$width = 3 ;
-			$strip_text = $box_type->[4][2] . $box_type->[4][3] . $box_type->[4][4] ;
-			$x_offset = $half_elament_width - 1 ;
+	if($y_offset == 0)
+		{
+		$width = 3 ;
+		$strip_text = $box_type->[0][2] . $box_type->[0][3] . $box_type->[0][4];
+		$x_offset = $half_element_width - 1 ;
 		}
-
-		push @stripes,
+	elsif($y_offset < $half_line_num)
+		{
+		$width = 3 + $y_offset * 4 ;
+		$x_offset = $half_element_width - 1 - 2 * $y_offset ;
+		
+		if($y_offset >= $start_text_row && @text_lines)
 			{
-			'HEIGHT' => 1,
-			'TEXT' => $strip_text,
-			#~ for Future unicode support
-			'WIDTH' => physical_length($strip_text) ,
-			'X_OFFSET' => $x_offset,
-			'Y_OFFSET' => $y_offset,
-			} ;
-		$y_offset++ ;
+			my $text = shift @text_lines ;
+			
+			$text_offset = $x_offset + 2 unless $text_offset ;
+			
+			my $padding = $text_offset - $x_offset - 2;
+			$padding = 0 if $padding < 0;
+			
+			$strip_text = $box_type->[1][2] . (' ' x $padding) . $text . (' ' x ($width - 4 - usc_length($text) - $padding)) . $box_type->[1][4] ;
+			}
+		else
+			{
+			$strip_text = $box_type->[1][2] . (' ' x ($width - 4)) . $box_type->[1][4] ;
+			}
+		}
+	elsif($y_offset == $half_line_num)
+		{
+		$left_center_x = -1 ;
+		$width = $element_width ;
+		$x_offset = 0;
+		
+		if($y_offset >= $start_text_row && @text_lines)
+			{
+			my $text = shift @text_lines ;
+			
+			$text_offset = $x_offset + 1 unless $text_offset ; 
+			
+			my $padding = $text_offset - $x_offset - 1;
+			$padding = 0 if $padding < 0;
+			
+			$strip_text = $box_type->[2][2] . (' ' x $padding) . $text . (' ' x ($element_width - 2 - usc_length($text) - $padding)) . $box_type->[2][4] ;
+			}
+		else
+			{
+			$strip_text = $box_type->[2][2] . (' ' x ($element_width - 2)) . $box_type->[2][4] ;
+			}
+		}
+	elsif($y_offset < $height - 1)
+		{
+		$width = 3 + ($height - $y_offset - 1) * 4 ;
+		$x_offset = $half_element_width - 1 - 2 * ($height - $y_offset - 1) ;
+		
+		if($y_offset >= $start_text_row && @text_lines)
+			{
+			my $text = shift @text_lines ;
+			$text_offset = $x_offset + 2 unless $text_offset ;
+			
+			my $padding = $text_offset - $x_offset - 2;
+			$padding = 0 if $padding < 0;
+			
+			$strip_text = $box_type->[3][2] . (' ' x $padding) . $text . (' ' x ($width - 4 - usc_length($text) - $padding)) . $box_type->[3][4] ;
+			}
+		else
+			{
+			$strip_text = $box_type->[3][2] . (' ' x ($width - 4)) . $box_type->[3][4] ;
+			}
+		}
+	else
+		{
+		$resize_point_x = $half_element_width + 1 ;
+		$width = 3 ;
+		$strip_text = $box_type->[4][2] . $box_type->[4][3] . $box_type->[4][4] ;
+		$x_offset = $half_element_width - 1 ;
+		}
+	
+	push @stripes,
+		{
+		'HEIGHT' => 1,
+		'TEXT' => $strip_text,
+		'WIDTH' => usc_length($strip_text) ,
+		'X_OFFSET' => $x_offset,
+		'Y_OFFSET' => $y_offset,
+		} ;
 	}
 
 $self->set
@@ -220,16 +250,9 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-if	(
-	($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 1)
-	)
-	{
-	'resize' ;
-	}
-else
-	{
-	'move' ;
-	}
+($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 1)
+	? 'resize'
+	: 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -334,10 +357,13 @@ my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;
 my $new_end_x = $new_x ;
 my $new_end_y = $new_y ;
 
-if($reference_x == -1 && $reference_y == -1) {
-	if($new_y == -1) {
+if($reference_x == -1 && $reference_y == -1)
+	{
+	if($new_y == -1)
+		{
 		$new_y = -2;
-	}
+		}
+
 	$self->setup
 		(
 		$self->{TEXT_ONLY},
@@ -346,7 +372,9 @@ if($reference_x == -1 && $reference_y == -1) {
 		$self->{EDITABLE}, $self->{RESIZABLE},
 		$self->{BOX_TYPE}, $self->{AUTO_SHRINK}
 		) ;
-} else {
+	}
+else
+	{
 	if($new_end_x >= 0 &&  $new_end_y >= 0)
 		{
 		$self->setup
@@ -358,50 +386,34 @@ if($reference_x == -1 && $reference_y == -1) {
 			$self->{BOX_TYPE}, $self->{AUTO_SHRINK}
 			) ;
 		}
-}
+	}
 
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 }
 
 #-----------------------------------------------------------------------------
 
-sub get_text
-{
-my ($self) = @_ ;
-return($self->{TEXT_ONLY}) ;
-}
-
-#-----------------------------------------------------------------------------
-sub get_box_type
-{
-my ($self) = @_ ;
-return($self->{BOX_TYPE})  ;
-}
-
-#-----------------------------------------------------------------------------
-sub allow_border_connection
-{
-}
-
-#-----------------------------------------------------------------------------
-sub is_border_connection_allowed
-{
-}
-#-----------------------------------------------------------------------------
-
-sub flip_auto_shrink
-{
-my($self) = @_ ;
-$self->{AUTO_SHRINK} ^= 1 ;
-}
+sub get_text { my ($self) = @_ ; return($self->{TEXT_ONLY}) ; }
 
 #-----------------------------------------------------------------------------
 
-sub is_auto_shrink
-{
-my($self) = @_ ;
-return $self->{AUTO_SHRINK} ;
-}
+sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
+
+#-----------------------------------------------------------------------------
+
+sub allow_border_connection { ; }
+
+#-----------------------------------------------------------------------------
+
+sub is_border_connection_allowed { ; }
+
+#-----------------------------------------------------------------------------
+
+sub flip_auto_shrink { my($self) = @_ ; $self->{AUTO_SHRINK} ^= 1 ; }
+
+#-----------------------------------------------------------------------------
+
+sub is_auto_shrink { my($self) = @_ ; return $self->{AUTO_SHRINK} ; }
 
 #-----------------------------------------------------------------------------
 
@@ -425,7 +437,7 @@ sub rotate_text
 my ($self) = @_ ;
 
 my $text = make_vertical_text($self->{TEXT_ONLY})  ;
-	
+
 $self->set_text($text) ;
 $self->shrink() ;
 
@@ -438,13 +450,13 @@ sub set_text
 {
 my ($self, $text) = @_ ;
 $self->setup
-		(
-		$text,
-		$self->{RESIZE_POINT_X} -	3, # magic number are ugly
-		$self->{HEIGHT} - 1,
-		$self->{EDITABLE}, $self->{RESIZABLE},
-		$self->{BOX_TYPE}, $self->{AUTO_SHRINK}
-		) ;
+	(
+	$text,
+	$self->{RESIZE_POINT_X} -	3, # magic number are ugly
+	$self->{HEIGHT} - 1,
+	$self->{EDITABLE}, $self->{RESIZABLE},
+	$self->{BOX_TYPE}, $self->{AUTO_SHRINK}
+	) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -452,13 +464,13 @@ sub set_box_type
 {
 my ($self, $box_type) = @_;
 $self->setup
-		(
-		$self->{TEXT_ONLY},
-		$self->{RESIZE_POINT_X} -	3, # magic number are ugly
-		$self->{HEIGHT} - 1,
-		$self->{EDITABLE}, $self->{RESIZABLE},
-		$box_type, $self->{AUTO_SHRINK}
-		) ;
+	(
+	$self->{TEXT_ONLY},
+	$self->{RESIZE_POINT_X} -	3, # magic number are ugly
+	$self->{HEIGHT} - 1,
+	$self->{EDITABLE}, $self->{RESIZABLE},
+	$box_type, $self->{AUTO_SHRINK}
+	) ;
 }
 
 #-----------------------------------------------------------------------------

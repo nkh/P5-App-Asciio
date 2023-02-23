@@ -67,7 +67,7 @@ if(defined $command && $command ne '')
 	{
 	(my $command_stderr_redirected = $command) =~ s/$/ 2>&1/gsm ;
 	$output = `$command_stderr_redirected` ;
-
+	
 	if($?)
 		{
 		$output = '' unless defined $output ;
@@ -120,10 +120,7 @@ $self->set_text($title, $text) ;
 
 #-----------------------------------------------------------------------------
 
-sub rotate_text
-{
-# can't rotate ;
-}
+sub rotate_text { ; }
 
 #-----------------------------------------------------------------------------
 

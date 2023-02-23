@@ -30,7 +30,7 @@ for my $action (@actions)
 		{
 		($action, @arguments) = @{ $action } ;
 		}
-		
+	
 	my ($modifiers, $action_key) = $action =~ /(...-)?(.*)/ ;
 	
 	my $action = encode('utf8', $action) ;

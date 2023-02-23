@@ -5,7 +5,8 @@ use strict;
 use warnings;
 
 use List::Util qw(max) ;
-# use List::MoreUtils qw(max) ;
+
+#---------------------------------------------------------------------------
 
 sub new
 {
@@ -21,7 +22,9 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	my $text = $stripe->{TEXT} ;
 	
 	my $width = 0 ;
-	map {$width  = $width < physical_length($_) ? physical_length($_)  : $width} split("\n", $text) ;
+	my $usc_length = usc_length($_) ;
+	
+	map { $width  = $width < $usc_length ? $usc_length : $width } split("\n", $text) ;
 	
 	my $height = ($text =~ tr[\n][\n]) + 1 ;
 	
@@ -33,10 +36,10 @@ for my $stripe (@{$element_definition->{STRIPES}})
 		WIDTH => $width, 
 		HEIGHT => $height , 
 		} ;
-		
+	
 	($total_width) = max($total_width, $stripe->{X_OFFSET} + $width) ;
 	($total_height) = max($total_height, $stripe->{Y_OFFSET} + $height) ;
-
+	
 	($min_x, $max_x) = minmax($min_x, $max_x, $stripe->{X_OFFSET}, $stripe->{X_OFFSET} + $width) ;
 	($min_y, $max_y) = minmax($min_y, $max_y, $stripe->{Y_OFFSET}, $stripe->{Y_OFFSET} + $height) ;
 	}
@@ -52,78 +55,39 @@ return bless
 
 #---------------------------------------------------------------------------
 
-sub get_stripes
-{
-my ($self) = @_ ;
-
-return $self->{STRIPES} ;
-}
+sub get_stripes { my ($self) = @_ ; return $self->{STRIPES} ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_size
-{
-my ($self) = @_ ;
-
-return($self->{WIDTH}, $self->{HEIGHT}) ;
-}
+sub get_size { my ($self) = @_ ; return($self->{WIDTH}, $self->{HEIGHT}) ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_extents
-{
-my ($self) = @_ ;
-
-return($self->{EXTENTS}) ;
-}
+sub get_extents { my ($self) = @_ ; return($self->{EXTENTS}) ; }
 
 #-----------------------------------------------------------------------------
 
-sub resize
-{
-my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;
-
-return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
-}
+sub resize { my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ; return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_action_menu_entries
-{
-}
+sub get_action_menu_entries { ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_selection_action
-{
-'move' ;
-}
+sub get_selection_action { 'move' ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_colors
-{
-my ($self) = @_ ;
-return  $self->{COLORS}{BACKGROUND}, $self->{COLORS}{FOREGROUND} ;
-}
+sub get_colors { my ($self) = @_ ; return  $self->{COLORS}{BACKGROUND}, $self->{COLORS}{FOREGROUND} ; }
 
 #-----------------------------------------------------------------------------
 
-sub set_background_color
-{
-my ($self, $background_color) = @_ ;
-	
-$self->{COLORS}{BACKGROUND} = $background_color ;
-}
+sub set_background_color { my ($self, $background_color) = @_ ; $self->{COLORS}{BACKGROUND} = $background_color ; }
 
 #-----------------------------------------------------------------------------
 
-sub set_foreground_color
-{
-my ($self, $foreground_color) = @_ ;
-	
-$self->{COLORS}{FOREGROUND} = $foreground_color ;
-}
+sub set_foreground_color { my ($self, $foreground_color) = @_ ; $self->{COLORS}{FOREGROUND} = $foreground_color ; }
 
 #-----------------------------------------------------------------------------
 
@@ -137,71 +101,43 @@ $self->{COLORS}{FOREGROUND} = $foreground_color ;
 
 #-----------------------------------------------------------------------------
 
-sub get_text
-{
-}
+sub get_text { ; }
 
 #-----------------------------------------------------------------------------
 
-sub set_text
-{
-}
+sub set_text { ; }
 
 #-----------------------------------------------------------------------------
 
-sub edit
-{
-}
+sub edit { ; }
 
 #-----------------------------------------------------------------------------
 
-sub match_connector
-{
-}
+sub match_connector { ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_connector_points
-{
-}
+sub get_connector_points { ; }
 
-sub get_connection_points
-{
-}
+sub get_connection_points { ; }
 
-sub get_extra_points
-{
-}
+sub get_extra_points { ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_named_connection
-{
-}
+sub get_named_connection { ; }
 
 #-----------------------------------------------------------------------------
 
-sub move_connector
-{
-}
+sub move_connector { ; }
 
 #-----------------------------------------------------------------------------
 
-sub is_autoconnect_enabled
-{
-my ($self) = @_ ;
-
-return ! $self->{AUTOCONNECT_DISABLED} ;
-}
+sub is_autoconnect_enabled { my ($self) = @_ ; return ! $self->{AUTOCONNECT_DISABLED} ; }
 
 #-----------------------------------------------------------------------------
 
-sub enable_autoconnect
-{
-my ($self, $enable) = @_ ;
-
-$self->{AUTOCONNECT_DISABLED} = !$enable ;
-}
+sub enable_autoconnect { my ($self, $enable) = @_ ; $self->{AUTOCONNECT_DISABLED} = !$enable ; }
 
 #-----------------------------------------------------------------------------
 
@@ -213,9 +149,9 @@ my ($self, %key_values) = @_ ;
 
 while (my ($key, $value) = each %key_values)
 	{
-	#~ print "setting $key, $value\n" ;
 	$self->{$key} = ${value} ;
 	}
+
 delete $self->{CACHE};
 }
 

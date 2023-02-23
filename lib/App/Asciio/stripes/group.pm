@@ -14,6 +14,8 @@ use App::Asciio ;
 use Module::Util qw(find_installed) ;
 use File::Basename ;
 
+#-----------------------------------------------------------------------------
+
 sub new
 {
 my ($class, $elements, $connections, $as_one_strip) = @_ ;
@@ -38,7 +40,8 @@ for my $element (@{$elements})
 		my $text = $stripe->{TEXT} ;
 		
 		my $width = 0 ;
-		map {$width  = $width < physical_length($_) ? physical_length($_)  : $width} split("\n", $text) ;
+		my $usc_length = usc_length($_) ;
+		map {$width  = $width < $usc_length ? $usc_length  : $width} split("\n", $text) ;
 		
 		my $height = ($text =~ tr[\n][\n]) + 1 ;
 		
@@ -81,7 +84,7 @@ if ($as_one_strip)
 	{
 	my $asciio = App::Asciio->new() ;
 	$asciio->add_elements(@{$elements}) ;
-
+	
 	my $text = $asciio->transform_elements_to_ascii_buffer() ;
 	
 	my $cropped_text = '' ;

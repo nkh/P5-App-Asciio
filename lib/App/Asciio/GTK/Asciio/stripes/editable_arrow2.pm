@@ -10,6 +10,8 @@ use Glib ':constants';
 use Gtk3 -init;
 use Glib qw(TRUE FALSE);
 
+#-----------------------------------------------------------------------------
+
 sub display_box_edit_dialog
 {
 my ($self) = @_ ;
@@ -76,6 +78,7 @@ $treeview->insert_column_with_attributes
 			-1, '', $row_renderer,
 			text => 0,
 			) ;
+
 my $column = $treeview->get_column(0) ;
 $column->set_sizing('fixed') ;
 $column->set_fixed_width(80) ;
@@ -86,7 +89,7 @@ for my $column_title('start', 'body', 'end')
 	my $renderer = Gtk3::CellRendererText->new;
 	$renderer->signal_connect (edited => \&cell_edited, [$model, $rows]);
 	$renderer->set_data (column => $current_column );
-
+	
 	$treeview->insert_column_with_attributes 
 				(
 				-1, $column_title, $renderer,

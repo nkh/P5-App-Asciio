@@ -47,14 +47,14 @@ unless($element_definition{WITH_FRAME})
 	
 	$element->set_box_type($box_type) ;
 	}
-	
+
 $element->shrink() ;
 
 if($element_definition{WITH_SIZE})
 	{
 	$element->resize(0, 0, @{$element_definition{WITH_SIZE}}) ;
 	}
-	
+
 # add name to be seen in the stencil list
 $element->{NAME} = $element_definition{NAME} ;
 

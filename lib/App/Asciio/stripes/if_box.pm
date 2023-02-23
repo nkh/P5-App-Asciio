@@ -18,7 +18,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
@@ -45,10 +45,10 @@ my ($text_width,  @lines) = (0) ;
 
 for my $line (split("\n", $text_only))
 	{
-	$text_width  = max($text_width, physical_length($line)) ;
+	$text_width  = max($text_width, usc_length($line)) ;
 	push @lines, $line ;
 	}
-	
+
 my $number_of_lines = scalar(@lines) ;
 
 my $lines_to_add = ($number_of_lines + 1) % 2 ; # always odd
@@ -71,7 +71,7 @@ my $inside_indentation = 0 ;
 
 for my $line (@top_lines)
 	{
-	my $padding = ' ' x ($text_width - physical_length($line)) ;
+	my $padding = ' ' x ($text_width - usc_length($line)) ;
 	
 	$text .= ' ' x $left_indentation . '/ ' . ' ' x $inside_indentation .  $line . $padding . ' ' x $inside_indentation. ' \\' . "\n" ;
 	$left_indentation-- ;
@@ -79,10 +79,10 @@ for my $line (@top_lines)
 	}
 
 my $center_line = shift @lines  || '' ;
-my $padding = ' ' x ($text_width - physical_length($center_line)) ;
+my $padding = ' ' x ($text_width - usc_length($center_line)) ;
 
 $center_line = '( ' . ' ' x $inside_indentation .  $center_line . $padding . ' ' x $inside_indentation .  ' )' ;
-my $width = physical_length($center_line) ;
+my $width = usc_length($center_line) ;
 $text .= $center_line . "\n" ;
 
 $left_indentation = 1 ;
@@ -93,7 +93,7 @@ push @bottom_lines, '' for (1 .. scalar(@top_lines) - scalar(@bottom_lines)) ;
 
 for my $line (@bottom_lines)
 	{
-	my $padding = ' ' x ($text_width - physical_length($line)) ;
+	my $padding = ' ' x ($text_width - usc_length($line)) ;
 	
 	$text .= ' ' x $left_indentation .  '\\ ' .  ' ' x $inside_indentation .  $line . $padding . ' ' x $inside_indentation .  ' /' . "\n" ;
 	$left_indentation++ ;
@@ -122,16 +122,9 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-if	(
-	($x == $self->{WIDTH} - 1 && $y == $self->{HEIGHT} - 1)
-	)
-	{
-	'resize' ;
-	}
-else
-	{
-	'move' ;
-	}
+($x == $self->{WIDTH} - 1 && $y == $self->{HEIGHT} - 1)
+	? 'resize'
+	: 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -222,29 +215,12 @@ sub resize
 {
 my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;
 
-# if box is not resizable
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
-
-#~ return(0, 0, $self->{WIDTH}, $self->{HEIGHT})  unless $self->{RESIZABLE} ;
-
-#~ my $new_end_x = $new_x ;
-#~ my $new_end_y = $new_y ;
-
-#~ if($new_end_x >= 0 &&  $new_end_y >= 0)
-	#~ {
-	#~ $self->setup($self->{TEXT_ONLY}, $new_end_x + 1, $new_end_y + 1, $self->{RESIZABLE}, $self->{EDITABLE}) ;
-	#~ }
-	
-#~ return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 }
 
 #-----------------------------------------------------------------------------
 
-sub get_text
-{
-my ($self) = @_ ;
-return($self->{TEXT_ONLY})  ;
-}
+sub get_text { my ($self) = @_ ; return($self->{TEXT_ONLY})  ; }
 
 #-----------------------------------------------------------------------------
 

@@ -220,6 +220,39 @@ A set of whirl arrows connected to each other.
                 |   '------------------'   |
                 '--------------------------'
 
+=head3 Unicode example
+
+   ╭───────────────────────────────────────────────────────╮
+   │ 中文韩文和unicode符号支持以及全新的菱形元素           │
+   │ Chinese Korean and unicode symbols and rhombus object │
+   ╰───────────────────────────────────────────────────────╯
+                        ,',
+                      ,'   ',
+                    ,'       ',
+          ╭────────:           :───────────╮
+          │         ',       ,'            │
+          │           ',   ,'              │
+          │             ','                │
+          │              │                 v
+          v              v              ⎛     ⎞
+        ┌───┐          ╭───╮            ⎜     ⎟
+        │   │          │   │            ⎜     ⎟
+        └───┘          ╰───╯            ⎝     ⎠
+
+        ┌──────────────┐          ┌──────────────┐
+        │ 主机1(host1) │          │ 主机2(host2) │
+        └──────────────┘          └──────────────┘
+          ^   ^                           ^   ^
+          │   │                           │   │
+          │   ╰───────────────────────╮   │   │
+          │                           │   │   │
+          │       ╭───────────────────│───╯   │
+          │       │                   │       │
+    PCIEx4│ PCIEx4│            PCIEx4 │ PCIEx4│
+        ┌─────────────┐           ┌─────────────┐
+        │ HBA card1   │           │ HBA card2   │
+        └─────────────┘           └─────────────┘
+
 =head2 Bindings
 
  «Enter»            Edit selected element
@@ -925,12 +958,16 @@ gnome libraries, gtk, gtk-perl for the gtk version
 
 Please report errors at  https://github.com/nkh/P5-App-Asciio/issues.
 
-=head1 AUTHOR
+=head1 AUTHORS
 
 	Khemir Nadim ibn Hamouda
 	https://github.com/nkh
 	CPAN ID: NKH
 
+	Qin Qing
+	northisland2017@gmail.com
+	unicode support, scroll bar, and rhombus object
+ 
 =head1 LICENSE AND COPYRIGHT
 
 This program is free software; you can redistribute it and/or modify it under

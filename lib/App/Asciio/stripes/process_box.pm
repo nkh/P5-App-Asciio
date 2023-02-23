@@ -17,7 +17,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
@@ -63,12 +63,12 @@ my $current_half_the_lines = $half_the_lines ;
 my (@lines_width_plus_offset) ;
 for my $line (@lines)
 	{
-	push @lines_width_plus_offset, physical_length($line) + abs($current_half_the_lines) ;
+	push @lines_width_plus_offset, usc_length($line) + abs($current_half_the_lines) ;
 	$current_half_the_lines-- ;
 	}
 
 my $text_width_plus_offset  = max(@lines_width_plus_offset, $end_x) ;
-	
+
 my @top_lines = (splice @lines, 0, $number_of_lines / 2) ;
 
 my $center_line = shift @lines  || '' ;
@@ -79,6 +79,7 @@ push @bottom_lines, '' for (1 .. scalar(@top_lines) - scalar(@bottom_lines)) ;
 my (@stripes, $strip_text, $x_offset, $y_offset) ;
 
 $strip_text = '_' x (($text_width_plus_offset - 1) + $side_glyphs_size) . "\n\\" . ' ' x (($text_width_plus_offset - 2) + $side_glyphs_size) . "\\" ;
+
 push @stripes,
 	{
 	'HEIGHT' => 2,
@@ -87,6 +88,7 @@ push @stripes,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' =>0,
 	} ;
+
 $x_offset = 1 ;
 $y_offset = 2 ;
 
@@ -94,35 +96,37 @@ $current_half_the_lines = $half_the_lines ;
 for my $line (@top_lines)
 	{
 	my $front_padding = ' ' x $current_half_the_lines ;
-	my $padding = ' ' x ($text_width_plus_offset  - (physical_length($line) + $current_half_the_lines)) ;
+	my $padding = ' ' x ($text_width_plus_offset  - (usc_length($line) + $current_half_the_lines)) ;
 	my $strip_text = "\\ $front_padding$line$padding \\" ;
 	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
 		'TEXT' => $strip_text,
-		'WIDTH' => physical_length($strip_text),
+		'WIDTH' => usc_length($strip_text),
 		'X_OFFSET' => $x_offset,
 		'Y_OFFSET' => $y_offset ,
 		} ;
+	
 	$x_offset++ ;
 	$y_offset++ ;
 	$current_half_the_lines-- ;
 	}
-	
-my $padding = ' ' x ($text_width_plus_offset  - physical_length($center_line)) ;
+
+my $padding = ' ' x ($text_width_plus_offset  - usc_length($center_line)) ;
 $strip_text = ') ' . $center_line . $padding . ' )' ;
-$element_width =  physical_length($strip_text) + $y_offset - 1 ; # first stripe is two lines high, compensate offset by substracting one
+$element_width =  usc_length($strip_text) + $y_offset - 1 ; # first stripe is two lines high, compensate offset by substracting one
 my $left_center_x = $y_offset - 2 ; # compensate as above and shft left
 
 push @stripes,
 	{
 	'HEIGHT' => 1,
 	'TEXT' => $strip_text,
-	'WIDTH' => physical_length($strip_text),
+	'WIDTH' => usc_length($strip_text),
 	'X_OFFSET' => $x_offset,
 	'Y_OFFSET' => $y_offset, 
 	};
+
 $y_offset++ ;
 $x_offset-- ;
 $current_half_the_lines = 1; 
@@ -130,7 +134,7 @@ $current_half_the_lines = 1;
 for my $line (@bottom_lines)
 	{
 	my $front_padding = ' ' x $current_half_the_lines ;
-	my $padding = ' ' x ($text_width_plus_offset  - (physical_length($line) + $current_half_the_lines)) ;
+	my $padding = ' ' x ($text_width_plus_offset  - (usc_length($line) + $current_half_the_lines)) ;
 	
 	my $strip_text = "/ $front_padding$line$padding /" ;
 	
@@ -138,7 +142,7 @@ for my $line (@bottom_lines)
 		{
 		'HEIGHT' => 1,
 		'TEXT' => $strip_text,
-		'WIDTH' => physical_length($strip_text),
+		'WIDTH' => usc_length($strip_text),
 		'X_OFFSET' => $x_offset,
 		'Y_OFFSET' => $y_offset ,
 		} ;
@@ -156,7 +160,7 @@ push @stripes,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => $y_offset, 
 	};
-	
+
 $self->set
 	(
 	STRIPES => \@stripes,
@@ -177,16 +181,9 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-if	(
-	($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 1)
-	)
-	{
-	'resize' ;
-	}
-else
-	{
-	'move' ;
-	}
+($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 1)
+	? 'resize'
+	: 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -246,10 +243,7 @@ return
 sub get_extra_points
 {
 my ($self) = @_ ;
-return
-	(
-	{X =>  $self->{RESIZE_POINT_X}, Y => $self->{HEIGHT} - 1 , NAME => 'resize'},
-	) ;
+return ( {X =>  $self->{RESIZE_POINT_X}, Y => $self->{HEIGHT} - 1 , NAME => 'resize'} ) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -301,7 +295,7 @@ if($new_end_x >= 0 &&  $new_end_y >= 0)
 		$self->{EDITABLE}, $self->{RESIZABLE}
 		) ;
 	}
-	
+
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 }
 

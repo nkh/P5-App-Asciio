@@ -56,6 +56,7 @@ my $treedumper = Data::TreeDumper::Renderer::GTK->new
 				data => $data,
 				dumper_setup => {@dumper_setup}
 				);
+
 $treedumper->collapse_all;
 $treedumper->set_hexpand(TRUE) ;
 $treedumper->set_vexpand(TRUE) ;
@@ -153,41 +154,43 @@ $dialog->destroy ;
 return $result ;
 }
 
-sub add_button_with_icon {
-	# code by Muppet
-        my ($dialog, $text, $stock_id, $response_id) = @_;
+sub add_button_with_icon
+{
+# code by Muppet
+my ($dialog, $text, $stock_id, $response_id) = @_;
 
-        my $button = create_button ($text, $stock_id);
-        $button->show;
+my $button = create_button ($text, $stock_id);
+$button->show;
 
-        $dialog->add_action_widget ($button, $response_id);
+$dialog->add_action_widget ($button, $response_id);
 }
 
-sub create_button {
-	# code by Muppet
-        my ($text, $stock_id) = @_;
+sub create_button
+{
+# code by Muppet
+my ($text, $stock_id) = @_;
 
-        my $button = Gtk3::Button->new ();
-        
-        #
-        # This setup is cribbed from gtk_button_construct_child()
-        # in gtkbutton.c.  It does not handle all the details like
-        # left-to-right ordering and alignment and such, as in the
-        # real button code.
-        #
-        my $image = Gtk3::Image->new_from_stock ($stock_id, 'button');
-        my $label = Gtk3::Label->new ($text); # accepts mnemonics
-        $label->set_mnemonic_widget ($button);
+my $button = Gtk3::Button->new ();
 
-        my $hbox = Gtk3::HBox->new ();
-        $hbox->pack_start ($image, FALSE, FALSE, 0);
-        $hbox->pack_start ($label, FALSE, FALSE, 0);
+#
+# This setup is cribbed from gtk_button_construct_child()
+# in gtkbutton.c.  It does not handle all the details like
+# left-to-right ordering and alignment and such, as in the
+# real button code.
+#
+my $image = Gtk3::Image->new_from_stock ($stock_id, 'button');
+my $label = Gtk3::Label->new ($text); # accepts mnemonics
+$label->set_mnemonic_widget ($button);
 
-        $hbox->show_all ();
+my $hbox = Gtk3::HBox->new ();
+$hbox->pack_start ($image, FALSE, FALSE, 0);
+$hbox->pack_start ($label, FALSE, FALSE, 0);
 
-        $button->add ($hbox);
+$hbox->show_all ();
 
-        return $button;
+$button->add ($hbox);
+
+return $button;
 }
 
 #-----------------------------------------------------------------------------
@@ -224,18 +227,6 @@ $scroller->show();
 $vbox->show();
 
 $dialog->get_content_area->add ($vbox) ;
-
-
-# Set up the dialog such that Ctrl+Return will activate the "ok"  response. Muppet
-
-# my $accel = Gtk3::AccelGroup->new;
-# $accel->connect
-#       (
-#       Gtk3::Gdk->keyval_from_name ('Return'), ['control-mask'], [],
-#       sub { $dialog->response ('ok'); }
-#       );
-      
-# $dialog->add_accel_group ($accel);
 
 $dialog->run() ;
 

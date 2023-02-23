@@ -14,17 +14,17 @@ use Readonly ;
 Readonly my $DEFAULT_GLYPHS=> 
 	#name: => [$start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection]
 	{
-	'origin' => [ '*', '?', '?', '?', '?', '?', '?'],
-	'up'=> [ "'", '|', '?', '?', '.', '?', '?'],
-	'down' => [ '.', '|', '?', '?', "'", '?', '?'],
-	'left' => [ '-', '-', '?', '?', '-', '?', '?'],
-	'right' => [ '-', '-', '?', '?', '-', '?', '?'],
-	'up-left' => [ "'", '\\', '.', '-', '-', '|', "'"],
-	'left-up' => [ '-', '\\', "'", '-', '.', '|', "'"],
-	'down-left' => [ '.', '/', "'", '-', '-', '|', "'"],
-	'left-down' => [ '-', '/', '.', '-', "'", '|', "'"],
-	'up-right' => [ "'", '/', '.', '-', '-', '|', "'"],
-	'right-up' => [ '-', '/', "'", '-', '.', '|', "'"],
+	'origin'     => [ '*',  '?', '?', '?', '?', '?', '?'],
+	'up'         => [ "'",  '|', '?', '?', '.', '?', '?'],
+	'down'       => [ '.',  '|', '?', '?', "'", '?', '?'],
+	'left'       => [ '-',  '-', '?', '?', '-', '?', '?'],
+	'right'      => [ '-',  '-', '?', '?', '-', '?', '?'],
+	'up-left'    => [ "'", '\\', '.', '-', '-', '|', "'"],
+	'left-up'    => [ '-', '\\', "'", '-', '.', '|', "'"],
+	'down-left'  => [ '.',  '/', "'", '-', '-', '|', "'"],
+	'left-down'  => [ '-',  '/', '.', '-', "'", '|', "'"],
+	'up-right'   => [ "'",  '/', '.', '-', '-', '|', "'"],
+	'right-up'   => [ '-',  '/', "'", '-', '.', '|', "'"],
 	'down-right' => [ '.', '\\', "'", '-', '-', '|', "'"],
 	'right-down' => [ '-', '\\', '.', '-', "'", '|', "'"],
 	} ;
@@ -36,7 +36,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{GLYPHS} || $DEFAULT_GLYPHS,
@@ -130,8 +130,8 @@ my @position_to_direction =
 	) ;
 
 $direction = $position_to_direction
-			[$end_x == 0 ? CENTER : $end_x < 0 ? LEFT : RIGHT]
-			[$end_y == 0 ? CENTER : $end_y < 0 ? UP : DOWN] ;
+		[$end_x == 0 ? CENTER : $end_x < 0 ? LEFT : RIGHT]
+		[$end_y == 0 ? CENTER : $end_y < 0 ? UP : DOWN] ;
 
 my $drawing_sub = $direction_to_arrow{$direction} ;
  
@@ -155,8 +155,8 @@ push @{$stripes},
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return($stripes, $width, $height) ;
 } 
 
@@ -179,7 +179,7 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
+	} ;
 
 for(1 .. $height - 1)
 	{
@@ -192,7 +192,7 @@ for(1 .. $height - 1)
 		'Y_OFFSET' => -$_,
 		};
 	}
-	
+
 push @stripes,
 	{
 	'HEIGHT' => 1,
@@ -200,7 +200,7 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => $end_y,
-	};
+	} ;
 
 return(\@stripes, $width, $height) ;
 }
@@ -224,7 +224,7 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
+	} ;
 
 for(1 .. $height - 1)
 	{
@@ -235,9 +235,9 @@ for(1 .. $height - 1)
 		'WIDTH' => 1,
 		'X_OFFSET' => 0,
 		'Y_OFFSET' => $_,
-		};
+		} ;
 	}
-	
+
 push @stripes,
 	{
 	'HEIGHT' => 1,
@@ -245,8 +245,8 @@ push @stripes,
 	'WIDTH' => 1,
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => $end_y,
-	};
-	
+	} ;
+
 return(\@stripes, $width, $height) ;
 }
 
@@ -270,8 +270,8 @@ push @stripes,
 	'WIDTH' => length($stripe),
 	'X_OFFSET' => $end_x,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return(\@stripes, $width, $height) ;
 }
 
@@ -295,8 +295,8 @@ push @stripes,
 	'WIDTH' => length($stripe),
 	'X_OFFSET' => 0,
 	'Y_OFFSET' => 0,
-	};
-	
+	} ;
+
 return(\@stripes, $width, $height) ;
 }
 
@@ -324,8 +324,8 @@ if($end_x >= -$end_y) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++, # diagonal
 		'Y_OFFSET' => $position_y--, # diagonal
-		};
-		
+		} ;
+	
 	for(-$position_y .. (-$end_y - 1))
 		{
 		push @stripes,
@@ -335,9 +335,9 @@ if($end_x >= -$end_y) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++, # diagonal
 			'Y_OFFSET' => $position_y--, # diagonal
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -345,8 +345,8 @@ if($end_x >= -$end_y) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++, # going right
 		'Y_OFFSET' => $position_y, # staying horizontal
-		};
-
+		} ;
+	
 	if($end_x > -$end_y)
 		{
 		for($position_x .. ($end_x - 1))
@@ -358,9 +358,9 @@ if($end_x >= -$end_y) # enought horizontal length to have a proper diagonal up
 				'WIDTH' => 1,
 				'X_OFFSET' => $position_x++, # going right
 				'Y_OFFSET' => $position_y, # staying horizontal
-				};
+				} ;
 			}
-			
+		
 		push @stripes,
 			{
 			'HEIGHT' => 1,
@@ -368,10 +368,10 @@ if($end_x >= -$end_y) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, # finished
 			'Y_OFFSET' => $position_y, # finished
-			};
+			} ;
 		}
 	}
-	
+
 if($end_x < -$end_y) # not enought horizontal length to have a proper diagonal up
 	{
 	my $number_of_verticals = ($height - $width) - 1 ;
@@ -383,8 +383,8 @@ if($end_x < -$end_y) # not enought horizontal length to have a proper diagonal u
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y--, # up
-		};
-		
+		} ;
+	
 	for(1 .. $number_of_verticals)
 		{
 		push @stripes,
@@ -394,9 +394,9 @@ if($end_x < -$end_y) # not enought horizontal length to have a proper diagonal u
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -405,7 +405,7 @@ if($end_x < -$end_y) # not enought horizontal length to have a proper diagonal u
 		'X_OFFSET' => $position_x++, # going right
 		'Y_OFFSET' => $position_y--, # going up
 		} if($end_x != 0) ;
-
+	
 	my $number_of_diagonals = $height - ($number_of_verticals + 3) ;
 	
 	for(1 .. $number_of_diagonals)
@@ -417,9 +417,9 @@ if($end_x < -$end_y) # not enought horizontal length to have a proper diagonal u
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++, # going right
 			'Y_OFFSET' => $position_y--, # going up
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -427,7 +427,7 @@ if($end_x < -$end_y) # not enought horizontal length to have a proper diagonal u
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 
 return(\@stripes, $width, $height) ;
@@ -458,8 +458,8 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x--,
 		'Y_OFFSET' => $position_y--,
-		};
-		
+		} ;
+	
 	for(-$position_y .. (-$end_y - 1))
 		{
 		push @stripes,
@@ -469,9 +469,9 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--,
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -479,8 +479,8 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x--,
 		'Y_OFFSET' => $position_y,
-		};
-
+		} ;
+	
 	if($width > $height)
 		{
 		for(1 .. ($width - $height) - 1)
@@ -492,9 +492,9 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 				'WIDTH' => 1,
 				'X_OFFSET' => $position_x--, 
 				'Y_OFFSET' => $position_y,
-				};
+				} ;
 			}
-			
+		
 		push @stripes,
 			{
 			'HEIGHT' => 1,
@@ -502,14 +502,13 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x,
 			'Y_OFFSET' => $position_y,
-			};
+			} ;
 		}
 	}
 else
 	{
 	my $number_of_verticals = ($height - $width) - 1  ;
 	my $number_of_diagonals = $height - ($number_of_verticals + 3) ;
-	
 	
 	push @stripes,
 		{
@@ -519,7 +518,7 @@ else
 		'X_OFFSET' => $position_x,
 		'Y_OFFSET' => $position_y--, 
 		} ;
-		
+	
 	for(1 .. $number_of_verticals)
 		{
 		push @stripes,
@@ -529,9 +528,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -540,7 +539,7 @@ else
 		'X_OFFSET' => $position_x--,
 		'Y_OFFSET' => $position_y--, 
 		} if($end_x != 0) ;
-		
+	
 	for(1 .. $number_of_diagonals)
 		{
 		push @stripes,
@@ -550,9 +549,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--,
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -560,7 +559,7 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 
 return(\@stripes, $width, $height) ;
@@ -579,15 +578,10 @@ my ($width, $height) = ( -$end_x + 1, 	-$end_y + 1) ;
 my ($position_x, $position_y) = (0, 0) ;
 my @stripes ;
 
-#~ require Enbugger ;
-#~ Enbugger->stop ;
-
-#~ print "leftup\n" ;
-
 if($width > $height) # enought horizontal length to have a proper diagonal up
 	{
 	my $start_body_connector = $connection . $body_2 x (($width - $height) - 1) . $start ;
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -595,8 +589,8 @@ if($width > $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => length($start_body_connector),
 		'X_OFFSET' => - length($start_body_connector) + 1, 
 		'Y_OFFSET' => $position_y--,
-		};
-		
+		} ;
+	
 	$position_x -= length($start_body_connector) ;
 	
 	for(1 .. ($height - 2))  # two connectors
@@ -608,9 +602,9 @@ if($width > $height) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--,
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -618,7 +612,7 @@ if($width > $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x,
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 else
 	{
@@ -632,7 +626,7 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x--, 
 		'Y_OFFSET' => $position_y--,
-		};
+		} ;
 		
 	for(1 .. $number_of_diagonals)
 		{
@@ -643,9 +637,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--,
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -654,7 +648,7 @@ else
 		'X_OFFSET' => $position_x,
 		'Y_OFFSET' => $position_y--, 
 		} if($end_x != $end_y) ;
-		
+	
 	for(1 .. $number_of_verticals - 1)
 		{
 		push @stripes,
@@ -664,9 +658,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x,
 			'Y_OFFSET' => $position_y--, 
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -694,9 +688,6 @@ my ($width, $height) = ( $end_x + 1, 	-$end_y + 1) ;
 my ($position_x, $position_y) = (0, 0) ;
 my @stripes ;
 
-#~ require Enbugger ;
-#~ Enbugger->stop ;
-
 if($end_x > -$end_y)
 	{
 	push @stripes,
@@ -706,8 +697,8 @@ if($end_x > -$end_y)
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++,
 		'Y_OFFSET' => $position_y,
-		};
-		
+		} ;
+	
 	for(1 .. ($width - $height) - 1)
 		{
 		push @stripes,
@@ -717,9 +708,9 @@ if($end_x > -$end_y)
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++,
 			'Y_OFFSET' => $position_y,
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -727,8 +718,8 @@ if($end_x > -$end_y)
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++,
 		'Y_OFFSET' => $position_y--, 
-		};
-		
+		} ;
+	
 	for($position_x .. ($end_x - 1))
 		{
 		push @stripes,
@@ -738,9 +729,9 @@ if($end_x > -$end_y)
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++,
 			'Y_OFFSET' => $position_y--, 
-			};
+			} ;
 		}
-			
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -748,7 +739,7 @@ if($end_x > -$end_y)
 		'WIDTH' => 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => $end_y,
-		};
+		} ;
 	}
 else
 	{
@@ -764,8 +755,8 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++,
 		'Y_OFFSET' => $position_y--,
-		};
-		
+		} ;
+	
 	for(1 .. $number_of_diagonals)
 		{
 		push @stripes,
@@ -775,9 +766,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++,
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -786,7 +777,7 @@ else
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y--,
 		} if $has_diagonal_connection ;
-
+	
 	for(1 .. $number_of_verticals)
 		{
 		push @stripes,
@@ -796,9 +787,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x,
 			'Y_OFFSET' => $position_y--,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -825,9 +816,6 @@ my ($width, $height) = ( -$end_x + 1,  $end_y + 1) ;
 my ($position_x, $position_y) = (0, 0) ;
 my @stripes ;
 
-#~ require Enbugger ;
-#~ Enbugger->stop ;
-
 if($width >= $height) # enought horizontal length to have a proper diagonal up
 	{
 	push @stripes,
@@ -837,8 +825,8 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x--, 
 		'Y_OFFSET' => $position_y++,
-		};
-		
+		} ;
+	
 	for(1 .. ($height - 2))  # two connectors
 		{
 		push @stripes,
@@ -848,9 +836,9 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--,
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-		
+	
 	my $left_text = ''  ;
 	$left_text .= $body_2 x (($width - $height) - 1)  if $width > $height ;
 	
@@ -866,8 +854,7 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => length($left_text) + 1,
 		'X_OFFSET' => $end_x,
 		'Y_OFFSET' => $position_y,
-		};
-		
+		} ;
 	}
 else # not enought horizontal length to have a proper diagonal up
 	{
@@ -878,8 +865,8 @@ else # not enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y++,
-		};
-		
+		} ;
+	
 	for (1 .. ($height - $width) - 1)
 		{
 		push @stripes,
@@ -889,9 +876,9 @@ else # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-		
+	
 	if($end_x != 0)
 		{
 		push @stripes,
@@ -901,9 +888,9 @@ else # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--, 
 			'Y_OFFSET' => $position_y++, 
-			} 
+			} ;
 		}
-		
+	
 	for(1 .. (-$end_x  + $position_x))
 		{
 		push @stripes,
@@ -913,9 +900,9 @@ else # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--, 
 			'Y_OFFSET' => $position_y++, 
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -923,7 +910,7 @@ else # not enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 
 return(\@stripes, $width, $height) ;
@@ -942,9 +929,6 @@ my ($width, $height) = ( -$end_x + 1,  $end_y + 1) ;
 my ($position_x, $position_y) = (0, 0) ;
 my @stripes ;
 
-#~ require Enbugger ;
-#~ Enbugger->stop ;
-
 if($width >= $height) # enought horizontal length to have a proper diagonal up
 	{
 	my $start_body_connector = $connection;
@@ -962,8 +946,8 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => length($start_body_connector),
 		'X_OFFSET' => - length($start_body_connector) + 1, 
 		'Y_OFFSET' => $position_y++,
-		};
-		
+		} ;
+	
 	$position_x -= length($start_body_connector) ;
 	
 	for(1 .. ($height - 2))  # two connectors
@@ -975,9 +959,9 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--,
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -985,7 +969,7 @@ if($width >= $height) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x,
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 else 
 	{
@@ -996,8 +980,8 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x--, 
 		'Y_OFFSET' => $position_y++,
-		};
-		
+		} ;
+	
 	for(1 .. (-$end_x  + $position_x))
 		{
 		push @stripes,
@@ -1007,9 +991,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x--, 
 			'Y_OFFSET' => $position_y++, 
-			};
+			} ;
 		}
-		
+	
 	if($end_x != 0)
 		{
 		push @stripes,
@@ -1019,9 +1003,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y++, 
-			} 
+			} ; 
 		}
-		
+	
 	for (1 .. ($height - $width) - 1)
 		{
 		push @stripes,
@@ -1031,9 +1015,9 @@ else
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1041,7 +1025,7 @@ else
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 
 return(\@stripes, $width, $height) ;
@@ -1072,8 +1056,8 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++, # diagonal
 		'Y_OFFSET' => $position_y++, # diagonal
-		};
-		
+		} ;
+	
 	for($position_y .. ($end_y - 1))
 		{
 		push @stripes,
@@ -1083,9 +1067,9 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++, # diagonal
 			'Y_OFFSET' => $position_y++, # diagonal
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1093,8 +1077,8 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++, # going right
 		'Y_OFFSET' => $position_y, # staying horizontal
-		};
-
+		} ;
+	
 	if($end_x > $end_y)
 		{
 		for($position_x .. ($end_x - 1))
@@ -1106,9 +1090,9 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal up
 				'WIDTH' => 1,
 				'X_OFFSET' => $position_x++, # going right
 				'Y_OFFSET' => $position_y, # staying horizontal
-				};
+				} ;
 			}
-			
+		
 		push @stripes,
 			{
 			'HEIGHT' => 1,
@@ -1116,10 +1100,10 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, # finished
 			'Y_OFFSET' => $position_y, # finished
-			};
+			} ;
 		}
 	}
-	
+
 if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 	{
 	my $number_of_verticals = ($end_y - $end_x) - 1 ;
@@ -1132,7 +1116,7 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y++, 
 		} ;
-		
+	
 	for(1 .. $number_of_verticals)
 		{
 		push @stripes,
@@ -1142,9 +1126,9 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y++, 
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1153,7 +1137,7 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 		'X_OFFSET' => $position_x++, 
 		'Y_OFFSET' => $position_y++, 
 		} if($end_x != 0) ;
-
+	
 	my $number_of_diagonals = $height - ($number_of_verticals + 3) ;
 	
 	for(1 .. $number_of_diagonals)
@@ -1165,9 +1149,9 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++,
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1175,11 +1159,13 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
 
 return(\@stripes, $width, $height) ;
 }
+
+#----------------------------------------------------------------------------------------------------------
 
 sub draw_rightdown
 {
@@ -1203,8 +1189,8 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal down
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++, # going right
 			'Y_OFFSET' => $position_y, # stay on this line
-			};
-			
+			} ;
+		
 		for(1 .. ($end_x  - $end_y) - 1)
 			{
 			push @stripes,
@@ -1214,10 +1200,10 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal down
 				'WIDTH' => 1,
 				'X_OFFSET' => $position_x++, 
 				'Y_OFFSET' => $position_y, 
-				};
+				} ;
 			}
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1225,8 +1211,8 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal down
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x++,
 		'Y_OFFSET' => $position_y++,
-		};
-
+		} ;
+	
 	for(1 .. ($end_y - $position_y))
 		{
 		push @stripes,
@@ -1236,9 +1222,9 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal down
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x++,
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1246,9 +1232,9 @@ if($end_x >= $end_y) # enought horizontal length to have a proper diagonal down
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x,
 		'Y_OFFSET' => $position_y,
-		};
+		} ;
 	}
-	
+
 if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 	{
 	push @stripes,
@@ -1258,8 +1244,8 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y++,
-		};
-		
+		} ;
+	
 	for(1 .. (($end_x - 1) - $position_x))
 		{
 		$position_x++ ;
@@ -1270,9 +1256,9 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x,
 			'Y_OFFSET' => $position_y++,
-			};
+			} ;
 		}
-		
+	
 	if($end_x != 0)
 		{
 		$position_x++ ;
@@ -1283,9 +1269,9 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 			'WIDTH' => 1,
 			'X_OFFSET' => $position_x, 
 			'Y_OFFSET' => $position_y++,
-			} 
+			} ; 
 		}
-		
+	
 	for (0 .. ($end_y -$position_y) - 1)
 		{
 		push @stripes,
@@ -1297,7 +1283,7 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 			'Y_OFFSET' => $position_y++,
 			};
 		}
-		
+	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
@@ -1305,7 +1291,7 @@ if($end_x < $end_y) # not enought horizontal length to have a proper diagonal up
 		'WIDTH' => 1,
 		'X_OFFSET' => $position_x, 
 		'Y_OFFSET' => $position_y++,
-		};
+		} ;
 	}
 
 return(\@stripes, $width, $height) ;
@@ -1352,7 +1338,6 @@ if($name eq 'start')
 	{
 	return( {X => 0, Y => 0, NAME => 'start', CHAR => $self->{GLYPHS}{$self->{DIRECTION}}[0]} ) if exists $self->{GLYPHS} ;
 	return( {X => 0, Y => 0, NAME => 'start', CHAR => '?'} ) ;
-
 	}
 elsif($name eq 'end')
 	{
@@ -1373,6 +1358,8 @@ my ($self) = @_ ;
 
 return $self->{DIRECTION} ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub change_direction
 {
@@ -1405,7 +1392,7 @@ elsif($connector_name eq 'end')
 	{
 	my ($x_offset, $y_offset, $width, $height, undef) = 
 		$self->resize(-1, -1, $self->{END_X} + $x_offset, $self->{END_Y} + $y_offset, $hint) ;
-
+	
 	return 
 		$x_offset, $y_offset, $width, $height,
 		{X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end'} ;
@@ -1448,47 +1435,28 @@ if($is_start)
 	my $new_end_y = $self->{END_Y} - $y_offset ;
 	
 	$self->setup($self->{GLYPHS}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self->{EDITABLE}) ;
-
+	
 	return($x_offset, $y_offset, $self->{WIDTH}, $self->{HEIGHT}, 'start') ;
 	}
 else
 	{
 	my $new_end_x = $new_x ;
 	my $new_end_y = $new_y ;
-
+	
 	$self->setup($self->{GLYPHS}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self->{EDITABLE}) ;
-
+	
 	return(0, 0, $self->{WIDTH}, $self->{HEIGHT}, 'end') ;
 	}
 }
 
 #-----------------------------------------------------------------------------
 
-sub get_all_points
-{
-my ($self) = @_ ;
-
-$self->get_connector_points() ;
-}
+sub get_all_points { my ($self) = @_ ; $self->get_connector_points() ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_section_direction
-{
-my ($self, $section_index) = @_ ;
-
-return $self->{DIRECTION} ;
-}
+sub get_section_direction { my ($self, $section_index) = @_ ; return $self->{DIRECTION} ; }
 
 #-----------------------------------------------------------------------------
 
 1 ;
-
-
-
-
-
-
-
-
-

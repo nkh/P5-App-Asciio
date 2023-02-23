@@ -14,14 +14,14 @@ use Clone ;
 
 Readonly my $DEFAULT_ARROW_TYPE => 
 	[
-	['Up', '|', '|', '^', 1, ],
-	['45', '/', '/', '^', 1, ],
-	['Right', '-', '-', '>', 1, ],
-	['135', '\\', '\\', 'v', 1, ],
-	['Down', '|', '|', 'v', 1, ],
-	['225', '/', '/', 'v', 1, ],
-	['Left', '-', '-', '<', 1, ],
-	['315', '\\', '\\', '^', 1, ],
+	['Up',    '|',  '|', '^', 1],
+	['45',    '/',  '/', '^', 1],
+	['Right', '-',  '-', '>', 1],
+	['135',  '\\', '\\', 'v', 1],
+	['Down',  '|',  '|', 'v', 1],
+	['225',   '/',  '/', 'v', 1],
+	['Left',  '-',  '-', '<', 1],
+	['315',  '\\', '\\', '^', 1],
 	] ;
 
 sub new
@@ -29,7 +29,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{ARROW_TYPE} || Clone::clone($DEFAULT_ARROW_TYPE),
@@ -141,7 +141,7 @@ for ($direction)
 		$arrow = $height == 2
 				? $end . "\n" . $start
 				: $end . "\n" . ("$body\n" x ($height -2)) . $start ;
-				
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => $height,
@@ -149,11 +149,11 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => 0,
 			'Y_OFFSET' => $end_y,
-			};
-			
+			} ;
+		
 		last ;
 		} ;
-		
+	
 	$_ eq '45' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[1]}[1 .. 3] ;
@@ -171,8 +171,8 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => 0,
 			'Y_OFFSET' => 0,
-			};
-			
+			} ;
+		
 		for(my $position = -$end_y - 1 ; $position > 0 ; $position--)
 			{
 			push @{$stripes},
@@ -182,9 +182,9 @@ for ($direction)
 				'WIDTH' => 1,
 				'X_OFFSET' => $position,
 				'Y_OFFSET' => -$position,
-				};
+				} ;
 			}
-			
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => 1,
@@ -192,11 +192,11 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => -$end_y ,
 			'Y_OFFSET' => $end_y ,
-			};
+			} ;
 			
 		last ;
 		} ;
-		
+	
 	$_ eq 'right' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[2]}[1 .. 3] ;
@@ -210,7 +210,7 @@ for ($direction)
 				: $width == 2
 					? $start . $end
 					: $start . ($body x ($width -2)) . $end ;
-					
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => 1,
@@ -218,11 +218,11 @@ for ($direction)
 			'WIDTH' => $width,
 			'X_OFFSET' => 0,
 			'Y_OFFSET' => 0,
-			};
+			} ;
 			
 		last ;
 		} ;
-		
+	
 	$_ eq '135' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[3]}[1 .. 3] ;
@@ -240,8 +240,8 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => 0 ,
 			'Y_OFFSET' => 0 ,
-			};
-			
+			} ;
+		
 		for(my $position = 1 ; $position < $end_y ; $position++)
 			{
 			push @{$stripes},
@@ -251,9 +251,9 @@ for ($direction)
 				'WIDTH' => 1,
 				'X_OFFSET' => $position,
 				'Y_OFFSET' => $position,
-				};
+				} ;
 			}
-			
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => 1,
@@ -261,11 +261,11 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => $end_y ,
 			'Y_OFFSET' => $end_y ,
-			};
+			} ;
 			
 		last ;
 		} ;
-		
+	
 	$_ eq 'down' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[4]}[1 .. 3] ;
@@ -276,7 +276,7 @@ for ($direction)
 		$arrow = $height == 2
 				? $start . "\n" . $end
 				: $start . "\n" . ("$body\n" x ($height -2)) . $end ;
-				
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => $height,
@@ -284,10 +284,11 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => 0,
 			'Y_OFFSET' => 0,
-			};
+			} ;
+		
 		last ;
 		} ;
-		
+	
 	$_ eq '225' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[5]}[1 .. 3] ;
@@ -305,8 +306,8 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => 0,
 			'Y_OFFSET' => 0,
-			};
-			
+			} ;
+		
 		for(my $position = $end_y - 1 ; $position > 0 ; $position--)
 			{
 			push @{$stripes},
@@ -316,9 +317,9 @@ for ($direction)
 				'WIDTH' => 1,
 				'X_OFFSET' => -$position,
 				'Y_OFFSET' => $position,
-				};
+				} ;
 			}
-			
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => 1,
@@ -326,11 +327,11 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => -$end_y ,
 			'Y_OFFSET' => $end_y ,
-			};
-			
+			} ;
+		
 		last ;
 		} ;
-		
+	
 	$_ eq 'left' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[6]}[1 .. 3] ;
@@ -343,7 +344,7 @@ for ($direction)
 		$arrow = $width == 2
 				? $end . $start
 				: $end . ($body x ($width -2)) . $start ;
-				
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => 1,
@@ -351,11 +352,11 @@ for ($direction)
 			'WIDTH' => $width,
 			'X_OFFSET' => $end_x,
 			'Y_OFFSET' => 0,
-			};
-			
+			} ;
+		
 		last ;
 		} ;
-		
+	
 	$_ eq '315' and do
 		{
 		my ($start, $body, $end) = @{$arrow_type->[7]}[1 .. 3] ;
@@ -373,8 +374,8 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => 0,
 			'Y_OFFSET' => 0,
-			};
-			
+			} ;
+		
 		for(my $position = 1 ; $position < -$end_y ; $position++)
 			{
 			push @{$stripes},
@@ -384,9 +385,9 @@ for ($direction)
 				'WIDTH' => 1,
 				'X_OFFSET' => -$position,
 				'Y_OFFSET' => -$position,
-				};
+				} ;
 			}
-			
+		
 		push @{$stripes},
 			{
 			'HEIGHT' => 1,
@@ -394,8 +395,8 @@ for ($direction)
 			'WIDTH' => 1,
 			'X_OFFSET' => $end_y,
 			'Y_OFFSET' => $end_y,
-			};
-			
+			} ;
+		
 		last ;
 		} ;
 	}
@@ -409,10 +410,7 @@ sub get_extra_points
 {
 my ($self) = @_ ;
 
-return
-	(
-	{X =>  $self->{END_X}, Y => $self->{END_Y}, NAME => 'resize'},
-	) ;
+return ( {X =>  $self->{END_X}, Y => $self->{END_Y}, NAME => 'resize'},) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -447,17 +445,11 @@ return(0, 0, $self->{END_X} + 1, $self->{END_X} + 1) ;
 
 #-----------------------------------------------------------------------------
 
-sub get_text
-{
-my ($self) = @_ ;
-}
+sub get_text { my ($self) = @_ ; }
 
 #-----------------------------------------------------------------------------
 
-sub set_text
-{
-my ($self) = @_ ;
-}
+sub set_text { my ($self) = @_ ; }
 
 #-----------------------------------------------------------------------------
 
@@ -465,13 +457,10 @@ sub edit
 {
 my ($self, $asciio) = @_ ;
 
-# return unless $self->{EDITABLE} ;
-
 $self->display_box_edit_dialog() ;
 
 $self->setup($self->{ARROW_TYPE}, $self->{END_X}, $self->{END_Y}, $self->{EDITABLE}) ;
 }
-
 
 #-----------------------------------------------------------------------------
 

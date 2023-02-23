@@ -17,7 +17,7 @@ sub display_box_edit_dialog
 my ($self, $text, undef, $asciio) = @_ ;
 
 my $rows = $self->{BOX_TYPE} ;
-	
+
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')  ;

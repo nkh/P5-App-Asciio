@@ -141,7 +141,7 @@ for my $element(@elements)
 			}
 		}
 	}
-	
+
 @{$self->{CONNECTIONS}} = grep { defined $_} @{$self->{CONNECTIONS}} ;
 
 $self->{MODIFIED }++ ;
@@ -166,6 +166,8 @@ for my $connection (@{$self->{CONNECTIONS}})
 
 return($connectee) ;
 }
+
+#-----------------------------------------------------------------------------
 
 sub get_connected
 {

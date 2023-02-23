@@ -25,7 +25,7 @@ sub new
 my ($class, $element_definition) = @_ ;
 
 my $self = bless  {}, __PACKAGE__ ;
-	
+
 $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
@@ -69,6 +69,7 @@ sub setup
 
 my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type) = @_ ;
 Readonly my $mini_row => 3 ; 
+
 my $height = max($mini_row, $end_y) ;
 my $half_line_num = int($height / 2) ;
 
@@ -101,13 +102,12 @@ for my $line (@lines)
 			$strip_text = $box_type->[1][1] . ' ' x ($width - 2) . $box_type->[1][2] ;
 			$x_offset = $y_offset ;
 		}
-
+		
 		push @stripes,
 			{
 			'HEIGHT' => 1,
 			'TEXT' => $strip_text,
-			#~ for Future unicode support
-			'WIDTH' => physical_length($strip_text) ,
+			'WIDTH' => usc_length($strip_text) ,
 			'X_OFFSET' => $x_offset,
 			'Y_OFFSET' => $y_offset,
 			} ;
@@ -135,16 +135,9 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-if	(
-	($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 2)
-	)
-	{
-	'resize' ;
-	}
-else
-	{
-	'move' ;
-	}
+($x == $self->{RESIZE_POINT_X} && $y == $self->{HEIGHT} - 2)
+	? 'resize'
+	: 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -204,6 +197,7 @@ return
 sub get_extra_points
 {
 my ($self) = @_ ;
+
 return
 	(
 	{X =>  $self->{RESIZE_POINT_X}, Y => $self->{HEIGHT} - 2 , NAME => 'resize'},
@@ -249,7 +243,8 @@ my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;
 my $new_end_x = $new_x ;
 my $new_end_y = $new_y ;
 
-if($reference_x == -1 && $reference_y == -1) {
+if($reference_x == -1 && $reference_y == -1)
+	{
 	$self->setup
 		(
 		$self->{TEXT_ONLY},
@@ -258,51 +253,46 @@ if($reference_x == -1 && $reference_y == -1) {
 		$self->{EDITABLE}, $self->{RESIZABLE},
 		$self->{BOX_TYPE}
 		) ;
-} else {
-if($new_end_x >= 0 &&  $new_end_y >= 0)
-	{
-	$self->setup
-		(
-		$self->{TEXT_ONLY},
-		$new_end_x + 1 - ($self->{WIDTH} - $self->{RESIZE_POINT_X}), # compensate for resize point X not equal to width
-		$new_end_y + 1,
-		$self->{EDITABLE}, $self->{RESIZABLE},
-		$self->{BOX_TYPE}
-		) ;
 	}
-}
-	
+else 
+	{
+	if($new_end_x >= 0 &&  $new_end_y >= 0)
+		{
+		$self->setup
+			(
+			$self->{TEXT_ONLY},
+			$new_end_x + 1 - ($self->{WIDTH} - $self->{RESIZE_POINT_X}), # compensate for resize point X not equal to width
+			$new_end_y + 1,
+			$self->{EDITABLE}, $self->{RESIZABLE},
+			$self->{BOX_TYPE}
+			) ;
+		}
+	}
+
 return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 }
 
 #-----------------------------------------------------------------------------
-sub get_box_type
-{
-my ($self) = @_ ;
-return($self->{BOX_TYPE})  ;
-}
+
+sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
 
 #-----------------------------------------------------------------------------
 sub set_box_type
 {
 my ($self, $box_type) = @_;
 $self->setup
-		(
-		$self->{TEXT_ONLY},
-		$self->{RESIZE_POINT_X} - 3, # magic number are ugly
-		$self->{HEIGHT},
-		$self->{EDITABLE}, $self->{RESIZABLE},
-		$box_type
-		) ;
+	(
+	$self->{TEXT_ONLY},
+	$self->{RESIZE_POINT_X} - 3, # magic number are ugly
+	$self->{HEIGHT},
+	$self->{EDITABLE}, $self->{RESIZABLE},
+	$box_type
+	) ;
 }
 
 #-----------------------------------------------------------------------------
 
-sub get_text
-{
-my ($self) = @_ ;
-return($self->{TEXT_ONLY}) ;
-}
+sub get_text { my ($self) = @_ ; return($self->{TEXT_ONLY}) ; }
 
 #-----------------------------------------------------------------------------
 
@@ -310,12 +300,12 @@ sub set_text
 {
 my ($self, $text) = @_ ;
 $self->setup
-		(
-		$text,
-		$self->{RESIZE_POINT_X} -	3, # magic number are ugly
-		$self->{HEIGHT} - 1,
-		$self->{EDITABLE}, $self->{RESIZABLE}
-		) ;
+	(
+	$text,
+	$self->{RESIZE_POINT_X} -	3, # magic number are ugly
+	$self->{HEIGHT} - 1,
+	$self->{EDITABLE}, $self->{RESIZABLE}
+	) ;
 }
 
 #-----------------------------------------------------------------------------

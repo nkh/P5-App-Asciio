@@ -412,7 +412,7 @@ for my $options_file (@{ $options_files })
 	
 	die "can't load setup file '$options_file': $! $@\n" if $@ ;
 	}
-	
+
 $self->event_options_changed() ;
 }
 
