@@ -126,7 +126,6 @@ if($destination_element)
 	}
 	else
 	{
-	# user clicked in void or un-linkable object
 	my $new_box = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
 	connect_to_destination_element($self, $new_box, $x, $y) ;
 	}
@@ -200,7 +199,7 @@ my $wirl_arrow = new App::Asciio::stripes::section_wirl_arrow
 					EDITABLE => 1,
 					RESIZABLE => 1,
 					}) ;
-					
+
 $self->add_element_at_no_connection
 		(
 		$wirl_arrow, 

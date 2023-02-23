@@ -1,26 +1,26 @@
 
-use utf8 ;
 package App::Asciio::Actions::Multiwirl ;
+
+use strict ;
+use warnings ;
+use utf8 ;
 
 #----------------------------------------------------------------------------------------------
 
 sub insert_wirl_arrow_section
 {
 my ($self) = @_ ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
-	
 	$self->create_undo_snapshot() ;
 	
 	my $x_offset = $self->{MOUSE_X} - $element->{X} ;
 	my $y_offset = $self->{MOUSE_Y} - $element->{Y} ;
-
+	
 	$self->delete_connections_containing($element) ;
-
+	
 	$element->insert_section($x_offset, $y_offset) ;
 	
 	$self->connect_elements($element) ;
@@ -34,24 +34,21 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref 
 sub prepend_section
 {
 my ($self) = @_ ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
-	
 	$self->create_undo_snapshot() ;
-
+	
 	$self->delete_connections_containing($element) ;
-
+	
 	my $x_offset = $self->{MOUSE_X} - $element->{X} ;
 	my $y_offset = $self->{MOUSE_Y} - $element->{Y} ;
-
+	
 	$element->prepend_section($x_offset, $y_offset) ;
 	
 	$self->move_elements($x_offset, $y_offset, $element) ;
-
+	
 	$self->update_display() ;
 	}
 }
@@ -62,13 +59,10 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref 
 sub append_section
 {
 my ($self) = @_ ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
-	
 	add_section_to_section_wirl_arrow
 		(
 		$self,
@@ -105,23 +99,20 @@ $self->update_display() ;
 sub remove_last_section_from_section_wirl_arrow
 {
 my ($self, $data) = @_ ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
-	
 	$self->create_undo_snapshot() ;
-
+	
 	$self->delete_connections_containing($element) ;
-
+	
 	$element->remove_last_section() ;
-
+	
 	$self->connect_elements($element) ;
-
+	
 	$self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
-
+	
 	$self->update_display() ;
 	}
 }
@@ -131,21 +122,18 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref 
 sub remove_first_section_from_section_wirl_arrow
 {
 my ($self, $data) = @_ ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
-	
 	$self->create_undo_snapshot() ;
-
+	
 	$self->delete_connections_containing($element) ;
-
+	
 	my ($second_arrow_x_offset, $second_arrow_y_offset) = $element->remove_first_section() ;
 	
 	$self->move_elements($second_arrow_x_offset, $second_arrow_y_offset, $element) ;
-
+	
 	$self->update_display() ;
 	}
 }
@@ -155,113 +143,49 @@ if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref 
 sub multi_wirl_context_menu
 {
 my ($self, $popup_x, $popup_y) = @_ ;
+
 my @context_menu_entries ;
 
-my ($character_width, $character_height) = $self->get_character_size() ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::section_wirl_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
 	my ($x, $y) = ($popup_x - $element->{X} , $popup_y - $element->{Y}) ;
 	
-	push @context_menu_entries, 
-		[
-			'/append section', 
-			\&add_section_to_section_wirl_arrow,
-			{ELEMENT => $selected_elements[0], X => $x, Y => $y,}
-		] ;
-		
-	if($element->is_connection_allowed('start'))
-		{
-		push @context_menu_entries, ["/arrow connection/start doesn't connect", sub {$selected_elements[0]->allow_connection('start',0) ;}] ;
-		}
-	else
-		{
-		push @context_menu_entries, ["/arrow connection/start connects", sub {$selected_elements[0]->allow_connection('start',1) ;}] ;
-		}
-		
-	if($element->is_connection_allowed('end'))
-		{
-		push @context_menu_entries, ["/arrow connection/end doesn't connect", sub {$selected_elements[0]->allow_connection('end',0) ;}] ;
-		}
-	else
-		{
-		push @context_menu_entries, ["/arrow connection/end connects", sub {$selected_elements[0]->allow_connection('end',1) ;}] ;
-		}
-		
-	push @context_menu_entries, 
-		[
-		$selected_elements[0]->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
-		sub 
-			{
-			$self->create_undo_snapshot() ;
-			$selected_elements[0]->enable_autoconnect(! $selected_elements[0]->is_autoconnect_enabled()) ;
-			$self->update_display() ;
-			}
-		] ;
-		
-	push @context_menu_entries, 
-		[
-		$selected_elements[0]->are_diagonals_allowed() ? '/no diagonals' :  '/allow diagonals', 
-		sub {$selected_elements[0]->allow_diagonals(! $selected_elements[0]->are_diagonals_allowed()) ;}
-		] ;
-		
-	push @context_menu_entries, 
-		[
-			'/arrow type/dash', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'dash', X => $x,	Y => $y,}
-		] ,
-		[
-			'/arrow type/dash_no_arrow', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'dash_no_arrow', X => $x, Y => $y,}
-		] ,
-		[
-			'/arrow type/dot', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'dot', X => $x,	Y => $y,}
-		],
-		[
-			'/arrow type/octo', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'octo',X => $x,	Y => $y,}
-		],
-		[
-			'/arrow type/star', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'star', X => $x,	Y => $y, }
-		],
-		[
-			'/arrow type/unicode_right_angle_light', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'unicode_right_angle_light', X => $x,	Y => $y,}
-		],
-		[
-			'/arrow type/unicode_fillet_light', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'unicode_fillet_light', X => $x,	Y => $y,}
-		],
-		[
-			'/arrow type/unicode_right_angle', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'unicode_right_angle', X => $x,	Y => $y,}
-		],
-		[
-			'/arrow type/unicode_fillet', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'unicode_fillet', X => $x,	Y => $y,}
-		],
-		[
-			'/arrow type/unicode_hollow_dot', 
-			\&change_arrow_type,
-			{ELEMENT => $selected_elements[0], TYPE => 'unicode_hollow_dot', X => $x,	Y => $y,}
-		] ;
-	}
+	push @context_menu_entries, [ '/append section', \&add_section_to_section_wirl_arrow, {ELEMENT => $element, X => $x, Y => $y,} ] ;
 	
-return(@context_menu_entries) ;
+	$element->is_connection_allowed('start')
+		? push @context_menu_entries, ["/arrow connection/start doesn't connect", sub {$element->allow_connection('start',0) ;}]
+		: push @context_menu_entries, ["/arrow connection/start connects",        sub {$element->allow_connection('start',1) ;}] ;
+		
+	$element->is_connection_allowed('end')
+		? push @context_menu_entries, ["/arrow connection/end doesn't connect", sub {$element->allow_connection('end',0) ;}]
+		: push @context_menu_entries, ["/arrow connection/end connects",        sub {$element->allow_connection('end',1) ;}] ;
+		
+	push @context_menu_entries, 
+		[
+		$element->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
+			sub 
+				{
+				$self->create_undo_snapshot() ;
+				$element->enable_autoconnect(! $element->is_autoconnect_enabled()) ;
+				$self->update_display() ;
+				}
+		],
+		[
+		$element->are_diagonals_allowed() ? '/no diagonals' :  '/allow diagonals', 
+			sub { $element->allow_diagonals(! $element->are_diagonals_allowed()) }
+		],
+		[ '/arrow type/dash',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'dash',               X => $x, Y => $y } ] ,
+		[ '/arrow type/dash_no_arrow',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'dash_no_arrow',      X => $x, Y => $y } ] ,
+		[ '/arrow type/dot',                       \&change_arrow_type, { ELEMENT => $element, TYPE => 'dot',                X => $x, Y => $y } ],
+		[ '/arrow type/octo',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'octo',               X => $x, Y => $y } ],
+		[ '/arrow type/star',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'star',               X => $x, Y => $y } ],
+		[ '/arrow type/unicode',                   \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode',            X => $x, Y => $y } ],
+		[ '/arrow type/unicode_hollow_dot',        \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_hollow_dot', X => $x, Y => $y } ] ;
+	}
+
+return @context_menu_entries ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -276,208 +200,148 @@ $arguments->{ELEMENT}->allow_connection($arguments->{WHICH}, $arguments->{CONNEC
 #----------------------------------------------------------------------------------------------
 
 my %arrow_types = 
-	(
+(
 	dash =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '|', '|', '', '', '^', 1],
-			['down', '|', '|', '', '', 'v', 1],
-			['left', '-', '-', '', '', '<', 1],
-			['upleft', '|', '|', '.', '-', '<', 1],
-			['leftup', '-', '-', '\'', '|', '^', 1],
-			['downleft', '|', '|', '\'', '-', '<', 1],
-			['leftdown', '-', '-', '.', '|', 'v', 1],
-			['right', '-', '-','', '', '>', 1],
-			['upright', '|', '|', '.', '-', '>', 1],
-			['rightup', '-', '-', '\'', '|', '^', 1],
-			['downright', '|', '|', '\'', '-', '>', 1],
-			['rightdown', '-', '-', '.', '|', 'v', 1],
-			['45', '/', '/', '', '', '^', 1, ],
-			['135', '\\', '\\', '', '', 'v', 1, ],
-			['225', '/', '/', '', '', 'v', 1, ],
-			['315', '\\', '\\', '', '', '^', 1, ],
-		],
+	[
+		['origin',       '',  '*',   '',  '',  '', 1],
+		['up',          '|',  '|',   '',  '', '^', 1],
+		['down',        '|',  '|',   '',  '', 'v', 1],
+		['left',        '-',  '-',   '',  '', '<', 1],
+		['upleft',      '|',  '|',  '.', '-', '<', 1],
+		['leftup',      '-',  '-', '\'', '|', '^', 1],
+		['downleft',    '|',  '|', '\'', '-', '<', 1],
+		['leftdown',    '-',  '-',  '.', '|', 'v', 1],
+		['right',       '-',  '-',   '',  '', '>', 1],
+		['upright',     '|',  '|',  '.', '-', '>', 1],
+		['rightup',     '-',  '-', '\'', '|', '^', 1],
+		['downright',   '|',  '|', '\'', '-', '>', 1],
+		['rightdown',   '-',  '-',  '.', '|', 'v', 1],
+		['45',          '/',  '/',   '',  '', '^', 1],
+		['135',        '\\', '\\',   '',  '', 'v', 1],
+		['225',         '/',  '/',   '',  '', 'v', 1],
+		['315',        '\\', '\\',   '',  '', '^', 1],
+	],
 	dash_no_arrow =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '|', '|', '', '', '.', 1],
-			['down', '|', '|', '', '', '.', 1],
-			['left', '-', '-', '', '', '.', 1],
-			['upleft', '|', '|', '.', '-', '.', 1],
-			['leftup', '-', '-', '\'', '|', '.', 1],
-			['downleft', '|', '|', '\'', '-', '.', 1],
-			['leftdown', '-', '-', '.', '|', '.', 1],
-			['right', '-', '-','', '', '.', 1],
-			['upright', '|', '|', '.', '-', '.', 1],
-			['rightup', '-', '-', '\'', '|', '.', 1],
-			['downright', '|', '|', '\'', '-', '.', 1],
-			['rightdown', '-', '-', '.', '|', '.', 1],
-			['45', '/', '/', '', '', '.', 1, ],
-			['135', '\\', '\\', '', '', '.', 1, ],
-			['225', '/', '/', '', '', '.', 1, ],
-			['315', '\\', '\\', '', '', '.', 1, ],
-		],
+	[
+		['origin',      '',  '*',   '',  '',  '', 1],
+		['up',         '|',  '|',   '',  '', '.', 1],
+		['down',       '|',  '|',   '',  '', '.', 1],
+		['left',       '-',  '-',   '',  '', '.', 1],
+		['upleft',     '|',  '|',  '.', '-', '.', 1],
+		['leftup',     '-',  '-', '\'', '|', '.', 1],
+		['downleft',   '|',  '|', '\'', '-', '.', 1],
+		['leftdown',   '-',  '-',  '.', '|', '.', 1],
+		['right',      '-',  '-',   '',  '', '.', 1],
+		['upright',    '|',  '|',  '.', '-', '.', 1],
+		['rightup',    '-',  '-', '\'', '|', '.', 1],
+		['downright',  '|',  '|', '\'', '-', '.', 1],
+		['rightdown',  '-',  '-',  '.', '|', '.', 1],
+		['45',         '/',  '/',   '',  '', '.', 1],
+		['135',       '\\', '\\',   '',  '', '.', 1],
+		['225',        '/',  '/',   '',  '', '.', 1],
+		['315',      ' \\', '\\',   '',  '', '.', 1],
+	],
 	dot =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '.', '.', '', '', '^', 1],
-			['down', '.', '.', '', '', 'v', 1],
-			['left', '.', '.', '', '', '<', 1],
-			['upleft', '.', '.', '.', '.', '<', 1],
-			['leftup', '.', '.', '\'', '.', '^', 1],
-			['downleft', '.', '.', '\'', '.', '<', 1],
-			['leftdown', '.', '.', '.', '.', 'v', 1],
-			['right', '.', '.','', '', '>', 1],
-			['upright', '.', '.', '.', '.', '>', 1],
-			['rightup', '.', '.', '\'', '.', '^', 1],
-			['downright', '.', '.', '\'', '.', '>', 1],
-			['rightdown', '.', '.', '.', '.', 'v', 1],
-			['45', '.', '.', '', '', '^', 1, ],
-			['135', '.', '.', '', '', 'v', 1, ],
-			['225', '.', '.', '', '', 'v', 1, ],
-			['315', '.', '.', '', '', '^', 1, ],
-		],
+	[
+		['origin',     '', '*',   '',  '',  '', 1],
+		['up',        '.', '.',   '',  '', '^', 1],
+		['down',      '.', '.',   '',  '', 'v', 1],
+		['left',      '.', '.',   '',  '', '<', 1],
+		['upleft',    '.', '.',  '.', '.', '<', 1],
+		['leftup',    '.', '.', '\'', '.', '^', 1],
+		['downleft',  '.', '.', '\'', '.', '<', 1],
+		['leftdown',  '.', '.',  '.', '.', 'v', 1],
+		['right',     '.', '.',   '',  '', '>', 1],
+		['upright',   '.', '.',  '.', '.', '>', 1],
+		['rightup',   '.', '.', '\'', '.', '^', 1],
+		['downright', '.', '.', '\'', '.', '>', 1],
+		['rightdown', '.', '.',  '.', '.', 'v', 1],
+		['45',        '.', '.',   '',  '', '^', 1],
+		['135',       '.', '.',   '',  '', 'v', 1],
+		['225',       '.', '.',   '',  '', 'v', 1],
+		['315',       '.', '.',   '',  '', '^', 1],
+	],
 	star =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '*', '*', '', '', '^', 1],
-			['down', '*', '*', '', '', 'v', 1],
-			['left', '*', '*', '', '', '<', 1],
-			['upleft', '*', '*', '*', '*', '<', 1],
-			['leftup', '*', '*', '*', '*', '^', 1],
-			['downleft', '*', '*', '*', '*', '<', 1],
-			['leftdown', '*', '*', '*', '*', 'v', 1],
-			['right', '*', '*','', '', '>', 1],
-			['upright', '*', '*', '*', '*', '>', 1],
-			['rightup', '*', '*', '*', '*', '^', 1],
-			['downright', '*', '*', '*', '*', '>', 1],
-			['rightdown', '*', '*', '*', '*', 'v', 1],
-			['45', '*', '*', '', '', '^', 1, ],
-			['135', '*', '*', '', '', 'v', 1, ],
-			['225', '*', '*', '', '', 'v', 1, ],
-			['315', '*', '*', '', '', '^', 1, ],
-		],
+	[
+		['origin',     '', '*', '',   '',  '', 1],
+		['up',        '*', '*', '',   '', '^', 1],
+		['down',      '*', '*', '',   '', 'v', 1],
+		['left',      '*', '*', '',   '', '<', 1],
+		['upleft',    '*', '*', '*', '*', '<', 1],
+		['leftup',    '*', '*', '*', '*', '^', 1],
+		['downleft',  '*', '*', '*', '*', '<', 1],
+		['leftdown',  '*', '*', '*', '*', 'v', 1],
+		['right',     '*', '*',  '',  '', '>', 1],
+		['upright',   '*', '*', '*', '*', '>', 1],
+		['rightup',   '*', '*', '*', '*', '^', 1],
+		['downright', '*', '*', '*', '*', '>', 1],
+		['rightdown', '*', '*', '*', '*', 'v', 1],
+		['45',        '*', '*',  '',  '', '^', 1],
+		['135',       '*', '*',  '',  '', 'v', 1],
+		['225',       '*', '*',  '',  '', 'v', 1],
+		['315',       '*', '*',  '',  '', '^', 1],
+	],
 	octo =>
-		[
-			['origin', '', '#', '', '', '', 1],
-			['up', '#', '#', '', '', '^', 1],
-			['down', '#', '#', '', '', 'v', 1],
-			['left', '#', '#', '', '', '<', 1],
-			['upleft', '#', '#', '#', '#', '<', 1],
-			['leftup', '#', '#', '#', '#', '^', 1],
-			['downleft', '#', '#', '#', '#', '<', 1],
-			['leftdown', '#', '#', '#', '#', 'v', 1],
-			['right', '#', '#','', '', '>', 1],
-			['upright', '#', '#', '#', '#', '>', 1],
-			['rightup', '#', '#', '#', '#', '^', 1],
-			['downright', '#', '#', '#', '#', '>', 1],
-			['rightdown', '#', '#', '#', '#', 'v', 1],
-			['45', '#', '#', '', '', '^', 1, ],
-			['135', '#', '#', '', '', 'v', 1, ],
-			['225', '#', '#', '', '', 'v', 1, ],
-			['315', '#', '#', '', '', '^', 1, ],
-		],
-	unicode_right_angle_light =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '|', '|', '', '', '^', 1],
-			['down', '|', '|', '', '', 'v', 1],
-			['left', '-', '-', '', '', '<', 1],
-			['upleft', '|', '|', '┐', '-', '<', 1],
-			['leftup', '-', '-', '└', '|', '^', 1],
-			['downleft', '|', '|', '┘', '-', '<', 1],
-			['leftdown', '-', '-', '┌', '|', 'v', 1],
-			['right', '-', '-','', '', '>', 1],
-			['upright', '|', '|', '┌', '-', '>', 1],
-			['rightup', '-', '-', '┘', '|', '^', 1],
-			['downright', '|', '|', '└', '-', '>', 1],
-			['rightdown', '-', '-', '┐', '|', 'v', 1],
-			['45', '/', '/', '', '', '^', 1, ],
-			['135', '\\', '\\', '', '', 'v', 1, ],
-			['225', '/', '/', '', '', 'v', 1, ],
-			['315', '\\', '\\', '', '', '^', 1, ],
-		],
-	unicode_fillet_light =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '|', '|', '', '', '^', 1],
-			['down', '|', '|', '', '', 'v', 1],
-			['left', '-', '-', '', '', '<', 1],
-			['upleft', '|', '|', '╮', '-', '<', 1],
-			['leftup', '-', '-', '╰', '|', '^', 1],
-			['downleft', '|', '|', '╯', '-', '<', 1],
-			['leftdown', '-', '-', '╭', '|', 'v', 1],
-			['right', '-', '-','', '', '>', 1],
-			['upright', '|', '|', '╭', '-', '>', 1],
-			['rightup', '-', '-', '╯', '|', '^', 1],
-			['downright', '|', '|', '╰', '-', '>', 1],
-			['rightdown', '-', '-', '╮', '|', 'v', 1],
-			['45', '/', '/', '', '', '^', 1, ],
-			['135', '\\', '\\', '', '', 'v', 1, ],
-			['225', '/', '/', '', '', 'v', 1, ],
-			['315', '\\', '\\', '', '', '^', 1, ],
-		],
-	unicode_right_angle =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '│', '│', '', '', '^', 1],
-			['down', '│', '│', '', '', 'v', 1],
-			['left', '─', '─', '', '', '<', 1],
-			['upleft', '│', '│', '┐', '─', '<', 1],
-			['leftup', '─', '─', '└', '│', '^', 1],
-			['downleft', '│', '│', '┘', '─', '<', 1],
-			['leftdown', '─', '─', '┌', '│', 'v', 1],
-			['right', '─', '─','', '', '>', 1],
-			['upright', '│', '│', '┌', '─', '>', 1],
-			['rightup', '─', '─', '┘', '│', '^', 1],
-			['downright', '│', '│', '└', '─', '>', 1],
-			['rightdown', '─', '─', '┐', '│', 'v', 1],
-			['45', '/', '/', '', '', '^', 1, ],
-			['135', '\\', '\\', '', '', 'v', 1, ],
-			['225', '/', '/', '', '', 'v', 1, ],
-			['315', '\\', '\\', '', '', '^', 1, ],
-		],
-	unicode_fillet =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '│', '│', '', '', '^', 1],
-			['down', '│', '│', '', '', 'v', 1],
-			['left', '─', '─', '', '', '<', 1],
-			['upleft', '│', '│', '╮', '─', '<', 1],
-			['leftup', '─', '─', '╰', '│', '^', 1],
-			['downleft', '│', '│', '╯', '─', '<', 1],
-			['leftdown', '─', '─', '╭', '│', 'v', 1],
-			['right', '─', '─','', '', '>', 1],
-			['upright', '│', '│', '╭', '─', '>', 1],
-			['rightup', '─', '─', '╯', '│', '^', 1],
-			['downright', '│', '│', '╰', '─', '>', 1],
-			['rightdown', '─', '─', '╮', '│', 'v', 1],
-			['45', '/', '/', '', '', '^', 1, ],
-			['135', '\\', '\\', '', '', 'v', 1, ],
-			['225', '/', '/', '', '', 'v', 1, ],
-			['315', '\\', '\\', '', '', '^', 1, ],
-		],
+	[
+		['origin',    '', '#',  '',  '',  '', 1],
+		['up',       '#', '#',  '',  '', '^', 1],
+		['down',     '#', '#',  '',  '', 'v', 1],
+		['left',     '#', '#',  '',  '', '<', 1],
+		['upleft',   '#', '#', '#', '#', '<', 1],
+		['leftup',   '#', '#', '#', '#', '^', 1],
+		['downleft', '#', '#', '#', '#', '<', 1],
+		['leftdown', '#', '#', '#', '#', 'v', 1],
+		['right',    '#', '#',  '',  '', '>', 1],
+		['upright',  '#', '#', '#', '#', '>', 1],
+		['rightup',  '#', '#', '#', '#', '^', 1],
+		['downright','#', '#', '#', '#', '>', 1],
+		['rightdown','#', '#', '#', '#', 'v', 1],
+		['45',       '#', '#',  '',  '', '^', 1],
+		['135',      '#', '#',  '',  '', 'v', 1],
+		['225',      '#', '#',  '',  '', 'v', 1],
+		['315',      '#', '#',  '',  '', '^', 1],
+	],
+	unicode =>
+	[
+		['origin',      '',  '*',  '',  '',  '', 1],
+		['up',         '│',  '│',  '',  '', '^', 1],
+		['down',       '│',  '│',  '',  '', 'v', 1],
+		['left',       '─',  '─',  '',  '', '<', 1],
+		['upleft',     '│',  '│', '╮', '─', '<', 1],
+		['leftup',     '─',  '─', '╰', '│', '^', 1],
+		['downleft',   '│',  '│', '╯', '─', '<', 1],
+		['leftdown',   '─',  '─', '╭', '│', 'v', 1],
+		['right',      '─',  '─',  '',  '', '>', 1],
+		['upright',    '│',  '│', '╭', '─', '>', 1],
+		['rightup',    '─',  '─', '╯', '│', '^', 1],
+		['downright',  '│',  '│', '╰', '─', '>', 1],
+		['rightdown',  '─',  '─', '╮', '│', 'v', 1],
+		['45',         '/',  '/',  '',  '', '^', 1],
+		['135',       '\\', '\\',  '',  '', 'v', 1],
+		['225',        '/',  '/',  '',  '', 'v', 1],
+		['315',       '\\', '\\',  '',  '', '^', 1],
+	],
 	unicode_hollow_dot =>
-		[
-			['origin', '', '*', '', '', '', 1],
-			['up', '∘', '∘', '', '', '^', 1],
-			['down', '∘', '∘', '', '', 'v', 1],
-			['left', '∘', '∘', '', '', '<', 1],
-			['upleft', '∘', '∘', '∘', '∘', '<', 1],
-			['leftup', '∘', '∘', '∘', '∘', '^', 1],
-			['downleft', '∘', '∘', '∘', '∘', '<', 1],
-			['leftdown', '∘', '∘', '∘', '∘', 'v', 1],
-			['right', '∘', '∘','', '', '>', 1],
-			['upright', '∘', '∘', '∘', '∘', '>', 1],
-			['rightup', '∘', '∘', '∘', '∘', '^', 1],
-			['downright', '∘', '∘', '∘', '∘', '>', 1],
-			['rightdown', '∘', '∘', '∘', '∘', 'v', 1],
-			['45', '∘', '∘', '', '', '^', 1, ],
-			['135', '∘', '∘', '', '', 'v', 1, ],
-			['225', '∘', '∘', '', '', 'v', 1, ],
-			['315', '∘', '∘', '', '', '^', 1, ],
-		],
-	) ;
+	[
+		['origin',     '', '*',  '',  '',  '', 1],
+		['up',        '∘', '∘',  '',  '', '^', 1],
+		['down',      '∘', '∘',  '',  '', 'v', 1],
+		['left',      '∘', '∘',  '',  '', '<', 1],
+		['upleft',    '∘', '∘', '∘', '∘', '<', 1],
+		['leftup',    '∘', '∘', '∘', '∘', '^', 1],
+		['downleft',  '∘', '∘', '∘', '∘', '<', 1],
+		['leftdown',  '∘', '∘', '∘', '∘', 'v', 1],
+		['right',     '∘', '∘',  '', '',  '>', 1],
+		['upright',   '∘', '∘', '∘', '∘', '>', 1],
+		['rightup',   '∘', '∘', '∘', '∘', '^', 1],
+		['downright', '∘', '∘', '∘', '∘', '>', 1],
+		['rightdown', '∘', '∘', '∘', '∘', 'v', 1],
+		['45',        '∘', '∘',  '',  '', '^', 1],
+		['135',       '∘', '∘',  '',  '', 'v', 1],
+		['225',       '∘', '∘',  '',  '', 'v', 1],
+		['315',       '∘', '∘',  '',  '', '^', 1],
+	],
+) ;
 
 
 sub change_arrow_type
@@ -491,7 +355,7 @@ if(exists $arrow_types{$data->{TYPE}})
 	$self->create_undo_snapshot() ;
 	
 	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
-		
+	
 	$data->{ELEMENT}->set_arrow_type($new_type) ;
 	
 	$self->update_display() ;
@@ -503,27 +367,26 @@ if(exists $arrow_types{$data->{TYPE}})
 sub angled_arrow_context_menu
 {
 my ($self, $popup_x, $popup_y) = @_ ;
+
 my @context_menu_entries ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
+my $element = ($self->get_selected_elements(1))[0] ;
 
-if(@selected_elements == 1 && 'App::Asciio::stripes::angled_arrow' eq ref $selected_elements[0])
+if(defined $element && 'App::Asciio::stripes::angles_arrow' eq ref $element)
 	{
-	my $element = $selected_elements[0] ;
-	
 	push @context_menu_entries, 
 		[
-		$selected_elements[0]->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
+		$element->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
 		sub 
 			{
 			$self->create_undo_snapshot() ;
-			$selected_elements[0]->enable_autoconnect(! $selected_elements[0]->is_autoconnect_enabled()) ;
+			$element->enable_autoconnect(! $element->is_autoconnect_enabled()) ;
 			$self->update_display() ;
 			}
 		] ;
 	}
 
-return(@context_menu_entries) ;
+return @context_menu_entries ;
 }
 
 #----------------------------------------------------------------------------------------------
