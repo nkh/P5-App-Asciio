@@ -50,6 +50,11 @@ register_action_handlers
 'Move selected elements up'                            => ['000-Up',                             \&App::Asciio::Actions::ElementsManipulation::move_selection_up                ],
 'Move selected elements down'                          => ['000-Down',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_down              ],
 
+'Move selected elements left quick'                    => ['0A0-Left',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_left, 10          ],
+'Move selected elements right quick'                   => ['0A0-Right',                          \&App::Asciio::Actions::ElementsManipulation::move_selection_right, 10         ],
+'Move selected elements up quick'                      => ['0A0-Up',                             \&App::Asciio::Actions::ElementsManipulation::move_selection_up, 10            ],
+'Move selected elements down quick'                    => ['0A0-Down',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_down, 10          ],
+
 'Move selected elements left 2'                        => ['h',                                  \&App::Asciio::Actions::ElementsManipulation::move_selection_left              ],
 'Move selected elements right 2'                       => ['l',                                  \&App::Asciio::Actions::ElementsManipulation::move_selection_right             ],
 'Move selected elements up 2'                          => ['k',                                  \&App::Asciio::Actions::ElementsManipulation::move_selection_up                ],

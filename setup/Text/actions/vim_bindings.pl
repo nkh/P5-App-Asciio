@@ -44,6 +44,11 @@ register_action_handlers
 	'Move selected elements up'                              => [ ['k', 'Up'] ],
 	'Move selected elements down'                            => [ ['j', 'Down'] ],
 	
+	'Move selected elements left quick'                      => ['A-Left' ],
+	'Move selected elements right quick'                     => ['A-Right'],
+	'Move selected elements up quick'                        => ['A-Up'   ],
+	'Move selected elements down quick'                      => ['A-Down' ],
+
 	# mouse
 	'Mouse right-click'                                      => [ 'ä' ],
 	'Mouse left-click'                                       => [ 'ö' ],
@@ -55,10 +60,10 @@ register_action_handlers
 
 	'Mouse on element id'                                    => [ '000' ],
 	
-	'Mouse emulation drag left'                              => [ [ 'H', 'A-Left' ] ],
-	'Mouse emulation drag right'                             => [ [ 'L', 'A-Right'] ],
-	'Mouse emulation drag up'                                => [ [ 'K', 'A-Up'  ]  ],
-	'Mouse emulation drag down'                              => [ [ 'J', 'A-Down']  ],
+	'Mouse emulation drag left'                              => [ [ 'H', 'A-C-Left' ] ],
+	'Mouse emulation drag right'                             => [ [ 'L', 'A-C-Right'] ],
+	'Mouse emulation drag up'                                => [ [ 'K', 'A-C-Up'  ]  ],
+	'Mouse emulation drag down'                              => [ [ 'J', 'A-C-Down']  ],
 	
 	'Mouse emulation move left'                              => [ 'C-Left' ],
 	'Mouse emulation move right'                             => [ 'C-Right' ],
