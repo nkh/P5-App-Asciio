@@ -1,13 +1,30 @@
+
 use strict ;
 use warnings ;
+use utf8 ;
 
 use  App::Asciio::Stencil qw(create_box create_element) ;
 
 [
-create_box(WITH_SIZE => [4, 2], WITH_FRAME => 1, TEXT_ONLY => '', NAME => 'box',),
-create_box(WITH_SIZE => [4, 2], WITH_FRAME => 1, TEXT_ONLY => 'text', NAME => 'shrink_box', AUTO_SHRINK => 1,),
-create_box(TEXT_ONLY => 'Text', NAME => 'text', AUTO_SHRINK => 1,),
-create_box(TEXT_ONLY => 'o', NAME => 'connector', AUTO_SHRINK => 1,),
+create_box(NAME => 'box',        TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], ),
+create_box(NAME => 'shrink_box', TEXT_ONLY => 'text', WITH_FRAME => 1, WITH_SIZE => [4, 2], AUTO_SHRINK => 1,),
+create_box(NAME => 'text',       TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
+create_box(NAME => 'connector',  TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
+
+create_box
+	(
+	NAME => 'box unicode',
+	TEXT_ONLY => '',
+	WITH_FRAME => 1,
+	WITH_SIZE => [4, 2],
+	BOX_TYPE =>
+		[
+			[1, 'top',             '╭',  '─',  '╮', 1, ],
+			[0, 'title separator', '│',  '─',  '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰',  '─',  '╯', 1, ],
+		]
+	),
 
 create_element
 	(
@@ -18,6 +35,37 @@ create_element
 	ALLOW_DIAGONAL_LINES => 0,
 	EDITABLE => 1,
 	RESIZABLE => 1,
+	),
+
+create_element
+	(
+	NAME => 'wirl_arrow unicode',
+	CLASS => 'App::Asciio::stripes::section_wirl_arrow',
+	POINTS => [[2, -2, 'up']],
+	DIRECTION => '',
+	ALLOW_DIAGONAL_LINES => 0,
+	EDITABLE => 1,
+	RESIZABLE => 1,
+	ARROW_TYPE =>
+		[
+			['origin',      '',  '*',  '',  '',  '', 1],
+			['up',         '│',  '│',  '',  '', '^', 1],
+			['down',       '│',  '│',  '',  '', 'v', 1],
+			['left',       '─',  '─',  '',  '', '<', 1],
+			['upleft',     '│',  '│', '╮', '─', '<', 1],
+			['leftup',     '─',  '─', '╰', '│', '^', 1],
+			['downleft',   '│',  '│', '╯', '─', '<', 1],
+			['leftdown',   '─',  '─', '╭', '│', 'v', 1],
+			['right',      '─',  '─',  '',  '', '>', 1],
+			['upright',    '│',  '│', '╭', '─', '>', 1],
+			['rightup',    '─',  '─', '╯', '│', '^', 1],
+			['downright',  '│',  '│', '╰', '─', '>', 1],
+			['rightdown',  '─',  '─', '╮', '│', 'v', 1],
+			['45',         '/',  '/',  '',  '', '^', 1],
+			['135',       '\\', '\\',  '',  '', 'v', 1],
+			['225',        '/',  '/',  '',  '', 'v', 1],
+			['315',       '\\', '\\',  '',  '', '^', 1],
+		],
 	),
 
 create_element

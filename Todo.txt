@@ -12,8 +12,6 @@ objects
 
 display
 	interface to ditaa|svgbob/aasvg/goat
-	
-	use Unicode stencils?
 
 architecture
 	handle multiple binary format versions

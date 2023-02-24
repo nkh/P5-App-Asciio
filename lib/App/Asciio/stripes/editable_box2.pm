@@ -15,10 +15,10 @@ use Clone ;
 
 Readonly my $DEFAULT_BOX_TYPE => 
 	[
-	[1, 'top', '.', '-', '.', 1, ],
-	[0, 'title separator', '|', '-', '|', 1, ],
-	[1, 'body separator', '| ', '|', ' |', 1, ], 
-	[1, 'bottom', '\'', '-', '\'', 1, ],
+	[1, 'top',              '.', '-',  '.', 1, ],
+	[0, 'title separator',  '|', '-',  '|', 1, ],
+	[1, 'body separator',  '| ', '|', ' |', 1, ], 
+	[1, 'bottom',          '\'', '-', '\'', 1, ],
 	]  ;
 
 sub new
@@ -31,7 +31,7 @@ $self->setup
 	(
 	$element_definition->{TEXT_ONLY},
 	$element_definition->{TITLE},
-	$element_definition->{BOX_TYPE} || Clone::clone($DEFAULT_BOX_TYPE),
+	$element_definition->{BOX_TYPE} // Clone::clone($DEFAULT_BOX_TYPE),
 	1, 1,
 	$element_definition->{RESIZABLE},
 	$element_definition->{EDITABLE},

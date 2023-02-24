@@ -97,8 +97,8 @@ register_action_handlers
 		'Insert from file'                               => [ 'f' ],
 		
 		'Add box'                                        => [ 'b' ],
-		# 'Create multiple box elements from description'  => [ 'B'],
-		# 'Create multiple text elements from description' => [ 'T'],
+		# 'Create multiple box elements'  => [ 'C-b'],
+		# 'Create multiple text elements' => [ 'C-t'],
 		
 		'Add arrow'                                      => [ 'a' ],
 		'Add connector'                                  => [ 'c' ],
@@ -112,6 +112,8 @@ register_action_handlers
 		'Add shrink box'                                 => [ 'A-b' ],
 		'Add exec box'                                   => [ 'e' ],
 		'Add exec box no border'                         => [ 'E' ],
+		'Add unicode box'                                => [ 'B' ],
+		'Add unicode arrow'                              => [ 'S' ],
 		},
 	
 	'arrow commands' => 

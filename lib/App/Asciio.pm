@@ -877,7 +877,7 @@ $self->update_display();
 
 #-----------------------------------------------------------------------------
 
-my %ignored_keys = map { $_ => 1 } qw(000-Shift_L 000-Shift_R) ;
+my %ignored_keys = map { $_ => 1 } qw(000-Shift_L 000-Shift_R 000-Alt_L 000-ISO_Level3_Shift) ;
 
 sub key_press_event
 {

@@ -392,7 +392,7 @@ if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front})
 			
 			splice @{$self->{ELEMENTS}}, $current_position, 1 ;
 			splice @{$self->{ELEMENTS}}, $position, 0, $element ;
-i			
+			
 			$self->update_display() ;
 			last ;
 			}
