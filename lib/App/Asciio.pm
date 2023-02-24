@@ -382,9 +382,13 @@ A set of whirl arrows connected to each other.
 
  «a»                Add arrow
 
+ «A-a»              Add unicode arrow
+
  «B»                Add shrink box
 
  «b»                Add box
+
+ «A-b»              Add unicode box
 
  «c»                Add connector
 

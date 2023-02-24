@@ -189,6 +189,11 @@ A set of whirl arrows connected to each other.
                     |   '------------------'   |
                     '--------------------------'
 
+## Unicode example
+
+![Unicode](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_unicode.png)
+
+
 # Asciio and Vim
 
 You can call Asciio from vim and insert your diagram.
@@ -213,5 +218,15 @@ You can call Asciio from vim and insert your diagram.
 
             redraw!
         endfunction
+
+# AUTHORS
+
+    Khemir Nadim ibn Hamouda
+    https://github.com/nkh
+    CPAN ID: NKH
+    
+    Qin Qing
+    northisland2017@gmail.com
+    Unicode support, scroll bar, and rhombus object
 
 
