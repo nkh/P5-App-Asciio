@@ -83,6 +83,8 @@ print "cmd $command -> $output\n" ;
 
 $output = decode("utf-8", $output) ;
 $output =~ s/\r//g;
+my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3);
+$output =~ s/\t/$tab_as_space/g;
 
 App::Asciio::stripes::editable_box2::setup
 	(

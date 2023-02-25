@@ -1,4 +1,6 @@
 package App::Asciio::Actions::Elements ;
+use Encode;
+use utf8;
 
 #----------------------------------------------------------------------------------------------
 
@@ -36,9 +38,14 @@ my $help_path = File::HomeDir->my_home() . '/.config/Asciio/help_box' ;
 
 if(-e $help_path)
 	{
+	my $in_str = read_file($help_path, {bin_mode => ':utf8'});
+	Encode::_utf8_on($in_str);
+	my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3);
+	$in_str =~ s/\t/$tab_as_space/g;
+	$in_str =~ s/\r//g;
 	my $new_element = new App::Asciio::stripes::editable_box2
 						({
-						TEXT_ONLY => join('', read_file($help_path)),
+						TEXT_ONLY => $in_str,
 						TITLE => '',
 						EDITABLE => 0,
 						RESIZABLE => 0,
