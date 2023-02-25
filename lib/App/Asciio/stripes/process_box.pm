@@ -1,14 +1,14 @@
 
 package App::Asciio::stripes::process_box ;
-
 use base App::Asciio::stripes::stripes ;
-use App::Asciio::Toolfunc;
 
 use strict;
 use warnings;
 
 use List::Util qw(min max) ;
 use Readonly ;
+
+use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 
@@ -315,7 +315,7 @@ my ($self, $text) = @_ ;
 $self->setup
 		(
 		$text,
-		$self->{RESIZE_POINT_X} -	3, # magic number are ugly
+		$self->{RESIZE_POINT_X} - 3, # magic number are ugly
 		$self->{HEIGHT} - 1,
 		$self->{EDITABLE}, $self->{RESIZABLE}
 		) ;
@@ -331,7 +331,7 @@ return unless $self->{EDITABLE} ;
 
 my ($text_only) = $asciio->display_edit_dialog('process object', $self->{TEXT_ONLY}, $asciio) ;
 
-my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
+my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;
 
 $self->set_text($text_only) ;

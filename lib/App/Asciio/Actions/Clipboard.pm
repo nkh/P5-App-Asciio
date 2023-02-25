@@ -145,6 +145,7 @@ my ($self, $obj) = @_ ;
 my $ascii = qx~xsel -b -o~ ;
 $ascii = decode("utf-8", $ascii);
 $ascii =~ s/\r//g;
+$ascii =~ s/\t/$self->{TAB_AS_SPACES}/g;
 
 my $element = $self->add_new_element_named('Stencils/Asciio/' . $obj, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 $element->set_text('', $ascii) ;

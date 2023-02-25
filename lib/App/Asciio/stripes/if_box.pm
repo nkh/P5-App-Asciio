@@ -1,8 +1,6 @@
 
 package App::Asciio::stripes::if_box ;
-
 use base App::Asciio::stripes::single_stripe ;
-use App::Asciio::Toolfunc;
 
 use strict;
 use warnings;
@@ -10,6 +8,8 @@ use warnings;
 use List::Util qw(min max) ;
 use Readonly ;
 use Clone ;
+
+use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 
@@ -245,7 +245,7 @@ my ($text) = $asciio->display_edit_dialog('if object', $self->{TEXT_ONLY}, $asci
 
 $text //= $self->{TEXT} ;
 
-my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
+my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text =~ s/\t/$tab_as_space/g ;
 
 $self->set_text($text) ;

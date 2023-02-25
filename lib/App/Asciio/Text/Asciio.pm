@@ -1,7 +1,6 @@
 
 package App::Asciio::Text ;
-
-use base qw(App::Asciio) ;
+use base App::Asciio ;
 
 use strict;
 use warnings;
@@ -13,7 +12,6 @@ use Time::HiRes qw(gettimeofday) ;
 use Sereal qw(get_sereal_decoder get_sereal_encoder) ;
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
-use App::Asciio::Toolfunc ;
 use App::Asciio::Text::Asciio::stripes::editable_arrow2;
 use App::Asciio::Text::Asciio::stripes::wirl_arrow ;
 use App::Asciio::Text::Asciio::stripes::section_wirl_arrow ;
@@ -23,6 +21,8 @@ use App::Asciio::stripes::rhombus;
 
 use App::Asciio::Text::Asciio::Dialogs ;
 use App::Asciio::Text::Asciio::Menues ;
+
+use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 

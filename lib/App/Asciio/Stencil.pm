@@ -2,8 +2,8 @@ package App::Asciio::Stencil ;
 
 use strict ;
 use warnings ;
-
 use Readonly ;
+
 use App::Asciio::stripes::editable_box2 ;
 use App::Asciio::stripes::exec_box ;
 
@@ -85,7 +85,7 @@ if($@)
 	warn "Can't create new element with definition:\n" ;
 	warn DumpTree \%element_definition ;
 	warn '-' x 80 . "\n" ;
-	warn $code ;
+	warn "code:\n$code" ;
 	warn '-' x 80 . "\n" ;
 	warn $@ ;
 	}

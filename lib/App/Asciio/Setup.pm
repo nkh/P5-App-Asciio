@@ -41,11 +41,11 @@ for my $setup_file (@{$setup_ini_files})
 	warn "can't load '$setup_file': $! $@\n" if $@ ;
 	}
 	
+	$self->setup_object_options($setup_path, $ini_files->{ASCIIO_OBJECT_SETUP} || []) ;
 	$self->setup_stencils($setup_path, $ini_files->{STENCILS} || []) ;
 	$self->setup_hooks($setup_path, $ini_files->{HOOK_FILES} || []) ;
 	$self->setup_action_handlers($setup_path, $ini_files->{ACTION_FILES} || []) ;
 	$self->setup_import_export_handlers($setup_path, $ini_files->{IMPORT_EXPORT} || []) ;
-	$self->setup_object_options($setup_path, $ini_files->{ASCIIO_OBJECT_SETUP} || []) ;
 	}
 }
 

@@ -1,12 +1,10 @@
 
-use utf8 ;
 package App::Asciio::stripes::triangle_up ;
-
 use base App::Asciio::stripes::stripes ;
-use App::Asciio::Toolfunc;
 
 use strict;
 use warnings;
+use utf8 ;
 
 use List::Util qw(max) ;
 use Readonly ;
@@ -17,6 +15,9 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	['middle', '/', '\\', ],
 	['bottom', '\'', '-', '\'', ] ,
 ] ;
+
+
+use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 
@@ -339,7 +340,7 @@ return unless $self->{EDITABLE} ;
 
 my ($text_only) = $asciio->display_edit_dialog('asciio', $self->{TEXT_ONLY}, $asciio) ;
 
-my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
+my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;
 
 $self->set_text($text_only) ;

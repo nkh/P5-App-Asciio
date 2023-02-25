@@ -1,8 +1,6 @@
 
 package App::Asciio::stripes::editable_box2 ;
-
 use base App::Asciio::stripes::single_stripe ;
-use App::Asciio::Toolfunc;
 
 use strict;
 use warnings;
@@ -10,6 +8,8 @@ use warnings;
 use List::Util qw(min max) ;
 use Readonly ;
 use Clone ;
+
+use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 
@@ -143,8 +143,8 @@ my ($box_type) = @_ ;
 my @displayed_elements = grep { $_->[$DISPLAY] } @{$box_type} ;
 
 my $extra_width = $box_type->[$BODY_SEPARATOR][$DISPLAY] 
-			? max(0, map {usc_length $_} map {$_->[$LEFT]} @displayed_elements)
-				+ max(0, map {usc_length $_} map {$_->[$RIGHT]} @displayed_elements)
+			? max(0, map { usc_length($_) } map {$_->[$LEFT]} @displayed_elements)
+				+ max(0, map { usc_length($_) } map {$_->[$RIGHT]} @displayed_elements)
 			: 0 ;
 
 my $extra_height = 0 ;
@@ -439,7 +439,7 @@ $text = make_vertical_text($text) if $self->{VERTICAL_TEXT} ;
 
 ($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text, $asciio) ;
 
-my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
+my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 
 $text =~ s/\t/$tab_as_space/g ;
 $title=~ s/\t/$tab_as_space/g ;

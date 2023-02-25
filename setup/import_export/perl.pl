@@ -1,14 +1,17 @@
 
+use strict ;
+use warnings ;
+use utf8 ;
+
+use Compress::Bzip2 qw(:all :utilities :gzip);
+use MIME::Base64 ();
+
 use File::Slurp ;
 use Data::Dumper ;
 use List::Util qw(max);
 use File::Basename ;
 
-use utf8 ;
-use App::Asciio::Toolfunc ;
-
-use Compress::Bzip2 qw(:all :utilities :gzip);
-use MIME::Base64 ();
+use App::Asciio ;
 
 my $BASE64_HEADER = (' ' x 120)  .  '#asciio' ;
 my $BASE64_HEADER_SIZE = length($BASE64_HEADER) ;

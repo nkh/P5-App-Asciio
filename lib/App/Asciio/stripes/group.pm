@@ -1,18 +1,16 @@
 
 package App::Asciio::stripes::group ;
 use base App::Asciio::stripes::stripes ;
-use App::Asciio::Toolfunc ;
 
 use strict;
 use warnings;
 
 use List::Util qw(min max) ;
 use List::MoreUtils qw(minmax) ;
-
-use App::Asciio ;
-
 use Module::Util qw(find_installed) ;
 use File::Basename ;
+
+use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 

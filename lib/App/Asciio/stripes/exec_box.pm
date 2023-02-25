@@ -1,12 +1,11 @@
 
 package App::Asciio::stripes::exec_box ;
-use utf8;
-use Encode;
-
 use base App::Asciio::stripes::editable_box2 ;
 
 use strict;
 use warnings;
+use utf8;
+use Encode;
 
 use List::Util qw(min max) ;
 use Readonly ;
@@ -57,7 +56,7 @@ return $self ;
 
 sub set_text
 {
-my ($self, $title, $text) = @_ ;
+my ($self, $asciio, $title, $text) = @_ ;
 
 print "Set_text $title, $text\n" ;
 my $command = $self->{COMMAND} = $text ;
@@ -83,6 +82,7 @@ print "cmd $command -> $output\n" ;
 
 $output = decode("utf-8", $output) ;
 $output =~ s/\r//g;
+$output =~ s/\t/$asciio->{TAB_AS_SPACES}/g;
 
 App::Asciio::stripes::editable_box2::setup
 	(
@@ -110,12 +110,12 @@ my $text = $self->{TEXT_ONLY} ;
 
 ($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $self->{COMMAND} // '', $asciio) ;
 
-my $tab_as_space = $self->{TAB_AS_SPACES} || (' ' x 3) ;
+my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 
 $text =~ s/\t/$tab_as_space/g ;
 $title=~ s/\t/$tab_as_space/g ;
 
-$self->set_text($title, $text) ;
+$self->set_text($asciio, $title, $text) ;
 }
 
 #-----------------------------------------------------------------------------

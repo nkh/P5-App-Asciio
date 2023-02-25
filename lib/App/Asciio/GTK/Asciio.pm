@@ -64,8 +64,6 @@ $drawing_area->set_events
 		key-release-mask
 		/]);
 
-$self->event_options_changed() ;
-
 return($self) ;
 }
 

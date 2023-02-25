@@ -439,6 +439,7 @@ if(defined $command && $command ne '')
 	
 	$output = decode("utf-8", $output);
 	$output =~ s/\r//g;
+	$output =~ s/\t/$self->{TAB_AS_SPACES}/g;
 	
 	my $new_element = new App::Asciio::stripes::editable_box2
 					({
