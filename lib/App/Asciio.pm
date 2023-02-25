@@ -681,6 +681,8 @@ my ($self) = @_;
 $self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 
 $self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE}) ;
+$self->set_double_width_char_global_expr_qr();
+global_double_width_char_expr_qr_set($self->{DOUBLE_WIDTH_CHAR_EXPR_QR});
 }
 
 #-----------------------------------------------------------------------------
@@ -731,6 +733,28 @@ my ($self) = @_;
 
 return("$self->{FONT_FAMILY} $self->{FONT_SIZE}") ;
 }
+
+#-----------------------------------------------------------------------------
+# cnt number of cjk characters
+# chinese u3400-u4db5 u4e00-u9fa5 
+# Japanese u0800-u4e00(Japanese language is temporarily not supported because some symbols are in the Japanese range)
+# Korean uac00-ud7ff
+# And chinese double width punctuation marks
+sub set_double_width_char_global_expr_qr
+{
+my ($self) = @_;
+# Please use the character encoding of unicode directly instead of character
+my $default_exp_qr = '[\x{3400}-\x{4db5}]|[\x{4e00}-\x{9fa5}]|[\x{ac00}-\x{d7ff}]|' . 
+                     '[\x{3008}-\x{3011}]|[\x{2014}\x{2026}\x{3001}\x{3002}\x{3014}' .
+                     '\x{3015}\x{FF01}\x{FF08}\x{FF09}\x{FF0C}\x{FF0E}\x{FF1A}\x{FF1B}' .
+                     '\x{FF1F}\x{FF0F}\x{FF3C}]';
+unless(defined $self->{DOUBLE_WIDTH_CHAR_EXPR_QR})
+   {
+      $self->{DOUBLE_WIDTH_CHAR_EXPR_QR} = $default_exp_qr;
+   } 
+}
+
+
 
 #-----------------------------------------------------------------------------
 
