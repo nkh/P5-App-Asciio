@@ -1,14 +1,10 @@
-test
-	asciio to  text with unicode
-
-	help box with unicode and tabs
-
-
 text interface
 	vim script
 		open file under cursor
 
 objects
+	convert all selected box or(and) arrow type
+	
 	any orientation text
 		call a sub that returns a text, sub gets direction and length
 		different sub used to implement angled-arrow

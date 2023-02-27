@@ -1,6 +1,5 @@
 
 package App::Asciio::stripes::editable_arrow2 ;
-
 use base App::Asciio::stripes::stripes ;
 
 use strict;

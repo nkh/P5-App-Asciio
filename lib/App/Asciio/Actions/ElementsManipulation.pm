@@ -105,8 +105,8 @@ $self->update_display() if $changes_made ;
 
 sub select_element_direction
 {
-my ($self, $direction_and_mouse) = @_ ;
-my ($direction, $move_mouse) = @{$direction_and_mouse} ;
+my ($self, $direction_mouse_box) = @_ ;
+my ($direction, $move_mouse, $box_only) = @{$direction_mouse_box} ;
 
 return unless exists $self->{ELEMENTS}[0] ;
 
@@ -114,9 +114,8 @@ $self->create_undo_snapshot() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
-my @elements = $direction ? @{$self->{ELEMENTS}} : reverse @{$self->{ELEMENTS}} ;
+my @elements = $direction ? (@{$self->{ELEMENTS}}, @{$self->{ELEMENTS}}) : reverse (@{$self->{ELEMENTS}}, @{$self->{ELEMENTS}}) ;
 my $next_element = $direction ? $self->{ELEMENTS}[0] : $self->{ELEMENTS}[-1] ;
-my $last_selectable_element = $direction ? $selected_elements[-1] : $selected_elements[0] ;
 
 if(@selected_elements)
 	{
@@ -124,12 +123,23 @@ if(@selected_elements)
 	
 	for my $element (@elements) 
 		{
-		if(! $self->is_element_selected($element) && $seen_selected)
+		my $is_selected = $self->is_element_selected($element) ;
+		if($seen_selected && !$is_selected)
 			{
-			$next_element = $element ; last ;
+			if($box_only)
+				{
+				if(ref($element) !~ /arrow/)
+					{
+					$next_element = $element ; last ;
+					}
+				}
+			else
+				{
+				$next_element = $element ; last ;
+				}
 			}
 		
-		$seen_selected = $element == $last_selectable_element ;
+		$seen_selected++ if $is_selected ;
 		}
 	}
 
