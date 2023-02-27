@@ -372,7 +372,7 @@ my @context_menu_entries ;
 
 my $element = ($self->get_selected_elements(1))[0] ;
 
-if(defined $element && 'App::Asciio::stripes::angles_arrow' eq ref $element)
+if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 	{
 	push @context_menu_entries, 
 		[
