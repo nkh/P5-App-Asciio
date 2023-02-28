@@ -41,9 +41,10 @@ register_action_handlers
 'Select previous non arrow'                   => [['C0S-ISO_Left_Tab', 'C0S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 1] ],
 'Select element by id'                        => ['0A0-Tab',                                \&App::Asciio::Actions::ElementsManipulation::select_element_by_id                ],
 
-'Select all elements'                         => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementsManipulation::select_all_elements                 ],
-'Deselect all elements'                       => ['000-Escape',                             \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements               ],
-'Select connected elements'                   => ['000-v',                                  \&App::Asciio::Actions::ElementsManipulation::select_connected                    ],
+'Select all elements'                                  => [['C00-a', '00S-V'],                   \&App::Asciio::Actions::ElementsManipulation::select_all_elements                 ],
+'Deselect all elements'                                => ['000-Escape',                         \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements               ],
+'Select connected elements'                            => ['000-v',                              \&App::Asciio::Actions::ElementsManipulation::select_connected                    ],
+'Select elements by search words'                      => ['C00-f',                              \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words ],
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
 'Edit selected element'                       => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element     ],

@@ -177,6 +177,18 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub select_all_elements_by_search_words
+{
+my ($self) = @_ ;
+$self->deselect_all_elements();
+my $search_words = $self->display_edit_dialog("input search words", '', $self);
+$self->select_elements_by_search_words($search_words, @{$self->{ELEMENTS}});
+$self->update_display() ;
+}
+
+
+#----------------------------------------------------------------------------------------------
+
 sub select_connected
 {
 my ($self) = @_ ;
