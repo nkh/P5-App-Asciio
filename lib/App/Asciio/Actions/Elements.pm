@@ -1,6 +1,12 @@
 package App::Asciio::Actions::Elements ;
-use Encode;
-use utf8;
+
+use strict ;
+use warnings ;
+use Encode ;
+use utf8 ;
+
+use File::Slurp ;
+use File::HomeDir ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -21,12 +27,35 @@ $element->edit($self) if $edit;
 $self->select_elements(1, $element);
 
 $self->update_display() ;
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
+use App::Asciio::Actions::Box ;
+use App::Asciio::Actions::Multiwirl ;
 
-use File::Slurp ;
-use File::HomeDir ;
+sub make_unicode
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+for my $element (@{$self->{ELEMENTS}}) 
+	{
+	if($element->isa('App::Asciio::stripes::editable_box2'))
+		{
+		App::Asciio::Actions::Box::change_box_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
+		}
+	
+	if($element->isa('App::Asciio::stripes::section_wirl_arrow'))
+		{
+		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
+		}
+	}
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
 
 sub add_help_box
 {
@@ -57,7 +86,7 @@ if(-e $help_path)
 	
 	$self->update_display() ;
 	}
-} ;
+}
 
 #----------------------------------------------------------------------------------------------
 

@@ -1,6 +1,11 @@
 
-use utf8 ;
 package App::Asciio::Actions::Box ;
+
+use strict ;
+use warnings ;
+use utf8 ;
+
+use Clone ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -133,7 +138,7 @@ my ($character_width, $character_height) = $self->get_character_size() ;
 my @selected_elements = $self->get_selected_elements(1) ;
 my $element = $selected_elements[0] ;
 
-if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_up' eq ref $elements))
+if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_up' eq ref $element))
 	{
 	push @context_menu_entries, 
 		[ '/box type/normal', \&change_box_type, { ELEMENT => $element, TYPE => 'triangle_up_normal' } ], 
@@ -198,13 +203,13 @@ return @context_menu_entries ;
 
 sub change_box_type
 {
-my ($self, $data) = @_ ;
+my ($self, $data, $atomic_operation) = @_ ;
 
-use Clone ;
+$atomic_operation //= 1 ;
 
 if(exists $box_types{$data->{TYPE}})
 	{
-	$self->create_undo_snapshot() ;
+	$self->atomic_operation_snapshot() if $atomic_operation ;
 	
 	my $element_type = $data->{ELEMENT}->get_box_type() ;
 	
@@ -217,7 +222,7 @@ if(exists $box_types{$data->{TYPE}})
 		
 	$data->{ELEMENT}->set_box_type($new_type) ;
 	
-	$self->update_display() ;
+	$self->update_display() if $atomic_operation ;
 	}
 }
 

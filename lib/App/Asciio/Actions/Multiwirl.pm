@@ -5,6 +5,8 @@ use strict ;
 use warnings ;
 use utf8 ;
 
+use Clone ;
+
 #----------------------------------------------------------------------------------------------
 
 sub insert_wirl_arrow_section
@@ -346,19 +348,19 @@ my %arrow_types =
 
 sub change_arrow_type
 {
-my ($self, $data) = @_ ;
+my ($self, $data, $atomic_operation) = @_ ;
 
-use Clone ;
+$atomic_operation //= 1 ;
 
 if(exists $arrow_types{$data->{TYPE}})
 	{
-	$self->create_undo_snapshot() ;
+	$self->atomic_operation_snapshot() if $atomic_operation ;
 	
 	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
 	
 	$data->{ELEMENT}->set_arrow_type($new_type) ;
 	
-	$self->update_display() ;
+	$self->update_display() if $atomic_operation ;
 	}
 }
 

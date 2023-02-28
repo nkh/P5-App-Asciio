@@ -31,7 +31,7 @@ register_action_handlers
 
 
 'Change elements foreground color'                     => ['000-c',                              \&App::Asciio::Actions::Colors::change_elements_colors, 0                         ],
-'Change elements background color'                     => ['000-C',                              \&App::Asciio::Actions::Colors::change_elements_colors, 1                         ],
+'Change elements background color'                     => ['00S-C',                              \&App::Asciio::Actions::Colors::change_elements_colors, 1                         ],
 'Remove rulers'                                        => ['0A0-r',                              \&App::Asciio::Actions::Ruler::remove_ruler                                       ],
 
 'Select next element'                                  => [['000-Tab', '000-n'],                 \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0]    ],
@@ -121,6 +121,7 @@ register_action_handlers
 	'Move selected elements to the front'          => ['000-f', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_front         ],
 	'Move selected elements to the back'           => ['000-b', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_back          ],
 	'Temporary move selected element to the front' => ['00S-F', \&App::Asciio::Actions::ElementsManipulation::temporary_move_selected_element_to_front],
+	'Make Unicode             '                    => ['00S-U', \&App::Asciio::Actions::Elements::make_unicode                                        ],
 	},
 
 'stripes default commands' => 
