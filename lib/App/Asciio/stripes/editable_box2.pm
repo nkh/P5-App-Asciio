@@ -208,10 +208,20 @@ return ($box_top, $box_left, $box_right, $box_bottom, $title_separator, $title_l
 sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
+my $action ;
 
-($x == $self->{WIDTH} - 1 && $y == $self->{HEIGHT} - 1)
-	? 'resize'
-	: 'move' ;
+if($self->{AUTO_SHRINK})
+	{
+	$action = 'move'
+	}
+else
+	{ 
+	$action = ($x == $self->{WIDTH} - 1 && $y == $self->{HEIGHT} - 1)
+			? 'resize'
+			: 'move' ;
+	}
+
+return($action) ;
 }
 
 #-----------------------------------------------------------------------------
