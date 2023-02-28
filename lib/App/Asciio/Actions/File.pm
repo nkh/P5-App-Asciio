@@ -46,9 +46,9 @@ if(defined $file_name && $file_name ne q[])
 	$extension =~ s/^\.// ;
 	
 	$type = defined $type ? $type 
-					:  $extension ne q{}
-						? $extension
-						: 'asciio_internal_format' ;
+				:  $extension ne q{}
+					? $extension
+					: 'asciio_internal_format' ;
 	
 	my $cache = $self->{CACHE} ;
 	$self->invalidate_rendering_cache() ;

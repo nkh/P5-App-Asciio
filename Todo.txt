@@ -14,6 +14,11 @@ objects
 	angle arrow dialog does nothing
 
 display
+	good function to binding display
+		TUI -> fzf a la ftl
+		GUI -> gtk object or external program which can be left open
+			browser?
+		
 	interface to ditaa|svgbob/aasvg/goat
 
 architecture

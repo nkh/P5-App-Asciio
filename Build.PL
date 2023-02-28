@@ -94,6 +94,7 @@ setup/hooks/canonize_connections.pl
 
 setup/import_export/ascii.pl
 setup/import_export/asciioe.pl
+setup/import_export/svg.pl
 setup/import_export/perl.pl
 
 setup/Stencils/Asciio
