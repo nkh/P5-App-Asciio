@@ -220,6 +220,7 @@ register_action_handlers
 	'Add angled arrow'                             => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/angled_arrow', 0]        ],
 	
 	'Add connector'                                => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/connector', 0]           ],
+	'Add connector type 2'                         => ['00S-C', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/connector2', 0]           ],
 	'Add vertical ruler'                           => ['000-r', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'VERTICAL'}                       ],
 	'Add horizontal ruler'                         => ['00S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                     ],
 	'Add if'                                       => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Boxes/if', 1]            ],
