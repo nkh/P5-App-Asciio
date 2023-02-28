@@ -35,6 +35,7 @@ lib/App/Asciio/Actions/ElementsManipulation.pm
 lib/App/Asciio/Actions/Multiwirl.pm
 lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Box.pm
+lib/App/Asciio/Actions/Git.pm
 lib/App/Asciio/Actions/Debug.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm

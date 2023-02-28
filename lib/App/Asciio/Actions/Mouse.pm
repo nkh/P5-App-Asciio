@@ -124,7 +124,7 @@ if($destination_element)
 	{
 	connect_to_destination_element($self, $destination_element, $x, $y) ;
 	}
-	else
+else
 	{
 	my $new_box = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
 	connect_to_destination_element($self, $new_box, $x, $y) ;
@@ -195,7 +195,7 @@ my $wirl_arrow = new App::Asciio::stripes::section_wirl_arrow
 						],
 					],		 
 					DIRECTION => $PREFERED_DIRECTION,
-					ALLOW_DIAGONAL_LINES => 0,
+					ALLOW_DIAGONAL_LINES => 1,
 					EDITABLE => 1,
 					RESIZABLE => 1,
 					}) ;

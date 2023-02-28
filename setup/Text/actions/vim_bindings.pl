@@ -92,8 +92,8 @@ register_action_handlers
 		{
 		SHORTCUTS => 'i',
 		
-		'External command output in a box'               => [ 'x' ],
-		'External command output in a box no frame'      => [ 'X' ],
+		'External command in a box'                      => [ 'x' ],
+		'External command in a box no frame'             => [ 'X' ],
 		'Insert from file'                               => [ 'f' ],
 		
 		'Add box'                                        => [ 'b' ],
@@ -137,7 +137,7 @@ register_action_handlers
 		'Ungroup group-object'                           => [ 'u' ],
 		'Move selected elements to the back'             => [ 'b' ],
 		'Move selected elements to the front'            => [ 'f' ],
-		'Temporary move selected element to the front'   => [ 'F' ],
+		'Temporary move to the front'                    => [ 'F' ],
 		},
 	
 	'stripes-group commands' => 
