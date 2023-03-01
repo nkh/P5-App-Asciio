@@ -572,50 +572,20 @@ delete $self->{SELECTION_INDEX} unless $self->get_selected_elements(1) ;
 
 #-----------------------------------------------------------------------------
 
-sub select_elements_by_search_words
+sub select_all_elements_by_search_words
 {
-my ($self, $search_words, @elements) = @_ ;
+my ($self) = @_ ;
 
-my %groups_to_select ;
+my $search_words = $self->display_edit_dialog("input search words", '', $self);
 
-my @filter_elements = ();
-
-for my $element (@elements) 
-	{
-	my @tmp_elements = ($element);
-	my $element_text = $self->transform_elements_to_ascii_buffer(@tmp_elements);
-	unless($element_text =~ m/$search_words/i)
-		{
-		push(@filter_elements, $element);
-		next;
-		}
-
-	$element->{SELECTED} = ++$self->{SELECTION_INDEX} ;
-	
-	if(exists $element->{GROUP} && defined $element->{GROUP}[-1])
-		{
-		$groups_to_select{$element->{GROUP}[-1]}++ ;
-		}
-	}
-
-# select groups
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	if
-		(
-		exists $element->{GROUP} && defined $element->{GROUP}[-1]
-		&& exists $groups_to_select{$element->{GROUP}[-1]}
-		)
+	my $text = $self->transform_elements_to_ascii_buffer($element);
+	if($text =~ m/$search_words/i)
 		{
-		
-		unless(grep { $_ eq $element } @filter_elements)
-			{
-			$element->{SELECTED} = ++$self->{SELECTION_INDEX} ;
-			}
+		$element->{SELECTED} = ++$self->{SELECTION_INDEX} ;
 		}
 	}
-
-delete $self->{SELECTION_INDEX} unless $self->get_selected_elements(1) ;
 }
 
 #-----------------------------------------------------------------------------
