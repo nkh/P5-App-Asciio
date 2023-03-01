@@ -1,6 +1,4 @@
 
-errors
-	multiwirl arrow connection between sections  in Unicode
 
 text interface
 	vim script

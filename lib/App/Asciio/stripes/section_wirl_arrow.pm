@@ -42,6 +42,9 @@ Readonly my $up_index=> 1 ;
 Readonly my $left_index=> 3 ;
 Readonly my $leftup_index => 5 ;
 Readonly my $leftdown_index => 7 ;
+Readonly my $rightup_index => 10 ;
+Readonly my $rightdown_index => 12 ;
+
 
 sub new
 {
@@ -237,23 +240,59 @@ unless (defined $stripes)
 					{
 					if($d1 eq 'down')
 						{
-						$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+						if($previous_direction eq 'right')
+							{
+							$connection = $self->{ARROW_TYPE}[$rightdown_index][$connection_index] ;
+							}
+						elsif($previous_direction eq 'left')
+							{
+							$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+							}
+						else
+							{
+							$connection = $self->{ARROW_TYPE}[$up_index][$connection_index] ;
+							}
 						}
 					elsif($d1 eq 'up')
 						{
-						$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
+						if($previous_direction eq 'right')
+							{
+							$connection = $self->{ARROW_TYPE}[$rightup_index][$connection_index] ;
+							}
+						elsif($previous_direction eq 'left')
+							{
+							$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
+							}
+						else
+							{
+							$connection = $self->{ARROW_TYPE}[$up_index][$connection_index] ;
+							}
 						}
 					elsif($previous_direction eq 'down')
 						{
-						$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
+						if($d1 eq 'left')
+							{
+							$connection = $self->{ARROW_TYPE}[$rightup_index][$connection_index] ;
+							}
+						else
+							{
+							$connection = $self->{ARROW_TYPE}[$leftup_index][$connection_index] ;
+							}
 						}
 					elsif($previous_direction eq 'up')
 						{
-						$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+						if($d1 eq 'left')
+							{
+							$connection = $self->{ARROW_TYPE}[$rightdown_index][$connection_index] ;
+							}
+						else
+							{
+							$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
+							}
 						}
 					else
 						{
-						$connection = $self->{ARROW_TYPE}[$left_index][$body_index] ;  # for left and right, up down cases handled over
+						$connection = $self->{ARROW_TYPE}[$left_index][$body_index] ;
 						}
 					}
 				}
