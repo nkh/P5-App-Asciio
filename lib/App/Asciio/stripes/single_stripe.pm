@@ -1,10 +1,13 @@
 
 package App::Asciio::stripes::single_stripe ;
-
 use base App::Asciio::stripes::stripes ;
 
 use strict;
 use warnings;
+
+use App::Asciio::Toolfunc ;
+
+#-----------------------------------------------------------------------------
 
 sub new
 {

@@ -209,7 +209,7 @@ $atomic_operation //= 1 ;
 
 if(exists $box_types{$data->{TYPE}})
 	{
-	$self->atomic_operation_snapshot() if $atomic_operation ;
+	$self->create_undo_snapshot() if $atomic_operation ;
 	
 	my $element_type = $data->{ELEMENT}->get_box_type() ;
 	

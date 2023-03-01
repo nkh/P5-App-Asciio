@@ -354,7 +354,7 @@ $atomic_operation //= 1 ;
 
 if(exists $arrow_types{$data->{TYPE}})
 	{
-	$self->atomic_operation_snapshot() if $atomic_operation ;
+	$self->create_undo_snapshot() if $atomic_operation ;
 	
 	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
 	

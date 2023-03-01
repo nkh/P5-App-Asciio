@@ -649,6 +649,8 @@ my $self =
 		DISPLAY_GRID => 1,
 		DISPLAY_GRID2 => 1,
 		
+		DOUBLE_WIDTH_QR => qr/(?!)/,
+		
 		PREVIOUS_X => 0, PREVIOUS_Y => 0,
 		MOUSE_X => 0, MOUSE_Y => 0,
 		DRAGGING => undef,
@@ -669,6 +671,8 @@ my $self =
 		DO_STACK_POINTER => 0,
 		DO_STACK => [] ,
 		}, $class ;
+
+set_double_width_qr($self) ;
 
 return($self) ;
 }
