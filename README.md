@@ -193,6 +193,11 @@ A set of whirl arrows connected to each other.
 
 ![Unicode](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_unicode.png)
 
+## Export to SVG example
+
+![SVG source](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg_source.png)
+
+![SVG](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg.png)
 
 # Asciio and Vim
 

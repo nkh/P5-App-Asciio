@@ -137,7 +137,7 @@ register_action_handlers
 
 'align default commands' => 
 	{
-	SHORTCUTS => '000-A',
+	SHORTCUTS => '00S-A',
 	
 	'Align left'                          => ['000-l', \&App::Asciio::Actions::Align::align, 'left'  ],
 	'Align center'                        => ['000-c', \&App::Asciio::Actions::Align::align, 'center'],

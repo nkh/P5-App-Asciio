@@ -308,7 +308,7 @@ my ($first_element) = first_value {$self->is_over_element($_, $self->{PREVIOUS_X
 
 if(@selected_elements <= 1)
 	{
- 	if(! defined $self->{DRAGGING})
+	if(! defined $self->{DRAGGING})
 		{
 		$self->{DRAGGING} = defined $first_element
 					? $first_element->get_selection_action
@@ -321,7 +321,8 @@ if(@selected_elements <= 1)
 	}
 else
 	{
-	$self->{DRAGGING} = defined $first_element ? 'move' : 'select' ;
+	$self->{DRAGGING} = defined $first_element ? 'move' : 'select'
+		unless defined $self->{DRAGGING} ;
 	}
 
 ($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;

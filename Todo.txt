@@ -1,14 +1,9 @@
 
-errors
-	arrow connected to box + selection-dragging -> moves the selection instead for selectinn
-
 text interface
 	vim script
 		open file under cursor
 
 objects
-	git objects
-	
 	any orientation text
 		call a sub that returns a text, sub gets direction and length
 		different sub used to implement angled-arrow
