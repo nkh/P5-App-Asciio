@@ -192,6 +192,8 @@ register_action_handlers
 	'Display keyboard mapping'            => ['000-k', \&App::Asciio::Actions::Unsorted::display_keyboard_mapping],
 	'Display commands'                    => ['000-c', \&App::Asciio::Actions::Unsorted::display_commands        ],
 	'Display action files'                => ['000-f', \&App::Asciio::Actions::Unsorted::display_action_files    ],
+	'Display manpage'                     => ['000-m', \&App::Asciio::Actions::Unsorted::manpage_in_browser     ],
+
 	
 	'Open'                                => ['000-e', \&App::Asciio::Actions::File::open        ],
 	'Save'                                => ['000-w', \&App::Asciio::Actions::File::save, undef ],

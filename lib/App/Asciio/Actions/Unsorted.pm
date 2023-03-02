@@ -6,6 +6,23 @@ use warnings ;
 use utf8 ;
 use Encode ;
 
+use File::Temp qw/ tempfile / ;
+use File::Slurp ;
+use Data::TreeDumper ;
+
+#----------------------------------------------------------------------------------------------
+
+sub manpage_in_browser
+{
+my ($self) = @_ ;
+
+my (undef, $manpage) = tempfile() ;
+
+system("perldoc App::Asciio >$manpage") ;
+
+qx"$self->{BROWSER} 'file://$manpage' &" ;
+}
+
 #----------------------------------------------------------------------------------------------
 
 sub display_help
@@ -90,54 +107,55 @@ sub display_keyboard_mapping
 {
 my ($self) = @_ ;
 
-#~ print Data::TreeDumper::DumpTree $self->{ACTIONS_BY_NAME}, 'ACTIONS_BY_NAME:';
-
-my $keyboard_mapping = get_keyboard_mapping($self->{ACTIONS_BY_NAME}) ;
-
-#~ print Data::TreeDumper::DumpTree $keyboard_mapping , 'Keyboard mapping:';
-
-$self->show_dump_window
-		(
-		$keyboard_mapping ,
+my $mapping = DumpTree
+		get_keyboard_mapping($self->{ACTIONS}),
 		'Keyboard mapping:',
 		DISPLAY_ADDRESS => 0,
-		)
+		GLYPHS => ['', '', '', ''] ;
+
+$mapping =~ s/^\d+(\s=)?\s//gm ;
+
+my $mapping_file = (tempfile())[1] ;
+write_file($mapping_file, $mapping) ;
+
+qx"$self->{BROWSER} 'file://$mapping_file' &" ;
 }
+
+#----------------------------------------------------------------------------------------------
 
 sub get_keyboard_mapping
 {
-my ($actions, $list) = @_ ;
+my ($actions, $indent) = @_ ;
 
-$list ||= [] ;
-my $keyboard_mapping ;
+$indent //= '' ;
+my (@keyboard_mapping , %seen) ;
 
-for my $action (keys %{$actions})
+for my $action (sort { ('ARRAY' eq ref $actions->{$b}) <=> ('ARRAY' eq ref $actions->{$a}) } keys %{$actions}) 
 	{
 	if('ARRAY' eq ref $actions->{$action})
 		{
 		my $shortcut =  ref $actions->{$action}[0] eq '' 
 					? $actions->{$action}[0] 
-					: '[' . join('/', @{$actions->{$action}[0]}) . ']';
+					: join(' / ', @{$actions->{$action}[0]}) ;
 		
-		$keyboard_mapping->{$shortcut . ' => ' . $action} = {FILE=> $actions->{$action}[6]} ;
+		my $action_name = $actions->{$action}[5] ;
+		
+		push @keyboard_mapping, sprintf("%-45s %s", "$indent$action_name", $shortcut) 
+			unless $seen{$action_name} or $action_name =~ /context_menu$/ ;
+		
+		$seen{$action_name}++ ;
 		}
 	elsif('HASH' eq ref $actions->{$action})
 		{
-		my $sub_keyboard_mapping = get_keyboard_mapping($actions->{$action}) ;
+		next if $action eq 'ORIGINS' ;
 		
-		for my $shortcut (keys %{$sub_keyboard_mapping})
-			{
-			my $start_shortcut = '[' . join('/', $actions->{$action}{SHORTCUTS}) . '] + ';
-			$keyboard_mapping->{$start_shortcut . $shortcut} = $sub_keyboard_mapping->{$shortcut} ;
-			}
-		}
-	else
-		{
-		#~ die "unknown type while running 'dump_keyboard_mapping'\n" ;
+		push @keyboard_mapping, { $action => get_keyboard_mapping($actions->{$action}, "$indent   ") } ;
 		}
 	}
 
-return($keyboard_mapping) ;
+@keyboard_mapping = sort { '' eq ref $a && '' eq ref $b ? $a cmp $b : 0 } @keyboard_mapping ;
+
+return(\@keyboard_mapping) ;
 }
 
 #----------------------------------------------------------------------------------------------

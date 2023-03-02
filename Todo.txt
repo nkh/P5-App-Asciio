@@ -1,5 +1,4 @@
 
-
 text interface
 	vim script
 		open file under cursor
@@ -12,7 +11,10 @@ objects
 	angle arrow dialog does nothing
 
 display
-	good function to binding display
+	GUI/TUI: a faster stencil picker
+		TUI can use fzf
+	
+	good function-to-binding display
 		TUI -> fzf a la ftl
 		GUI -> gtk object or external program which can be left open
 			browser?

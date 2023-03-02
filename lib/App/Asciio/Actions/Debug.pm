@@ -46,9 +46,7 @@ sub test
 my ($self) = @_ ;
 
 $self->create_undo_snapshot() ;
-
 $self->run_actions_by_name(['Insert', 0, 0, 'insert_error.asciio']) ;
-
 $self->update_display() ;
 }
 

@@ -650,6 +650,7 @@ my $self =
 		DISPLAY_GRID2 => 1,
 		
 		DOUBLE_WIDTH_QR => qr/(?!)/,
+		BROWSER => "$ENV{BROWSER} --new-window",
 		
 		PREVIOUS_X => 0, PREVIOUS_Y => 0,
 		MOUSE_X => 0, MOUSE_Y => 0,
