@@ -53,9 +53,11 @@ register_action_handlers
 	'Mouse right-click'                                      => [ 'ä' ],
 	'Mouse left-click'                                       => [ 'ö' ],
 	
-	# 'Mouse ctl-left-click'                                   => [ '???' ],
-	# 'Mouse alt-left-click'                                   => [ '???' ],
+	# 'Mouse emulation selection flip'                         => [ '???' ], # C-ö doesn't work 
+	# 'Mouse emulation expand selection'                       => [ '???' ],
+
 	'Mouse quick link'                                       => [ ['A-ö', '.'] ],
+	'Mouse quick link git'                                   => [ ['A-ä', ';'], ],
 	'Mouse duplicate elements'                               => [ ['A-Ö', ','] ],
 
 	'Mouse on element id'                                    => [ '000' ],

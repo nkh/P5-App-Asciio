@@ -74,11 +74,11 @@ register_action_handlers
 'Mouse right-click'                           => ['000-button-press-3',                     \&App::Asciio::Actions::Mouse::mouse_right_click                                  ],
 
 'Mouse left-click'                            => ['000-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_left_click                                   ],
-'Mouse shift-left-click'                      => ['00S-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_shift_left_click                             ],
-'Mouse ctl-left-click'                        => ['C00-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_ctl_left_click                               ],
+'Mouse expand selection'                      => ['00S-button-press-1',                     \&App::Asciio::Actions::Mouse::expand_selection                                   ],
+'Mouse selection flip'                        => ['C00-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                       ],
 
 'Mouse quick link'                            => [['0A0-button-press-1', '000-period'],     \&App::Asciio::Actions::Mouse::quick_link                                         ],
-'Mouse quick link git'                        => [['0A0-button-press-3', '000-semicolumn'], \&App::Asciio::Actions::Git::quick_link                                           ],
+'Mouse quick link git'                        => [['0A0-button-press-3', '00S-semicolon'],  \&App::Asciio::Actions::Git::quick_link                                           ],
 'Mouse duplicate elements'                    => [['0AS-button-press-1', '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                            ],
 
 'Insert flex point'                           => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                      ],
@@ -87,12 +87,11 @@ register_action_handlers
 'Mouse motion 2'                              => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                       ], 
         
 # mouse emulation
-'Toggle mouse'                                => [['000-apostrophe', "'"],                  \&App::Asciio::Actions::Mouse::toggle_mouse                                       ],
+'Mouse emulation toggle'                      => [['000-apostrophe', "'"],                  \&App::Asciio::Actions::Mouse::toggle_mouse                                       ],
 
 'Mouse emulation left-click'                  => ['000-odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_left_click                                   ],
-'Mouse emulation shift-left-click'            => ['00S-Odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_shift_left_click                             ],
-'Mouse emulation ctl-left-click'              => ['C00-odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_ctl_left_click                               ],
-'Mouse emulation alt-left-click'              => ['0A0-odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_alt_left_click                               ],
+'Mouse emulation expand selection'            => ['00S-Odiaeresis',                         \&App::Asciio::Actions::Mouse::expand_selection                                   ],
+'Mouse emulation selection flip'              => ['C00-odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                       ],
 
 'Mouse emulation right-click'                 => ['000-adiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_right_click                                  ],
 

@@ -68,7 +68,7 @@ $self->update_display();
 
 #----------------------------------------------------------------------------------------------
 
-sub mouse_shift_left_click
+sub expand_selection
 {
 my ($self) = @_ ;
 
@@ -92,7 +92,7 @@ $self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])
 
 #----------------------------------------------------------------------------------------------
 
-sub mouse_ctl_left_click
+sub mouse_element_selection_flip
 {
 my ($self) = @_ ;
 my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
