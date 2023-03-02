@@ -72,13 +72,20 @@ register_action_handlers
 	'Mouse emulation move up'                                => [ 'C-Up' ],
 	'Mouse emulation move down'                              => [ 'C-Down' ],
 	
-	'command mode'=> 
+	'command leader'=> 
 		{
 		SHORTCUTS => ':',
 		
 		'Help'                                           => [ 'h' ],
 		'Display manpage'                                => [ 'm', sub { my ($self) = @_ ; system('perldoc', 'App::Asciio') ; $self->update_display() ; } ],
-		'Display keyboard mapping'                       => [ 'k' ],
+		'Display keyboard mapping'                       => [ 'k', sub 
+										{
+										my ($self) = @_ ;
+										my $mapping_file = App::Asciio::Actions::Unsorted::get_keyboard_mapping_file($self) ;
+										system "cat '$mapping_file' | fzf --cycle --layout=reverse-list" ;
+										$self->update_display() ;
+										}
+									],
 		'Display commands'                               => [ 'c' ],
 		'Display action files'                           => [ 'f' ],
 		
@@ -90,7 +97,7 @@ register_action_handlers
 		'Quit no save'                                   => [ 'Q' ],
 		},
 	
-	'Insert commands' => 
+	'Insert leader' => 
 		{
 		SHORTCUTS => 'i',
 		
@@ -118,7 +125,7 @@ register_action_handlers
 		'Add unicode arrow'                              => [ 'S' ],
 		},
 	
-	'arrow commands' => 
+	'arrow leader' => 
 		{
 		SHORTCUTS => 'a',
 		
@@ -130,7 +137,7 @@ register_action_handlers
 		'Remove last section from multi_wirl'            => [ 'A-s' ],
 		},
 	
-	'grouping commands' => 
+	'grouping leader' => 
 		{
 		SHORTCUTS => 'g',
 		
@@ -142,7 +149,7 @@ register_action_handlers
 		'Temporary move to the front'                    => [ 'F' ],
 		},
 	
-	'stripes-group commands' => 
+	'stripes-group leader' => 
 		{
 		SHORTCUTS => 'A-g',
 		
@@ -151,7 +158,7 @@ register_action_handlers
 		'ungroup stripes group'                          => ['0'],
 		},
 	
-	'display commands' => 
+	'display leader' => 
 		{
 		SHORTCUTS => 'z',
 		
@@ -162,7 +169,7 @@ register_action_handlers
 		'Flip transparent element background'            => [ 't' ],
 		},
 	
-	'align commands' => 
+	'align leader' => 
 		{
 		SHORTCUTS => 'A',
 		
@@ -174,7 +181,7 @@ register_action_handlers
 		'Align top'                                      => [ 't' ],
 		},
 	
-	'slides commands' => 
+	'slides leader' => 
 		{
 		SHORTCUTS => 'S',
 		
@@ -184,7 +191,7 @@ register_action_handlers
 		'first slide'                                    => [ 'g' ],
 		},
 	
-	'debug commands' => 
+	'debug leader' => 
 		{
 		SHORTCUTS => 'D',
 		

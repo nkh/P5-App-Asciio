@@ -94,7 +94,6 @@ my Readonly $CONTEXT_MENU_SUB = 3;
 my Readonly $CONTEXT_MENU_ARGUMENTS = 4 ;
 my Readonly $NAME= 5 ;
 my Readonly $ORIGIN= 6 ;
-my Readonly $FULL_ORIGIN= 7 ;
 
 sub setup_hooks
 {
@@ -158,7 +157,6 @@ for my $action_file (@{ $action_files })
 			$shortcuts_definition = $action_handlers{$name}{SHORTCUTS}  ;
 			$action_handlers{$name}{GROUP_NAME} = $group_name = $name ;
 			$action_handlers{$name}{ORIGIN} = $action_file ;
-			$action_handlers{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 			
 			$action_handler = $self->get_group_action_handler($setup_path, $action_file, $name, \%action_handlers) ;
 			}
@@ -169,7 +167,6 @@ for my $action_file (@{ $action_files })
 			$shortcuts_definition= $action_handlers{$name}[$SHORTCUTS]  ;
 			$action_handlers{$name}[$NAME] = $name ;
 			$action_handlers{$name}[$ORIGIN] = $action_file ;
-			$action_handlers{$name}[$FULL_ORIGIN] = "$setup_path/$action_file" ;
 			
 			$action_handler = $action_handlers{$name} ;
 			}
@@ -181,7 +178,6 @@ for my $action_file (@{ $action_files })
 			
 		$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
 		$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} = $action_file ;
-		# $self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 		
 		my $shortcuts ;
 		if('ARRAY' eq ref $shortcuts_definition)
@@ -199,7 +195,7 @@ for my $action_file (@{ $action_files })
 				{
 				print "Overriding shortcut '$shortcut'\n" ;
 				print "\tnew is '$name' defined in file '$setup_path/$action_file'\n" ;
-				print "\told was '$self->{ACTIONS}{$shortcut}[$NAME]' defined in file '$self->{ACTIONS}{$shortcut}[$FULL_ORIGIN]'\n" ;
+				print "\told was '$self->{ACTIONS}{$shortcut}[$NAME]' defined in file '$self->{ACTIONS}{$shortcut}[$ORIGIN]'\n" ;
 				}
 				
 			# print "\e[32maction_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
@@ -218,7 +214,6 @@ for my $action_file (@{ $action_files })
 				{
 				$self->{ACTIONS}{$shortcut}{GROUP_NAME} = $group_name ;
 				$self->{ACTIONS}{$shortcut}{ORIGIN} = $action_file ;
-				$self->{ACTIONS}{$shortcut}{FULL_ORIGIN} = "$setup_path/$action_file" ;
 				}
 			}
 		}
@@ -295,7 +290,6 @@ for my $name (keys %{$action_handler_definition})
 		$shortcuts_definition= $action_handler_definition->{$name}{SHORTCUTS}  ;
 		$action_handler_definition->{$name}{GROUP_NAME} = $group_name = $name ;
 		$action_handler_definition->{$name}{ORIGIN} = $action_file  ;
-		$action_handler_definition->{$name}{FULL_ORIGIN} = "$setup_path/$action_file"  ;
 		
 		$action_handler = $self->get_group_action_handler($setup_path, $action_file, $name, $action_handler_definition) ;
 		}
@@ -306,7 +300,6 @@ for my $name (keys %{$action_handler_definition})
 		$shortcuts_definition = $action_handler_definition->{$name}[$SHORTCUTS]  ;
 		$action_handler_definition->{$name}[$NAME] = $name ;
 		$action_handler_definition->{$name}[$ORIGIN] = $action_file  ;
-		$action_handler_definition->{$name}[$FULL_ORIGIN] = "$setup_path/$action_file"  ;
 		
 		$action_handler = $action_handler_definition->{$name} ;
 		}
@@ -317,7 +310,7 @@ for my $name (keys %{$action_handler_definition})
 		}
 	
 	$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
-	$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{FULL_ORIGIN} = "$setup_path/$action_file" ;
+	$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} = "$action_file" ;
 	
 	my $shortcuts ;
 	if('ARRAY' eq ref $shortcuts_definition)

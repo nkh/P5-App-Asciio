@@ -29,7 +29,6 @@ $window->add($scwin);
 my @asciios ;
 
 my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25) ;
-$asciio->{UI} = 'GUI' ;
 
 push @asciios, $asciio ;
 

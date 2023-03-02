@@ -39,6 +39,8 @@ sub new
 my ($class, $width, $height) = @_ ;
 
 my $self = App::Asciio->new($class) ;
+$self->{UI} = 'TUI' ;
+
 bless $self, $class ;
 
 return($self) ;

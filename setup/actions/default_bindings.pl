@@ -30,7 +30,6 @@ register_action_handlers
 'Import from clipboard to box'                => [ '0AS-E' ,                                \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                   ],
 'Import from clipboard to text'               => [ '0AS-T' ,                                \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text                  ],
 
-
 'Change elements foreground color'            => ['000-c',                                  \&App::Asciio::Actions::Colors::change_elements_colors, 0                         ],
 'Change elements background color'            => ['00S-C',                                  \&App::Asciio::Actions::Colors::change_elements_colors, 1                         ],
 'Remove rulers'                               => ['0A0-r',                                  \&App::Asciio::Actions::Ruler::remove_ruler                                       ],
@@ -113,7 +112,7 @@ register_action_handlers
 'Angled arrow context_menu'                   => ['aa_ontext menu',  undef, undef,          \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu                      ],
 'Ruler context_menu'                          => ['ru_context_menu', undef, undef,          \&App::Asciio::Actions::Ruler::rulers_context_menu                                ],
 
-'grouping default commands' => 
+'grouping leader' => 
 	{
 	SHORTCUTS => '000-g',
 	
@@ -125,7 +124,7 @@ register_action_handlers
 	'Make Unicode             '           => ['00S-U', \&App::Asciio::Actions::Elements::make_unicode                                        ],
 	},
 
-'stripes default commands' => 
+'stripes leader' => 
 	{
 	SHORTCUTS => '0A0-g',
 	
@@ -134,7 +133,7 @@ register_action_handlers
 	'ungroup stripes group'               => ['000-u', \&App::Asciio::Actions::ElementsManipulation::ungroup_stripes_group  ],
 	},
 
-'align default commands' => 
+'align leader' => 
 	{
 	SHORTCUTS => '00S-A',
 	
@@ -147,7 +146,7 @@ register_action_handlers
 	# spread vertically	# spread horizontally # adjacent vert # adjacent hor # stack
 	},
 
-'change default color/font'=> 
+'change color/font leader'=> 
 	{
 	SHORTCUTS => '000-z',
 	
@@ -159,7 +158,7 @@ register_action_handlers
 	'Change font'                         => ['000-f', \&App::Asciio::Actions::Unsorted::change_font           ],
 	},
 
-'arrow default commands' => 
+'arrow leader' => 
 	{
 	SHORTCUTS => '000-a',
 	
@@ -171,7 +170,7 @@ register_action_handlers
 	'Remove last section from multi_wirl' => ['C00-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow ],
 	},
 
-'debug default commands' => 
+'debug leader' => 
 	{
 	SHORTCUTS => '00S-D',
 	
@@ -183,15 +182,15 @@ register_action_handlers
 	'Test'                                => ['000-o', \&App::Asciio::Actions::Debug::test                             ],
 	},
 
-'command default mode'=> 
+'commands leader'=> 
 	{
 	SHORTCUTS => '00S-colon',
 	
-	'Help'                                => ['000-h', \&App::Asciio::Actions::Unsorted::display_help            ],
-	'Display keyboard mapping'            => ['000-k', \&App::Asciio::Actions::Unsorted::display_keyboard_mapping],
-	'Display commands'                    => ['000-c', \&App::Asciio::Actions::Unsorted::display_commands        ],
-	'Display action files'                => ['000-f', \&App::Asciio::Actions::Unsorted::display_action_files    ],
-	'Display manpage'                     => ['000-m', \&App::Asciio::Actions::Unsorted::manpage_in_browser     ],
+	'Help'                                => ['000-h', \&App::Asciio::Actions::Unsorted::display_help                       ],
+	'Display keyboard mapping'            => ['000-k', \&App::Asciio::Actions::Unsorted::display_keyboard_mapping_in_browser],
+	'Display commands'                    => ['000-c', \&App::Asciio::Actions::Unsorted::display_commands                   ],
+	'Display action files'                => ['000-f', \&App::Asciio::Actions::Unsorted::display_action_files               ],
+	'Display manpage'                     => ['000-m', \&App::Asciio::Actions::Unsorted::manpage_in_browser                 ],
 
 	
 	'Open'                                => ['000-e', \&App::Asciio::Actions::File::open        ],
@@ -202,7 +201,7 @@ register_action_handlers
 	'Quit no save'                        => ['00S-Q', \&App::Asciio::Actions::File::quit_no_save],
 	},
 
-'Insert default commands' => 
+'Insert leader' => 
 	{
 	SHORTCUTS => '000-i',
 	
@@ -233,7 +232,7 @@ register_action_handlers
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],
 	},
 
-'slides default commands' => 
+'slides leader' => 
 	{
 	SHORTCUTS => '00S-S',
 	

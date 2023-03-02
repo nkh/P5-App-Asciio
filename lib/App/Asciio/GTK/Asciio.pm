@@ -40,6 +40,8 @@ sub new
 my ($class, $window, $width, $height) = @_ ;
 
 my $self = App::Asciio::new($class) ;
+$self->{UI} = 'GUI' ;
+
 bless $self, $class ;
 
 $window->signal_connect(key_press_event => \&key_press_event, $self);

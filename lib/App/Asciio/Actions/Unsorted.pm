@@ -103,9 +103,20 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub display_keyboard_mapping
+sub display_keyboard_mapping_in_browser
 {
 my ($self) = @_ ;
+
+my $mapping_file = get_keyboard_mapping_file($self) ;
+
+qx"$self->{BROWSER} 'file://$mapping_file' &" ;
+}
+
+sub get_keyboard_mapping_file
+{
+my ($self) = @_ ;
+
+write_file('nkh_log', DumpTree $self) ;
 
 my $mapping = DumpTree
 		get_keyboard_mapping($self->{ACTIONS}),
@@ -118,16 +129,18 @@ $mapping =~ s/^\d+(\s=)?\s//gm ;
 my $mapping_file = (tempfile())[1] ;
 write_file($mapping_file, $mapping) ;
 
-qx"$self->{BROWSER} 'file://$mapping_file' &" ;
+return $mapping_file ;
 }
 
 #----------------------------------------------------------------------------------------------
 
 sub get_keyboard_mapping
 {
-my ($actions, $indent) = @_ ;
+my ($actions, $indent, $group) = @_ ;
 
 $indent //= '' ;
+$group //= '' ;
+
 my (@keyboard_mapping , %seen) ;
 
 for my $action (sort { ('ARRAY' eq ref $actions->{$b}) <=> ('ARRAY' eq ref $actions->{$a}) } keys %{$actions}) 
@@ -140,7 +153,7 @@ for my $action (sort { ('ARRAY' eq ref $actions->{$b}) <=> ('ARRAY' eq ref $acti
 		
 		my $action_name = $actions->{$action}[5] ;
 		
-		push @keyboard_mapping, sprintf("%-45s %s", "$indent$action_name", $shortcut) 
+		push @keyboard_mapping, sprintf("%-45s %s", "$indent$action_name", "$group$shortcut") 
 			unless $seen{$action_name} or $action_name =~ /context_menu$/ ;
 		
 		$seen{$action_name}++ ;
@@ -149,7 +162,7 @@ for my $action (sort { ('ARRAY' eq ref $actions->{$b}) <=> ('ARRAY' eq ref $acti
 		{
 		next if $action eq 'ORIGINS' ;
 		
-		push @keyboard_mapping, { $action => get_keyboard_mapping($actions->{$action}, "$indent   ") } ;
+		push @keyboard_mapping, { "$actions->{$action}{GROUP_NAME} $action" => get_keyboard_mapping($actions->{$action}, "$indent   ", "$action + ") } ;
 		}
 	}
 
@@ -178,9 +191,8 @@ $self->show_dump_window
 
 sub get_commands
 {
-my ($actions, $list) = @_ ;
+my ($actions) = @_ ;
 
-$list ||= [] ;
 my $commands ;
 
 for my $action (keys %{$actions})
