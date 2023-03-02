@@ -580,8 +580,7 @@ my $search_words = $self->display_edit_dialog("input search words", '', $self);
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	my $text = $self->transform_elements_to_ascii_buffer($element);
-	if($text =~ m/$search_words/i)
+	if($self->transform_elements_to_ascii_buffer($element) =~ m/$search_words/i)
 		{
 		$element->{SELECTED} = ++$self->{SELECTION_INDEX} ;
 		}
