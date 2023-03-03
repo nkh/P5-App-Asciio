@@ -8,14 +8,6 @@ $|++ ;
 
 #------------------------------------------------------------------------------------------------------
 
-my Readonly $SHORTCUTS = 0 ;
-my Readonly $CODE = 1 ;
-my Readonly $ARGUMENTS = 2 ;
-my Readonly $CONTEXT_MENU_SUB = 3 ;
-my Readonly $CONTEXT_MENU_ARGUMENTS = 4 ;
-my Readonly $NAME= 5 ;
-my Readonly $ORIGIN= 6 ;
-
 sub run_actions
 {
 my ($self, @actions) = @_ ;
@@ -37,46 +29,34 @@ for my $action (@actions)
 	
 	if(exists $self->{CURRENT_ACTIONS}{$action})
 		{
-		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
+		my $is_group = $self->{CURRENT_ACTIONS}{$action}{IS_GROUP} ;
+		
+		$self->{ACTION_VERBOSE}->
+			(
+			sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $self->{CURRENT_ACTIONS}{$action}{NAME}, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
+			) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion' ;
+		
+		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
 			{
-			my $action_group_name = $self->{CURRENT_ACTIONS}{$action}{GROUP_NAME}  || 'unnamed action group' ;
-			
-			$self->{ACTION_VERBOSE}->
-				(
-				sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $action_group_name, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
-				) if $self->{ACTION_VERBOSE} ;
-			
-			$self->{CURRENT_ACTIONS} = $self->{CURRENT_ACTIONS}{$action} ;
+			push @results,
+				[
+				$self->{CURRENT_ACTIONS}{$action}{CODE}->
+						(
+						$self,
+						$self->{CURRENT_ACTIONS}{$action}{ARGUMENTS},
+						@arguments,
+						) 
+				] ;
 			}
 		else
 			{
-			$self->{ACTION_VERBOSE}->
-				(
-				sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $self->{CURRENT_ACTIONS}{$action}[$NAME], $self->{CURRENT_ACTIONS}{$action}[$ORIGIN]
-				) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}[$NAME] ne 'Mouse motion' ;
-			
-			if(defined $self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS])
-				{
-				push @results,
-					[
-					$self->{CURRENT_ACTIONS}{$action}[$CODE]->
-							(
-							$self,
-							$self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS],
-							@arguments
-							) 
-					] ;
-				}
-			else
-				{
-				push @results,
-					[
-					$self->{CURRENT_ACTIONS}{$action}[$CODE]->($self, @arguments)
-					] ;
-				}
-			
-			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+			push @results,
+				[
+				$self->{CURRENT_ACTIONS}{$action}{CODE}->($self, @arguments)
+				] ;
 			}
+		
+		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group ;
 		}
 	else
 		{
@@ -119,14 +99,14 @@ for my $action (@actions)
 			{
 			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action\e[0m") if $self->{ACTION_VERBOSE} ;
 			
-			if(defined $current_actions_by_name->{$action}[$ARGUMENTS])
+			if(defined $current_actions_by_name->{$action}{ARGUMENTS})
 				{
 				push @results,
 					[
-					$current_actions_by_name->{$action}[$CODE]->
+					$current_actions_by_name->{$action}{CODE}->
 							(
 							$self,
-							$self->{CURRENT_ACTIONS}{$action}[$ARGUMENTS],
+							$self->{CURRENT_ACTIONS}{$action}{ARGUMENTS},
 							@arguments
 							)
 					] ;
@@ -135,7 +115,7 @@ for my $action (@actions)
 				{
 				push @results,
 					[
-					$current_actions_by_name->{$action}[$CODE]->($self, @arguments)
+					$current_actions_by_name->{$action}{CODE}->($self, @arguments)
 					] ;
 				}
 			}

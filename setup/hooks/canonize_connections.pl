@@ -5,7 +5,7 @@
 
 register_hooks
 	(
-	['CANONIZE_CONNECTIONS' => \&canonize_connections],
+	{ CANONIZE_CONNECTIONS => \&canonize_connections},
 	) ;
 
 #----------------------------------------------------------------------------------------------

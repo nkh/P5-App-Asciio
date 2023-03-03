@@ -141,13 +141,6 @@ return sub { $sub->($self, $data) ; } ;
 
 #------------------------------------------------------------------------------------------------------
 
-my Readonly $SHORTCUTS = 0 ;
-my Readonly $CODE = 1 ;
-my Readonly $ARGUMENTS = 2 ;
-my Readonly $CONTEXT_MENU_SUB = 3 ;
-my Readonly $CONTEXT_MENU_ARGUMENTS = 4 ;
-my Readonly $NAME= 5 ;
-
 sub get_context_menu_entries
 {
 my ($self, $popup_x, $popup_y) = @_ ;
@@ -158,26 +151,26 @@ for my $context_menu_handler
 	map {$self->{CURRENT_ACTIONS}{$_}}
 		grep 
 			{
-			'ARRAY' eq ref $self->{CURRENT_ACTIONS}{$_} # not a sub actions definition
-			&& defined $self->{CURRENT_ACTIONS}{$_}[$CONTEXT_MENU_SUB]
+			'HASH' eq ref $self->{CURRENT_ACTIONS}{$_} # not a sub actions definition
+			&& defined $self->{CURRENT_ACTIONS}{$_}{CONTEXT_MENU_SUB}
 			} sort keys %{$self->{CURRENT_ACTIONS}}
 	)
 	{
-	# print "Adding context menu from action '$context_menu_handler->[$NAME]'.\n" ;
+	# print "Adding context menu from action '$context_menu_handler->{NAME}'.\n" ;
 	
-	if(defined $context_menu_handler->[$CONTEXT_MENU_ARGUMENTS])
+	if(defined $context_menu_handler->{CONTEXT_MENU_ARGUMENTS})
 		{
 		push @context_menu_entries, 
-			$context_menu_handler->[$CONTEXT_MENU_SUB]->
+			$context_menu_handler->{CONTEXT_MENU_SUB}->
 				(
 				$self,
-				$context_menu_handler->[$CONTEXT_MENU_ARGUMENTS],
+				$context_menu_handler->{CONTEXT_MENU_ARGUMENTS},
 				$popup_x, $popup_y,
 				) ;
 		}
 	else
 		{
-		push @context_menu_entries, $context_menu_handler->[$CONTEXT_MENU_SUB]->($self, $popup_x, $popup_y) ;
+		push @context_menu_entries, $context_menu_handler->{CONTEXT_MENU_SUB}->($self, $popup_x, $popup_y) ;
 		}
 	}
 	
