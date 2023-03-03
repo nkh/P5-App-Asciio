@@ -224,6 +224,19 @@ You can call Asciio from vim and insert your diagram.
             redraw!
         endfunction
 
+# OTHER PROJECTS
+
+SVG conversion:
+![goat](https://github.com/blampe/goat)
+
+Tree generation:
+![ascii_tree](https://github.com/yzhong52/ascii_tree)
+
+ASCII Math and other:
+![Diagon](https://github.com/ArthurSonzogni/Diagon)
+
+Send me links to your favorites tools (only command line, no libs) and I'll add them if they integrate will in Asciio.
+
 # AUTHORS
 
     Khemir Nadim ibn Hamouda
