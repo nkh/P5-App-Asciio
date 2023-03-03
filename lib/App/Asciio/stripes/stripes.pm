@@ -21,10 +21,7 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	{
 	my $text = $stripe->{TEXT} ;
 	
-	my $width = 0 ;
-	my $usc_length = usc_length($_) ;
-	
-	map { $width  = $width < $usc_length ? $usc_length : $width } split("\n", $text) ;
+	my $width = max( map{ usc_length($_) } split("\n", $text)) ;
 	
 	my $height = ($text =~ tr[\n][\n]) + 1 ;
 	

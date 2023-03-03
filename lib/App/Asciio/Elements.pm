@@ -572,6 +572,20 @@ delete $self->{SELECTION_INDEX} unless $self->get_selected_elements(1) ;
 
 #-----------------------------------------------------------------------------
 
+sub select_all_elements_by_search_words
+{
+my ($self) = @_ ;
+
+my $search_words = $self->display_edit_dialog("input search words", '', $self);
+
+for my $element (@{$self->{ELEMENTS}}) 
+	{
+	$self->select_elements(1, $element) if ($self->transform_elements_to_ascii_buffer($element) =~ m/$search_words/i)
+	}
+}
+
+#-----------------------------------------------------------------------------
+
 sub select_all_elements
 {
 my ($self) = @_ ;
