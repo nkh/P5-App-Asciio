@@ -116,59 +116,34 @@ sub get_keyboard_mapping_file
 {
 my ($self) = @_ ;
 
-write_file('nkh_log', DumpTree $self) ;
+my (@key_actions, @action_keys, @groups) ;
 
-my $mapping = DumpTree
-		get_keyboard_mapping($self->{ACTIONS}),
-		'Keyboard mapping:',
-		DISPLAY_ADDRESS => 0,
-		GLYPHS => ['', '', '', ''] ;
-
-$mapping =~ s/^\d+(\s=)?\s//gm ;
-
-my $mapping_file = (tempfile())[1] ;
-write_file($mapping_file, $mapping) ;
-
-return $mapping_file ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub get_keyboard_mapping
-{
-my ($actions, $indent, $group) = @_ ;
-
-$indent //= '' ;
-$group //= '' ;
-
-my (@keyboard_mapping , %seen) ;
-
-for my $action (sort { ('ARRAY' eq ref $actions->{$b}) <=> ('ARRAY' eq ref $actions->{$a}) } keys %{$actions}) 
+for (sort keys %{$self->{ACTIONS}})
 	{
-	if('ARRAY' eq ref $actions->{$action})
+	if(exists $self->{ACTIONS}{$_}{IS_GROUP})
 		{
-		my $shortcut =  ref $actions->{$action}[0] eq '' 
-					? $actions->{$action}[0] 
-					: join(' / ', @{$actions->{$action}[0]}) ;
-		
-		my $action_name = $actions->{$action}[5] ;
-		
-		push @keyboard_mapping, sprintf("%-45s %s", "$indent$action_name", "$group$shortcut") 
-			unless $seen{$action_name} or $action_name =~ /context_menu$/ ;
-		
-		$seen{$action_name}++ ;
+		push @groups, [$_, $self->{ACTIONS}{$_}] ;
 		}
-	elsif('HASH' eq ref $actions->{$action})
+	else
 		{
-		next if $action eq 'ORIGINS' ;
-		
-		push @keyboard_mapping, { "$actions->{$action}{GROUP_NAME} $action" => get_keyboard_mapping($actions->{$action}, "$indent   ", "$action + ") } ;
+		push @key_actions, sprintf "%-20s: %s\n", $_, $self->{ACTIONS}{$_}{NAME} ;
+		push @action_keys, sprintf "%-50s: %s\n", $self->{ACTIONS}{$_}{NAME}, $_ ;
 		}
 	}
 
-@keyboard_mapping = sort { '' eq ref $a && '' eq ref $b ? $a cmp $b : 0 } @keyboard_mapping ;
+for my $group (sort { $a->[0] cmp $b->[0] } @groups)
+	{
+	for (grep { 'HASH' eq ref $group->[1]{$_} } sort keys %{$group->[1]})
+		{
+		push @key_actions, sprintf "%-20s: %s\n", "$group->[0] + $_", $group->[1]{$_}{NAME} ;
+		push @action_keys, sprintf "%-50s: %s\n", $group->[1]{$_}{NAME}, "$group->[0] + $_" ;
+		}
+	}
 
-return(\@keyboard_mapping) ;
+my $mapping_file = (tempfile())[1] ;
+write_file($mapping_file, @key_actions, "\n\n", sort @action_keys) ;
+
+return $mapping_file ;
 }
 
 #----------------------------------------------------------------------------------------------
