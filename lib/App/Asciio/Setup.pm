@@ -5,6 +5,7 @@ $|++ ;
 
 use strict;
 use warnings;
+use utf8 ;
 
 use Data::TreeDumper ;
 use Eval::Context ;
@@ -126,12 +127,15 @@ for my $action_file (@{ $action_files })
 	{
 	my $context = new Eval::Context() ;
 	
-	my %action_handlers;
+	my (%action_handlers, $remove_old_shortcuts) ;
 	
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
-		INSTALL_SUBS => {register_action_handlers => sub{%action_handlers = @_}},
+		INSTALL_SUBS => {
+				register_action_handlers => sub { %action_handlers = @_ ; },
+				register_action_handlers_remove_old_shortcuts => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
+				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		CODE_FROM_FILE => "$setup_path/$action_file",
 		) ;
@@ -175,6 +179,53 @@ for my $action_file (@{ $action_files })
 			
 		$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
 		$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} = $action_file ;
+		
+		if($remove_old_shortcuts)
+			{
+			for my $shortcut (keys %{$self->{ACTIONS}})
+				{
+				my $action = $self->{ACTIONS}{$shortcut} ;
+				
+				if($action->{IS_GROUP})
+					{
+					for my $group_shortcut (grep {'HASH' eq ref $action->{$_} } keys %$action)
+						{
+						if($action_handler->{IS_GROUP})
+							{
+							for my $group_action (grep {'HASH' eq ref $action_handler->{$_} } keys %$action_handler )
+								{
+								delete $action->{$group_shortcut} 
+									if exists $action->{$group_shortcut} &&
+										$action->{$group_shortcut}{NAME} eq $action_handler->{$group_action}{NAME} ;
+								}
+							}
+						else
+							{
+							delete $action->{$group_shortcut} 
+								if exists $action->{$group_shortcut} &&
+									 $action->{$group_shortcut}{NAME} eq $action_handler->{NAME} ;
+							}
+						}
+					}
+				else
+					{
+					if($action_handler->{IS_GROUP})
+						{
+						for my $group_action (grep {'HASH' eq ref $action_handler->{$_} } keys %$action_handler )
+							{
+							delete $self->{ACTIONS}{$shortcut} 
+								if exists $self->{ACTIONS}{$shortcut} &&
+									$self->{ACTIONS}{$shortcut}{NAME} eq $action_handler->{$group_action}{NAME} ;
+							}
+						}
+					else
+						{
+						delete $self->{ACTIONS}{$shortcut} 
+							if $action->{NAME} eq $action_handler->{NAME} ;
+						}
+					}
+				}
+			}
 		
 		for my $shortcut ('ARRAY' eq ref $shortcuts_definition ? @$shortcuts_definition : ($shortcuts_definition))
 			{
@@ -265,7 +316,7 @@ for my $name (keys %{$group_definition})
 	my $shortcuts_definition ;
 	if('HASH' eq ref $group_definition->{$name})
 		{
-		$shortcuts_definition= $group_definition->{$name}{SHORTCUTS}  ;
+		$shortcuts_definition = $group_definition->{$name}{SHORTCUTS}  ;
 		$group_definition->{$name}{GROUP_NAME} = $name ;
 		$group_definition->{$name}{ORIGIN} = $action_file  ;
 		
@@ -301,7 +352,7 @@ for my $name (keys %{$group_definition})
 			if exists $handler{$shortcut} ;
 		
 		# print "\e[32maction_handler: '$name' shortcut: $shortcut\e[m\n" ;
-		$handler{$shortcut} =  $action_handler ;
+		$handler{$shortcut} = $action_handler ;
 		
 		$handler{$shortcut}{GROUP_NAME} = $group_name if defined $group_name ;
 		}

@@ -1,18 +1,21 @@
 
 #----------------------------------------------------------------------------------------------
 
-register_action_handlers
+register_action_handlers_remove_old_shortcuts
 	(
 	# general
 	'Undo'                                                   => [ 'u'  ],
 	'Redo'                                                   => [ 'C-r'],
+	'Zoom in'                                                => [ '~Zoom in' ],
+	'Zoom out'                                               => [ '~Zoom out' ],
 	'Insert from clipboard'                                  => [ 'p' ],
 	'Copy to clipboard'                                      => [ 'y' ],
 	
 	'Export to clipboard & primary as ascii'                 => [ 'Y' ],
 	'Import from primary to box'                             => [ 'P' ],
 	'Import from primary to text'                            => [ 'A-P' ],
-	# 'Import from clipboard to box'                           => [ '' ],
+	'Import from clipboard to box'                           => [ '~import from clipboard to box' ],
+	'Import from clipboard to text'                          => [ '~import from clipboard to text' ],
 	
 	'Remove rulers'                                          => [ 'A-r' ], 
 	
@@ -22,6 +25,8 @@ register_action_handlers
 	'Change elements foreground color'                       => [ 'c' ],
 	'Change elements background color'                       => [ 'C' ],
 	
+	'Insert flex point'                                      => [ 'not set-Insert flex point' ],
+	
 	# selection
 	'Select all elements'                                    => [ 'V' ],
 	'Deselect all elements'                                  => [ 'Escape' ],
@@ -30,6 +35,9 @@ register_action_handlers
 	'Select previous element'                                => [ 'N' ],
 	'Select next element move mouse'                         => [ 'Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
 	'Select previous element move mouse'                     => [ 'S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
+	'Select element by id'                                   => [ 'not_set-Select element by id' ],
+	'Select next non arrow'                                  => [ '~Select next non arrow' ],
+	'Select previous non arrow'                              => [ '~Select previous non arrow' ],
 	
 	# sizing
 	'Make element narrower'                                  => [ '1' ],
@@ -50,17 +58,24 @@ register_action_handlers
 	'Move selected elements down quick'                      => ['A-Down' ],
 
 	# mouse
-	'Mouse right-click'                                      => [ 'ä' ],
-	'Mouse left-click'                                       => [ 'ö' ],
+	'Mouse emulation toggle'                                 => [ "'" ],
+	'Mouse emulation right-click'                            => [ 'ä' ],
+	'Mouse emulation left-click'                             => [ 'ö' ],
 	
-	# 'Mouse emulation selection flip'                         => [ '???' ], # C-ö doesn't work 
-	# 'Mouse emulation expand selection'                       => [ '???' ],
+	'Mouse emulation selection flip'                         => [ '~Mouse emulation selection flip' ], # C-ö doesn't work 
+	'Mouse emulation expand selection'                       => [ '~Mouse emulation exapand selection' ],
+	'Mouse left-click'                                       => [ '~Mouse left-click' ],
+	'Mouse motion'                                           => [ '~Mouse motion' ],
+	'Mouse motion 2'                                         => [ '~Mouse motion 2' ],
+	'Mouse right-click'                                      => [ '~Mouse right-click' ],
+	'Mouse expand selection'                                 => [ '~Mouse expand selection' ],
+	'Mouse selection flip'                                   => [ '~Mouse selection flip' ],
 
 	'Mouse quick link'                                       => [ ['A-ö', '.'] ],
-	'Mouse quick link git'                                   => [ ['A-ä', ';'], ],
+	'Mouse quick link git'                                   => [ ['A-ä', ';'] ],
 	'Mouse duplicate elements'                               => [ ['A-Ö', ','] ],
 
-	'Mouse on element id'                                    => [ '000' ],
+	'Mouse on element id'                                    => [ '~Mouse on element id' ],
 	
 	'Mouse emulation drag left'                              => [ [ 'H', 'A-C-Left' ] ],
 	'Mouse emulation drag right'                             => [ [ 'L', 'A-C-Right'] ],
@@ -106,11 +121,12 @@ register_action_handlers
 		'Insert from file'                               => [ 'f' ],
 		
 		'Add box'                                        => [ 'b' ],
-		# 'Create multiple box elements'  => [ 'C-b'],
-		# 'Create multiple text elements' => [ 'C-t'],
+		'Create multiple box elements'                   => [ 'C-b'],
+		'Create multiple text elements'                  => [ 'C-t'],
 		
 		'Add arrow'                                      => [ 'a' ],
 		'Add connector'                                  => [ 'c' ],
+		'Add connector type 2'                           => [ 'C' ],
 		'Add help box'                                   => [ 'h' ],
 		'Add if'                                         => [ 'i' ],
 		'Add process'                                    => [ 'p' ],
@@ -147,15 +163,16 @@ register_action_handlers
 		'Move selected elements to the back'             => [ 'b' ],
 		'Move selected elements to the front'            => [ 'f' ],
 		'Temporary move to the front'                    => [ 'F' ],
+		'Make Unicode             '                      => [ '~Make Unicode' ],
 		},
 	
 	'stripes-group leader' => 
 		{
 		SHORTCUTS => 'A-g',
 		
-		'create stripes group'                           => ['0'],
-		'create one stripe group'                        => ['0'],
-		'ungroup stripes group'                          => ['0'],
+		'create stripes group'                           => ['g'],
+		'create one stripe group'                        => ['1'],
+		'ungroup stripes group'                          => ['u'],
 		},
 	
 	'display leader' => 
@@ -167,6 +184,7 @@ register_action_handlers
 		'Flip grid display'                              => [ 'g' ],
 		'Flip color scheme'                              => [ 's' ],
 		'Flip transparent element background'            => [ 't' ],
+		'Change font'                                    => [ '~Change font' ],
 		},
 	
 	'align leader' => 

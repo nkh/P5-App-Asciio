@@ -126,8 +126,8 @@ for (sort keys %{$self->{ACTIONS}})
 		}
 	else
 		{
-		push @key_actions, sprintf "%-20s: %s\n", $_, $self->{ACTIONS}{$_}{NAME} ;
-		push @action_keys, sprintf "%-50s: %s\n", $self->{ACTIONS}{$_}{NAME}, $_ ;
+		push @key_actions, sprintf "%-40s: %s\n", $_, $self->{ACTIONS}{$_}{NAME} ;
+		push @action_keys, sprintf "%-40s: %s\n", $self->{ACTIONS}{$_}{NAME}, $_ ;
 		}
 	}
 
@@ -135,8 +135,8 @@ for my $group (sort { $a->[0] cmp $b->[0] } @groups)
 	{
 	for (grep { 'HASH' eq ref $group->[1]{$_} } sort keys %{$group->[1]})
 		{
-		push @key_actions, sprintf "%-20s: %s\n", "$group->[0] + $_", $group->[1]{$_}{NAME} ;
-		push @action_keys, sprintf "%-50s: %s\n", $group->[1]{$_}{NAME}, "$group->[0] + $_" ;
+		push @key_actions, sprintf "%-40s: %s\n", "$group->[0] + $_", $group->[1]{$_}{NAME} ;
+		push @action_keys, sprintf "%-40s: %s\n", $group->[1]{$_}{NAME}, "$group->[0] + $_" ;
 		}
 	}
 
