@@ -116,6 +116,14 @@ create_element
 
 create_element
 	(
+	NAME => 'Shape/ellipse',
+	CLASS => 'App::Asciio::stripes::ellipse',
+	RESIZABLE => 1,
+	EDITABLE => 0, 
+	) ,
+
+create_element
+	(
 	NAME => 'Boxes/exec',
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '',

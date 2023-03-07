@@ -45,6 +45,7 @@ lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/stripes/rhombus.pm
+lib/App/Asciio/stripes/ellipse.pm
 lib/App/Asciio/stripes/triangle_down.pm
 lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
