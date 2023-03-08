@@ -2,7 +2,7 @@
 
 package App::Asciio::stripes::section_wirl_arrow ;
 
-use base App::Asciio::stripes::wirl_arrow ;
+use parent qw/App::Asciio::stripes::wirl_arrow/ ;
 
 #-----------------------------------------------------------------------------
 

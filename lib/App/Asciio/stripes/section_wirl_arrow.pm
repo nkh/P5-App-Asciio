@@ -45,13 +45,14 @@ Readonly my $leftdown_index => 7 ;
 Readonly my $rightup_index => 10 ;
 Readonly my $rightdown_index => 12 ;
 
+#-----------------------------------------------------------------------------
 
 sub new
 {
 my ($class, $element_definition) = @_ ;
 
-my $self = bless  {}, __PACKAGE__ ;
-	
+my $self = bless {}, __PACKAGE__ ;
+
 $self->setup
 	(
 	$element_definition->{ARROW_TYPE} || Clone::clone($DEFAULT_ARROW_TYPE),

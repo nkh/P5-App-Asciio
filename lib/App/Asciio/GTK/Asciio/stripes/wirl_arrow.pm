@@ -1,7 +1,6 @@
 
 package App::Asciio::stripes::wirl_arrow ;
-
-use base App::Asciio::stripes::stripes ;
+use parent qw/App::Asciio::stripes::stripes/ ;
 
 use strict;
 use warnings;
