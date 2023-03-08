@@ -8,6 +8,9 @@ use utf8 ;
 use File::Slurp ;
 use File::HomeDir ;
 
+use App::Asciio::Actions::Box ;
+use App::Asciio::Actions::Multiwirl ;
+
 #----------------------------------------------------------------------------------------------
 
 sub add_element
@@ -30,8 +33,6 @@ $self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
-use App::Asciio::Actions::Box ;
-use App::Asciio::Actions::Multiwirl ;
 
 sub make_unicode
 {

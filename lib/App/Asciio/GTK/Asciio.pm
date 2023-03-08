@@ -14,13 +14,14 @@ use Pango ;
 
 use List::MoreUtils qw(minmax) ;
 
+use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
+use App::Asciio::GTK::Asciio::stripes::editable_box2;
+use App::Asciio::stripes::rhombus;
+use App::Asciio::GTK::Asciio::stripes::rhombus;
+
 use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
-use App::Asciio::GTK::Asciio::stripes::editable_box2;
-use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
-use App::Asciio::stripes::rhombus;
-use App::Asciio::GTK::Asciio::stripes::rhombus;
 
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
@@ -427,7 +428,7 @@ for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUS
 		
 		$gc->paint;
 		}
-		
+	
 	for my $connection_point ($element->get_connection_points())
 		{
 		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;

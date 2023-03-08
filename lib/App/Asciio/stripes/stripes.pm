@@ -91,7 +91,7 @@ sub set_foreground_color { my ($self, $foreground_color) = @_ ; $self->{COLORS}{
 sub set_colors
 {
 my ($self, $background_color, $foreground_color) = @_ ;
-	
+
 $self->{COLORS}{BACKGROUND} = $background_color ;
 $self->{COLORS}{FOREGROUND} = $foreground_color ;
 }

@@ -276,18 +276,18 @@ if ($self->{MOUSE_TOGGLE})
 			}
 		
 		if($self->{DRAW_CONNECTION_POINTS})
+			{
+			for my $connection_point ($element->get_connection_points())
 				{
-				for my $connection_point ($element->get_connection_points())
+				next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
+				
+				my $column = $connection_point->{X} + $element->{X} + 1 ;
+				my $line = $connection_point->{Y} + $element->{Y} + 1 ;
+				
+				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
 					{
-					next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
-					
-					my $column = $connection_point->{X} + $element->{X} + 1 ;
-					my $line = $connection_point->{Y} + $element->{Y} + 1 ;
-					
-					unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
-						{
-						$text_array->[$line][$column] = [$connection_point_rendering, $connection_point_color] ;
-						}
+					$text_array->[$line][$column] = [$connection_point_rendering, $connection_point_color] ;
+					}
 				}
 			}
 		}

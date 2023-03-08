@@ -4,8 +4,8 @@ use strict ;
 use warnings ;
 use Readonly ;
 
-use App::Asciio::stripes::editable_box2 ;
 use App::Asciio::stripes::exec_box ;
+use App::Asciio::stripes::editable_box2 ;
 
 # -------------------------------------------------------------------
 

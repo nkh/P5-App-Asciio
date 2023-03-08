@@ -1,6 +1,6 @@
 
 package App::Asciio::stripes::exec_box ;
-use base App::Asciio::stripes::editable_box2 ;
+use parent qw/App::Asciio::stripes::editable_box2/ ;
 
 use strict;
 use warnings;
@@ -58,7 +58,6 @@ sub set_text
 {
 my ($self, $asciio, $title, $text) = @_ ;
 
-print "Set_text $title, $text\n" ;
 my $command = $self->{COMMAND} = $text ;
 my $output = 'command failed' ;
 
@@ -77,8 +76,6 @@ else
 	{
 	$output = 'no command' ;
 	}
-
-print "cmd $command -> $output\n" ;
 
 $output = decode("utf-8", $output) ;
 $output =~ s/\r//g;

@@ -127,6 +127,9 @@ if($destination_element)
 else
 	{
 	my $new_box = $self->add_new_element_named('Stencils/Asciio/box', $x, $y) ;
+use Data::TreeDumper ;
+print DumpTree $new_box ;
+
 	connect_to_destination_element($self, $new_box, $x, $y) ;
 	}
 }

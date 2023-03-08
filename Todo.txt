@@ -1,4 +1,7 @@
 
+error
+	exec-boxes should connect
+
 text interface
 	vim script
 		open file under cursor

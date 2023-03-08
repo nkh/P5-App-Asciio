@@ -1,5 +1,6 @@
 
 package App::Asciio::stripes::editable_box2 ;
+use parent qw/App::Asciio::stripes::single_stripe/ ;
 
 use strict;
 use warnings;

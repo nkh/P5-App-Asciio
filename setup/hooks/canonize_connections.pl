@@ -41,8 +41,10 @@ for my $connection (@{$connections})
 	{
 	if
 		(
-		ref $connection->{CONNECTED} eq 'App::Asciio::stripes::section_wirl_arrow'
-		|| ref $connection->{CONNECTED} eq 'App::Asciio::stripes::angled_arrow'
+			(
+			ref $connection->{CONNECTED} eq 'App::Asciio::stripes::section_wirl_arrow' ||
+			ref $connection->{CONNECTED} eq 'App::Asciio::stripes::angled_arrow'
+			)
 		&& $connection->{CONNECTED}->is_autoconnect_enabled()
 		&& $connection->{CONNECTEE}->is_autoconnect_enabled()
 		)
@@ -66,7 +68,7 @@ if($connection->{CONNECTOR}{NAME} eq $end_name)
 	# end connector
 	my ($connectee_x, $connectee_y, $connectee_width, $connectee_hight) = 
 		($connectee->{X}, $connectee->{Y}, $connectee->get_size()) ;
-
+	
 	my $connected_x = $connected->{X} + $connectors[-2]{X};
 	my $connected_y = $connected->{Y} + $connectors[-2]{Y};
 	
@@ -242,5 +244,3 @@ if($asciio_connection->{CONNECTION}{NAME} ne $connection_name)
 	}
 }
 
-	
-	

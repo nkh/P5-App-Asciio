@@ -1,5 +1,6 @@
 
 package App::Asciio::stripes::exec_box ;
+use parent qw/App::Asciio::stripes::editable_box2/ ;
 
 use strict;
 use warnings;
