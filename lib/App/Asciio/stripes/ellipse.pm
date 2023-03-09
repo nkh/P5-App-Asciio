@@ -136,8 +136,8 @@ return @strips_arr;
 sub setup
 {
 my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type, $auto_shrink) = @_;
-Readonly my $mini_row => 5;
-Readonly my $mini_col => 5;
+Readonly my $mini_row => 3;
+Readonly my $mini_col => 3;
 
 my $max_row = max($end_y, $mini_row);
 my $max_col = max($end_x, $mini_col);
@@ -213,8 +213,16 @@ for my $strip(@new_strips)
     }
 
 }
+my $resize_point_x;
+if(3 == $max_row)
+{
+    $resize_point_x = $sigle_strips[int($max_row/2)+1][1];
+}
+else
+{
+    $resize_point_x = $sigle_strips[int($max_row/2)+1][1] - 1;
+}
 
-my $resize_point_x = $sigle_strips[int($max_row/2)+1][1] - 1;
 my $element_width =$sigle_strips[int($max_row/2)][1];
 
 
@@ -233,7 +241,7 @@ elsif($diff_cnt == 2)
 }
 elsif($diff_cnt == 3)
 {
-    $strip_text = '\'-`';
+    $strip_text = '.-.';
 }
 elsif($diff_cnt == 4)
 {
@@ -242,62 +250,38 @@ elsif($diff_cnt == 4)
 }
 elsif($diff_cnt == 5)
 {
-    $strip_text = '.-\'-.';
-}
-elsif($diff_cnt == 6)
-{
-    $strip_text = '_.--._';
-}
-
-elsif($diff_cnt == 7)
-{
-    $strip_text = '_.-\'-._';
+    $strip_text = '.---.';
 }
 else
 {
-    my $remaining = $diff_cnt % 8;
-    $mid_mark = int($diff_cnt / 8);
-    $low_mark = int($diff_cnt / 8);
-    $bottom_mark = int($diff_cnt / 8);
-    $high_mark = int($diff_cnt / 8) * 2;
+    my $remaining = $diff_cnt % 6;
+    $mid_mark = int($diff_cnt / 6) * 2;
+    $low_mark = int($diff_cnt / 6);
+    $bottom_mark = int($diff_cnt / 6);
     if($remaining == 1)
     {
-        $high_mark += 1;
+        $mid_mark += 1;
     }
     elsif($remaining == 2)
     {
-        $high_mark += 2;
+        $mid_mark += 2;
     }
     elsif($remaining == 3)
     {
-        $high_mark += 1;
+        $mid_mark += 1;
         $low_mark += 1;
     }
     elsif($remaining == 4)
     {
-        $high_mark += 2;
+        $mid_mark += 2;
         $low_mark += 1;
     }
     elsif($remaining == 5)
     {
-        $high_mark += 1;
-        $low_mark += 1;
-        $bottom_mark += 1;
-    }
-    elsif($remaining == 6)
-    {
-        $high_mark += 2;
         $mid_mark += 1;
-        $low_mark += 1;
+        $low_mark += 2;
     }
-    elsif($remaining == 7)
-    {
-        $high_mark += 1;
-        $mid_mark += 1;
-        $low_mark += 1;
-        $bottom_mark += 1;
-    }
-    $strip_text = '_' x $bottom_mark . '.' x $low_mark . '-' x $mid_mark . '\'' x $high_mark . '-' x $mid_mark . '.' x $low_mark . '_' x $bottom_mark;
+    $strip_text = '_' x $bottom_mark . '.' x $low_mark . '-' x $mid_mark . '.' x $low_mark . '_' x $bottom_mark;
 }
 
 my @final_stripes;
@@ -328,39 +312,62 @@ for $strip_index(1..$#sigle_strips-1)
     $strip_cnt = abs($now_strip - $pre_strip);
     if($strip_cnt == 0)
     {
-        $strip_text = ':' . ' ' x ($now_strip - 2) . ':';
+        if($sigle_strips[$strip_index][1] == $element_width)
+        {
+            $strip_text = '|' . ' ' x ($now_strip - 2) . '|';
+        }
+        else
+        {
+            $strip_text = '!' . ' ' x ($now_strip - 2) . '!';
+        }
     }
     elsif($strip_cnt == 2)
     {
-        if($strip_index < $half_y)
+        if($strip_index == $half_y)
+        {
+            $strip_text = '|'. ' ' x ($now_strip - 2) . '|';
+        }
+        elsif($strip_index < $half_y)
         {
             $strip_text = '/'. ' ' x ($now_strip - 2) . '\\';
+            if(($sigle_strips[$strip_index][1] == $element_width) &&
+              ($sigle_strips[$strip_index+1][1] == $element_width) &&
+              ($sigle_strips[$strip_index-1][1] != $element_width))
+            {
+                $strip_text = ':' . ' ' x ($now_strip - 2) . ':';
+            }
         }
         else
         {
             $strip_text = '\\'. ' ' x ($now_strip - 2) . '/';
+            if(($sigle_strips[$strip_index][1] == $element_width) &&
+              ($sigle_strips[$strip_index-1][1] == $element_width) &&
+              ($sigle_strips[$strip_index+1][1] != $element_width))
+            {
+                $strip_text = ':' . ' ' x ($now_strip - 2) . ':';
+            }
         }
     }
     elsif($strip_cnt == 4)
     {
         if($strip_index < $half_y)
         {
-            $strip_text = '.\''. ' ' x ($now_strip - 4) . '`.';
+            $strip_text = '.\''. ' ' x ($now_strip - 4) . '\'.';
         }
         else
         {
-            $strip_text = '`.'. ' ' x ($now_strip - 4) . '.\'';
+            $strip_text = '\'.'. ' ' x ($now_strip - 4) . '.\'';
         }
     }
     elsif($strip_cnt == 6)
     {
         if($strip_index < $half_y)
         {
-            $strip_text = '_.\'' . ' ' x ($now_strip - 6) . '`._';
+            $strip_text = '..\'' . ' ' x ($now_strip - 6) . '\'..';
         }
         else
         {
-            $strip_text = '`._' . ' ' x ($now_strip - 6) . '_.\'';
+            $strip_text = '\'..' . ' ' x ($now_strip - 6) . '..\'';
         }
     }
     else
@@ -382,16 +389,15 @@ for $strip_index(1..$#sigle_strips-1)
         elsif($remaining == 6)
         {
             $right_mark += 1;
-            $mid_mark += 1;
-            $left_mark += 1;
+            $left_mark += 2;
         }
         if($strip_index < $half_y)
         {
-        $strip_text = '_' x $bottom_mark . '.' x $left_mark . '-' x $mid_mark . '\'' x $right_mark . ' ' x ($now_strip - 2 * $left_mark - 2 * $mid_mark - 2 * $right_mark - 2 * $bottom_mark) . '`' x $right_mark . '-' x $mid_mark . '.' x $left_mark . '_' x $bottom_mark;
+        $strip_text = '_' x $bottom_mark . '.' x $left_mark . '-' x $mid_mark . '\'' x $right_mark . ' ' x ($now_strip - 2 * $left_mark - 2 * $mid_mark - 2 * $right_mark - 2 * $bottom_mark) . '\'' x $right_mark . '-' x $mid_mark . '.' x $left_mark . '_' x $bottom_mark;
         }
         else
         {
-            $strip_text = '`' x $right_mark . '-' x $mid_mark . '.' x $left_mark . '_' x $bottom_mark . ' ' x ($now_strip - 2 * $left_mark - 2 * $mid_mark - 2 * $right_mark - 2 * $bottom_mark) . '_' x $bottom_mark . '.' x $left_mark . '-' x $mid_mark . '\'' x $right_mark;
+            $strip_text = '\'' x $right_mark . '-' x $mid_mark . '.' x $left_mark . '_' x $bottom_mark . ' ' x ($now_strip - 2 * $left_mark - 2 * $mid_mark - 2 * $right_mark - 2 * $bottom_mark) . '_' x $bottom_mark . '.' x $left_mark . '-' x $mid_mark . '\'' x $right_mark;
         }
     }
     
@@ -425,7 +431,7 @@ $strip_text = '-..-';
 }
 elsif($diff_cnt == 5)
 {
-$strip_text = '`-.-\'';
+$strip_text = '\'-.-\'';
 }
 elsif($diff_cnt == 6)
 {
@@ -433,7 +439,7 @@ $strip_text = '-.__.-';
 }
 elsif($diff_cnt == 7)
 {
-$strip_text = '`-._.-\'';
+$strip_text = '\'-._.-\'';
 }
 else
 {
@@ -479,7 +485,7 @@ else
         $low_mark += 1;
         $mid_mark += 1;
     }
-    $strip_text = '`' x $high_mark . '-' x $mid_mark . '.' x $low_mark . '_' x $bottom_mark . '.' x $low_mark . '-' x $mid_mark . '\'' x $high_mark;
+    $strip_text = '\'' x $high_mark . '-' x $mid_mark . '.' x $low_mark . '_' x $bottom_mark . '.' x $low_mark . '-' x $mid_mark . '\'' x $high_mark;
 
 }
 push @final_stripes,
