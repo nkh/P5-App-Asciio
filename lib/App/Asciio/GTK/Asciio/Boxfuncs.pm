@@ -35,7 +35,7 @@ return $model;
 
 sub add_columns 
 {
-my ($treeview, $rows, $no_show_flag) = @_ ;
+my ($treeview, $rows, $no_show_flag, @column_titles) = @_ ;
 my $model = $treeview->get_model;
 
 # column for fixed toggles
@@ -62,7 +62,11 @@ $row_renderer->set_data (column => 1);
 $treeview->insert_column_with_attributes(-1, '', $row_renderer, text => 1) ;
 
 my $current_column = 2 ;
-for my $column_title('left', 'body', 'right')
+unless(@column_titles)
+{
+	@column_titles = ('left', 'body', 'right') ;
+}
+for my $column_title(@column_titles)
 	{
 	my $renderer = Gtk3::CellRendererText->new;
 	$renderer->signal_connect (edited => \&cell_edited, [$model, $rows]);
