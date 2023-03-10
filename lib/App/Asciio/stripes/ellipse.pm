@@ -135,6 +135,91 @@ else
 return @strips_arr;
 }
 
+#-----------------------------------------------------------------------------
+sub find_fit_ellipse
+{
+    my ($ori_width, $ori_height, $text_width, $text_height) = @_;
+    my ($begin_width, $begin_height, $half_x, $half_y) = (0, 0, 0, 0);
+    my @rectangles;
+    my $rect_index;
+    my ($fit_width, $fit_height, $text_begin_y, $text_begin_x) = (0, 0, 0, 0);
+    my $find_flag = 0;
+
+    #~ 如果原始宽度和高度任意不满足文本宽度和高度,那么以文本来生成椭圆
+    if(($ori_width - 2 < $text_width) || ($ori_height - 2 < $text_height))
+    {
+        ($begin_width, $begin_height) = ($text_width + 2, $text_height + 2);
+    } else
+    {
+        ($begin_width, $begin_height) = ($ori_width + 2, $ori_height + 2);
+    }
+
+    # 从起始椭圆开始找满足的矩形(宽一次增加6,高一次增加2)
+    $begin_width++ if ($begin_width % 2 == 0);
+    $begin_height++ if ($begin_height % 2 == 0);
+#~        |
+#~  ------|--ooooo----->
+#~        |oo     oo
+#~        o         o
+#~        o         o
+#~        o         o
+#~        |oo     oo
+#~        |  ooooo
+#~        v
+    # 这里先考虑边界的情况
+
+
+
+    for(;;)
+    {
+        ($half_x, $half_y) = (int($begin_width/2), int($begin_height/2));
+        @rectangles = fill_ellipse_strip($half_x, $half_y, $half_x, $half_y);
+        #~ 矩形0                        矩形1                        最后中心矩形 
+        #~ [3, 0, 5, 1], [3, 7, 5, -1], [1, 1, 9, 1], [1, 6, 9, -1], [0, 2, 11, 3]
+        for($rect_index = 2; $rect_index <= $#rectangles; $rect_index += 2)
+        {
+            if($rect_index > $#rectangles)
+            {
+                $fit_width = $rectangles[$rect_index-2][2];
+                $fit_height = $rectangles[$rect_index-1][3];
+                if($fit_width >= $text_width && $fit_height >= $text_height)
+                {
+                    $find_flag = 1;
+                    # 记录开始的矩形y值
+                    $text_begin_y = $rectangles[$rect_index-1][1];
+                    # 记录开始的矩形x值
+                    $text_begin_x = $rectangles[$rect_index-2][0];
+                }
+                last;
+            }
+            else
+            {
+                $fit_width = $rectangles[$rect_index-2][2];
+                $fit_height = $rectangles[$rect_index+1][1] - $rectangles[$rect_index][1];
+                if($fit_width >= $text_width && $fit_height >= $text_height)
+                {
+                    $find_flag = 1;
+                    # 记录开始的矩形y值
+                    $text_begin_y = $rectangles[$rect_index][1];
+                    # 记录开始的矩形x值
+                    $text_begin_x = $rectangles[$rect_index-2][0];
+                }
+            }
+        }
+        if($find_flag == 1)
+        {
+            last;
+        }
+        else
+        {
+            $begin_width += 6;
+            $begin_height += 2;
+        }
+    }
+
+    return ($begin_width, $begin_height, $text_begin_y, $text_begin_x);
+}
+
 
 #-----------------------------------------------------------------------------
 
@@ -144,15 +229,32 @@ my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type, $auto_s
 Readonly my $mini_row => 3;
 Readonly my $mini_col => 3;
 
+($end_x, $end_y) = (-5, -5) if $auto_shrink;
+
 my $max_row = max($end_y, $mini_row);
 my $max_col = max($end_x, $mini_col);
 
 $max_col++ if ($max_col > $mini_col && ($max_col % 2) == 0);
 $max_row++ if ($max_row > $mini_row && ($max_row % 2) == 0);
 
+my @text_lines;
+
+if($text_only)
+	{
+	@text_lines = split("\n", $text_only) ;
+	}
+my $text_width = max(map {usc_length $_} @text_lines);
+my $text_height = @text_lines;
+
+my ($text_begin_y, $text_begin_x);
+if($text_only)
+    {
+    ($max_col, $max_row, $text_begin_y, $text_begin_x) = find_fit_ellipse($max_col, $max_row, $text_width, $text_height);
+    }
 
 
-($max_col, $max_row) = (-5, -5) if $auto_shrink;
+print("max_col:" . $max_col . "max_row:" . $max_row . "text_begin_y:" . $text_begin_y . "\n");
+
 my ($half_x, $half_y) = (int($max_col/2), int($max_row/2));
 my @strips = fill_ellipse_strip($half_x, $half_y, $half_x, $half_y);
 
@@ -292,10 +394,24 @@ push @final_stripes,
 };
 
 my $strip_index = 1;
-my ($now_strip, $pre_strip);
+my ($now_strip, $pre_strip, $padding);
 my $strip_cnt = 0;
+
+my ($fill_line, $fill_cnt, $fill_text);
+
 for $strip_index(1..$#sigle_strips-1)
 {
+    $fill_line = '';
+    $padding = 0;
+    if(@text_lines)
+    {
+        if ($strip_index >= $text_begin_y)
+        {
+            $fill_line = shift @text_lines;
+        }
+    }
+    $fill_cnt = usc_length($fill_line);
+
     $now_strip = $sigle_strips[$strip_index][1];
     if($strip_index < $half_y)
     {
@@ -308,66 +424,107 @@ for $strip_index(1..$#sigle_strips-1)
     $strip_cnt = abs($now_strip - $pre_strip);
     if($strip_cnt == 0)
     {
-        if($strip_index < $half_y)
+        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
+        if($fill_line)
         {
-            $strip_text = $box_type->[4][8] . ' ' x ($now_strip - 2) . $box_type->[5][8];
-        }
-        elsif($strip_index > $half_y)
-        {
-            $strip_text = $box_type->[6][8] . ' ' x ($now_strip - 2) . $box_type->[7][8];
+            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 2 - $padding - $fill_cnt);
         }
         else
         {
-            $strip_text = $box_type->[2][2] . ' ' x ($now_strip - 2) . $box_type->[3][2];
+            $fill_text = ' ' x ($now_strip - 2);
+        }
+
+        if($strip_index < $half_y)
+        {
+            $strip_text = $box_type->[4][8] . $fill_text . $box_type->[5][8];
+        }
+        elsif($strip_index > $half_y)
+        {
+            $strip_text = $box_type->[6][8] . $fill_text . $box_type->[7][8];
+        }
+        else
+        {
+            $strip_text = $box_type->[2][2] . $fill_text . $box_type->[3][2];
         }
     }
     elsif($strip_cnt == 2)
     {
+        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
+        if($fill_line)
+        {
+            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 2 - $padding - $fill_cnt);
+        }
+        else
+        {
+            $fill_text = ' ' x ($now_strip - 2);
+        }
+
         if($strip_index == $half_y)
         {
-            $strip_text = $box_type->[2][2] . ' ' x ($now_strip - 2) . $box_type->[3][2];
+            $strip_text = $box_type->[2][2] . $fill_text . $box_type->[3][2];
         }
         elsif($strip_index < $half_y)
         {
-            $strip_text = $box_type->[4][2] . ' ' x ($now_strip - 2) . $box_type->[5][2];
+            $strip_text = $box_type->[4][2] . $fill_text . $box_type->[5][2];
             if(($sigle_strips[$strip_index][1] == $element_width) &&
               ($sigle_strips[$strip_index+1][1] == $element_width) &&
               ($sigle_strips[$strip_index-1][1] != $element_width))
             {
-                $strip_text = $box_type->[4][7] . ' ' x ($now_strip - 2) . $box_type->[5][7];
+                $strip_text = $box_type->[4][7] . $fill_text . $box_type->[5][7];
             }
         }
         else
         {
-            $strip_text = $box_type->[6][2] . ' ' x ($now_strip - 2) . $box_type->[7][2];
+            $strip_text = $box_type->[6][2] . $fill_text . $box_type->[7][2];
             if(($sigle_strips[$strip_index][1] == $element_width) &&
               ($sigle_strips[$strip_index-1][1] == $element_width) &&
               ($sigle_strips[$strip_index+1][1] != $element_width))
             {
-                $strip_text = $box_type->[6][7] . ' ' x ($now_strip - 2) . $box_type->[7][7];
+                $strip_text = $box_type->[6][7] . $fill_text . $box_type->[7][7];
             }
         }
     }
     elsif($strip_cnt == 4)
     {
-        if($strip_index < $half_y)
+        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 2;
+        if($fill_line)
         {
-            $strip_text = $box_type->[4][4] . $box_type->[4][6] . ' ' x ($now_strip - 4) . $box_type->[5][6] . $box_type->[5][4];
+            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 4 - $padding - $fill_cnt);
         }
         else
         {
-            $strip_text = $box_type->[6][6] . $box_type->[6][4] . ' ' x ($now_strip - 4) . $box_type->[7][4] . $box_type->[7][6];
+            $fill_text = ' ' x ($now_strip - 4);
+        }
+
+
+        if($strip_index < $half_y)
+        {
+            $strip_text = $box_type->[4][4] . $box_type->[4][6] . $fill_text . $box_type->[5][6] . $box_type->[5][4];
+        }
+        else
+        {
+            $strip_text = $box_type->[6][6] . $box_type->[6][4] . $fill_text . $box_type->[7][4] . $box_type->[7][6];
         }
     }
     elsif($strip_cnt == 6)
     {
-        if($strip_index < $half_y)
+        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 3;
+        if($fill_line)
         {
-            $strip_text = $box_type->[4][4] . $box_type->[4][6] x 2 . ' ' x ($now_strip - 6) . $box_type->[5][6] x 2 . $box_type->[5][4];
+            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 6 - $padding - $fill_cnt);
         }
         else
         {
-            $strip_text = $box_type->[6][6] . $box_type->[6][4] x 2 . ' ' x ($now_strip - 6) . $box_type->[7][4] x 2 . $box_type->[7][6];
+            $fill_text = ' ' x ($now_strip - 6);
+        }
+
+        if($strip_index < $half_y)
+        {
+            $strip_text = $box_type->[4][4] . $box_type->[4][6] x 2 . $fill_text . $box_type->[5][6] x 2 . $box_type->[5][4];
+        }
+        else
+        {
+            $strip_text = $box_type->[6][6] . $box_type->[6][4] x 2 . $fill_text . $box_type->[7][4] x 2 . $box_type->[7][6];
         }
     }
     else
@@ -416,13 +573,23 @@ for $strip_index(1..$#sigle_strips-1)
             }
 
         }
-        if($strip_index < $half_y)
+
+        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - ($bottom_mark + $left_mark + $mid_mark + $right_mark);
+        if($fill_line)
         {
-        $strip_text = $box_type->[4][3] x $bottom_mark . $box_type->[4][4] x $left_mark . $box_type->[4][5] x $mid_mark . $box_type->[4][6] x $right_mark . ' ' x ($now_strip - 2 * $left_mark - 2 * $mid_mark - 2 * $right_mark - 2 * $bottom_mark) . $box_type->[5][6] x $right_mark . $box_type->[5][5] x $mid_mark . $box_type->[5][4] x $left_mark . $box_type->[5][3] x $bottom_mark;
+            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark) - $padding - $fill_cnt);
         }
         else
         {
-        $strip_text = $box_type->[6][6] x $right_mark . $box_type->[6][5] x $mid_mark . $box_type->[6][4] x $left_mark . $box_type->[6][3] x $bottom_mark . ' ' x ($now_strip - 2 * $left_mark - 2 * $mid_mark - 2 * $right_mark - 2 * $bottom_mark) . $box_type->[7][3] x $bottom_mark . $box_type->[7][4] x $left_mark . $box_type->[7][5] x $mid_mark . $box_type->[7][6] x $right_mark;
+            $fill_text = ' ' x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark));
+        }
+        if($strip_index < $half_y)
+        {
+        $strip_text = $box_type->[4][3] x $bottom_mark . $box_type->[4][4] x $left_mark . $box_type->[4][5] x $mid_mark . $box_type->[4][6] x $right_mark . $fill_text . $box_type->[5][6] x $right_mark . $box_type->[5][5] x $mid_mark . $box_type->[5][4] x $left_mark . $box_type->[5][3] x $bottom_mark;
+        }
+        else
+        {
+        $strip_text = $box_type->[6][6] x $right_mark . $box_type->[6][5] x $mid_mark . $box_type->[6][4] x $left_mark . $box_type->[6][3] x $bottom_mark . $fill_text . $box_type->[7][3] x $bottom_mark . $box_type->[7][4] x $left_mark . $box_type->[7][5] x $mid_mark . $box_type->[7][6] x $right_mark;
         }
     }
     

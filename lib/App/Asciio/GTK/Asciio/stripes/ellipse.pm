@@ -12,7 +12,7 @@ use Glib qw(TRUE FALSE);
 
 #-----------------------------------------------------------------------------
 
-sub create_model 
+sub create_model_for_ellipse
 {
 my ($rows) = @_ ;
 
@@ -46,7 +46,7 @@ $dialog->add_button('gtk-ok' => 'ok');
 my $vbox = Gtk3::VBox->new(FALSE, 5);
 $vbox->add(Gtk3::Label->new (""));
 
-my $treeview = Gtk3::TreeView->new_with_model(create_model($rows));
+my $treeview = Gtk3::TreeView->new_with_model(create_model_for_ellipse($rows));
 $treeview->set_rules_hint(TRUE);
 $treeview->get_selection->set_mode('single');
 add_columns($treeview, $rows, 'no show', 9, 'default', 'bottom', 'low', 'middle', 'high', 'fix', 'single');
