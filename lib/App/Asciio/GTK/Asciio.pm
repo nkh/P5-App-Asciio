@@ -18,6 +18,8 @@ use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
 use App::Asciio::stripes::rhombus;
 use App::Asciio::GTK::Asciio::stripes::rhombus;
+use App::Asciio::stripes::ellipse;
+use App::Asciio::GTK::Asciio::stripes::ellipse;
 
 use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;

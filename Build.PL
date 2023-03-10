@@ -68,6 +68,7 @@ lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
+lib/App/Asciio/GTK/Asciio/stripes/ellipse.pm
 
 lib/App/Asciio/Text/Asciio.pm
 lib/App/Asciio/Text/Asciio/Dialogs.pm

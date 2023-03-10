@@ -119,7 +119,8 @@ create_element
 	NAME => 'Shape/ellipse',
 	CLASS => 'App::Asciio::stripes::ellipse',
 	RESIZABLE => 1,
-	EDITABLE => 0, 
+	EDITABLE => 1,
+	TEXT_ONLY => '',
 	) ,
 
 create_element

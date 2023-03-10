@@ -18,6 +18,7 @@ use App::Asciio::Text::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::Text::Asciio::stripes::editable_box2;
 use App::Asciio::Text::Asciio::stripes::editable_exec_box;
 use App::Asciio::stripes::rhombus;
+use App::Asciio::stripes::ellipse;
 
 use App::Asciio::Text::Asciio::Dialogs ;
 use App::Asciio::Text::Asciio::Menues ;

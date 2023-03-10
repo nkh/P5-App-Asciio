@@ -12,6 +12,25 @@ use Glib qw(TRUE FALSE);
 
 #-----------------------------------------------------------------------------
 
+sub create_model 
+{
+my ($rows) = @_ ;
+
+my $model = Gtk3::ListStore->new(qw/Glib::Boolean Glib::String Glib::String Glib::String Glib::String Glib::String Glib::String Glib::String Glib::String Glib::Boolean/);
+
+foreach my $row (@{$rows}) 
+	{
+	my $iter = $model->append;
+	
+	my $column = 0 ;
+	$model->set($iter, map {$column++, $_} @{$row}) ;
+	}
+
+return $model;
+}
+
+#-----------------------------------------------------------------------------
+
 sub display_box_edit_dialog
 {
 my ($self, $text, undef, $asciio) = @_ ;
@@ -30,7 +49,7 @@ $vbox->add(Gtk3::Label->new (""));
 my $treeview = Gtk3::TreeView->new_with_model(create_model($rows));
 $treeview->set_rules_hint(TRUE);
 $treeview->get_selection->set_mode('single');
-add_columns($treeview, $rows, 'no show');
+add_columns($treeview, $rows, 'no show', 9, 'default', 'bottom', 'low', 'middle', 'high', 'fix', 'single');
 
 $vbox->add($treeview);
 
