@@ -152,7 +152,7 @@ if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_down' eq ref $el
 		[ '/box type/dot',    \&change_box_type, { ELEMENT => $element, TYPE => 'triangle_down_dot' } ] ;
 	}
 
-if(@selected_elements == 1 && ($element->isa('App::Asciio::stripes::editable_box2') || 'App::Asciio::stripes::rhombus' eq ref $element))
+if(@selected_elements == 1 && ($element->isa('App::Asciio::stripes::editable_box2') || 'App::Asciio::stripes::rhombus' eq ref $element || 'App::Asciio::stripes::ellipse' eq ref $element))
 	{
 	if('App::Asciio::stripes::rhombus' eq ref $element)
 		{
@@ -161,7 +161,7 @@ if(@selected_elements == 1 && ($element->isa('App::Asciio::stripes::editable_box
 			[ '/box type/unicode_slash', \&change_box_type, { ELEMENT => $element, TYPE => 'rhombus_unicode_slash' } ], 
 			[ '/box type/sparseness',    \&change_box_type, { ELEMENT => $element, TYPE => 'rhombus_sparseness' } ] ;
 		}
-	else
+	elsif($element->isa('App::Asciio::stripes::editable_box2'))
 		{
 		push @context_menu_entries, 
 			[ '/box selected element',              \&box_selected_element, { ELEMENT => $element} ],

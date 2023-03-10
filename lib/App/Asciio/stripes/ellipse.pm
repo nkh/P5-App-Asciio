@@ -145,63 +145,52 @@ sub find_fit_ellipse
     my ($fit_width, $fit_height, $text_begin_y, $text_begin_x) = (0, 0, 0, 0);
     my $find_flag = 0;
 
-    #~ 如果原始宽度和高度任意不满足文本宽度和高度,那么以文本来生成椭圆
+    #~ If the original width and height do not meet the text width and height, then use the text to generate an ellipse
     if(($ori_width - 2 < $text_width) || ($ori_height - 2 < $text_height))
     {
         ($begin_width, $begin_height) = ($text_width + 2, $text_height + 2);
     } else
     {
-        ($begin_width, $begin_height) = ($ori_width + 2, $ori_height + 2);
+        ($begin_width, $begin_height) = ($ori_width, $ori_height);
     }
 
-    # 从起始椭圆开始找满足的矩形(宽一次增加6,高一次增加2)
+    # Find a satisfactory rectangle from the starting ellipse (the width increases by 4 at a time, and the height increases by 2 at a time)
     $begin_width++ if ($begin_width % 2 == 0);
     $begin_height++ if ($begin_height % 2 == 0);
-#~        |
-#~  ------|--ooooo----->
-#~        |oo     oo
-#~        o         o
-#~        o         o
-#~        o         o
-#~        |oo     oo
-#~        |  ooooo
-#~        v
-    # 这里先考虑边界的情况
-
-
 
     for(;;)
     {
         ($half_x, $half_y) = (int($begin_width/2), int($begin_height/2));
+        
         @rectangles = fill_ellipse_strip($half_x, $half_y, $half_x, $half_y);
-        #~ 矩形0                        矩形1                        最后中心矩形 
+
+        #~ rectangle 0                  rectangle 1                  last center rectangle 
         #~ [3, 0, 5, 1], [3, 7, 5, -1], [1, 1, 9, 1], [1, 6, 9, -1], [0, 2, 11, 3]
         for($rect_index = 2; $rect_index <= $#rectangles; $rect_index += 2)
         {
-            if($rect_index > $#rectangles)
+            $fit_width = $rectangles[$rect_index-2][2];
+            if($rect_index == $#rectangles)
             {
-                $fit_width = $rectangles[$rect_index-2][2];
-                $fit_height = $rectangles[$rect_index-1][3];
+                $fit_height = $rectangles[$rect_index][3];
+
                 if($fit_width >= $text_width && $fit_height >= $text_height)
                 {
                     $find_flag = 1;
-                    # 记录开始的矩形y值
-                    $text_begin_y = $rectangles[$rect_index-1][1];
-                    # 记录开始的矩形x值
-                    $text_begin_x = $rectangles[$rect_index-2][0];
+                    # The y value of the rectangle where the record starts
+                    $text_begin_y = $rectangles[$rect_index][1];
+                    # The x value of the rectangle where the record starts
+                    $text_begin_x = $rectangles[$rect_index-1][0];
                 }
-                last;
             }
-            else
+            elsif($rect_index < $#rectangles)
             {
-                $fit_width = $rectangles[$rect_index-2][2];
                 $fit_height = $rectangles[$rect_index+1][1] - $rectangles[$rect_index][1];
                 if($fit_width >= $text_width && $fit_height >= $text_height)
                 {
                     $find_flag = 1;
-                    # 记录开始的矩形y值
+                    # The y value of the rectangle where the record starts
                     $text_begin_y = $rectangles[$rect_index][1];
-                    # 记录开始的矩形x值
+                    # The x value of the rectangle where the record starts
                     $text_begin_x = $rectangles[$rect_index-2][0];
                 }
             }
@@ -212,7 +201,7 @@ sub find_fit_ellipse
         }
         else
         {
-            $begin_width += 6;
+            $begin_width += 4;
             $begin_height += 2;
         }
     }
@@ -234,8 +223,6 @@ Readonly my $mini_col => 3;
 my $max_row = max($end_y, $mini_row);
 my $max_col = max($end_x, $mini_col);
 
-$max_col++ if ($max_col > $mini_col && ($max_col % 2) == 0);
-$max_row++ if ($max_row > $mini_row && ($max_row % 2) == 0);
 
 my @text_lines;
 
@@ -251,13 +238,14 @@ if($text_only)
     {
     ($max_col, $max_row, $text_begin_y, $text_begin_x) = find_fit_ellipse($max_col, $max_row, $text_width, $text_height);
     }
-
-
-print("max_col:" . $max_col . "max_row:" . $max_row . "text_begin_y:" . $text_begin_y . "\n");
+else
+{
+    $max_col++ if ($max_col > $mini_col && ($max_col % 2) == 0);
+    $max_row++ if ($max_row > $mini_row && ($max_row % 2) == 0);
+}
 
 my ($half_x, $half_y) = (int($max_col/2), int($max_row/2));
 my @strips = fill_ellipse_strip($half_x, $half_y, $half_x, $half_y);
-
 
 #~        |
 #~  ------|--ooooo----->
@@ -424,9 +412,9 @@ for $strip_index(1..$#sigle_strips-1)
     $strip_cnt = abs($now_strip - $pre_strip);
     if($strip_cnt == 0)
     {
-        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
         if($fill_line)
         {
+            $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
             $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 2 - $padding - $fill_cnt);
         }
         else
@@ -449,9 +437,9 @@ for $strip_index(1..$#sigle_strips-1)
     }
     elsif($strip_cnt == 2)
     {
-        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
         if($fill_line)
         {
+            $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
             $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 2 - $padding - $fill_cnt);
         }
         else
@@ -486,9 +474,9 @@ for $strip_index(1..$#sigle_strips-1)
     }
     elsif($strip_cnt == 4)
     {
-        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 2;
         if($fill_line)
         {
+            $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 2;
             $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 4 - $padding - $fill_cnt);
         }
         else
@@ -508,9 +496,9 @@ for $strip_index(1..$#sigle_strips-1)
     }
     elsif($strip_cnt == 6)
     {
-        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 3;
         if($fill_line)
         {
+            $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 3;
             $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 6 - $padding - $fill_cnt);
         }
         else
@@ -574,9 +562,9 @@ for $strip_index(1..$#sigle_strips-1)
 
         }
 
-        $padding = $text_begin_x - $sigle_strips[$strip_index][0] - ($bottom_mark + $left_mark + $mid_mark + $right_mark);
         if($fill_line)
         {
+            $padding = $text_begin_x - $sigle_strips[$strip_index][0] - ($bottom_mark + $left_mark + $mid_mark + $right_mark);
             $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark) - $padding - $fill_cnt);
         }
         else
