@@ -12,8 +12,8 @@ use Readonly ;
 Readonly my $DEFAULT_BOX_TYPE =>
 [
     #~  default bottom low middle high fix single
-	[1, 'up-center-point',    '-', '', '', '', '', '', '',  1, ], 
-    [1, 'down-center-point',  '.', '', '', '', '', '', '',  1, ], 
+	[1, 'up-center-point',    '-', '', '', '', '', '_', '',  1, ], 
+    [1, 'down-center-point',  '.', '', '', '', '', '\'', '',  1, ], 
     [1, 'left-center-point',  '|', '', '', '', '', '', '',  1, ], 
     [1, 'rigth-center-point', '|', '', '', '', '', '', '',  1, ], 
     [1, 'left-up-area',       '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
@@ -238,7 +238,7 @@ my $strip_text;
 my ($high_mark, $mid_mark, $low_mark, $bottom_mark) = (0, 0, 0, 0);
 if($diff_cnt == 1)
 {
-    $strip_text = $box_type->[0][2];
+    $strip_text = $box_type->[0][7];
 }
 elsif($diff_cnt == 3)
 {
@@ -308,21 +308,17 @@ for $strip_index(1..$#sigle_strips-1)
     $strip_cnt = abs($now_strip - $pre_strip);
     if($strip_cnt == 0)
     {
-        if($sigle_strips[$strip_index][1] == $element_width)
+        if($strip_index < $half_y)
         {
-            $strip_text = $box_type->[2][2] . ' ' x ($now_strip - 2) . $box_type->[3][2];
+            $strip_text = $box_type->[4][8] . ' ' x ($now_strip - 2) . $box_type->[5][8];
+        }
+        elsif($strip_index > $half_y)
+        {
+            $strip_text = $box_type->[6][8] . ' ' x ($now_strip - 2) . $box_type->[7][8];
         }
         else
         {
-            if($strip_index < $half_y)
-            {
-                $strip_text = $box_type->[4][8] . ' ' x ($now_strip - 2) . $box_type->[5][8];
-            }
-            else
-            {
-                $strip_text = $box_type->[6][8] . ' ' x ($now_strip - 2) . $box_type->[7][8];
-            }
-            
+            $strip_text = $box_type->[2][2] . ' ' x ($now_strip - 2) . $box_type->[3][2];
         }
     }
     elsif($strip_cnt == 2)
@@ -444,15 +440,15 @@ $strip = $sigle_strips[$#sigle_strips];
 $diff_cnt = $strip->[1];
 if($diff_cnt == 1)
 {
-$strip_text = $box_type->[1][2];
+$strip_text = $box_type->[1][7];
 }
 elsif($diff_cnt == 3)
 {
-$strip_text = $box_type->[6][4] . $box_type->[1][2] . $box_type->[7][4];
+$strip_text = $box_type->[6][6] . $box_type->[1][2] . $box_type->[7][6];
 }
 elsif($diff_cnt == 5)
 {
-$strip_text = $box_type->[6][5] . $box_type->[6][4] . $box_type->[1][2] . $box_type->[7][4] . $box_type->[7][5];
+$strip_text = $box_type->[6][6] . $box_type->[6][4] . $box_type->[1][2] . $box_type->[7][4] . $box_type->[7][6];
 }
 else
 {
@@ -724,7 +720,7 @@ my ($self, $text) = @_ ;
 $self->setup
 	(
 	$text,
-	$self->{RESIZE_POINT_X} -	3, # magic number are ugly
+	$self->{WIDTH},
 	$self->{HEIGHT} - 1,
 	$self->{EDITABLE}, $self->{RESIZABLE},
 	$self->{BOX_TYPE}, $self->{AUTO_SHRINK}
@@ -738,7 +734,7 @@ my ($self, $box_type) = @_;
 $self->setup
 	(
 	$self->{TEXT_ONLY},
-	$self->{RESIZE_POINT_X} - 3, # magic number are ugly
+	$self->{WIDTH},
 	$self->{HEIGHT} - 1,
 	$self->{EDITABLE}, $self->{RESIZABLE},
 	$box_type, $self->{AUTO_SHRINK}
