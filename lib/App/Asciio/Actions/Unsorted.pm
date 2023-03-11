@@ -249,7 +249,7 @@ if('HASH' eq ref $s)
 			push @keys, $entry ;
 			}
 		}
-		
+	
 	return('HASH', \%hash, @keys) ;
 	}
 

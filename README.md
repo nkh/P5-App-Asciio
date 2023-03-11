@@ -237,6 +237,12 @@ ASCII Math and other:
 
 Send me links to your favorites tools (only command line, no libs) and I'll add them if they integrate will in Asciio.
 
+# VIDEO
+
+An old video that shows basic usage:
+
+![Asciio](https://www.youtube.com/watch?v=0l9W84PhOyI)
+
 # AUTHORS
 
     Khemir Nadim ibn Hamouda

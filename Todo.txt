@@ -46,6 +46,8 @@ optimization
 		http://www-cs-students.stanford.edu/~amitp/gameprog.html
 		Path finding, see ISBN 2550-0124977820
 		
+		https://github.com/brean/python-pathfinding/tree/main/pathfinding/finder
+		
 		connected, non auto-connect, arrows loose their connection if the connectee is resized
 			=> this is because resize doesn't keep the connection. The 
 				canonizer reconnects elements but non auto-connect objects are not handled by the canonizer

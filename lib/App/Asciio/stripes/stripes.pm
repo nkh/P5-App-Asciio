@@ -130,9 +130,13 @@ sub move_connector { ; }
 
 #-----------------------------------------------------------------------------
 
-sub is_autoconnect_enabled { my ($self) = @_ ; return ! $self->{AUTOCONNECT_DISABLED} ; }
+sub allow_border_connection { ; }
+
+sub is_border_connection_allowed { 0 }
 
 #-----------------------------------------------------------------------------
+
+sub is_autoconnect_enabled { my ($self) = @_ ; return ! $self->{AUTOCONNECT_DISABLED} ; }
 
 sub enable_autoconnect { my ($self, $enable) = @_ ; $self->{AUTOCONNECT_DISABLED} = !$enable ; }
 
