@@ -228,6 +228,8 @@ register_action_handlers
 	'Add horizontal ruler'                => ['00S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                     ],
 	'Add if'                              => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/if', 1]            ],
 	'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]       ],
+	'Add rhombus'                         => ['C00-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]       ],
+	'Add ellipse'                         => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]       ],
 	'External command in a box'           => ['000-x', \&App::Asciio::Actions::Unsorted::external_command_output, 1                              ],
 	'External command in a box no frame'  => ['00S-X', \&App::Asciio::Actions::Unsorted::external_command_output, 0                              ],
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],

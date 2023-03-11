@@ -13,13 +13,14 @@ Readonly my $DEFAULT_BOX_TYPE =>
 [
     #~  default bottom low middle high fix single
 	[1, 'up-center-point',    '-', '', '', '', '', '_', '',  1, ], 
-    [1, 'down-center-point',  '.', '', '', '', '', '\'', '',  1, ], 
-    [1, 'left-center-point',  '|', '', '', '', '', '', '',  1, ], 
-    [1, 'rigth-center-point', '|', '', '', '', '', '', '',  1, ], 
+    [1, 'down-center-point',  '.', '', '', '', '', '\'', '-',  1, ], 
+    [1, 'left-center-point',  '|', '', '', '', '', '(', '',  1, ], 
+    [1, 'rigth-center-point', '|', '', '', '', '', ')', '',  1, ], 
     [1, 'left-up-area',       '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
     [1, 'right-up-area',      '\\', '_', '.', '-', '\'', ':', '!',  1, ], 
     [1, 'left-down-area',     '\\', '_', '.', '-', '\'', ':', '!',  1, ], 
     [1, 'right-down-area',    '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
+    [1, 'fill-character',     ' ',  '', '', '', '', '', '',  1, ], 
 
 ] ;
 
@@ -145,14 +146,9 @@ sub find_fit_ellipse
     my ($fit_width, $fit_height, $text_begin_y, $text_begin_x) = (0, 0, 0, 0);
     my $find_flag = 0;
 
-    #~ If the original width and height do not meet the text width and height, then use the text to generate an ellipse
-    if(($ori_width - 2 < $text_width) || ($ori_height - 2 < $text_height))
-    {
-        ($begin_width, $begin_height) = ($text_width + 2, $text_height + 2);
-    } else
-    {
-        ($begin_width, $begin_height) = ($ori_width, $ori_height);
-    }
+
+    ($begin_width, $begin_height) = ($ori_width, $ori_height);
+
 
     # Find a satisfactory rectangle from the starting ellipse (the width increases by 4 at a time, and the height increases by 2 at a time)
     $begin_width++ if ($begin_width % 2 == 0);
@@ -180,6 +176,7 @@ sub find_fit_ellipse
                     $text_begin_y = $rectangles[$rect_index][1];
                     # The x value of the rectangle where the record starts
                     $text_begin_x = $rectangles[$rect_index-1][0];
+                    last;
                 }
             }
             elsif($rect_index < $#rectangles)
@@ -192,6 +189,7 @@ sub find_fit_ellipse
                     $text_begin_y = $rectangles[$rect_index][1];
                     # The x value of the rectangle where the record starts
                     $text_begin_x = $rectangles[$rect_index-2][0];
+                    last;
                 }
             }
         }
@@ -217,6 +215,13 @@ sub setup
 my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type, $auto_shrink) = @_;
 Readonly my $mini_row => 3;
 Readonly my $mini_col => 3;
+
+my $fill_char = ' ';
+
+if($box_type->[8][2])
+{
+    $fill_char = substr($box_type->[8][2], 0, 1);
+}
 
 ($end_x, $end_y) = (-5, -5) if $auto_shrink;
 
@@ -415,11 +420,11 @@ for $strip_index(1..$#sigle_strips-1)
         if($fill_line)
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
-            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 2 - $padding - $fill_cnt);
+            $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 2 - $padding - $fill_cnt);
         }
         else
         {
-            $fill_text = ' ' x ($now_strip - 2);
+            $fill_text = $fill_char x ($now_strip - 2);
         }
 
         if($strip_index < $half_y)
@@ -440,16 +445,23 @@ for $strip_index(1..$#sigle_strips-1)
         if($fill_line)
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
-            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 2 - $padding - $fill_cnt);
+            $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 2 - $padding - $fill_cnt);
         }
         else
         {
-            $fill_text = ' ' x ($now_strip - 2);
+            $fill_text = $fill_char x ($now_strip - 2);
         }
 
         if($strip_index == $half_y)
         {
-            $strip_text = $box_type->[2][2] . $fill_text . $box_type->[3][2];
+            if($max_row == 3 || ($max_row == 5 && $max_col > 5))
+            {
+                $strip_text = $box_type->[2][7] . $fill_text . $box_type->[3][7];
+            }
+            else
+            {
+                $strip_text = $box_type->[2][2] . $fill_text . $box_type->[3][2];
+            }
         }
         elsif($strip_index < $half_y)
         {
@@ -477,11 +489,11 @@ for $strip_index(1..$#sigle_strips-1)
         if($fill_line)
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 2;
-            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 4 - $padding - $fill_cnt);
+            $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 4 - $padding - $fill_cnt);
         }
         else
         {
-            $fill_text = ' ' x ($now_strip - 4);
+            $fill_text = $fill_char x ($now_strip - 4);
         }
 
 
@@ -499,11 +511,11 @@ for $strip_index(1..$#sigle_strips-1)
         if($fill_line)
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 3;
-            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - 6 - $padding - $fill_cnt);
+            $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 6 - $padding - $fill_cnt);
         }
         else
         {
-            $fill_text = ' ' x ($now_strip - 6);
+            $fill_text = $fill_char x ($now_strip - 6);
         }
 
         if($strip_index < $half_y)
@@ -565,11 +577,11 @@ for $strip_index(1..$#sigle_strips-1)
         if($fill_line)
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - ($bottom_mark + $left_mark + $mid_mark + $right_mark);
-            $fill_text = ' ' x $padding . $fill_line . ' ' x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark) - $padding - $fill_cnt);
+            $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark) - $padding - $fill_cnt);
         }
         else
         {
-            $fill_text = ' ' x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark));
+            $fill_text = $fill_char x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark));
         }
         if($strip_index < $half_y)
         {
@@ -595,11 +607,19 @@ $strip = $sigle_strips[$#sigle_strips];
 $diff_cnt = $strip->[1];
 if($diff_cnt == 1)
 {
-$strip_text = $box_type->[1][7];
+    $strip_text = $box_type->[1][7];
 }
 elsif($diff_cnt == 3)
 {
-$strip_text = $box_type->[6][6] . $box_type->[1][2] . $box_type->[7][6];
+if($max_row == 3 && $max_col == 5)
+{
+    $strip_text = $box_type->[6][6] . $box_type->[1][8] . $box_type->[7][6];
+}
+else
+{
+    $strip_text = $box_type->[6][6] . $box_type->[1][2] . $box_type->[7][6];
+}
+
 }
 elsif($diff_cnt == 5)
 {

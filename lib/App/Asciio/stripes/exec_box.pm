@@ -19,6 +19,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[0, 'title separator', '|', '-', '|', 1, ],
 	[1, 'body separator', '| ', '|', ' |', 1, ], 
 	[1, 'bottom', '\'', '-', '\'', 1, ],
+	[1, 'fill-character',  '',   ' ', '',   1, ],
 	]  ;
 
 Readonly my $NO_BORDER => 
@@ -27,6 +28,7 @@ Readonly my $NO_BORDER =>
 	[0, 'title separator', '|', '-', '|', 1, ],
 	[0, 'body separator', '| ', '|', ' |', 1, ], 
 	[0, 'bottom', '\'', '-', '\'', 1, ],
+	[0, 'fill-character',  '',   ' ', '',   1, ],
 	]  ;
 
 sub new

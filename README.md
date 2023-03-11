@@ -84,6 +84,18 @@ You can also export the selection, in ASCII, to the Primary clipboard.
       \ 'string' ne '' /      ) process )
        '--------------'      /_________/
 
+### rhombus and ellipse
+
+```txt
+      ,',              _..---.._
+    ,'   ',         .''         ''.
+  ,'       ',      /               \
+ :  edit me  :    |     edit me     |
+  ',       ,'      \               /
+    ',   ,'         '..         ..'
+      ','              '--...--'
+```
+
 ### user boxes and exec-boxes
 
 For simple elements, put your design in a box, with or without a frame.

@@ -452,6 +452,7 @@ if(defined $command && $command ne '')
 				[0, 'title separator', '|', '-', '|', 1, ],
 				[0, 'body separator', '| ', '|', ' |', 1, ], 
 				[0, 'bottom', '\'', '-', '\'', 1, ],
+				[0, 'fill-character',  '',   ' ', '',   1, ],
 				]  ;
 		}
 		

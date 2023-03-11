@@ -30,6 +30,7 @@ my %box_types =
 			[0, 'title separator', '|', '-',   '|', 1, ],
 			[1, 'body separator',  '| ', '|', ' |', 1, ], 
 			[1, 'bottom',          '\'', '-', '\'', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	dot =>
 		[
@@ -37,6 +38,7 @@ my %box_types =
 			[0, 'title separator', '.',  '.',  '.', 1, ],
 			[1, 'body separator',  '. ', '.', ' .', 1, ], 
 			[1, 'bottom',          '.',  '.',  '.', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	star =>
 		[
@@ -44,6 +46,7 @@ my %box_types =
 			[0, 'title separator', '*',  '*',  '*', 1, ],
 			[1, 'body separator',  '* ', '*', ' *', 1, ], 
 			[1, 'bottom',          '*',  '*',  '*', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	unicode =>
 		[
@@ -51,6 +54,7 @@ my %box_types =
 			[0, 'title separator', '│', '─',   '│', 1, ],
 			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
 			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	unicode_hollow_dot =>
 		[
@@ -58,6 +62,7 @@ my %box_types =
 			[0, 'title separator', '∘',  '∘',  '∘', 1, ],
 			[1, 'body separator',  '∘ ', '∘', ' ∘', 1, ], 
 			[1, 'bottom',          '∘',  '∘',  '∘', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	unicode_math_parantheses =>
 		[
@@ -65,6 +70,7 @@ my %box_types =
 			[0, 'title separator', '│', '─',   '│', 1, ],
 			[1, 'body separator',  '⎜ ', '│', ' ⎟', 1, ], 
 			[1, 'bottom',          '⎝', ' ',   '⎠', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	math_parantheses =>
 		[
@@ -72,6 +78,7 @@ my %box_types =
 			[0, 'title separator', '│', '─',   '│', 1, ],
 			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
 			[1, 'bottom',          '\\', ' ',  '/', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
 	rhombus_normal =>
 		[
@@ -80,6 +87,7 @@ my %box_types =
 			[1, 'middle',          ':',   '',   ':', 1, ],
 			[1, 'middle-bottom', '\',',   '', ',\'', 1, ],
 			[1, 'bottom',         '\'',  ',',  '\'', 1, ] ,
+			[1, 'fill-character','',     ' ', '',    1, ] ,
 		],
 	rhombus_sparseness =>
 		[
@@ -88,6 +96,7 @@ my %box_types =
 			[1, 'middle',         ':',   '',  ':', 1, ],
 			[1, 'middle-bottom', ' ,',   '', ', ', 1, ],
 			[1, 'bottom',        '\'',  ',', '\'', 1, ] ,
+			[1, 'fill-character','',     ' ', '',    1, ] ,
 		],
 	rhombus_unicode_slash =>
 		[
@@ -96,6 +105,7 @@ my %box_types =
 			[1, 'middle',         '❬',   '',  '❭', 1, ],
 			[1, 'middle-bottom', '＼',   '', '／', 1, ],
 			[1, 'bottom',         ' ', '\'',  ' ', 1, ] ,
+			[1, 'fill-character','',     ' ', '',    1, ] ,
 		],
 	triangle_up_normal =>
 		[
