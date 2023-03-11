@@ -19,6 +19,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[0, 'title separator',  '|', '-',  '|', 1, ],
 	[1, 'body separator',  '| ', '|', ' |', 1, ], 
 	[1, 'bottom',          '\'', '-', '\'', 1, ],
+	[1, 'fill-character',  '',   ' ', '',   1, ],
 	]  ;
 
 sub new
@@ -46,6 +47,13 @@ return $self ;
 sub setup
 {
 my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable, $editable, $auto_shrink) = @_ ;
+
+my $fill_char = ' ';
+
+if($box_type->[4][3])
+{
+    $fill_char = substr($box_type->[4][3], 0, 1);
+}
 
 my ($text_width,  @lines) = (0) ;
 
@@ -88,19 +96,19 @@ for my $title_line (@title_lines)
 	my $left_pading =  int($pading / 2) ;
 	my $right_pading = $pading - $left_pading ;
 	
-	$text .= $title_left . (' ' x $left_pading) . $title_line . (' ' x $right_pading) . $title_right ."\n" ;
+	$text .= $title_left . ($fill_char x $left_pading) . $title_line . ($fill_char x $right_pading) . $title_right ."\n" ;
 	}
 
 $text .= $title_separator ;
 
 for my $line (@lines)
 	{
-	$text .= $box_left . $line . (' ' x ($end_x - (usc_length($line) + $extra_width))) . $box_right . "\n" ;
+	$text .= $box_left . $line . ($fill_char x ($end_x - (usc_length($line) + $extra_width))) . $box_right . "\n" ;
 	}
 	
 for (1 .. ($end_y - (@lines + $extra_height + @title_lines)))
 	{
-	$text .= $box_left .  (' ' x ($end_x - $extra_width)) . $box_right . "\n" ;
+	$text .= $box_left .  ($fill_char x ($end_x - $extra_width)) . $box_right . "\n" ;
 	}
 
 $text .= $box_bottom ;

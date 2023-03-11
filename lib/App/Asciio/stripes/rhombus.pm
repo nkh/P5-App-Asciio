@@ -16,6 +16,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[1, 'middle',        ':',    '',  ':',   1, ],
 	[1, 'middle-bottom', '\',',  '',  ',\'', 1, ],
 	[1, 'bottom',        '\'',   ',', '\'',  1, ] ,
+	[1, 'fill-character','',     ' ', '',    1, ] ,
 ] ;
 
 use App::Asciio::Toolfunc ;
@@ -78,6 +79,13 @@ sub setup
 
 my ($self, $text_only, $end_x, $end_y, $editable, $resizable, $box_type, $auto_shrink) = @_ ;
 Readonly my $mini_row => 3 ; 
+
+my $fill_char = ' ';
+
+if($box_type->[5][3])
+{
+    $fill_char = substr($box_type->[5][3], 0, 1);
+}
 
 $end_y = -5 if $auto_shrink ;
 
@@ -161,11 +169,11 @@ for my $y_offset (0 .. $height - 1)
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
 			
-			$strip_text = $box_type->[1][2] . (' ' x $padding) . $text . (' ' x ($width - 4 - usc_length($text) - $padding)) . $box_type->[1][4] ;
+			$strip_text = $box_type->[1][2] . ($fill_char x $padding) . $text . ($fill_char x ($width - 4 - usc_length($text) - $padding)) . $box_type->[1][4] ;
 			}
 		else
 			{
-			$strip_text = $box_type->[1][2] . (' ' x ($width - 4)) . $box_type->[1][4] ;
+			$strip_text = $box_type->[1][2] . ($fill_char x ($width - 4)) . $box_type->[1][4] ;
 			}
 		}
 	elsif($y_offset == $half_line_num)
@@ -183,11 +191,11 @@ for my $y_offset (0 .. $height - 1)
 			my $padding = $text_offset - $x_offset - 1;
 			$padding = 0 if $padding < 0;
 			
-			$strip_text = $box_type->[2][2] . (' ' x $padding) . $text . (' ' x ($element_width - 2 - usc_length($text) - $padding)) . $box_type->[2][4] ;
+			$strip_text = $box_type->[2][2] . ($fill_char x $padding) . $text . ($fill_char x ($element_width - 2 - usc_length($text) - $padding)) . $box_type->[2][4] ;
 			}
 		else
 			{
-			$strip_text = $box_type->[2][2] . (' ' x ($element_width - 2)) . $box_type->[2][4] ;
+			$strip_text = $box_type->[2][2] . ($fill_char x ($element_width - 2)) . $box_type->[2][4] ;
 			}
 		}
 	elsif($y_offset < $height - 1)
@@ -203,11 +211,11 @@ for my $y_offset (0 .. $height - 1)
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
 			
-			$strip_text = $box_type->[3][2] . (' ' x $padding) . $text . (' ' x ($width - 4 - usc_length($text) - $padding)) . $box_type->[3][4] ;
+			$strip_text = $box_type->[3][2] . ($fill_char x $padding) . $text . ($fill_char x ($width - 4 - usc_length($text) - $padding)) . $box_type->[3][4] ;
 			}
 		else
 			{
-			$strip_text = $box_type->[3][2] . (' ' x ($width - 4)) . $box_type->[3][4] ;
+			$strip_text = $box_type->[3][2] . ($fill_char x ($width - 4)) . $box_type->[3][4] ;
 			}
 		}
 	else
