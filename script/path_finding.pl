@@ -82,7 +82,7 @@ my ($orthogonal_cost, $diagonal_cost, $extra_cost) = @{$self}{qw/orthogonal_cost
 for my $node (($x+1).'.'.$y, $x.'.'.($y+1), ($x-1).'.'.$y, $x.'.'.($y-1))
 	{
 	my ($node_x, $node_y) = split(/\./, $node);
-	next if($node_x < 1 || $node_x > $self->{width} || $node_y < 1 || $node_y > $self->{height}) ;
+	next if($node_x < 1 || $node_x > $self->{width} || $node_y < 1 || $node_y >= $self->{height}) ;
 	
 	unless (exists $map->{$node})
 		{
@@ -162,13 +162,10 @@ my ($data, $options) = @_;
 
 my $display_map = ! $options->{no_map_display} ;
 
-my $map = {};
+my ($map, $map_text) = ({}, '') ;
+
 my $max_width = 0 ;
 my $y = 1;
-
-print "\e[2J\e[H" if $display_map ;
-print "\e[2;30;31m  123456789012345678901234567890123456789012345678901234567890\e[m\n" if $display_map ;
-
 while (<$data>)
 	{
 	chomp;
@@ -184,9 +181,12 @@ while (<$data>)
 		$map->{$x_1.'.'.$y}++ if $cell ne ' ' ;
 		}
 	
-	printf "\e[2;30;31m%-2d\e[m$_\n", $y if $display_map ;
+	$map_text .= sprintf "\e[2;30;31m%-2d\e[m$_\n", $y if $display_map ;
 	$y++;
 	}
+
+print "\e[2J\e[H" . "\e[2;30;31m  " . ('1234567890' x (1 + ($max_width / 10))) . "\e[m\n" . $map_text
+	if $display_map ;
 
 return ($map, $max_width, $y) ;
 }

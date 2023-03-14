@@ -339,7 +339,7 @@ for my $arrow(@{$self->{ARROWS}})
 	
 	$start_connector->{X} += $self->{POINTS_OFFSETS}[$arrow_index][0] ;
 	$start_connector->{Y} += $self->{POINTS_OFFSETS}[$arrow_index][1] ;
-		
+	
 	if($x == $start_connector->{X} && $y == $start_connector->{Y})
 		{
 		$action = 'resize' ;
@@ -439,7 +439,7 @@ my(@all_connector_points)  = $self->get_all_points() ;
 
 shift @all_connector_points unless $self->{NOT_CONNECTABLE_START} ;
 pop @all_connector_points  unless $self->{NOT_CONNECTABLE_END} ;
-	
+
 return(@all_connector_points) ;
 }
 
@@ -1112,12 +1112,4 @@ $self->display_arrow_edit_dialog() ;
 #-----------------------------------------------------------------------------
 
 1 ;
-
-
-
-
-
-
-
-
 

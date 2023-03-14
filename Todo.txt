@@ -4,11 +4,19 @@ text interface
 		open file under cursor
 
 objects
-	any orientation text
+	any orientation text/arrow
 		call a sub that returns a text, sub gets direction and length
 		different sub used to implement angled-arrow
 	
+		labled arrows
+	
 	angle arrow dialog does nothing
+	
+	table exec-box
+	
+	s-arrow
+	
+	multi-wirl arrow routing
 
 display
 	GUI/TUI: a faster stencil picker
