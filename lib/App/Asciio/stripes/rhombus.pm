@@ -164,7 +164,7 @@ for my $y_offset (0 .. $height - 1)
 			{
 			my $text = shift @text_lines ;
 			
-			$text_offset = $x_offset + 2 unless $text_offset ;
+			$text_offset = int(($element_width-$text_width)/2) unless $text_offset ;
 			
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
@@ -186,7 +186,7 @@ for my $y_offset (0 .. $height - 1)
 			{
 			my $text = shift @text_lines ;
 			
-			$text_offset = $x_offset + 1 unless $text_offset ; 
+			$text_offset = int(($element_width-$text_width)/2) unless $text_offset ; 
 			
 			my $padding = $text_offset - $x_offset - 1;
 			$padding = 0 if $padding < 0;
@@ -206,7 +206,7 @@ for my $y_offset (0 .. $height - 1)
 		if($y_offset >= $start_text_row && @text_lines)
 			{
 			my $text = shift @text_lines ;
-			$text_offset = $x_offset + 2 unless $text_offset ;
+			$text_offset = int(($element_width-$text_width)/2) unless $text_offset ;
 			
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;

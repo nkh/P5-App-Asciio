@@ -165,34 +165,23 @@ sub find_fit_ellipse
         for($rect_index = 2; $rect_index <= $#rectangles; $rect_index += 2)
         {
             $fit_width = $rectangles[$rect_index-2][2];
+            $fit_height = 0;
             if($rect_index == $#rectangles)
             {
                 $fit_height = $rectangles[$rect_index][3];
 
-                if($fit_width >= $text_width && $fit_height >= $text_height)
-                {
-                    $find_flag = 1;
-                    # The y value of the rectangle where the record starts
-                    $text_begin_y = $rectangles[$rect_index][1];
-                    # The x value of the rectangle where the record starts
-                    $text_begin_x = $rectangles[$rect_index-1][0];
-                    last;
-                }
             }
             elsif($rect_index < $#rectangles)
             {
                 $fit_height = $rectangles[$rect_index+1][1] - $rectangles[$rect_index][1];
-                if($fit_width >= $text_width && $fit_height >= $text_height)
-                {
-                    $find_flag = 1;
-                    # The y value of the rectangle where the record starts
-                    $text_begin_y = $rectangles[$rect_index][1];
-                    # The x value of the rectangle where the record starts
-                    $text_begin_x = $rectangles[$rect_index-2][0];
-                    last;
-                }
+            }
+            if($fit_width >= $text_width && $fit_height >= $text_height)
+            {
+                $find_flag = 1;
+                last;
             }
         }
+
         if($find_flag == 1)
         {
             last;
@@ -203,6 +192,9 @@ sub find_fit_ellipse
             $begin_height += 2;
         }
     }
+
+    $text_begin_x = int(($begin_width - $text_width) / 2);
+    $text_begin_y = int(($begin_height - $text_height) / 2);
 
     return ($begin_width, $begin_height, $text_begin_y, $text_begin_x);
 }
@@ -623,7 +615,7 @@ else
 }
 elsif($diff_cnt == 5)
 {
-$strip_text = $box_type->[6][6] . $box_type->[6][4] . $box_type->[1][2] . $box_type->[7][4] . $box_type->[7][6];
+$strip_text = $box_type->[6][6] . $box_type->[6][5] . $box_type->[1][8] . $box_type->[7][5] . $box_type->[7][6];
 }
 else
 {
