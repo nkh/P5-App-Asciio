@@ -1,0 +1,843 @@
+#!/bin/env perl
+
+package AI::Pathfinding::AStar::AStarNode;
+use base 'Heap::Elem';
+
+use strict;
+use warnings ;
+
+sub new
+{
+my $proto = shift;
+my $class = ref($proto) || $proto;
+
+my ($id,$g,$h) = @_;
+
+bless   {
+	id     => $id,
+	g      => $g,
+	h      => $h,
+	f      => $g+$h,
+	parent => undef,
+	cost   => 0,
+	inopen => 0,
+	heap   => undef,
+	}, $class ;
+}
+
+#-------------------------------------------------------------------------------
+
+sub heap { my ($self, $val) = @_; $self->{heap} = $val if (defined $val); return $self->{heap}; }
+
+#-------------------------------------------------------------------------------
+
+sub cmp { my $self = shift; my $other = shift; return ($self->{f} <=> $other->{f}); }
+
+#-------------------------------------------------------------------------------
+
+package AI::Pathfinding::AStar;
+
+use 5.006;
+use strict;
+use warnings;
+use Carp;
+
+our $VERSION = '0.10';
+
+use Heap::Binomial;
+
+# use AI::Pathfinding::AStar::AStarNode;
+my $nodes;
+
+sub _init
+{
+my $self = shift;
+croak "no getSurrounding() method defined" unless $self->can("getSurrounding");
+
+return $self->SUPER::_init(@_);
+}
+
+#-------------------------------------------------------------------------------
+
+sub doAStar
+{
+my ($self, $target, $open, $nodes, $max, $all_paths) = @_;
+
+my $n = 0;
+my $direction = 2 ;
+
+FLOOP: while ( (defined $open->top()) && ($all_paths ? 1 : ($open->top()->{id} ne $target) ))
+	{
+	#allow incremental calculation
+	last FLOOP if (defined($max) and (++$n == $max));
+	
+	my $curr_node = $open->extract_top();
+	$curr_node->{inopen} = 0;
+	my $G = $curr_node->{g};
+	
+	my ($x, $y) = split(/\./, $curr_node->{id});
+	
+	#get surrounding squares
+	my $surr_nodes = $self->getSurrounding($curr_node->{id}, $target, $direction);
+	foreach my $node (reverse @$surr_nodes)
+		{
+		my ($surr_id, $surr_cost, $surr_h) = @$node;
+		
+		#skip the node if it's in the CLOSED list
+		next if ( (exists $nodes->{$surr_id}) && (! $nodes->{$surr_id}->{inopen}) );
+		
+		#add it if we haven't seen it before
+		if (! exists $nodes->{$surr_id})
+			{
+			my $surr_node = AI::Pathfinding::AStar::AStarNode->new($surr_id,$G+$surr_cost,$surr_h);
+			$surr_node->{parent} = $curr_node;
+			$surr_node->{cost}   = $surr_cost;
+			$surr_node->{inopen} = 1;
+			$nodes->{$surr_id}   = $surr_node;
+			$open->add($surr_node);
+			}
+		else
+			{
+			#otherwise it's already in the OPEN list
+			#check to see if it's cheaper to go through the current
+			#square compared to the previous path
+			my $surr_node = $nodes->{$surr_id};
+			my $currG     = $surr_node->{g};
+			my $possG     = $G + $surr_cost;
+			if ($possG < $currG)
+				{
+				#change the parent
+				$surr_node->{parent} = $curr_node;
+				$surr_node->{g}      = $possG;
+				$open->decrease_key($surr_node);
+				
+				my ($sx, $sy) = split(/\./, $surr_node->{id});
+				
+				if($sy == $y - 1)    { $direction = 0 }
+				elsif($sx == $x + 1) { $direction = 1 }
+				elsif($sy == $y + 1) { $direction = 2 }
+				elsif($sx == $x - 1) { $direction = 3 }
+				}
+			}
+		}
+	}
+}
+
+#-------------------------------------------------------------------------------
+
+sub fillPath
+{
+my ($self, $open, $nodes, $target) = @_;
+my $path = [];
+
+my $curr_node = (exists $nodes->{$target}) ? $nodes->{$target} : $open->top();
+
+my $cost = 0 ;
+
+while (defined $curr_node)
+	{
+	unshift @$path, $curr_node->{id};
+	$cost += $curr_node->{cost};
+	$curr_node = $curr_node->{parent};
+	}
+
+return($path, $cost) ;
+}
+
+#-------------------------------------------------------------------------------
+
+sub findPath
+{
+my ($self, $start, $target) = @_;
+
+my $nodes = {};
+my $curr_node = undef;
+
+my $open = Heap::Binomial->new;
+
+#add starting square to the open list
+$curr_node = AI::Pathfinding::AStar::AStarNode->new($start,0,0);  # AStarNode(id,g,h)
+$curr_node->{parent} = undef;
+$curr_node->{cost}   = 0;
+$curr_node->{g}      = 0;
+$curr_node->{h}      = 0;
+$curr_node->{inopen} = 1;
+$nodes->{$start}     = $curr_node;
+$open->add($curr_node);
+
+$self->doAStar($target, $open, $nodes, undef);
+
+return $self->fillPath($open, $nodes, $target);
+}
+
+#-------------------------------------------------------------------------------
+
+sub findPathIncr
+{
+my ($self, $start, $target, $state, $max) = @_;
+
+my $open = undef;
+my $curr_node = undef;;
+my $nodes = {};
+
+if (defined($state))
+	{
+	$nodes = $state->{'visited'};
+	$open  = $state->{'open'};
+	}
+else
+	{
+	$open = Heap::Binomial->new;
+	#add starting square to the open list
+	$curr_node = AI::Pathfinding::AStar::AStarNode->new($start,0,0);  # AStarNode(id,g,h)
+	$curr_node->{parent} = undef;
+	$curr_node->{cost}   = 0;
+	$curr_node->{g}      = 0;
+	$curr_node->{h}      = 0;
+	$curr_node->{inopen} = 1;
+	$nodes->{$start} = $curr_node;
+	$open->add($curr_node);
+	}
+
+$self->doAStar($target, $open, $nodes, $max);
+
+my $path_cost = $self->{map}->fillPath($open,$nodes,$target);
+$state = {
+	'path'    => $path_cost->[0],
+	'cost'    => $path_cost->[1],
+	'open'    => $open,
+	'visited' => $nodes,
+	'done'    => defined($nodes->{$target}),
+	};
+
+return $state;
+}
+
+#-------------------------------------------------------------------------------
+
+package AI::Pathfinding::AStar::Obstacle::Map;
+our @ISA = qw/AI::Pathfinding::AStar/ ;
+
+use strict ;
+use warnings ;
+
+use Time::HiRes qw/usleep/ ;
+
+#-------------------------------------------------------------------------------
+
+sub new
+{
+my ($invocant, $map, $setup) = @_;
+my $class = ref($invocant) || $invocant;
+my $self = bless
+		{
+		keep_clear => 0,
+		do_diagonal => 1, # TODO
+		orthogonal_cost => 10,
+		diagonal_cost => 140,
+		keep_clear_cost => 8,
+		visited_cells => {},
+		%$setup,
+		map => $map // {},
+		}, $class;
+
+return $self;
+}
+
+#-------------------------------------------------------------------------------
+
+sub set_map { my ($self, $map, $width, $height) = @_; $self->{map} = $map; }
+
+#-------------------------------------------------------------------------------
+
+sub keep_clear { my ($self, $keep_clear) = @_; $self->{keep_clear} = $keep_clear; }
+
+#-------------------------------------------------------------------------------
+
+sub set_obstacle { my ($self, $x, $y) = @_; $self->{map}{$x . '.' . $y}++; }
+
+#-------------------------------------------------------------------------------
+
+sub display_scanning { my ($self, $display_scanning) = @_; $self->{display_scanning} = $display_scanning; }
+
+#-------------------------------------------------------------------------------
+
+sub get_visited_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{visited_cells}}) }
+
+#-------------------------------------------------------------------------------
+
+sub findPath
+{
+my ($self, $start, $target) = @_;
+
+my $nodes = {};
+my $curr_node = undef;
+
+my $open = Heap::Binomial->new;
+
+#add starting square to the open list
+$curr_node = AI::Pathfinding::AStar::AStarNode->new($start, 0, 0);  # AStarNode(id,g,h)
+$curr_node->{parent} = undef;
+$curr_node->{cost}   = 0;
+$curr_node->{g}      = 0;
+$curr_node->{h}      = 0;
+$curr_node->{inopen} = 1;
+$nodes->{$start}     = $curr_node;
+$open->add($curr_node);
+
+$self->doAStar($target,$open,$nodes,undef);
+
+return $self->fillPath($open,$nodes,$target);
+}
+
+#-------------------------------------------------------------------------------
+
+{
+my $nodes;
+
+sub findAllPaths 
+{
+my ($self, $start, $target, $keep_nodes) = @_;
+
+$nodes = {} unless $keep_nodes ;
+$nodes //= {} ;
+
+my $curr_node = undef;
+
+my $open = Heap::Binomial->new;
+
+#add starting square to the open list
+$curr_node = AI::Pathfinding::AStar::AStarNode->new($start,0,0);  # AStarNode(id,g,h)
+$curr_node->{parent} = undef;
+$curr_node->{cost}   = 0;
+$curr_node->{g}      = 0;
+$curr_node->{h}      = 0;
+$curr_node->{inopen} = 1;
+$nodes->{$start}     = $curr_node;
+$open->add($curr_node);
+
+$self->doAStar($target,$open,$nodes,undef, 1);
+
+return $self->fillPath($open,$nodes,$target);
+}
+
+}
+
+#-------------------------------------------------------------------------------
+
+# use Memoize ;
+# memoize qw/getSurrounding/ ;
+
+sub getSurrounding
+{
+my ($self, $source, $target, $direction) = @_;
+
+my ($x, $y, $map) = (split(/\./, $source), $self->{map});
+
+return [] if $x < 1 || $x > $map->{width} || $y < 1 || $y > $map->{height} ;
+
+my ($orthogonal_cost, $diagonal_cost, $keep_clear_cost) = @{$self}{qw/orthogonal_cost diagonal_cost keep_clear_cost/} ;
+
+my @direction_to_surroundings =
+	(
+	[$x .'.'. ($y-1),    ($x+1) .'.'. $y,    ($x-1) .'.'. $y,    $x .'.'. ($y+1)],
+	[($x+1) .'.'. $y,    $x .'.'. ($y+1),    $x .'.'. ($y-1),    ($x-1) .'.'. $y],
+	[$x .'.'. ($y+1),    ($x+1) .'.'. $y,    ($x-1) .'.'. $y,    $x .'.'. ($y-1)],
+	[($x-1) .'.'. $y,    $x .'.'. ($y+1),    $x .'.'. ($y-1),    ($x+1) .'.'. $y],
+	) ;
+
+$direction //= 2 ;
+
+my @surrounding ;
+
+for my $node (@{$direction_to_surroundings[$direction]})
+	{
+	my ($node_x, $node_y) = split(/\./, $node);
+	next if($node_x < 1 || $node_x > $map->{width} || $node_y < 1 || $node_y >= $map->{height}) ;
+	
+	if(exists $self->{surrounding}{$node})
+		{
+		push @surrounding, [ $node, @{$self->{surrounding}{$node}} ] ;
+		next ;
+		}
+	
+	if (! exists $map->{$node} || $map->{$node} < 10)
+		{
+		my $node_v = ! exists $map->{$node} ? "not exists" : $map->{$node} < 10 ;
+		
+		my $permeable_cost = 0 ;
+		$permeable_cost = ($self->{permeable_cost}{$map->{$node}} // $map->{$node} // 40) if (exists $map->{$node} && $map->{$node} < 10) ;
+		
+		my $keep_clear_cost_sum = 0;
+		
+		if($self->{keep_clear})
+			{
+			for my $node_neighbor
+				(
+				($node_x-1).'.'.($node_y-1),
+				($node_x)  .'.'.($node_y-1),
+				($node_x+1).'.'.($node_y-1),
+				($node_x-1).'.'.($node_y),
+				($node_x+1).'.'.($node_y),
+				($node_x-1).'.'.($node_y+1),
+				($node_x)  .'.'.($node_y+1),
+				($node_x+1).'.'.($node_y+1),
+				)
+				{
+				if(exists $map->{$node_neighbor})
+					{
+					$keep_clear_cost_sum += $keep_clear_cost ;
+					}
+				}
+			}
+		
+		my $heat = "\e[7;040;31m" ; # bright red
+		for ($orthogonal_cost + $permeable_cost + $keep_clear_cost_sum)
+			{
+			$_ < 40 and $heat = "\e[7;040;91m" ; # red
+			$_ < 35 and $heat = "\e[7;040;33m" ; # orange
+			$_ < 30 and $heat = "\e[7;100;33m" ; # dim orange
+			$_ < 25 and $heat = "\e[7;040;93m" ; # yellow
+			$_ < 20 and $heat = "\e[7;100;93m" ; # dim yellow
+			$_ < 15 and $heat = "\e[7;040;94m" ; # blue
+			$_ < 10 and $heat = "\e[7;100;94m" ; # dim blue
+			$_ < 8 and $heat = "\e[7;040;95m" ; # cyan
+			$_ < 6 and $heat  = "\e[7;100;95m" ; # dim cyan
+			$_ < 4 and $heat  = "\e[7;100;96m" ; # dim
+			$_ < 2 and $heat  = "\e[7;040;90m" ; # grey
+			}
+		
+		print "\e[" . ($node_y + 1) . ";" . ($node_x + 2) . "H$heat.\e[m" if $self->{display_scanning} and (! $self->{no_map_display}) ;
+		
+		my ($cost, $heuristic) = ($orthogonal_cost + $permeable_cost + $keep_clear_cost_sum, $self->calc_heuristic($source, $node, $target, $direction) ) ;
+		
+		$self->{surrounding}{$node} = [ $cost, $heuristic ] ;
+		push @surrounding, [ $node, $cost, $heuristic ] ;
+		}
+	}
+
+$self->{visited_cells}{$source}++ ;
+
+if($self->{do_diagonal})
+	{
+	# for my $node ( ($x+1).'.'.($y+1), ($x+1).'.'.($y-1), ($x-1).'.'.($y+1), ($x-1).'.'.($y-1))
+	# 		{
+	# 		push @$surrounding, [$node, $diagonal_cost, calc_heuristic($node, $target)]
+	# 			if exists $map->{$node} && $map->{$node} ;
+	# 		}
+	}
+
+usleep ($self->{scanning_sleep} // 1000) if $self->{display_scanning} ;
+
+return \@surrounding;
+}
+
+#-------------------------------------------------------------------------------
+
+use List::Util qw/max/;
+
+sub calc_heuristic
+{
+my ($self, $source, $node, $target, $direction) = @_;
+
+my ($xs, $ys) = split(/\./, $source);
+my ($x1, $y1) = split(/\./, $node);
+my ($xt, $yt) = split(/\./, $target);
+
+my ($XHK, $XNHK, $YHK, $YNHK) = @{$self}{qw/XHK XNHK YHK YNHK/} ;
+my $heuristic =   ($x1 < $xt ? ($xt - $x1) * $XHK : ($x1 - $xt) * $XNHK)
+		+ ($y1 < $yt ? ($yt - $y1) * $YHK : ($y1 - $yt) * $YNHK) ;
+
+$heuristic > 0 ? $heuristic : 0 ;
+}
+
+#-------------------------------------------------------------------------------
+
+package AI::Pathfinding::AStar::Term::Map ;
+use strict ;
+use warnings ;
+use Time::HiRes ;
+
+#-------------------------------------------------------------------------------
+
+sub new
+{
+my ($proto, $data, $options) = @_;
+my $class = ref($proto) || $proto;
+
+my $display_map = ! $options->{no_map_display} ;
+
+my ($map, $map_text) = ({}, '') ;
+
+my $max_width = 0 ;
+my $y = 1;
+
+while (<$data>)
+	{
+	chomp;
+	
+	my @cols = split //;
+	$max_width = @cols if $max_width < @cols ;
+	
+	for my $x ( 0 .. $#cols )
+		{
+		my $cell = $cols[$x];
+		my $x_1 = $x + 1;
+		
+		$map->{$x_1.'.'.$y} = 10 if $cell ne ' ' ;
+		$map->{$x_1.'.'.$y} = $cell - '0' if $cell =~ /[0-9]/ ;
+		}
+	
+	$map_text .= sprintf "\e[2;30;31m%-2d\e[m$_\n", $y if $display_map ;
+	$y++;
+	}
+
+print "\e[2J\e[H" . "\e[2;30;31m  " . ('1234567890' x (1 + ($max_width / 10))) . "\e[m\n" . $map_text
+	if $display_map ;
+
+return bless { %$map, width => $max_width, height => $y, nodes => $max_width * $y}, $class ;
+}
+
+#-------------------------------------------------------------------------------
+
+sub display_routes
+{
+my ($self, $options, @routes) = @_ ;
+
+my $g = AI::Pathfinding::AStar::Obstacle::Map->new
+		(
+		$self,
+		{
+		keep_clear      => $options->{keep_clear},
+		display_scanning  => $options->{display_scanning},
+		no_map_display  => $options->{no_map_display},
+		scanning_sleep    => $options->{scanning_sleep} // 1000,
+		orthogonal_cost => $options->{orthogonal_cost} // 10,
+		diagonal_cost   => $options->{diagonal_cost} // 140,
+		permeable_cost  => $options->{permeable_cost} // {},
+		keep_clear_cost      => $options->{keep_clear_cost} // 8,
+		XHK             => $options->{XHK}  // 1,
+		XNHK            => $options->{XNHK} // 1,
+		YHK             => $options->{YHK}  // 1,
+		YNHK            => $options->{YNHK} // 1,
+		}) ;
+
+my $display_map = ! $options->{no_map_display} ;
+
+my @colors = (31 .. 36) x 5 ;
+
+my $routing_time = 0 ;
+my (@routes_text, @path_info) ;
+
+for (@routes)
+	{
+	die "wrong format for route: '$_'\n" unless /^[0-9]+\.[0-9]+$/ ;
+	}
+
+while (@routes > 1)
+	{
+	my ($start, $end) = ($routes[0], $routes[1]) ;
+	shift @routes ;
+	
+	my ($SX, $SY) = split(/\./, $start);
+	my ($EX, $EY) = split(/\./, $end);
+	
+	my $color = shift @colors ;
+	
+	my $t0 = Time::HiRes::gettimeofday();
+	my ($path, $cost) = $options->{heatmap_all} ? $g->findAllPaths($start, $end) : $g->findPath($start, $end) ;
+	my $t1 = Time::HiRes::gettimeofday();
+	$routing_time += $t1 -$t0 ;
+	
+	$a=<STDIN> if $options->{pause} && @routes > 1 ;
+	
+	push @path_info, scalar(@$path)  . '/' . $cost ;
+	
+	my $route_text = '';
+	for my $position (@{$path})
+		{
+		my ($x, $y) = split(/\./, $position);
+		
+		$g->set_obstacle($x, $y) if $options->{obstruct} ;
+		
+		$y += 1 ; # account for horizontal ruler
+		$x += 2 ; # account for vertical ruler
+		
+		$route_text .= "\e[$y;${x}H\e[${color}m¤\e[m" if $display_map;
+		}
+	
+	my ($SY1, $SX2) = ($SY +1, $SX + 2) ;
+	my ($EY1, $EX2) = ($EY +1, $EX + 2) ;
+	
+	$route_text .= "\e[$SY1;${SX2}H\e[${color}mS\e[m" if $display_map;
+	$route_text .= "\e[$EY1;${EX2}H\e[${color}mE\e[m" if $display_map;
+	
+	push @routes_text, $route_text ;
+	}
+
+for (@routes_text)
+	{
+	$a=<STDIN> if $options->{pause} ;
+	print ;
+	}
+
+my $status_line = $self->{height} + 2 ;
+print "\e[$status_line;0H\e[m" if $display_map;
+printf "path lengths: @path_info, visited cells: %d/%d%%/%d\n",
+		 $g->get_visited_cells(), (($g->get_visited_cells() * 100)/ $self->{nodes}),  $self->{nodes}
+			 if $display_map;
+
+printf "routing time: %.3f\n", $routing_time if $display_map;
+}
+
+#-------------------------------------------------------------------------------
+
+package AI::Pathfinding::AStar::Term::Map::Main ;
+
+use strict ;
+use warnings ;
+
+use IO::File ;
+use Getopt::Long;
+
+sub help { system("pod2text $0") ; exit ; }
+
+my $options = { permeable_cost => {} } ;
+GetOptions
+	(
+	'help'                  => \$options->{help},
+	'map|m=s'               => \$options->{map},
+	'heatmap_all|H'         => \$options->{heatmap_all},
+	'no_map_display'        => \$options->{no_map_display},
+	'pause|p'               => \$options->{pause},
+	'display_scanning|ds'   => \$options->{display_scanning},
+	'scanning_sleep|ss:i'   => \$options->{scanning_sleep},
+	'obstruct|o'            => \$options->{obstruct},
+	'keep_clear|kc'         => \$options->{keep_clear},
+	'orthogonal_cost|oc:i'  => \$options->{orthogonal_cost},
+	'diagonal_cost|dc:i'    => \$options->{diagonal_cost},
+	'keep_clear_cost|kcc:i' => \$options->{keep_clear_cost},
+	'permeable_cost|pc:i'   => $options->{permeable_cost},
+	'XHK:i'                 => \$options->{XHK},
+	'XNHK:i'                => \$options->{XNHK},
+	'YHK:i'                 => \$options->{YHK},
+	'YNHK:i'                => \$options->{YNHK},
+	) or die("Error in command line arguments\n");
+
+help() if $options->{help} ;
+
+my $map_file  = $options->{map} ? (IO::File->new($options->{map}, 'r') or die "$options->{map}: $!\n") : \*DATA ;
+my $map = AI::Pathfinding::AStar::Term::Map->new($map_file, $options) ;
+$map->display_routes($options, @ARGV) ;
+
+=head1 NAME
+
+ path_finder - a terminal based A* path renderer
+
+=head1 SYNOPSIS
+
+ $> path_finder                 # display default map
+ $> path_finder --map map_file  # use file as a map
+ $> path_finder 1.1  8.10       # find path
+
+=head1 DESCRIPTION
+
+B<path_finder> is a simple terminal base program to display A* paths, it uses
+B<AI::Pathfinding::AStar>. B<path_finder> has a built-in map, but you can create
+your own, and options that let you control heuristics and display.
+
+Apart from displaying the map and found paths (if any), it will also display the
+"path length/cost" for each leg, the number of visited cells as well as time
+spend computing the paths.
+
+=head1 TARGET COORDINATES
+
+You pass coordinates as x.y, you can pass a multiple route legs.
+
+ $> path_finder 1.1  8.10       # find path from [x=1, y=1] to [x=8, y=10]
+
+ $> path_finder 1.1  8.10 27.14 # as above plus leg [x=8, y=10] to [x=27, y=14]
+
+=head1 COSTS 
+
+The A* path finding uses costs to determine which path is the best. The "opaque"
+cells have an infinite cost and are not even considered.
+
+Orthogonal cost is 10 by default but can be changed
+
+Diagonal costs is 140 but this version of b<path_finder> only does othogonal
+routing.
+
+"Translucent" cost varies between 0 and 9, see option --translucent_cost.
+
+"Extra_cost" can be assigned to cells aound 'opaque' cells, See options
+--keep_clear and --keep_clear_cost.
+
+=head2 Default costs
+
+ orthogonal_cost = 40
+
+ diagonal_cost = 140
+
+ keep_clear_cost = 40
+
+ permeable_cost = 0-9
+
+=head2 Starting with costs
+
+I recommend that you use these options to start with and look at the heatmap then
+play with the costs from there.
+
+ --orthogonal_cost 1 --keep_clear_cost 5
+
+=head1 OPTIONS
+
+=over 4
+
+--help                         # display this help
+
+--map map_file                 # use user defined map file
+
+The map_file contains ASCII character, space corresponds to a coordinate that can
+be used in the A* path, other characters represent "opaque" coordinates (but
+see option --permeable below)
+
+                             .---.
+                .---.        |   |
+      .---.     |   |        '---'
+      |   |     '---'  .---.
+      '---'            |   |
+               .---.   '---'
+               |   |
+               '---'
+
+--display_scanning             # display the map scanning
+
+Display the portion of the map scanned during the A* path finding
+
+--scanning_sleep:i             # pause during leg computation
+
+To allow a better visualization effect, a short pause is used, the default
+is 1000, when multi legs paths are computed, smaller value gives shorter delay.
+
+--pause                        # pause and wait for user input
+
+Pause between each leg map scanning and each leg rendering, waits for "Enter"
+to be pressed.
+
+--heatmap_all                  # show whole map heatmap
+
+path_finder normally only displays the coordinates that have been searched
+by the A* algorithm, use this option to show a complete heatmap.
+
+Note that a "pseudo" heatmap is displayed, a real heatmap would require
+multiple passes, the pseudo heatmap give a good enough visualisation. Time
+information is not relevant when this option is used as we spend more time
+looking at all the nodes then would be necessary to compute paths.
+
+--no_map_display                # do not display the map at all
+
+Useful if you want to modify the code and output other type of data
+
+--obstruct                      # multi leg path obstruct each other
+
+When set this option makes the cells used in a path opaque rendering them
+unavailable for the next leg.
+
+--orthogonal_cost :i            # assign a cost to orthogonal moves
+
+--diagonal_cost :i              # assign a cost to diagonal moves
+
+--keep_clear                    # assign a cost to cells close to opaque cells
+
+This makes the path stay clear of opaque cells if possible. A* might still use
+cells that are close to opaque cells if there is no other path or the path cost
+including the extra cost to keep cleat is the cheapest.
+
+--keep_clear_cost :i            # cost assigned to cells close to opaque cells
+
+--permeable_cost l=i            # assign map permeable costs
+ 
+             1               .---.
+             5  .---.        |   |
+      .---.  9  |   |        '---'
+      |   |  9  '---'  .-7-.
+      '---'  9         |   |
+             9   .---. '-8-'
+             5   |   |
+             1   '---'
+
+If you create a map like one above, the cells containing number 0-9 are
+"permeable", they can be crossed but at a cost, by default the costs are 0-9
+but you can assign a cost to each class.
+
+Adding --permeable_cost 1=100 would assign a cost of 100 to the cells that
+contain '1' in the map.
+
+All options:
+
+    help'
+    map|m=s'
+    heatmap_all|H'
+    no_map_display'
+    pause|p'
+    display_scanning|ds'
+    scanning_sleep|ss:i'
+    obstruct|o'
+    keep_clear|kc'
+    orthogonal_cost|oc:i'
+    diagonal_cost|dc:i'
+    keep_clear_cost|kcc:i'
+    permeable_cost|pc:i'
+    XHK:i'
+    XNHK:i'
+    YHK:i'
+    YNHK:i'
+
+=back
+
+=head1 DEPENDENCIES
+
+B<AI::Pathfinding::AStar> is embedded in the program but you'll need to install B<Heap::Binomial>.
+
+=head1 MODULES/AUTHOR
+
+L<https://metacpan.org/pod/AI::Pathfinding::AStar> does the path finding.
+
+B<path_finder> is part of L<https://github.com/nkh/P5-App-Asciio> where it is used
+to find the feasibility of automatic link routing.
+
+=cut
+
+
+__DATA__
+                                                            
+                                  .---.
+                                  |   |
+                                  '---'
+      .---.                         ^
+      |   |-----.--90809-------.----'
+      '---'     |         |    |
+                |         |    |       .---.
+                |         |    |       |   |
+                |         |    |       '---'
+                |         |    |         ^
+                |         |    |         |       .---.
+                |         |    |         '-------|   |
+        .---.   |         v    |                 '---'
+        |   |999|       .---.  |    .---.
+        '---'   |       |   |  |    |   |-------------------.
+          |     |       '---'  |    '---'                   |
+  .---.   |     |              |                            |
+  |   |<--'     v              |           .---.            |
+  '---'       .---.            |           |   |            |
+              |   |            |           '---'            v
+              '---'            v             ^            .---.
+                             .---.           |            |   |
+                             |   |           |            '---'
+                             '---'           |
+                                             |
+             .---.                           |
+             |   |---------------------------'
+             '---'
+
