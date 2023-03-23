@@ -221,7 +221,10 @@ our @ISA = qw/AI::Pathfinding::AStar/ ;
 use strict ;
 use warnings ;
 
-use Time::HiRes qw/usleep/ ;
+#-------------------------------------------------------------------------------
+
+use Readonly ;
+Readonly my $OPAQUE => 10 ;
 
 #-------------------------------------------------------------------------------
 
@@ -233,13 +236,18 @@ my $self = bless
 		{
 		keep_clear => 0,
 		do_diagonal => 1, # TODO
-		orthogonal_cost => 10,
-		diagonal_cost => 140,
+		orthogonal_cost => $OPAQUE,
+		diagonal_cost => 0,
 		keep_clear_cost => 8,
 		visited_cells => {},
 		%$setup,
 		map => $map // {},
 		}, $class;
+
+if($self->{display_scanning} && ! $self->{step})
+	{
+	$self->{step} = 'run' ;
+	}
 
 return $self;
 }
@@ -254,7 +262,7 @@ sub keep_clear { my ($self, $keep_clear) = @_; $self->{keep_clear} = $keep_clear
 
 #-------------------------------------------------------------------------------
 
-sub set_obstacle { my ($self, $x, $y) = @_; $self->{map}{$x . '.' . $y}++; }
+sub set_obstacle { my ($self, $x, $y, $value) = @_; $self->{map}{$x . '.' . $y} = $value // $OPAQUE }
 
 #-------------------------------------------------------------------------------
 
@@ -263,6 +271,8 @@ sub display_scanning { my ($self, $display_scanning) = @_; $self->{display_scann
 #-------------------------------------------------------------------------------
 
 sub get_visited_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{visited_cells}}) }
+
+sub get_scanned_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{scanned_cells}}) }
 
 #-------------------------------------------------------------------------------
 
@@ -325,9 +335,6 @@ return $self->fillPath($open,$nodes,$target);
 
 #-------------------------------------------------------------------------------
 
-# use Memoize ;
-# memoize qw/getSurrounding/ ;
-
 sub getSurrounding
 {
 my ($self, $source, $target, $direction) = @_;
@@ -353,22 +360,21 @@ my @surrounding ;
 for my $node (@{$direction_to_surroundings[$direction]})
 	{
 	my ($node_x, $node_y) = split(/\./, $node);
-	next if($node_x < 1 || $node_x > $map->{width} || $node_y < 1 || $node_y >= $map->{height}) ;
+	next if $node_x < 1 || $node_x > $map->{width} || $node_y < 1 || $node_y >= $map->{height} ;
 	
-	if(exists $self->{surrounding}{$node})
+	if(! $self->{obstruct} && exists $self->{surrounding}{$node})
 		{
 		push @surrounding, [ $node, @{$self->{surrounding}{$node}} ] ;
 		next ;
 		}
 	
-	if (! exists $map->{$node} || $map->{$node} < 10)
+	if (! exists $map->{$node} || $map->{$node} < $OPAQUE)
 		{
-		my $node_v = ! exists $map->{$node} ? "not exists" : $map->{$node} < 10 ;
+		my $node_v = ! exists $map->{$node} ? "not exists" : $map->{$node} < $OPAQUE ;
 		
-		my $permeable_cost = 0 ;
-		$permeable_cost = ($self->{permeable_cost}{$map->{$node}} // $map->{$node} // 40) if (exists $map->{$node} && $map->{$node} < 10) ;
+		my $permeable_cost = exists $map->{$node} && $map->{$node} < $OPAQUE ? $self->{permeable_cost}{$map->{$node}} // $map->{$node} // 0  : 0 ;
 		
-		my $keep_clear_cost_sum = 0;
+		my $keep_clear_cost = 0;
 		
 		if($self->{keep_clear})
 			{
@@ -384,36 +390,31 @@ for my $node (@{$direction_to_surroundings[$direction]})
 				($node_x+1).'.'.($node_y+1),
 				)
 				{
-				if(exists $map->{$node_neighbor})
-					{
-					$keep_clear_cost_sum += $keep_clear_cost ;
-					}
+				$keep_clear_cost = $map->{$node_neighbor} if exists $map->{$node_neighbor} ;
 				}
 			}
 		
-		my $heat = "\e[7;040;31m" ; # bright red
-		for ($orthogonal_cost + $permeable_cost + $keep_clear_cost_sum)
-			{
-			$_ < 40 and $heat = "\e[7;040;91m" ; # red
-			$_ < 35 and $heat = "\e[7;040;33m" ; # orange
-			$_ < 30 and $heat = "\e[7;100;33m" ; # dim orange
-			$_ < 25 and $heat = "\e[7;040;93m" ; # yellow
-			$_ < 20 and $heat = "\e[7;100;93m" ; # dim yellow
-			$_ < 15 and $heat = "\e[7;040;94m" ; # blue
-			$_ < 10 and $heat = "\e[7;100;94m" ; # dim blue
-			$_ < 8 and $heat = "\e[7;040;95m" ; # cyan
-			$_ < 6 and $heat  = "\e[7;100;95m" ; # dim cyan
-			$_ < 4 and $heat  = "\e[7;100;96m" ; # dim
-			$_ < 2 and $heat  = "\e[7;040;90m" ; # grey
-			}
-		
-		print "\e[" . ($node_y + 1) . ";" . ($node_x + 2) . "H$heat.\e[m" if $self->{display_scanning} and (! $self->{no_map_display}) ;
-		
-		my ($cost, $heuristic) = ($orthogonal_cost + $permeable_cost + $keep_clear_cost_sum, $self->calc_heuristic($source, $node, $target, $direction) ) ;
+		my ($cost, $heuristic) = ($orthogonal_cost + $permeable_cost + $keep_clear_cost, $self->calc_heuristic($source, $node, $target, $direction) ) ;
 		
 		$self->{surrounding}{$node} = [ $cost, $heuristic ] ;
 		push @surrounding, [ $node, $cost, $heuristic ] ;
 		}
+	
+	$self->{scanned_cells}{$node}++ ;
+	}
+
+if($self->{step})
+	{
+	print "\e[" . ($y + 1) . ";" . ($x + 3) . "H\e[7;100;31m \e[m" ;
+	
+	$a = '' ;
+	unless($self->{step} eq 'run')
+		{
+		$a = <STDIN> ;
+		chomp $a ;
+		}
+	
+	$self->{step} = 'run' if $a eq 'r' ;
 	}
 
 $self->{visited_cells}{$source}++ ;
@@ -427,26 +428,27 @@ if($self->{do_diagonal})
 	# 		}
 	}
 
-usleep ($self->{scanning_sleep} // 1000) if $self->{display_scanning} ;
-
 return \@surrounding;
 }
 
 #-------------------------------------------------------------------------------
 
-use List::Util qw/max/;
-
 sub calc_heuristic
 {
 my ($self, $source, $node, $target, $direction) = @_;
 
-my ($xs, $ys) = split(/\./, $source);
-my ($x1, $y1) = split(/\./, $node);
+# my ($xs, $ys) = split(/\./, $source);
+my ($x, $y) = split(/\./, $node);
 my ($xt, $yt) = split(/\./, $target);
 
-my ($XHK, $XNHK, $YHK, $YNHK) = @{$self}{qw/XHK XNHK YHK YNHK/} ;
-my $heuristic =   ($x1 < $xt ? ($xt - $x1) * $XHK : ($x1 - $xt) * $XNHK)
-		+ ($y1 < $yt ? ($yt - $y1) * $YHK : ($y1 - $yt) * $YNHK) ;
+my ($XHK, $XNHK, $YHK, $YNHK, $HK) = @{$self}{qw/XHK XNHK YHK YNHK HK/} ;
+# my $heuristic =   ($x < $xt ? ($xt - $x) * $XHK : ($x - $xt) * $XNHK)
+# 		+ ($y < $yt ? ($yt - $y) * $YHK : ($y - $yt) * $YNHK) ;
+
+my $heuristic =   (abs($xt - $x) * $XHK)
+		+ (abs($yt - $y) * $YHK) ;
+
+$heuristic *= $HK ;
 
 $heuristic > 0 ? $heuristic : 0 ;
 }
@@ -456,7 +458,9 @@ $heuristic > 0 ? $heuristic : 0 ;
 package AI::Pathfinding::AStar::Term::Map ;
 use strict ;
 use warnings ;
+
 use Time::HiRes ;
+use JSON ;
 
 #-------------------------------------------------------------------------------
 
@@ -464,8 +468,6 @@ sub new
 {
 my ($proto, $data, $options) = @_;
 my $class = ref($proto) || $proto;
-
-my $display_map = ! $options->{no_map_display} ;
 
 my ($map, $map_text) = ({}, '') ;
 
@@ -479,24 +481,124 @@ while (<$data>)
 	my @cols = split //;
 	$max_width = @cols if $max_width < @cols ;
 	
+	my $y_1 = $y + 1;
+	$map_text .= sprintf "\e[$y_1;1H\e[2;30;31m%-2d", $y ;
+	
 	for my $x ( 0 .. $#cols )
 		{
 		my $cell = $cols[$x];
-		my $x_1 = $x + 1;
 		
-		$map->{$x_1.'.'.$y} = 10 if $cell ne ' ' ;
-		$map->{$x_1.'.'.$y} = $cell - '0' if $cell =~ /[0-9]/ ;
+		$map->{$x.'.'.$y} = $options->{opaque_cost} // $OPAQUE if $cell ne ' ' ;
+		
+		my $matched_class = 0 ;
+		for my $regex (keys %{$options->{opaque_cost}})
+			{
+			if($cell =~ $regex)
+				{
+				$matched_class++ ;
+				$map->{$x.'.'.$y} = $options->{opaque_cost}{$regex} ;
+				last ;
+				}
+			}
+		
+		$map->{$x.'.'.$y} = $OPAQUE if $cell ne ' ' && $matched_class == 0 ;
+		
+		$map->{$x.'.'.$y} = $cell - '0' if $cell =~ /[0-9]/ ;
+		
+		my $x_3 = $x + 3;
+		$map_text .= "\e[$y_1;${x_3}H$cell\e[m" ;
 		}
-	
-	$map_text .= sprintf "\e[2;30;31m%-2d\e[m$_\n", $y if $display_map ;
 	$y++;
 	}
 
-print "\e[2J\e[H" . "\e[2;30;31m  " . ('1234567890' x (1 + ($max_width / 10))) . "\e[m\n" . $map_text
-	if $display_map ;
+for (@{$options->{obstruction}})
+	{
+	if(/^([0-9]+)\.([0-9]+):([0-9]+)$/)
+		{
+		my ($x, $y, $value) = ($1, $2, $3) ;
+		
+		$map->{$x.'.'.$y} = $value ;
+		
+		my $x_offset = $x + 2;
+		my $y_offset = $y + 1;
+		
+		$map_text .= "\e[$y_offset;${x_offset}HO\e[m" ;
+		}
+	else
+		{
+		die "wrong format for obstruction: '$_'\n" ;
+		}
+	}
 
-return bless { %$map, width => $max_width, height => $y, nodes => $max_width * $y}, $class ;
+my $self = bless { %$map, map => $map, width => $max_width, height => $y, nodes => $max_width * $y}, $class ;
+
+$self->add_kcc($options->{keep_clear_cost} // 8) if $options->{keep_clear} ;
+
+for my $cell (keys %$map)
+	{
+	next if $map->{$cell} == 10;
+	
+	my $heat = "\e[7;040;31m" ; # bright red
+	for ($map->{$cell})
+		{
+		$_ < 40 and $heat = "\e[7;040;91m" ; # red
+		$_ < 35 and $heat = "\e[7;040;33m" ; # orange
+		$_ < 30 and $heat = "\e[7;100;33m" ; # dim orange
+		$_ < 25 and $heat = "\e[7;040;93m" ; # yellow
+		$_ < 20 and $heat = "\e[7;100;93m" ; # dim yellow
+		$_ < 15 and $heat = "\e[7;040;94m" ; # blue
+		$_ < 10 and $heat = "\e[7;100;94m" ; # dim blue
+		$_ <  8 and $heat = "\e[7;040;95m" ; # cyan
+		$_ <  6 and $heat = "\e[7;100;95m" ; # dim cyan
+		$_ <  4 and $heat = "\e[7;100;96m" ; # dim
+		$_ <  2 and $heat = "\e[7;040;90m" ; # grey
+		}
+	
+	my ($x, $y) = split(/\./, $cell) ;
+	
+	$self->{heat_map}[$x][$y] = $heat ;
+	
+	$map_text .= "\e[" . ($y + 1) . ";" . ($x + 3) . "H$heat \e[m" ;
+	}
+
+$map_text .= "\e[?25l" ; # hide cursor
+$map_text .= "\e[2J\e[H" . "\e[2;30;31m  " . ('1234567890' x (1 + ($max_width / 10))) . "\e[m\n" . $map_text ;
+$map_text .= "\e[?25h" ; # show cursor
+
+$self->{map_text} = $map_text ;
+
+return $self ;
 }
+
+#-------------------------------------------------------------------------------
+
+sub add_kcc
+{
+my ($self, $keep_clear_cost) = @_ ;
+
+for my $cell (grep {$self->{map}{$_} == 10} keys %{$self->{map}})
+	{
+	my ($x, $y) = split(/\./, $cell) ;
+	
+	for my $node_neighbor
+		(
+		($x-1).'.'.($y-1), ($x)  .'.'.($y-1), ($x+1).'.'.($y-1),
+		($x-1).'.'.($y),                      ($x+1).'.'.($y),
+		($x-1).'.'.($y+1), ($x)  .'.'.($y+1), ($x+1).'.'.($y+1),
+		)
+		{
+		my ($nx, $ny) = split(/\./, $node_neighbor) ;
+		
+		next if $nx < 1 || $nx > $self->{width} || $ny < 1 || $ny >= $self->{height} ;
+		
+		$self->{map}{$node_neighbor} += $keep_clear_cost if ! exists $self->{map}{$node_neighbor} || $self->{map}{$node_neighbor} != $OPAQUE ;
+		}
+	}
+}
+
+#-------------------------------------------------------------------------------
+
+sub display_map { my ($self) = @_ ; print $self->{map_text} ; }
 
 #-------------------------------------------------------------------------------
 
@@ -508,31 +610,28 @@ my $g = AI::Pathfinding::AStar::Obstacle::Map->new
 		(
 		$self,
 		{
-		keep_clear      => $options->{keep_clear},
-		display_scanning  => $options->{display_scanning},
-		no_map_display  => $options->{no_map_display},
-		scanning_sleep    => $options->{scanning_sleep} // 1000,
-		orthogonal_cost => $options->{orthogonal_cost} // 10,
-		diagonal_cost   => $options->{diagonal_cost} // 140,
-		permeable_cost  => $options->{permeable_cost} // {},
-		keep_clear_cost      => $options->{keep_clear_cost} // 8,
-		XHK             => $options->{XHK}  // 1,
-		XNHK            => $options->{XNHK} // 1,
-		YHK             => $options->{YHK}  // 1,
-		YNHK            => $options->{YNHK} // 1,
+		keep_clear       => $options->{keep_clear},
+		display_scanning => $options->{display_scanning},
+		step             => $options->{step},
+		no_map_display   => $options->{no_map_display},
+		orthogonal_cost  => $options->{orthogonal_cost} // $OPAQUE,
+		diagonal_cost    => $options->{diagonal_cost} // 140,
+		permeable_cost   => $options->{permeable_cost} // {},
+		keep_clear_cost  => $options->{keep_clear_cost} // 8,
+		obstruct         => $options->{obstruct},
+		XHK              => $options->{XHK}  // 1,
+		XNHK             => $options->{XNHK} // 1,
+		YHK              => $options->{YHK}  // 1,
+		YNHK             => $options->{YNHK} // 1,
+		HK               => $options->{HK} // 1,
 		}) ;
 
 my $display_map = ! $options->{no_map_display} ;
 
-my @colors = (31 .. 36) x 5 ;
+my @letters = 'A' .. 'Z'  ;
 
 my $routing_time = 0 ;
 my (@routes_text, @path_info) ;
-
-for (@routes)
-	{
-	die "wrong format for route: '$_'\n" unless /^[0-9]+\.[0-9]+$/ ;
-	}
 
 while (@routes > 1)
 	{
@@ -542,16 +641,21 @@ while (@routes > 1)
 	my ($SX, $SY) = split(/\./, $start);
 	my ($EX, $EY) = split(/\./, $end);
 	
-	my $color = shift @colors ;
+	my $letter = shift @letters ;
 	
 	my $t0 = Time::HiRes::gettimeofday();
 	my ($path, $cost) = $options->{heatmap_all} ? $g->findAllPaths($start, $end) : $g->findPath($start, $end) ;
 	my $t1 = Time::HiRes::gettimeofday();
+	
+	$a = <STDIN> if $options->{display_scanning} ;
+	
 	$routing_time += $t1 -$t0 ;
 	
 	$a=<STDIN> if $options->{pause} && @routes > 1 ;
 	
-	push @path_info, scalar(@$path)  . '/' . $cost ;
+	$self->display_map() if $display_map ;
+	
+	push @path_info, [scalar(@$path), $cost] ;
 	
 	my $route_text = '';
 	for my $position (@{$path})
@@ -560,17 +664,17 @@ while (@routes > 1)
 		
 		$g->set_obstacle($x, $y) if $options->{obstruct} ;
 		
-		$y += 1 ; # account for horizontal ruler
-		$x += 2 ; # account for vertical ruler
+		my $heat = $self->{heat_map}[$x][$y] // '';
 		
-		$route_text .= "\e[$y;${x}H\e[${color}m¤\e[m" if $display_map;
+		$y += 1 ; # for horizontal ruler
+		$x += 3 ; # for vertical ruler
+		
+		$route_text .= "\e[$y;${x}H$heat$letter\e[m" if $display_map;
 		}
 	
 	my ($SY1, $SX2) = ($SY +1, $SX + 2) ;
 	my ($EY1, $EX2) = ($EY +1, $EX + 2) ;
-	
-	$route_text .= "\e[$SY1;${SX2}H\e[${color}mS\e[m" if $display_map;
-	$route_text .= "\e[$EY1;${EX2}H\e[${color}mE\e[m" if $display_map;
+	$route_text .= "\e[$SY1;${SX2}H\e[32mS\e[m" . "\e[$EY1;${EX2}H\e[32mE\e[m" if $display_map;
 	
 	push @routes_text, $route_text ;
 	}
@@ -581,13 +685,40 @@ for (@routes_text)
 	print ;
 	}
 
-my $status_line = $self->{height} + 2 ;
-print "\e[$status_line;0H\e[m" if $display_map;
-printf "path lengths: @path_info, visited cells: %d/%d%%/%d\n",
-		 $g->get_visited_cells(), (($g->get_visited_cells() * 100)/ $self->{nodes}),  $self->{nodes}
-			 if $display_map;
+print "\e[" . ($self->{height} + 2) . ";0H\e[m" if $display_map ;
 
-printf "routing time: %.3f\n", $routing_time if $display_map;
+my %stats =
+	(
+	routing_time => $routing_time,
+	visited_cells => $g->get_visited_cells(),
+	percent_visited => (($g->get_visited_cells() * 100)/ $self->{nodes}),
+	total_cells => $self->{nodes},
+	scanned_cells => $g->get_scanned_cells(),
+	map{ (path_length => $_->[0] , path_cost => $_->[1]) } @path_info,
+	) ;
+
+if($options->{info})
+	{
+	my $path_info = join(' ', map { $_->[0] . '/' . $_->[1] } @path_info) ;
+	
+	printf "path lengths: $path_info, visited cells: %d/%d%%/%d, scanned cells: %d\n",
+			$g->get_visited_cells(),
+			(($g->get_visited_cells() * 100)/ $self->{nodes}),
+			$self->{nodes},
+			$g->get_scanned_cells() ;
+	
+	printf "routing time: %.3f\n", $routing_time;
+	}
+
+if($options->{stats})
+	{
+	print "$_: $stats{$_}\n" for sort keys %stats ;
+	}
+
+if($options->{json})
+	{
+	print JSON->new->allow_nonref->encode(\%stats) . "\n" ;
+	}
 }
 
 #-------------------------------------------------------------------------------
@@ -602,32 +733,46 @@ use Getopt::Long;
 
 sub help { system("pod2text $0") ; exit ; }
 
-my $options = { permeable_cost => {} } ;
+my $options = { opaque_cost => {}, permeable_cost => {}, obstruction => [] } ;
 GetOptions
 	(
 	'help'                  => \$options->{help},
-	'map|m=s'               => \$options->{map},
+	'map|m:s'               => \$options->{map},
 	'heatmap_all|H'         => \$options->{heatmap_all},
 	'no_map_display'        => \$options->{no_map_display},
+	'stats'                 => \$options->{stats},
+	'json'                  => \$options->{json},
+	'info'                  => \$options->{info},
+	'step'                  => \$options->{step},
 	'pause|p'               => \$options->{pause},
 	'display_scanning|ds'   => \$options->{display_scanning},
-	'scanning_sleep|ss:i'   => \$options->{scanning_sleep},
-	'obstruct|o'            => \$options->{obstruct},
+	'opaque_cost|OC:i'      => $options->{opaque_cost},
+	'obstruct'              => \$options->{obstruct},
+	'obstruction|o:s'       => $options->{obstruction},
 	'keep_clear|kc'         => \$options->{keep_clear},
-	'orthogonal_cost|oc:i'  => \$options->{orthogonal_cost},
-	'diagonal_cost|dc:i'    => \$options->{diagonal_cost},
-	'keep_clear_cost|kcc:i' => \$options->{keep_clear_cost},
-	'permeable_cost|pc:i'   => $options->{permeable_cost},
-	'XHK:i'                 => \$options->{XHK},
-	'XNHK:i'                => \$options->{XNHK},
-	'YHK:i'                 => \$options->{YHK},
-	'YNHK:i'                => \$options->{YNHK},
+	'orthogonal_cost|oc:f'  => \$options->{orthogonal_cost},
+	'diagonal_cost|dc:f'    => \$options->{diagonal_cost},
+	'keep_clear_cost|kcc:f' => \$options->{keep_clear_cost},
+	'permeable_cost|pc:f'   => $options->{permeable_cost},
+	'XHK:f'                 => \$options->{XHK},
+	'XNHK:f'                => \$options->{XNHK},
+	'YHK:f'                 => \$options->{YHK},
+	'YNHK:f'                => \$options->{YNHK},
+	'HK:f'                  => \$options->{HK},
 	) or die("Error in command line arguments\n");
 
 help() if $options->{help} ;
 
+for (@ARGV)
+	{
+	die "wrong format for route: '$_'\n" unless /^[0-9]+\.[0-9]+$/ ;
+	}
+
 my $map_file  = $options->{map} ? (IO::File->new($options->{map}, 'r') or die "$options->{map}: $!\n") : \*DATA ;
+
 my $map = AI::Pathfinding::AStar::Term::Map->new($map_file, $options) ;
+
+$map->display_map() unless $options->{no_map_display} ;
 $map->display_routes($options, @ARGV) ;
 
 =head1 NAME
@@ -661,7 +806,7 @@ You pass coordinates as x.y, you can pass a multiple route legs.
 =head1 COSTS 
 
 The A* path finding uses costs to determine which path is the best. The "opaque"
-cells have an infinite cost and are not even considered.
+cells have an infinite cost and are not even considered (see 'opaque_class').
 
 Orthogonal cost is 10 by default but can be changed
 
@@ -670,16 +815,16 @@ routing.
 
 "Translucent" cost varies between 0 and 9, see option --translucent_cost.
 
-"Extra_cost" can be assigned to cells aound 'opaque' cells, See options
+"Extra_cost" can be assigned to cells around 'opaque' cells, See options
 --keep_clear and --keep_clear_cost.
 
 =head2 Default costs
 
- orthogonal_cost = 40
+ orthogonal_cost = 10
 
- diagonal_cost = 140
+ diagonal_cost = not_used 
 
- keep_clear_cost = 40
+ keep_clear_cost = 10
 
  permeable_cost = 0-9
 
@@ -688,7 +833,7 @@ routing.
 I recommend that you use these options to start with and look at the heatmap then
 play with the costs from there.
 
- --orthogonal_cost 1 --keep_clear_cost 5
+ --orthogonal_cost 1 --keep_clear_cost 2 
 
 =head1 OPTIONS
 
@@ -715,7 +860,6 @@ see option --permeable below)
 
 Display the portion of the map scanned during the A* path finding
 
---scanning_sleep:i             # pause during leg computation
 
 To allow a better visualization effect, a short pause is used, the default
 is 1000, when multi legs paths are computed, smaller value gives shorter delay.
@@ -739,6 +883,8 @@ looking at all the nodes then would be necessary to compute paths.
 
 Useful if you want to modify the code and output other type of data
 
+--obstruction x.y:value         # add obstruction on the command line
+
 --obstruct                      # multi leg path obstruct each other
 
 When set this option makes the cells used in a path opaque rendering them
@@ -756,7 +902,7 @@ including the extra cost to keep cleat is the cheapest.
 
 --keep_clear_cost :i            # cost assigned to cells close to opaque cells
 
---permeable_cost l=i            # assign map permeable costs
+--permeable_cost class=cost     # cost assigned to permeable class
  
              1               .---.
              5  .---.        |   |
@@ -774,25 +920,40 @@ but you can assign a cost to each class.
 Adding --permeable_cost 1=100 would assign a cost of 100 to the cells that
 contain '1' in the map.
 
+--opaque_class :i               # class assigned to opaque cells
+
+By default the class is '10' and its cost is infinite, you can set a class on
+the command line, this lets you "go through walls". A* will still try to find
+the most efficient path and so setting the class to a high value forces the
+algorithm to go through as few "walls" as possible.
+
+As an example the default map has a vertical line consisting of 'I', you can
+assign a value to 'I' with --opaque_cost I=5. Remember that it's a regexp and
+that you may have to quote it properly.
+
 All options:
 
-    help'
-    map|m=s'
-    heatmap_all|H'
-    no_map_display'
-    pause|p'
-    display_scanning|ds'
-    scanning_sleep|ss:i'
-    obstruct|o'
-    keep_clear|kc'
-    orthogonal_cost|oc:i'
-    diagonal_cost|dc:i'
-    keep_clear_cost|kcc:i'
-    permeable_cost|pc:i'
-    XHK:i'
-    XNHK:i'
-    YHK:i'
-    YNHK:i'
+    help
+    map|m=s
+    heatmap_all|H
+    no_map_display
+    stats
+    json
+    pause|p
+    display_scanning|ds
+    obstruct
+    obstruction|o
+    keep_clear|kc
+    orthogonal_cost|oc:i
+    diagonal_cost|dc:i
+    keep_clear_cost|kcc:i
+    permeable_cost|pc:i
+    opaque_class:i
+    XHK:f
+    XNHK:f
+    YHK:f
+    YNHK:f
+    HK:f
 
 =back
 
@@ -815,26 +976,26 @@ __DATA__
                                   .---.
                                   |   |
                                   '---'
-      .---.                         ^
-      |   |-----.--90809-------.----'
-      '---'     |         |    |
-                |         |    |       .---.
-                |         |    |       |   |
-                |         |    |       '---'
-                |         |    |         ^
-                |         |    |         |       .---.
-                |         |    |         '-------|   |
-        .---.   |         v    |                 '---'
-        |   |999|       .---.  |    .---.
-        '---'   |       |   |  |    |   |-------------------.
-          |     |       '---'  |    '---'                   |
-  .---.   |     |              |                            |
-  |   |<--'     v              |           .---.            |
-  '---'       .---.            |           |   |            |
-              |   |            |           '---'            v
+      .-1-.                         ^
+      1   |-----.--90809-------.----'
+      '-1-'     |         |    I
+                |         |    I       .---.
+                |         |    I       |   |
+                |         |    I       '---'
+                |         |    I         ^
+                |         |    I         |       .---.
+                |         |    I         '-------|   |
+        .---.   |         v    I                 '---'
+        |   |999|       .---.  I    .---.
+        '---'   |       |   |  I    |   |-------------------.
+          |     |       '---'  I    '---'                   |
+  .---.   |     |              I                            |
+  |   |<--'     v              I           .---.            |
+  '---'       .---.            I           |   |            |
+              |   |            I           '---'            v
               '---'            v             ^            .---.
-                             .---.           |            |   |
-                             |   |           |            '---'
+                             .---.           |            1   1
+                             |   |           |            '-1-'
                              '---'           |
                                              |
              .---.                           |
