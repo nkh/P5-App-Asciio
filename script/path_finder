@@ -731,7 +731,7 @@ if($options->{info})
 	
 	print "HK: $options->{HK}, XHK: $options->{XHK}, YHK: $options->{YHK}\n" ;
 	printf "routing time: %.3f\n", $routing_time;
-	print "hjkl-HJKL: move start and end point\naAZz: HK\nsS: XHK\ndD: YHK\nf: scan display\n" if $options->{interactive}
+	print "hjkl-HJKL: move start and end point\nx: swap points\naAZz: HK\nsS: XHK\ndD: YHK\ng: use preset HK\nf: scan display\n" if $options->{interactive}
 	}
 
 if($options->{stats})
@@ -807,6 +807,19 @@ my $map_file  = $options->{map} ? (IO::File->new($options->{map}, 'r') or die "$
 my $map = AI::Pathfinding::AStar::Term::Map->new($map_file, $options) ;
 
 $map->display_map() unless $options->{no_map_display} ;
+# HK, XHK, YHK
+my $preset_HK = -1 ;
+my @preset_HK =
+	(
+	[10, 1.5, 1],
+	[10, 1.5, .5],
+	[10, .5, 1],
+	[10, .5, .5],
+	[20, 2, 1],
+	[20, 2, .3],
+	[20, .2, 1],
+	[20, .2, .3],
+	) ;
 
 if($options->{interactive})
 	{
@@ -829,18 +842,27 @@ if($options->{interactive})
 		if($input eq 'H') { $xe-- unless $xe == 1 }
 		if($input eq 'J') { $ye++ unless $ye == $map->{height} }
 		if($input eq 'K') { $ye-- unless $ye == 1 }
-		if($input eq 'L') { $xe++ unless $xe == $map->{width} } ;
+		if($input eq 'L') { $xe++ unless $xe == $map->{width} }
 		
-		if($input eq 'a') { $options->{HK}  += $options->{HK_INC} } ;
-		if($input eq 'A') { $options->{HK}  -= $options->{HK_INC} } ;
-		if($input eq 'z') { $options->{HK}  += 10 } ;
-		if($input eq 'Z') { $options->{HK}  -= 10 } ;
-		if($input eq 's') { $options->{XHK} += $options->{XHK_INC} } ;
-		if($input eq 'S') { $options->{XHK} -= $options->{XHK_INC} } ;
-		if($input eq 'd') { $options->{YHK} += $options->{YHK_INC} } ;
-		if($input eq 'D') { $options->{YHK} -= $options->{YHK_INC} } ;
+		if($input eq 'a') { $options->{HK}  += $options->{HK_INC} }
+		if($input eq 'A') { $options->{HK}  -= $options->{HK_INC} }
+		if($input eq 'z') { $options->{HK}  += 10 }
+		if($input eq 'Z') { $options->{HK}  -= 10 }
+		if($input eq 's') { $options->{XHK} += $options->{XHK_INC} }
+		if($input eq 'S') { $options->{XHK} -= $options->{XHK_INC} }
+		if($input eq 'd') { $options->{YHK} += $options->{YHK_INC} }
+		if($input eq 'D') { $options->{YHK} -= $options->{YHK_INC} }
 		
 		if($input eq 'f') { $options->{display_scanning} ^= 1 } ;
+		
+		if($input eq 'g') 
+			{
+			$preset_HK++ ; $preset_HK = 0 if $preset_HK == @preset_HK ;
+			 
+			@{$options}{'HK', 'XHK', 'YHK' } = @{$preset_HK[$preset_HK]} ;
+			}
+		
+		if($input eq 'x') { ($xs, $ys, $xe, $ye) = ($xe, $ye, $xs, $ys) }
 		
 		$map->display_routes($options, $xs.'.'.$ys, $xe.'.'.$ye) ;
 		}
