@@ -224,7 +224,8 @@ use warnings ;
 #-------------------------------------------------------------------------------
 
 use Readonly ;
-Readonly my $OPAQUE => 10 ;
+Readonly my $OPAQUE => -1 ;
+Readonly my $ORTHOGONAL_COST => 10 ;
 
 #-------------------------------------------------------------------------------
 
@@ -236,7 +237,7 @@ my $self = bless
 		{
 		keep_clear => 0,
 		do_diagonal => 1, # TODO
-		orthogonal_cost => $OPAQUE,
+		orthogonal_cost => $ORTHOGONAL_COST,
 		diagonal_cost => 0,
 		keep_clear_cost => 8,
 		visited_cells => {},
@@ -262,7 +263,7 @@ sub keep_clear { my ($self, $keep_clear) = @_; $self->{keep_clear} = $keep_clear
 
 #-------------------------------------------------------------------------------
 
-sub set_obstacle { my ($self, $x, $y, $value) = @_; $self->{map}{$x . '.' . $y} = $value // $OPAQUE }
+sub set_obstacle { my ($self, $x, $y, $value) = @_; $self->{map}{map}{$x . '.' . $y} = $value // $OPAQUE }
 
 #-------------------------------------------------------------------------------
 
@@ -273,6 +274,8 @@ sub display_scanning { my ($self, $display_scanning) = @_; $self->{display_scann
 sub get_visited_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{visited_cells}}) }
 
 sub get_scanned_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{scanned_cells}}) }
+
+sub get_cached_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{cached_cells}}) }
 
 #-------------------------------------------------------------------------------
 
@@ -343,8 +346,9 @@ my ($x, $y, $map) = (split(/\./, $source), $self->{map});
 
 return [] if $x < 1 || $x > $map->{width} || $y < 1 || $y > $map->{height} ;
 
-my ($orthogonal_cost, $diagonal_cost, $keep_clear_cost) = @{$self}{qw/orthogonal_cost diagonal_cost keep_clear_cost/} ;
+my ($orthogonal_cost, $diagonal_cost) = @{$self}{qw/orthogonal_cost diagonal_cost/} ;
 
+$direction //= 2 ;
 my @direction_to_surroundings =
 	(
 	[$x .'.'. ($y-1),    ($x+1) .'.'. $y,    ($x-1) .'.'. $y,    $x .'.'. ($y+1)],
@@ -352,8 +356,6 @@ my @direction_to_surroundings =
 	[$x .'.'. ($y+1),    ($x+1) .'.'. $y,    ($x-1) .'.'. $y,    $x .'.'. ($y-1)],
 	[($x-1) .'.'. $y,    $x .'.'. ($y+1),    $x .'.'. ($y-1),    ($x+1) .'.'. $y],
 	) ;
-
-$direction //= 2 ;
 
 my @surrounding ;
 
@@ -364,40 +366,26 @@ for my $node (@{$direction_to_surroundings[$direction]})
 	
 	if(! $self->{obstruct} && exists $self->{surrounding}{$node})
 		{
-		push @surrounding, [ $node, @{$self->{surrounding}{$node}} ] ;
+		push @surrounding, $self->{surrounding}{$node} ;
+		$self->{cached_cells}{$node}++ ;
 		next ;
 		}
 	
-	if (! exists $map->{$node} || $map->{$node} < $OPAQUE)
+	my $node_exists = exists $map->{map}{$node} ? 1 : 0 ;
+ 	
+	if (! $node_exists || $map->{map}{$node} != $OPAQUE)
 		{
-		my $node_v = ! exists $map->{$node} ? "not exists" : $map->{$node} < $OPAQUE ;
+		my $node_cost = $node_exists ? $map->{map}{$node}  : 0 ;
+		# print "\e[1;30Hcalc: " . ( $node_exists) . " -> $node_cost                " ;
 		
-		my $permeable_cost = exists $map->{$node} && $map->{$node} < $OPAQUE ? $self->{permeable_cost}{$map->{$node}} // $map->{$node} // 0  : 0 ;
+		$self->{surrounding}{$node} = 
+			[
+			$node,
+			$orthogonal_cost + $node_cost,
+			$self->calc_heuristic($source, $node, $target, $direction)
+			] ;
 		
-		my $keep_clear_cost = 0;
-		
-		if($self->{keep_clear})
-			{
-			for my $node_neighbor
-				(
-				($node_x-1).'.'.($node_y-1),
-				($node_x)  .'.'.($node_y-1),
-				($node_x+1).'.'.($node_y-1),
-				($node_x-1).'.'.($node_y),
-				($node_x+1).'.'.($node_y),
-				($node_x-1).'.'.($node_y+1),
-				($node_x)  .'.'.($node_y+1),
-				($node_x+1).'.'.($node_y+1),
-				)
-				{
-				$keep_clear_cost = $map->{$node_neighbor} if exists $map->{$node_neighbor} ;
-				}
-			}
-		
-		my ($cost, $heuristic) = ($orthogonal_cost + $permeable_cost + $keep_clear_cost, $self->calc_heuristic($source, $node, $target, $direction) ) ;
-		
-		$self->{surrounding}{$node} = [ $cost, $heuristic ] ;
-		push @surrounding, [ $node, $cost, $heuristic ] ;
+		push @surrounding, $self->{surrounding}{$node} ;
 		}
 	
 	$self->{scanned_cells}{$node}++ ;
@@ -405,7 +393,15 @@ for my $node (@{$direction_to_surroundings[$direction]})
 
 if($self->{step})
 	{
-	print "\e[" . ($y + 1) . ";" . ($x + 3) . "H\e[7;100;31m \e[m" ;
+	# for (@surrounding)
+	# 	{
+	# 	my ($sx, $sy) = split(/\./, @{$_}[0]);
+	# 	# print "\e[" . ($sy + 1) . ";" . ($sx + 3) . "H\e[7;100;31m \e[m" ;
+	# 	print "\e[" . ($sy + 1) . ";" . ($sx + 3) . "H$_->[1]\e[m" ;
+	# 	$a = <STDIN> unless($self->{step} eq 'run') ;
+	# 	}
+	
+	print "\e[" . ($y + 1) . ";" . ($x + 3) . "H\e[7;100;33m \e[m" ;
 	
 	$a = '' ;
 	unless($self->{step} eq 'run')
@@ -424,7 +420,7 @@ if($self->{do_diagonal})
 	# for my $node ( ($x+1).'.'.($y+1), ($x+1).'.'.($y-1), ($x-1).'.'.($y+1), ($x-1).'.'.($y-1))
 	# 		{
 	# 		push @$surrounding, [$node, $diagonal_cost, calc_heuristic($node, $target)]
-	# 			if exists $map->{$node} && $map->{$node} ;
+	# 			if exists $map->{map}{$node} && $map->{map}{$node} ;
 	# 		}
 	}
 
@@ -441,12 +437,12 @@ my ($self, $source, $node, $target, $direction) = @_;
 my ($x, $y) = split(/\./, $node);
 my ($xt, $yt) = split(/\./, $target);
 
-my ($XHK, $XNHK, $YHK, $YNHK, $HK) = @{$self}{qw/XHK XNHK YHK YNHK HK/} ;
-# my $heuristic =   ($x < $xt ? ($xt - $x) * $XHK : ($x - $xt) * $XNHK)
-# 		+ ($y < $yt ? ($yt - $y) * $YHK : ($y - $yt) * $YNHK) ;
+my ($XHK, $YHK, $HK) = @{$self}{qw/XHK YHK HK/} ;
 
-my $heuristic =   (abs($xt - $x) * $XHK)
-		+ (abs($yt - $y) * $YHK) ;
+# my $heuristic =   (abs($xt - $x) * $XHK)
+# 		+ (abs($yt - $y) * $YHK) ;
+
+my $heuristic = sqrt( (($xt - $x)**2) * $XHK + (($yt - $y)**2) * $YHK ) ;
 
 $heuristic *= $HK ;
 
@@ -469,8 +465,9 @@ sub new
 my ($proto, $data, $options) = @_;
 my $class = ref($proto) || $proto;
 
-my ($map, $map_text) = ({}, '') ;
+my ($map, $map_text, $map_xy, $map_yx) = ({}, '', {}, {}) ;
 
+my $opaque_nodes = 0 ;
 my $max_width = 0 ;
 my $y = 1;
 
@@ -488,7 +485,7 @@ while (<$data>)
 		{
 		my $cell = $cols[$x];
 		
-		$map->{$x.'.'.$y} = $options->{opaque_cost} // $OPAQUE if $cell ne ' ' ;
+		$map->{$x.'.'.$y} = $options->{opaque_cost} // $ORTHOGONAL_COST if $cell ne ' ' ;
 		
 		my $matched_class = 0 ;
 		for my $regex (keys %{$options->{opaque_cost}})
@@ -501,9 +498,20 @@ while (<$data>)
 				}
 			}
 		
-		$map->{$x.'.'.$y} = $OPAQUE if $cell ne ' ' && $matched_class == 0 ;
-		
-		$map->{$x.'.'.$y} = $cell - '0' if $cell =~ /[0-9]/ ;
+		if($matched_class == 0)
+			{
+			if($cell =~ /[0-9]/)
+				{
+				$map->{$x.'.'.$y} = $cell - '0'
+				}
+			elsif($cell ne ' ')
+				{
+				$map->{$x.'.'.$y} = $OPAQUE ;
+				$opaque_nodes++ ;
+				}
+			
+			# $map_xy->{$x}{$y} = $map_yx->{$y}{$x} = $map->{$x.'.'.$y} if exists $map->{$x.'.'.$y}  ;
+			}
 		
 		my $x_3 = $x + 3;
 		$map_text .= "\e[$y_1;${x_3}H$cell\e[m" ;
@@ -530,20 +538,26 @@ for (@{$options->{obstruction}})
 		}
 	}
 
-my $self = bless { %$map, map => $map, width => $max_width, height => $y, nodes => $max_width * $y}, $class ;
-
 for my $cell (keys %$map)
 	{
-	next if $map->{$cell} == $OPAQUE;
+	next if $map->{$cell} == $OPAQUE ;
 	
 	$map->{$cell} = $options->{permeable_cost}{$map->{$cell}} // $map->{$cell} ;
 	}
 
-$self->add_kcc($options->{keep_clear_cost} // 8) if $options->{keep_clear} ;
+my $self = bless
+		{
+		map => $map, width => $max_width, height => $y,
+		nodes => $max_width * $y,
+		opaque_nodes => $opaque_nodes,
+		accessible_nodes => ($max_width * $y) - $opaque_nodes,
+		}, $class ;
 
-for my $cell (keys %$map)
+$self->add_kcc($options->{keep_clear_cost} // 8, $options->{keep_clear_additive}) if $options->{keep_clear} ;
+
+for my $cell (keys %{$self->{map}})
 	{
-	next if $map->{$cell} == $OPAQUE;
+	next if $map->{$cell} == $OPAQUE ;
 	
 	my $heat = "\e[7;040;31m" ; # bright red
 	for ($map->{$cell})
@@ -581,25 +595,31 @@ return $self ;
 
 sub add_kcc
 {
-my ($self, $keep_clear_cost) = @_ ;
+my ($self, $keep_clear_cost, $additive) = @_ ;
 
-for my $cell (grep {$self->{map}{$_} == 10} keys %{$self->{map}})
+for my $cell (grep {$self->{map}{$_} == $OPAQUE} keys %{$self->{map}})
 	{
 	my ($x, $y) = split(/\./, $cell) ;
 	
 	for my $node_neighbor
 		(
-		($x-1).'.'.($y-1), ($x)  .'.'.($y-1), ($x+1).'.'.($y-1),
-		($x-1).'.'.($y),                      ($x+1).'.'.($y),
-		($x-1).'.'.($y+1), ($x)  .'.'.($y+1), ($x+1).'.'.($y+1),
+		grep { !exists $self->{map}{$_} || $self->{map}{$_} != $OPAQUE }
+			($x-1).'.'.($y-1), ($x)  .'.'.($y-1), ($x+1).'.'.($y-1),
+			($x-1).'.'.($y),                      ($x+1).'.'.($y),
+			($x-1).'.'.($y+1), ($x)  .'.'.($y+1), ($x+1).'.'.($y+1),
 		)
 		{
 		my ($nx, $ny) = split(/\./, $node_neighbor) ;
-		
 		next if $nx < 1 || $nx > $self->{width} || $ny < 1 || $ny >= $self->{height} ;
-		next if $self->{map}{$node_neighbor} == $OPAQUE ;
 		
-		$self->{map}{$node_neighbor} += $keep_clear_cost if $self->{map}{$cell} == $OPAQUE ;
+		if($additive)
+			{
+			$self->{map}{$node_neighbor} += $keep_clear_cost ;
+			}
+		else
+			{
+			$self->{map}{$node_neighbor} = $keep_clear_cost ;
+			}
 		}
 	}
 }
@@ -622,15 +642,13 @@ my $g = AI::Pathfinding::AStar::Obstacle::Map->new
 		display_scanning => $options->{display_scanning},
 		step             => $options->{step},
 		no_map_display   => $options->{no_map_display},
-		orthogonal_cost  => $options->{orthogonal_cost} // $OPAQUE,
+		orthogonal_cost  => $options->{orthogonal_cost} // $ORTHOGONAL_COST,
 		diagonal_cost    => $options->{diagonal_cost} // 140,
 		permeable_cost   => $options->{permeable_cost} // {},
 		keep_clear_cost  => $options->{keep_clear_cost} // 8,
 		obstruct         => $options->{obstruct},
 		XHK              => $options->{XHK}  // 1,
-		XNHK             => $options->{XNHK} // 1,
 		YHK              => $options->{YHK}  // 1,
-		YNHK             => $options->{YNHK} // 1,
 		HK               => $options->{HK} // 1,
 		}) ;
 
@@ -657,7 +675,6 @@ while (@routes > 1)
 	my ($path, $cost) = $options->{heatmap_all} ? $g->findAllPaths($start, $end) : $g->findPath($start, $end) ;
 	my $t1 = Time::HiRes::gettimeofday();
 	
-
 	$a = <STDIN> if $options->{display_scanning} && ! $options->{interactive} ;
 	
 	$routing_time += $t1 -$t0 ;
@@ -702,19 +719,18 @@ my %stats =
 	(
 	routing_time     => $routing_time,
 	visited_cells    => $g->get_visited_cells(),
-	percent_visited  => (($g->get_visited_cells() * 100)/ $self->{nodes}),
+	percent_visited  => (($g->get_visited_cells() * 100)/ $self->{accessible_nodes}),
 	total_cells      => $self->{nodes},
+	accessible_cells => $self->{accessible_nodes},
 	scanned_cells    => $g->get_scanned_cells(),
 	keep_clear       => $options->{keep_clear} // 0,
-	orthogonal_cost  => $options->{orthogonal_cost} // $OPAQUE,
+	orthogonal_cost  => $options->{orthogonal_cost} // $ORTHOGONAL_COST,
 	diagonal_cost    => $options->{diagonal_cost} // 140,
 	permeable_cost   => $options->{permeable_cost} // {},
 	keep_clear_cost  => $options->{keep_clear_cost} // 8,
 	obstruct         => $options->{obstruct} // 0,
 	XHK              => $options->{XHK}  // 1,
-	XNHK             => $options->{XNHK} // 1,
 	YHK              => $options->{YHK}  // 1,
-	YNHK             => $options->{YNHK} // 1,
 	HK               => $options->{HK} // 1,
 	map{ (path_length => $_->[0] , path_cost => $_->[1]) } @path_info,
 	) ;
@@ -723,11 +739,14 @@ if($options->{info})
 	{
 	my $path_info = join(' ', map { $_->[0] . '/' . $_->[1] } @path_info) ;
 	
-	printf "path lengths: $path_info, visited cells: %d/%d%%/%d, scanned cells: %d\n",
+	printf "path lengths: $path_info, visited cells: %d/%d%%, scanned cells: %d/%d%%/%d%%, cells: %d/%d\n",
 			$g->get_visited_cells(),
-			(($g->get_visited_cells() * 100)/ $self->{nodes}),
-			$self->{nodes},
-			$g->get_scanned_cells() ;
+			(($g->get_visited_cells() * 100)/ $self->{accessible_nodes}),
+			$g->get_scanned_cells(),
+			(($g->get_scanned_cells() * 100)/ $self->{accessible_nodes}),
+			(($g->get_cached_cells() * 100)/ $g->get_scanned_cells()),
+			$self->{accessible_nodes},
+			$self->{nodes} ;
 	
 	print "HK: $options->{HK}, XHK: $options->{XHK}, YHK: $options->{YHK}\n" ;
 	printf "routing time: %.3f\n", $routing_time;
@@ -767,35 +786,34 @@ my $options =
 
 GetOptions
 	(
-	'help'                  => \$options->{help},
-	'interactive|i'         => \$options->{interactive},
-	'map|m:s'               => \$options->{map},
-	'heatmap_all|H'         => \$options->{heatmap_all},
-	'no_map_display'        => \$options->{no_map_display},
-	'route_glyph:s'         => \$options->{route_glyph},
-	'route_color:i'         => \$options->{route_color},
-	'stats'                 => \$options->{stats},
-	'json'                  => \$options->{json},
-	'info'                  => \$options->{info},
-	'step'                  => \$options->{step},
-	'pause|p'               => \$options->{pause},
-	'display_scanning|ds'   => \$options->{display_scanning},
-	'opaque_cost|OC:i'      => $options->{opaque_cost},
-	'obstruct'              => \$options->{obstruct},
-	'obstruction|o:s'       => $options->{obstruction},
-	'keep_clear|kc'         => \$options->{keep_clear},
-	'orthogonal_cost|oc:f'  => \$options->{orthogonal_cost},
-	'diagonal_cost|dc:f'    => \$options->{diagonal_cost},
-	'keep_clear_cost|kcc:f' => \$options->{keep_clear_cost},
-	'permeable_cost|pc:f'   => $options->{permeable_cost},
-	'XHK:f'                 => \$options->{XHK},
-	'XNHK:f'                => \$options->{XNHK},
-	'YHK:f'                 => \$options->{YHK},
-	'YNHK:f'                => \$options->{YNHK},
-	'HK:f'                  => \$options->{HK},
-	'HK_INC:f'              => \$options->{HK_INC},
-	'XHK_INC:f'             => \$options->{XHK_INC},
-	'YHK_INC:f'             => \$options->{YHK_INC},
+	'help'                    => \$options->{help},
+	'interactive|i'           => \$options->{interactive},
+	'map|m:s'                 => \$options->{map},
+	'heatmap_all|H'           => \$options->{heatmap_all},
+	'no_map_display'          => \$options->{no_map_display},
+	'route_glyph:s'           => \$options->{route_glyph},
+	'route_color:i'           => \$options->{route_color},
+	'stats'                   => \$options->{stats},
+	'json'                    => \$options->{json},
+	'info'                    => \$options->{info},
+	'step'                    => \$options->{step},
+	'pause|p'                 => \$options->{pause},
+	'display_scanning|ds'     => \$options->{display_scanning},
+	'opaque_cost|OC:i'        => $options->{opaque_cost},
+	'obstruct'                => \$options->{obstruct},
+	'obstruction|o:s'         => $options->{obstruction},
+	'keep_clear|kc'           => \$options->{keep_clear},
+	'orthogonal_cost|oc:f'    => \$options->{orthogonal_cost},
+	'diagonal_cost|dc:f'      => \$options->{diagonal_cost},
+	'keep_clear_cost|kcc:f'   => \$options->{keep_clear_cost},
+	'keep_clear_additive|kca' => \$options->{keep_clear_additive},
+	'permeable_cost|pc:f'     => $options->{permeable_cost},
+	'XHK:f'                   => \$options->{XHK},
+	'YHK:f'                   => \$options->{YHK},
+	'HK:f'                    => \$options->{HK},
+	'HK_INC:f'                => \$options->{HK_INC},
+	'XHK_INC:f'               => \$options->{XHK_INC},
+	'YHK_INC:f'               => \$options->{YHK_INC},
 	) or die("Error in command line arguments\n");
 
 help() if $options->{help} ;
@@ -1050,9 +1068,7 @@ All options:
     permeable_cost|pc:i
     opaque_class:i
     XHK:f
-    XNHK:f
     YHK:f
-    YNHK:f
     HK:f
 
 =back
@@ -1072,14 +1088,14 @@ to find the feasibility of automatic link routing.
 
 
 __DATA__
-                                                            
+
                                   .---.
                                   |   |
                                   '---'
       .-1-.                         ^
-      1   |-----.--90809-------.----'
-      '-1-'     |         |    I
-                |         |    I       .---.
+      1   |-----.--90809-------.----'             .---.
+      '-1-'     |         |    I                  |   |
+                |         |    I       .---.      '---'
                 |         |    I       |   |
                 |         |    I       '---'
                 |         |    I         ^
