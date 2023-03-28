@@ -235,11 +235,9 @@ my ($invocant, $map, $setup) = @_;
 my $class = ref($invocant) || $invocant;
 my $self = bless
 		{
-		keep_clear => 0,
 		do_diagonal => 1, # TODO
 		orthogonal_cost => $ORTHOGONAL_COST,
 		diagonal_cost => 0,
-		keep_clear_cost => 8,
 		visited_cells => {},
 		%$setup,
 		map => $map // {},
@@ -256,10 +254,6 @@ return $self;
 #-------------------------------------------------------------------------------
 
 sub set_map { my ($self, $map, $width, $height) = @_; $self->{map} = $map; }
-
-#-------------------------------------------------------------------------------
-
-sub keep_clear { my ($self, $keep_clear) = @_; $self->{keep_clear} = $keep_clear; }
 
 #-------------------------------------------------------------------------------
 
@@ -372,7 +366,7 @@ for my $node (@{$direction_to_surroundings[$direction]})
 		}
 	
 	my $node_exists = exists $map->{map}{$node} ? 1 : 0 ;
- 	
+	
 	if (! $node_exists || $map->{map}{$node} != $OPAQUE)
 		{
 		my $node_cost = $node_exists ? $map->{map}{$node}  : 0 ;
@@ -465,6 +459,8 @@ sub new
 my ($proto, $data, $options) = @_;
 my $class = ref($proto) || $proto;
 
+my $display_map = ! $options->{no_map_display} ;
+
 my ($map, $map_text, $map_xy, $map_yx) = ({}, '', {}, {}) ;
 
 my $opaque_nodes = 0 ;
@@ -475,74 +471,38 @@ while (<$data>)
 	{
 	chomp;
 	
-	my @cols = split //;
+	my @cols = split // ;
 	$max_width = @cols if $max_width < @cols ;
 	
 	my $y_1 = $y + 1;
-	$map_text .= sprintf "\e[$y_1;1H\e[2;30;31m%-2d", $y ;
+	$map_text .= sprintf "\e[$y_1;1H\e[2;30;31m%-2d", $y if $display_map ;
 	
 	for my $x ( 0 .. $#cols )
 		{
 		my $cell = $cols[$x];
 		
-		$map->{$x.'.'.$y} = $options->{opaque_cost} // $ORTHOGONAL_COST if $cell ne ' ' ;
-		
-		my $matched_class = 0 ;
-		for my $regex (keys %{$options->{opaque_cost}})
+		if($cell ne ' ')
 			{
-			if($cell =~ $regex)
+			for my $character (keys %{$options->{permeable_cost}})
 				{
-				$matched_class++ ;
-				$map->{$x.'.'.$y} = $options->{opaque_cost}{$regex} ;
-				last ;
+				if($cell eq $character)
+					{
+					$map->{$x.'.'.$y} = $options->{permeable_cost}{$character} ;
+					last ;
+					}
 				}
-			}
-		
-		if($matched_class == 0)
-			{
-			if($cell =~ /[0-9]/)
-				{
-				$map->{$x.'.'.$y} = $cell - '0'
-				}
-			elsif($cell ne ' ')
+			
+			unless(exists $map->{$x.'.'.$y})
 				{
 				$map->{$x.'.'.$y} = $OPAQUE ;
 				$opaque_nodes++ ;
 				}
-			
-			# $map_xy->{$x}{$y} = $map_yx->{$y}{$x} = $map->{$x.'.'.$y} if exists $map->{$x.'.'.$y}  ;
 			}
 		
 		my $x_3 = $x + 3;
-		$map_text .= "\e[$y_1;${x_3}H$cell\e[m" ;
+		$map_text .= "\e[$y_1;${x_3}H$cell\e[m" if $display_map ;
 		}
 	$y++;
-	}
-
-for (@{$options->{obstruction}})
-	{
-	if(/^([0-9]+)\.([0-9]+):([0-9]+)$/)
-		{
-		my ($x, $y, $value) = ($1, $2, $3) ;
-		
-		$map->{$x.'.'.$y} = $value ;
-		
-		my $x_offset = $x + 2;
-		my $y_offset = $y + 1;
-		
-		$map_text .= "\e[$y_offset;${x_offset}HO\e[m" ;
-		}
-	else
-		{
-		die "wrong format for obstruction: '$_'\n" ;
-		}
-	}
-
-for my $cell (keys %$map)
-	{
-	next if $map->{$cell} == $OPAQUE ;
-	
-	$map->{$cell} = $options->{permeable_cost}{$map->{$cell}} // $map->{$cell} ;
 	}
 
 my $self = bless
@@ -555,36 +515,59 @@ my $self = bless
 
 $self->add_kcc($options->{keep_clear_cost} // 8, $options->{keep_clear_additive}) if $options->{keep_clear} ;
 
-for my $cell (keys %{$self->{map}})
+for (@{$options->{obstruction}})
 	{
-	next if $map->{$cell} == $OPAQUE ;
-	
-	my $heat = "\e[7;040;31m" ; # bright red
-	for ($map->{$cell})
+	if(/^([0-9]+)\.([0-9]+):(-?[0-9]+)(:.)?$/)
 		{
-		$_ < 40 and $heat = "\e[7;040;91m" ; # red
-		$_ < 35 and $heat = "\e[7;040;33m" ; # orange
-		$_ < 30 and $heat = "\e[7;100;33m" ; # dim orange
-		$_ < 25 and $heat = "\e[7;040;93m" ; # yellow
-		$_ < 20 and $heat = "\e[7;100;93m" ; # dim yellow
-		$_ < 15 and $heat = "\e[7;040;94m" ; # blue
-		$_ < 10 and $heat = "\e[7;100;94m" ; # dim blue
-		$_ <  8 and $heat = "\e[7;040;95m" ; # cyan
-		$_ <  6 and $heat = "\e[7;100;95m" ; # dim cyan
-		$_ <  4 and $heat = "\e[7;100;96m" ; # dim
-		$_ <  2 and $heat = "\e[7;040;90m" ; # grey
+		my ($x, $y, $value) = ($1, $2, $3) ;
+		
+		$map->{$x.'.'.$y} = $value ;
+		
+		my $x_offset = $x + 3 ;
+		my $y_offset = $y + 1 ;
+		
+		$map_text .= "\e[$y_offset;${x_offset}H#\e[m" if $display_map ;
 		}
-	
-	my ($x, $y) = split(/\./, $cell) ;
-	
-	$self->{heat_map}[$x][$y] = $heat ;
-	
-	$map_text .= "\e[" . ($y + 1) . ";" . ($x + 3) . "H$heat \e[m" ;
+	else
+		{
+		die "wrong format for obstruction: '$_'\n" ;
+		}
 	}
 
-$map_text .= "\e[?25l" ; # hide cursor
-$map_text .= "\e[2J\e[H" . "\e[2;30;31m   " . ('1234567890' x ($max_width / 10)) . (substr '1234567890', 0, $max_width % 10) . "\e[m\n" . $map_text ;
-$map_text .= "\e[?25h" ; # show cursor
+if($display_map)
+	{
+	for my $cell (keys %{$self->{map}})
+		{
+		next if $map->{$cell} == $OPAQUE ;
+		
+		my $heat = "\e[7;040;31m" ; # bright red
+		for ($map->{$cell})
+			{
+			$_ < 40 and $heat = "\e[7;049;91m" ; # red
+			$_ < 35 and $heat = "\e[7;049;33m" ; # orange
+			$_ < 30 and $heat = "\e[7;109;33m" ; # dim orange
+			$_ < 25 and $heat = "\e[7;049;93m" ; # yellow
+			$_ < 20 and $heat = "\e[7;109;93m" ; # dim yellow
+			$_ < 15 and $heat = "\e[7;049;94m" ; # blue
+			$_ < 10 and $heat = "\e[7;109;94m" ; # dim blue
+			$_ <  8 and $heat = "\e[7;049;95m" ; # cyan
+			$_ <  6 and $heat = "\e[7;109;95m" ; # dim cyan
+			$_ <  4 and $heat = "\e[7;109;96m" ; # dim
+			$_ <  2 and $heat = "\e[7;049;90m" ; # grey
+			}
+		
+		my ($x, $y) = split(/\./, $cell) ;
+		
+		$self->{heat_map}[$x][$y] = $heat ;
+		
+		$map_text .= "\e[" . ($y + 1) . ";" . ($x + 3) . "H$heat \e[m" ;
+		}
+	
+	$map_text .= "\e[?25l" ; # hide cursor
+	$map_text .= "\e[2J\e[H" . "\e[2;30;31m   " . ('1234567890' x ($max_width / 10)) . (substr '1234567890', 0, $max_width % 10) . "\e[m\n" . $map_text ;
+	$map_text .= "\e[?25h" ; # show cursor
+	$map_text .= "\e[" . ($self->{height} + 2) . ";1H\e[m" ;
+	}
 
 $self->{map_text} = $map_text ;
 
@@ -638,14 +621,10 @@ my $g = AI::Pathfinding::AStar::Obstacle::Map->new
 		(
 		$self,
 		{
-		keep_clear       => $options->{keep_clear},
 		display_scanning => $options->{display_scanning},
 		step             => $options->{step},
-		no_map_display   => $options->{no_map_display},
 		orthogonal_cost  => $options->{orthogonal_cost} // $ORTHOGONAL_COST,
 		diagonal_cost    => $options->{diagonal_cost} // 140,
-		permeable_cost   => $options->{permeable_cost} // {},
-		keep_clear_cost  => $options->{keep_clear_cost} // 8,
 		obstruct         => $options->{obstruct},
 		XHK              => $options->{XHK}  // 1,
 		YHK              => $options->{YHK}  // 1,
@@ -677,34 +656,44 @@ while (@routes > 1)
 	
 	$a = <STDIN> if $options->{display_scanning} && ! $options->{interactive} ;
 	
-	$routing_time += $t1 -$t0 ;
+	$routing_time += $t1 - $t0 ;
 	
 	$a=<STDIN> if $options->{pause} && @routes > 1 ;
 	
-	# $self->display_map() if $display_map ;
-	
 	push @path_info, [scalar(@$path), $cost] ;
 	
-	my $route_text = '';
-	for my $position (@{$path})
+	if($display_map)
 		{
-		my ($x, $y) = split(/\./, $position);
+		my $route_text = '';
+		for my $position (@{$path})
+			{
+			my ($x, $y) = split(/\./, $position);
+			
+			$g->set_obstacle($x, $y) if $options->{obstruct} ;
+			
+			my $heat = $options->{route_color} ? "\e[$options->{route_color}m" : $self->{heat_map}[$x][$y] // '';
+			
+			$y += 1 ; # for horizontal ruler
+			$x += 3 ; # for vertical ruler
+			
+			$route_text .= "\e[$y;${x}H$heat$letter\e[m" ;
+			}
 		
-		$g->set_obstacle($x, $y) if $options->{obstruct} ;
+		my ($SY1, $SX2) = ($SY +1, $SX + 3) ;
+		my ($EY1, $EX2) = ($EY +1, $EX + 3) ;
+		$route_text .= "\e[$SY1;${SX2}H\e[32mS\e[m" . "\e[$EY1;${EX2}H\e[32mE\e[m" ;
+		$route_text .= "\e[" . ($self->{height} + 2) . ";0H\e[m" ;
 		
-		my $heat = $options->{route_color} ? "\e[$options->{route_color}m" : $self->{heat_map}[$x][$y] // '';
-		
-		$y += 1 ; # for horizontal ruler
-		$x += 3 ; # for vertical ruler
-		
-		$route_text .= "\e[$y;${x}H$heat$letter\e[m" if $display_map;
+		push @routes_text, $route_text ;
 		}
-	
-	my ($SY1, $SX2) = ($SY +1, $SX + 3) ;
-	my ($EY1, $EX2) = ($EY +1, $EX + 3) ;
-	$route_text .= "\e[$SY1;${SX2}H\e[32mS\e[m" . "\e[$EY1;${EX2}H\e[32mE\e[m" if $display_map;
-	
-	push @routes_text, $route_text ;
+	elsif($options->{obstruct})
+		{
+		for my $position (@{$path})
+			{
+			my ($x, $y) = split(/\./, $position);
+			$g->set_obstacle($x, $y) ;
+			}
+		}
 	}
 
 for (@routes_text)
@@ -712,8 +701,6 @@ for (@routes_text)
 	$a=<STDIN> if $options->{pause} ;
 	print ;
 	}
-
-print "\e[" . ($self->{height} + 2) . ";0H\e[m" if $display_map ;
 
 my %stats =
 	(
@@ -750,7 +737,6 @@ if($options->{info})
 	
 	print "HK: $options->{HK}, XHK: $options->{XHK}, YHK: $options->{YHK}\n" ;
 	printf "routing time: %.3f\n", $routing_time;
-	print "hjkl-HJKL: move start and end point\nx: swap points\naAZz: HK\nsS: XHK\ndD: YHK\ng: use preset HK\nf: scan display\n" if $options->{interactive}
 	}
 
 if($options->{stats})
@@ -779,7 +765,7 @@ sub help { system("pod2text $0") ; exit ; }
 
 my $options = 
 	{
-	opaque_cost => {}, permeable_cost => {}, obstruction => [],
+	permeable_cost => {}, obstruction => [],
 	HK => 1, XHK => 1, YHK => 1,
 	HK_INC => 0.5, XHK_INC => 0.1, YHK_INC => 0.1,
 	} ;
@@ -799,7 +785,6 @@ GetOptions
 	'step'                    => \$options->{step},
 	'pause|p'                 => \$options->{pause},
 	'display_scanning|ds'     => \$options->{display_scanning},
-	'opaque_cost|OC:i'        => $options->{opaque_cost},
 	'obstruct'                => \$options->{obstruct},
 	'obstruction|o:s'         => $options->{obstruction},
 	'keep_clear|kc'           => \$options->{keep_clear},
@@ -817,6 +802,13 @@ GetOptions
 	) or die("Error in command line arguments\n");
 
 help() if $options->{help} ;
+if($options->{interactive} && @ARGV != 2)
+	{
+	my $error = "too many routes in interactive mode:\n" ;
+	$error .= "\t$_\n" for @ARGV ;
+	
+	die $error ;
+	}
 
 for(@ARGV) { die "wrong format for route: '$_'\n" unless /^[0-9]+\.[0-9]+$/ }
 
@@ -825,6 +817,7 @@ my $map_file  = $options->{map} ? (IO::File->new($options->{map}, 'r') or die "$
 my $map = AI::Pathfinding::AStar::Term::Map->new($map_file, $options) ;
 
 $map->display_map() unless $options->{no_map_display} ;
+
 # HK, XHK, YHK
 my $preset_HK = -1 ;
 my @preset_HK =
@@ -843,22 +836,23 @@ if($options->{interactive})
 	{
 	ReadMode 'cbreak' ;
 	
-	die "interactive mode needs a start and end point\n" unless @ARGV >= 2 ;
-	
 	my ($xs, $ys) = split(/\./, shift @ARGV);
 	my ($xe, $ye) = split(/\./, shift @ARGV);
+	
 	$map->display_routes($options, $xs.'.'.$ys, $xe.'.'.$ye) ;
+	my $interactive_help = "hjkl-HJKL: move start and end point\nx: swap points\naAZz: HK\nsS: XHK\ndD: YHK\ng: use preset HK\nf: scan display\n" ;
+	print $interactive_help ;
 	
 	while( my $input = ReadKey(0))
 		{
 		if($input eq 'q') { last } ;
 		
 		if($input eq 'h') { $xs-- unless $xs == 1 }
-		if($input eq 'j') { $ys++ unless $ys == $map->{height} }
+		if($input eq 'j') { $ys++ unless $ys == $map->{height} - 1 }
 		if($input eq 'k') { $ys-- unless $ys == 1 }
 		if($input eq 'l') { $xs++ unless $xs == $map->{width} }
 		if($input eq 'H') { $xe-- unless $xe == 1 }
-		if($input eq 'J') { $ye++ unless $ye == $map->{height} }
+		if($input eq 'J') { $ye++ unless $ye == $map->{height} - 1 }
 		if($input eq 'K') { $ye-- unless $ye == 1 }
 		if($input eq 'L') { $xe++ unless $xe == $map->{width} }
 		
@@ -883,6 +877,8 @@ if($options->{interactive})
 		if($input eq 'x') { ($xs, $ys, $xe, $ye) = ($xe, $ye, $xs, $ys) }
 		
 		$map->display_routes($options, $xs.'.'.$ys, $xe.'.'.$ye) ;
+		print "preset HK: $preset_HK\n" if $preset_HK != -1 ;
+		print $interactive_help ;
 		}
 	
 	ReadMode 'normal' ;
@@ -942,8 +938,6 @@ routing.
  diagonal_cost = not_used 
 
  keep_clear_cost = 10
-
- permeable_cost = 0-9
 
 =head2 Starting with costs
 
@@ -1019,34 +1013,27 @@ including the extra cost to keep cleat is the cheapest.
 
 --keep_clear_cost :i            # cost assigned to cells close to opaque cells
 
---permeable_cost class=cost     # cost assigned to permeable class
- 
-             1               .---.
-             5  .---.        |   |
-      .---.  9  |   |        '---'
-      |   |  9  '---'  .-7-.
-      '---'  9         |   |
-             9   .---. '-8-'
-             5   |   |
-             1   '---'
+--permeable_cost character=cost # class assigned to opaque cells
 
-If you create a map like one above, the cells containing number 0-9 are
-"permeable", they can be crossed but at a cost, by default the costs are 0-9
-but you can assign a cost to each class.
+You can set a class on the command line, this lets you "go through walls".
 
-Adding --permeable_cost 1=100 would assign a cost of 100 to the cells that
-contain '1' in the map.
-
---opaque_cost :i                # class assigned to opaque cells
-
-By default the class is '10' and its cost is infinite, you can set a class on
-the command line, this lets you "go through walls". A* will still try to find
-the most efficient path and so setting the class to a high value forces the
-algorithm to go through as few "walls" as possible.
+A* will still try to find the most efficient path and so setting the class
+to a high value forces the algorithm to go through as few "walls" as possible.
 
 As an example the default map has a vertical line consisting of 'I', you can
-assign a value to 'I' with --opaque_cost I=5. Remember that it's a regexp and
-that you may have to quote it properly.
+assign a value to 'I' with --pc I=9.
+
+Adding  --pc 5=50 --pc 1=10 would also make those cells permeable, otherwise
+they will be opaque
+
+             1               .---.
+             5  .---.        |   |
+      .---.  I  |   |        '---'
+      |   |  I  '---'  .-7-.
+      '---'  I         |   |
+             I   .---. '-8-'
+             5   |   |
+             1   '---'
 
 All options:
 
@@ -1060,13 +1047,11 @@ All options:
     display_scanning|ds
     obstruct
     obstruction|o
-    opaque_class regex=v
     keep_clear|kc
     orthogonal_cost|oc:i
     diagonal_cost|dc:i
     keep_clear_cost|kcc:i
     permeable_cost|pc:i
-    opaque_class:i
     XHK:f
     YHK:f
     HK:f
