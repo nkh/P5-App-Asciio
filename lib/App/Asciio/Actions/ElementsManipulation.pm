@@ -188,6 +188,19 @@ $self->select_all_elements_by_search_words();
 $self->update_display() ;
 }
 
+#----------------------------------------------------------------------------------------------
+
+sub select_all_elements_by_search_words_ignore_group
+{
+my ($self) = @_ ;
+
+$self->deselect_all_elements();
+
+$self->select_all_elements_by_search_words_ignore_group();
+
+$self->update_display() ;
+}
+
 
 #----------------------------------------------------------------------------------------------
 
