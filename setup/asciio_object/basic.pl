@@ -3,6 +3,8 @@ FONT_SIZE => 12,
 FONT_MIN => 3,
 
 ZOOM_STEP => 3,
+CANVAS_WIDTH => 3000,
+CANVAS_HEIGHT => 4000,
 
 DOUBLE_WIDTH_QR => qr/
 			[\x{3400}-\x{4db5}] |

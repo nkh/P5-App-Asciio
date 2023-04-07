@@ -487,7 +487,7 @@ my ($family, $size) = $self->get_font() ;
 if($family eq 'Monospace')
 	{
 	$self->set_font('sarasa mono sc', 12) ;
-	$self->{FONT_MIN} = 9 ;
+	$self->{FONT_MIN} = 3 ;
 	$self->{ZOOM_STEP} = 3 ;
 	}
 else
