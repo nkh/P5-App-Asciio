@@ -343,6 +343,39 @@ my %arrow_types =
 		['225',       '∘', '∘',  '',  '', 'v', 1],
 		['315',       '∘', '∘',  '',  '', '^', 1],
 	],
+	angled_arrow_dash =>
+	[
+		# name: $start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection
+		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
+		['up'         , "'",  '|', '?', '?', '.', '?', '?', 1],
+		['down'       , '.',  '|', '?', '?', "'", '?', '?', 1],
+		['left'       , '-',  '-', '?', '?', '-', '?', '?', 1],
+		['right'      , '-',  '-', '?', '?', '-', '?', '?', 1],
+		['up-left'    , "'", '\\', '.', '-', '-', '|', "'", 1],
+		['left-up'    , '-', '\\', "'", '-', '.', '|', "'", 1],
+		['down-left'  , '.',  '/', "'", '-', '-', '|', "'", 1],
+		['left-down'  , '-',  '/', '.', '-', "'", '|', "'", 1],
+		['up-right'   , "'",  '/', '.', '-', '-', '|', "'", 1],
+		['right-up'   , '-',  '/', "'", '-', '.', '|', "'", 1],
+		['down-right' , '.', '\\', "'", '-', '-', '|', "'", 1],
+		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
+	],
+	angled_arrow_unicode =>
+	[
+		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
+		['up'         , "'",  '│', '?', '?', '.', '?', '?', 1],
+		['down'       , '.',  '│', '?', '?', "'", '?', '?', 1],
+		['left'       , '─',  '─', '?', '?', '─', '?', '?', 1],
+		['right'      , '─',  '─', '?', '?', '─', '?', '?', 1],
+		['up-left'    , "'", '\\', '.', '─', '─', '│', "'", 1],
+		['left-up'    , '─', '\\', "'", '─', '.', '│', "'", 1],
+		['down-left'  , '.',  '/', "'", '─', '─', '│', "'", 1],
+		['left-down'  , '─',  '/', '.', '─', "'", '│', "'", 1],
+		['up-right'   , "'",  '/', '.', '─', '─', '│', "'", 1],
+		['right-up'   , '─',  '/', "'", '─', '.', '│', "'", 1],
+		['down-right' , '.', '\\', "'", '─', '─', '│', "'", 1],
+		['right-down' , '─', '\\', '.', '─', "'", '│', "'", 1],
+	],
 ) ;
 
 
@@ -385,7 +418,9 @@ if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 			$element->enable_autoconnect(! $element->is_autoconnect_enabled()) ;
 			$self->update_display() ;
 			}
-		] ;
+		],
+		[ '/arrow type/dash',           \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_dash', } ] ,
+		[ '/arrow type/unicode',        \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_unicode', } ] ;
 	}
 
 return @context_menu_entries ;

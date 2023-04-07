@@ -65,6 +65,7 @@ lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_exec_box.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
+lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm

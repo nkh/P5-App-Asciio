@@ -51,6 +51,40 @@ for my $element (@{$self->{ELEMENTS}})
 		{
 		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
 		}
+
+	if($element->isa('App::Asciio::stripes::angled_arrow'))
+		{
+		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'angled_arrow_unicode' }, 0) ;
+		}
+	}
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub make_ascii
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+for my $element (@{$self->{ELEMENTS}}) 
+	{
+	if($element->isa('App::Asciio::stripes::editable_box2'))
+		{
+		App::Asciio::Actions::Box::change_box_type($self, { ELEMENT => $element, TYPE => 'dash' }, 0) ;
+		}
+	
+	if($element->isa('App::Asciio::stripes::section_wirl_arrow'))
+		{
+		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'dash' }, 0) ;
+		}
+
+	if($element->isa('App::Asciio::stripes::angled_arrow'))
+		{
+		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'angled_arrow_dash' }, 0) ;
+		}
 	}
 
 $self->update_display() ;

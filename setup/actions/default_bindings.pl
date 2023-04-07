@@ -125,6 +125,7 @@ register_action_handlers
 	'Move selected elements to the back'  => ['000-b', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_back          ],
 	'Temporary move to the front'         => ['00S-F', \&App::Asciio::Actions::ElementsManipulation::temporary_move_selected_element_to_front],
 	'Make Unicode             '           => ['00S-U', \&App::Asciio::Actions::Elements::make_unicode                                        ],
+	'Make Ascii default'                  => ['00S-A', \&App::Asciio::Actions::Elements::make_ascii                                          ],
 	},
 
 'stripes leader' => 
@@ -223,6 +224,7 @@ register_action_handlers
 	'Add arrow'                           => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]          ],
 	'Add unicode arrow'                   => ['0A0-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow unicode', 0]  ],
 	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled_arrow', 0]        ],
+	'Add unicode angled arrow'            => ['C00-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled_arrow unicode', 0]],
 	
 	'Add connector'                       => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]           ],
 	'Add connector type 2'                => ['00S-C', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector2', 0]           ],
