@@ -11,23 +11,23 @@ use Readonly ;
 
 #-----------------------------------------------------------------------------
 
-Readonly my $DEFAULT_GLYPHS=> 
-	#name: => [$start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection]
-	{
-	'origin'     => [ '*',  '?', '?', '?', '?', '?', '?'],
-	'up'         => [ "'",  '|', '?', '?', '.', '?', '?'],
-	'down'       => [ '.',  '|', '?', '?', "'", '?', '?'],
-	'left'       => [ '-',  '-', '?', '?', '-', '?', '?'],
-	'right'      => [ '-',  '-', '?', '?', '-', '?', '?'],
-	'up-left'    => [ "'", '\\', '.', '-', '-', '|', "'"],
-	'left-up'    => [ '-', '\\', "'", '-', '.', '|', "'"],
-	'down-left'  => [ '.',  '/', "'", '-', '-', '|', "'"],
-	'left-down'  => [ '-',  '/', '.', '-', "'", '|', "'"],
-	'up-right'   => [ "'",  '/', '.', '-', '-', '|', "'"],
-	'right-up'   => [ '-',  '/', "'", '-', '.', '|', "'"],
-	'down-right' => [ '.', '\\', "'", '-', '-', '|', "'"],
-	'right-down' => [ '-', '\\', '.', '-', "'", '|', "'"],
-	} ;
+Readonly my $DEFAULT_ARROW_TYPE=> 
+	# name: $start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection
+	[
+		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
+		['up'         , "'",  '|', '?', '?', '.', '?', '?', 1],
+		['down'       , '.',  '|', '?', '?', "'", '?', '?', 1],
+		['left'       , '-',  '-', '?', '?', '-', '?', '?', 1],
+		['right'      , '-',  '-', '?', '?', '-', '?', '?', 1],
+		['up-left'    , "'", '\\', '.', '-', '-', '|', "'", 1],
+		['left-up'    , '-', '\\', "'", '-', '.', '|', "'", 1],
+		['down-left'  , '.',  '/', "'", '-', '-', '|', "'", 1],
+		['left-down'  , '-',  '/', '.', '-', "'", '|', "'", 1],
+		['up-right'   , "'",  '/', '.', '-', '-', '|', "'", 1],
+		['right-up'   , '-',  '/', "'", '-', '.', '|', "'", 1],
+		['down-right' , '.', '\\', "'", '-', '-', '|', "'", 1],
+		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
+	] ;
 
 #-----------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ my $self = bless  {}, __PACKAGE__ ;
 
 $self->setup
 	(
-	$element_definition->{GLYPHS} || $DEFAULT_GLYPHS,
+	$element_definition->{ARROW_TYPE} || $DEFAULT_ARROW_TYPE,
 	$element_definition->{END_X}, $element_definition->{END_Y},
 	$element_definition->{DIRECTION},
 	$element_definition->{EDITABLE},
@@ -52,7 +52,25 @@ return $self ;
 
 sub setup
 {
-my ($self, $glyphs, $end_x, $end_y, $direction, $editable) = @_ ;
+my ($self, $arrow_type, $end_x, $end_y, $direction, $editable) = @_ ;
+
+my $glyphs = 
+{
+	# name => [$start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection]
+	$arrow_type->[0][0] => [@{$arrow_type->[0]}[1..7]],
+	$arrow_type->[1][0] => [@{$arrow_type->[1]}[1..7]],
+	$arrow_type->[2][0] => [@{$arrow_type->[2]}[1..7]],
+	$arrow_type->[3][0] => [@{$arrow_type->[3]}[1..7]],
+	$arrow_type->[4][0] => [@{$arrow_type->[4]}[1..7]],
+	$arrow_type->[5][0] => [@{$arrow_type->[5]}[1..7]],
+	$arrow_type->[6][0] => [@{$arrow_type->[6]}[1..7]],
+	$arrow_type->[7][0] => [@{$arrow_type->[7]}[1..7]],
+	$arrow_type->[8][0] => [@{$arrow_type->[8]}[1..7]],
+	$arrow_type->[9][0] => [@{$arrow_type->[9]}[1..7]],
+	$arrow_type->[10][0] => [@{$arrow_type->[10]}[1..7]],
+	$arrow_type->[11][0] => [@{$arrow_type->[11]}[1..7]],
+	$arrow_type->[12][0] => [@{$arrow_type->[12]}[1..7]],
+} ;
 
 (my ($stripes, $width, $height), $direction) = get_arrow($glyphs, $end_x, $end_y, $direction) ;
 
@@ -83,6 +101,7 @@ else
 $self->set
     (
     GLYPHS => $glyphs,
+	ARROW_TYPE => $arrow_type,
     STRIPES => $stripes,
     WIDTH => $width,
     HEIGHT => $height,
@@ -1434,7 +1453,7 @@ if($is_start)
 	my $new_end_x = $self->{END_X} - $x_offset ;
 	my $new_end_y = $self->{END_Y} - $y_offset ;
 	
-	$self->setup($self->{GLYPHS}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self->{EDITABLE}) ;
+	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self->{EDITABLE}) ;
 	
 	return($x_offset, $y_offset, $self->{WIDTH}, $self->{HEIGHT}, 'start') ;
 	}
@@ -1443,7 +1462,7 @@ else
 	my $new_end_x = $new_x ;
 	my $new_end_y = $new_y ;
 	
-	$self->setup($self->{GLYPHS}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self->{EDITABLE}) ;
+	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self->{EDITABLE}) ;
 	
 	return(0, 0, $self->{WIDTH}, $self->{HEIGHT}, 'end') ;
 	}
@@ -1458,5 +1477,40 @@ sub get_all_points { my ($self) = @_ ; $self->get_connector_points() ; }
 sub get_section_direction { my ($self, $section_index) = @_ ; return $self->{DIRECTION} ; }
 
 #-----------------------------------------------------------------------------
+
+sub edit
+{
+my ($self, $asciio) = @_ ;
+
+$self->display_arrow_edit_dialog() ;
+
+$self->setup
+	(
+	$self->{ARROW_TYPE},
+	$self->{END_X}, $self->{END_Y},
+	$self->{DIRECTION},
+	$self->{EDITABLE},
+	) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub set_arrow_type
+{
+my ($self, $arrow_type) = @_ ;
+
+delete $self->{CACHE} ;
+
+$self->setup
+	(
+	$arrow_type,
+	$self->{END_X}, $self->{END_Y},
+	$self->{DIRECTION},
+	$self->{EDITABLE},
+	) ;
+}
+
+#-----------------------------------------------------------------------------
+
 
 1 ;

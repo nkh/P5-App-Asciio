@@ -82,6 +82,32 @@ create_element
 
 create_element
 	(
+	NAME => 'angled_arrow unicode',
+	CLASS => 'App::Asciio::stripes::angled_arrow',
+	END_X => 3,
+	END_Y => -2,
+	DIRECTION => 'up-right',
+	RESIZABLE => 1,
+	ARROW_TYPE =>
+		[
+			['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
+			['up'         , "'",  '│', '?', '?', '.', '?', '?', 1],
+			['down'       , '.',  '│', '?', '?', "'", '?', '?', 1],
+			['left'       , '─',  '─', '?', '?', '─', '?', '?', 1],
+			['right'      , '─',  '─', '?', '?', '─', '?', '?', 1],
+			['up-left'    , "'", '\\', '.', '─', '─', '│', "'", 1],
+			['left-up'    , '─', '\\', "'", '─', '.', '│', "'", 1],
+			['down-left'  , '.',  '/', "'", '─', '─', '│', "'", 1],
+			['left-down'  , '─',  '/', '.', '─', "'", '│', "'", 1],
+			['up-right'   , "'",  '/', '.', '─', '─', '│', "'", 1],
+			['right-up'   , '─',  '/', "'", '─', '.', '│', "'", 1],
+			['down-right' , '.', '\\', "'", '─', '─', '│', "'", 1],
+			['right-down' , '─', '\\', '.', '─', "'", '│', "'", 1],
+		],
+	),
+
+create_element
+	(
 	NAME => 'axis',
 	CLASS => 'App::Asciio::stripes::editable_arrow2',
 	END_X => 3,
