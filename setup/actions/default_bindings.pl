@@ -42,8 +42,11 @@ register_action_handlers
 
 'Select all elements'                         => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementsManipulation::select_all_elements                 ],
 'Deselect all elements'                       => ['000-Escape',                             \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements               ],
+'Delete makeup elements'                      => ['C00-d',                                  \&App::Asciio::Actions::ElementsManipulation::delete_makeup_elements              ],
 'Select connected elements'                   => ['000-v',                                  \&App::Asciio::Actions::ElementsManipulation::select_connected                    ],
 'Select elements by search words'             => ['C00-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words ],
+'Select makeup elements'                      => ['0A0-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_makeup_elements              ],
+'Switch makeup cross mode'                    => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_makeup_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
 
 
@@ -126,6 +129,8 @@ register_action_handlers
 	'Temporary move to the front'         => ['00S-F', \&App::Asciio::Actions::ElementsManipulation::temporary_move_selected_element_to_front],
 	'Make Unicode             '           => ['00S-U', \&App::Asciio::Actions::Elements::make_unicode                                        ],
 	'Make Ascii default'                  => ['00S-A', \&App::Asciio::Actions::Elements::make_ascii                                          ],
+	'Add makeup elements'                 => ['C00-m', \&App::Asciio::Actions::Elements::add_makeup_elements                                 ],
+	'Add deep makeup elements'            => ['0A0-m', \&App::Asciio::Actions::Elements::add_deep_makeup_elements                            ],
 	},
 
 'stripes leader' => 

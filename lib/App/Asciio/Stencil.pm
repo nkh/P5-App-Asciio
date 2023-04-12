@@ -55,6 +55,11 @@ if($element_definition{WITH_SIZE})
 	$element->resize(0, 0, @{$element_definition{WITH_SIZE}}) ;
 	}
 
+if($element_definition{MAKE_UP_FLAG})
+{
+$element->{MAKE_UP_FLAG} = $element_definition{MAKE_UP_FLAG};
+}
+
 # add name to be seen in the stencil list
 $element->{NAME} = $element_definition{NAME} ;
 

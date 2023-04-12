@@ -11,6 +11,7 @@ use File::HomeDir ;
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
 
+
 #----------------------------------------------------------------------------------------------
 
 sub add_element
@@ -121,6 +122,30 @@ if(-e $help_path)
 	
 	$self->update_display() ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_makeup_elements
+{
+my ($self) = @_;
+$self->create_undo_snapshot();
+
+$self->add_makeup_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_deep_makeup_elements
+{
+my ($self) = @_;
+$self->create_undo_snapshot();
+
+$self->add_makeup_elements(1);
+
+$self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------

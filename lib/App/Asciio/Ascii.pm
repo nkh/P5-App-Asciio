@@ -52,9 +52,7 @@ for my $character (split '', $deal_line)
 return $return_line;
 }
 
-#-----------------------------------------------------------------------------
-
-sub transform_elements_to_ascii_array
+sub transform_elements_to_ascii_two_dimensional_array
 {
 my ($self, @elements)  = @_ ;
 
@@ -84,6 +82,17 @@ for my $element (@elements)
 			}
 		}
 	}
+return(@lines) ;
+
+}
+
+#-----------------------------------------------------------------------------
+
+sub transform_elements_to_ascii_array
+{
+my ($self, @elements)  = @_ ;
+
+my @lines = $self->transform_elements_to_ascii_two_dimensional_array(@elements) ;
 
 my @ascii ;
 
