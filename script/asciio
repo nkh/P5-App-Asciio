@@ -72,7 +72,7 @@ if(defined $asciio_config->{TARGETS}[0])
 	
 $window->show_all();
 
-$asciio->{widget}->set_size_request(3000, 4000);
+$asciio->{widget}->set_size_request($asciio->{CANVAS_WIDTH}, $asciio->{CANVAS_HEIGHT});
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
 
