@@ -181,9 +181,11 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 		[ '/arrow type/dash',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'dash',               X => $x, Y => $y } ] ,
 		[ '/arrow type/dash_no_arrow',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'dash_no_arrow',      X => $x, Y => $y } ] ,
 		[ '/arrow type/dot',                       \&change_arrow_type, { ELEMENT => $element, TYPE => 'dot',                X => $x, Y => $y } ],
+		[ '/arrow type/dot_no_arrow',              \&change_arrow_type, { ELEMENT => $element, TYPE => 'dot_no_arrow',       X => $x, Y => $y } ],
 		[ '/arrow type/octo',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'octo',               X => $x, Y => $y } ],
 		[ '/arrow type/star',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'star',               X => $x, Y => $y } ],
 		[ '/arrow type/unicode',                   \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode',            X => $x, Y => $y } ],
+		[ '/arrow type/unicode_no_arrow',          \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_no_arrow',   X => $x, Y => $y } ],
 		[ '/arrow type/unicode_hollow_dot',        \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_hollow_dot', X => $x, Y => $y } ] ;
 	}
 
@@ -263,6 +265,26 @@ my %arrow_types =
 		['225',       '.', '.',   '',  '', 'v', 1],
 		['315',       '.', '.',   '',  '', '^', 1],
 	],
+	dot_no_arrow =>
+	[
+		['origin',     '', '*',   '',  '',  '', 1],
+		['up',        '.', '.',   '',  '', '.', 1],
+		['down',      '.', '.',   '',  '', '.', 1],
+		['left',      '.', '.',   '',  '', '.', 1],
+		['upleft',    '.', '.',  '.', '.', '.', 1],
+		['leftup',    '.', '.', '\'', '.', '.', 1],
+		['downleft',  '.', '.', '\'', '.', '.', 1],
+		['leftdown',  '.', '.',  '.', '.', '.', 1],
+		['right',     '.', '.',   '',  '', '.', 1],
+		['upright',   '.', '.',  '.', '.', '.', 1],
+		['rightup',   '.', '.', '\'', '.', '.', 1],
+		['downright', '.', '.', '\'', '.', '.', 1],
+		['rightdown', '.', '.',  '.', '.', '.', 1],
+		['45',        '.', '.',   '',  '', '.', 1],
+		['135',       '.', '.',   '',  '', '.', 1],
+		['225',       '.', '.',   '',  '', '.', 1],
+		['315',       '.', '.',   '',  '', '.', 1],
+	],
 	star =>
 	[
 		['origin',     '', '*', '',   '',  '', 1],
@@ -322,6 +344,26 @@ my %arrow_types =
 		['135',       '\\', '\\',  '',  '', 'v', 1],
 		['225',        '/',  '/',  '',  '', 'v', 1],
 		['315',       '\\', '\\',  '',  '', '^', 1],
+	],
+	unicode_no_arrow =>
+	[
+		['origin',      '',  '*',  '',  '',  '', 1],
+		['up',         '│',  '│',  '',  '', '│', 1],
+		['down',       '│',  '│',  '',  '', '│', 1],
+		['left',       '─',  '─',  '',  '', '─', 1],
+		['upleft',     '│',  '│', '╮', '─', '─', 1],
+		['leftup',     '─',  '─', '╰', '│', '│', 1],
+		['downleft',   '│',  '│', '╯', '─', '─', 1],
+		['leftdown',   '─',  '─', '╭', '│', '│', 1],
+		['right',      '─',  '─',  '',  '', '─', 1],
+		['upright',    '│',  '│', '╭', '─', '─', 1],
+		['rightup',    '─',  '─', '╯', '│', '│', 1],
+		['downright',  '│',  '│', '╰', '─', '─', 1],
+		['rightdown',  '─',  '─', '╮', '│', '│', 1],
+		['45',         '/',  '/',  '',  '', '/', 1],
+		['135',       '\\', '\\',  '',  '', '\\', 1],
+		['225',        '/',  '/',  '',  '', '/', 1],
+		['315',       '\\', '\\',  '',  '', '\\', 1],
 	],
 	unicode_hollow_dot =>
 	[

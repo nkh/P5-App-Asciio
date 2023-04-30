@@ -868,7 +868,7 @@ my ($self, $deep_flag) = @_;
 $self->delete_makeup_elements();
 
 #~ this func is slow
-my @ascii_array = $self->transform_elements_to_ascii_two_dimensional_array();
+my @ascii_array = $self->transform_elements_to_ascii_two_dimensional_array(0);
 
 my @keep_elements;
 
