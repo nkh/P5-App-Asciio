@@ -25,6 +25,7 @@ register_action_handlers
 'Copy to clipboard'                           => [['C00-c', 'C00-Insert', 'y'],             \&App::Asciio::Actions::Clipboard::copy_to_clipboard                              ],
 'Insert from clipboard'                       => [['C00-v', '00S-Insert', 'p'],             \&App::Asciio::Actions::Clipboard::insert_from_clipboard                          ],
 'Export to clipboard & primary as ascii'      => [['C00-e', '00S-Y', 'Y'],                  \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii                   ],
+'Export to clipboard & primary as wiki'       => ['C0S-E',                                  \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_wiki                    ],
 'Import from primary to box'                  => [['C0S-V', '00S-P', 'P'],                  \&App::Asciio::Actions::Clipboard::import_from_primary_to_box                     ],
 'Import from primary to text'                 => [['0A0-p','A-P'],                          \&App::Asciio::Actions::Clipboard::import_from_primary_to_text                    ],
 'Import from clipboard to box'                => [ '0AS-E' ,                                \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                   ],

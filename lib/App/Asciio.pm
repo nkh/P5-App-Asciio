@@ -665,7 +665,7 @@ $self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 $self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE}) ;
 
 $self->{TAB_AS_SPACES} = '   ' unless defined $self->{TAB_AS_SPACES} ;
-set_double_width_qr($self) ;
+set_double_width_qr_and_markup_mode($self) ;
 }
 
 #-----------------------------------------------------------------------------

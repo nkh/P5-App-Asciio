@@ -3,10 +3,11 @@ package App::Asciio::Toolfunc ;
 
 require Exporter ;
 @ISA = qw(Exporter) ;
-# @EXPORT = qw(set_double_width_qr usc_length make_vertical_text);
+# @EXPORT = qw(set_double_width_qr_and_markup_mode usc_length make_vertical_text);
 @EXPORT = qw(
-	set_double_width_qr
+	set_double_width_qr_and_markup_mode
 	usc_length
+	is_markup_mode
 	make_vertical_text
 	new_box
 	new_wirl_arrow
@@ -29,25 +30,35 @@ use utf8 ;
 {
 
 my $DOUBLE_WIDTH_QR ;
+my $MARKUP_MODE ;
 
-sub set_double_width_qr
+sub set_double_width_qr_and_markup_mode
 {
 my ($self) = @_ ;
 die "DOUBLE_WIDTH_QR not set" unless defined $self->{DOUBLE_WIDTH_QR} ;
 $DOUBLE_WIDTH_QR = $self->{DOUBLE_WIDTH_QR} ;
+$MARKUP_MODE = $self->{MARKUP_MODE} ;
 }
 
 sub usc_length
 {
 my ($string) = @_ ;
 
+$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if($MARKUP_MODE);
 return length($string) + ($string =~ s/$DOUBLE_WIDTH_QR/x/g) ;
 }
 
+sub is_markup_mode
+{
+	return($MARKUP_MODE);
 }
 
-#-----------------------------------------------------------------------------
+}
 
+
+
+#-----------------------------------------------------------------------------
+#~ todo: markup char
 sub make_vertical_text
 {
 my ($text) = @_ ;

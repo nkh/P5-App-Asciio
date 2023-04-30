@@ -27,6 +27,8 @@ use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
 
+use App::Asciio::Toolfunc ;
+
 #-----------------------------------------------------------------------------
 
 our $VERSION = '0.01' ;
@@ -267,7 +269,17 @@ for my $element (@{$self->{ELEMENTS}})
 						
 						my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 						$layout->set_font_description($font_description) ;
-						$layout->set_text($line) ;
+						if(is_markup_mode() && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
+							{
+							#~ link fomart: <span link="">something</span>
+							#~ convert to:  <span underline="double">something</span>
+							$line =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
+							$layout->set_markup($line) ;
+							}
+						else
+							{
+							$layout->set_text($line) ;
+							}
 						Pango::Cairo::show_layout($gc, $layout);
 						}
 					

@@ -108,6 +108,19 @@ close CLIPBOARD ;
 
 #----------------------------------------------------------------------------------------------
 
+sub export_to_clipboard_as_wiki
+{
+my ($self) = @_ ;
+
+open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
+local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
+
+print CLIPBOARD $self->transform_elements_to_wiki_buffer($self->get_selected_elements(1)) ;
+close CLIPBOARD ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 sub import_from_primary_to_box
 {
 my ($self) = @_ ;
