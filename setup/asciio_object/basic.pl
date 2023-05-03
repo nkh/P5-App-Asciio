@@ -6,7 +6,7 @@ ZOOM_STEP => 3,
 CANVAS_WIDTH => 3000,
 CANVAS_HEIGHT => 4000,
 
-MAKE_UP_CROSS_MODE => 0,
+CROSS_MODE => 0,
 MARKUP_MODE => 1,
 
 DOUBLE_WIDTH_QR => qr/
@@ -36,6 +36,7 @@ COLOR_SCHEMES =>
 		grid => [0.12, 0.12, 0.12],
 		grid_2 => [0.22, 0.22, 0.22],
 		ruler_line => [0.10, 0.23, 0.31],
+		cross_mode_ruler_line => [0.10, 0.23, 0.31],
 		selected_element_background => [0.10, 0.16, 0.20],
 		element_background => [0.04, 0.04, 0.04],
 		element_foreground => [0.59, 0.59, 0.59] ,
@@ -64,6 +65,7 @@ COLOR_SCHEMES =>
 		grid => [0.89, 0.92, 1.00],
 		grid_2 => [0.79, 0.82, 0.90],
 		ruler_line => [0.33, 0.61, 0.88],
+		cross_mode_ruler_line => [0.00, 0.00, 0.00],
 		element_background => [1.00, 1.00, 1.00],
 		element_foreground => [0.00, 0.00, 0.00] ,
 		selected_element_background => [0.70, 0.95, 1.00],
