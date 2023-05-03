@@ -20,8 +20,8 @@ register_action_handlers
 (
 'Undo'                                        => [['C00-z', '000-u'],                       \&App::Asciio::Actions::Unsorted::undo                                            ],
 'Redo'                                        => [['C00-y', 'C00-r'],                       \&App::Asciio::Actions::Unsorted::redo                                            ],
-'Zoom in'                                     => ['000-plus',                               \&App::Asciio::Actions::Unsorted::zoom, 1                                         ],
-'Zoom out'                                    => ['000-minus',                              \&App::Asciio::Actions::Unsorted::zoom, -1                                        ],
+'Zoom in'                                     => [['000-plus', 'C00-j'],                    \&App::Asciio::Actions::Unsorted::zoom, 1                                         ],
+'Zoom out'                                    => [['000-minus', 'C00-h'],                   \&App::Asciio::Actions::Unsorted::zoom, -1                                        ],
 'Copy to clipboard'                           => [['C00-c', 'C00-Insert', 'y'],             \&App::Asciio::Actions::Clipboard::copy_to_clipboard                              ],
 'Insert from clipboard'                       => [['C00-v', '00S-Insert', 'p'],             \&App::Asciio::Actions::Clipboard::insert_from_clipboard                          ],
 'Export to clipboard & primary as ascii'      => [['C00-e', '00S-Y', 'Y'],                  \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii                   ],
@@ -43,11 +43,12 @@ register_action_handlers
 
 'Select all elements'                         => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementsManipulation::select_all_elements                 ],
 'Deselect all elements'                       => ['000-Escape',                             \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements               ],
-'Delete makeup elements'                      => ['C00-d',                                  \&App::Asciio::Actions::ElementsManipulation::delete_makeup_elements              ],
+'Delete cross elements'                       => ['C00-d',                                  \&App::Asciio::Actions::ElementsManipulation::delete_cross_elements              ],
 'Select connected elements'                   => ['000-v',                                  \&App::Asciio::Actions::ElementsManipulation::select_connected                    ],
 'Select elements by search words'             => ['C00-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words ],
-'Select makeup elements'                      => ['0A0-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_makeup_elements              ],
-'Switch makeup cross mode'                    => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_makeup_cross_mode            ],
+'Select cross elements'                       => ['0A0-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_cross_elements              ],
+'Switch cross mode'                           => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode            ],
+'Close cross mode'                            => ['0A0-c',                                  \&App::Asciio::Actions::ElementsManipulation::close_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
 
 
@@ -130,8 +131,9 @@ register_action_handlers
 	'Temporary move to the front'         => ['00S-F', \&App::Asciio::Actions::ElementsManipulation::temporary_move_selected_element_to_front],
 	'Make Unicode             '           => ['00S-U', \&App::Asciio::Actions::Elements::make_unicode                                        ],
 	'Make Ascii default'                  => ['00S-A', \&App::Asciio::Actions::Elements::make_ascii                                          ],
-	'Add makeup elements'                 => ['C00-m', \&App::Asciio::Actions::Elements::add_makeup_elements                                 ],
-	'Add deep makeup elements'            => ['0A0-m', \&App::Asciio::Actions::Elements::add_deep_makeup_elements                            ],
+	'Add cross elements'                  => ['C00-m', \&App::Asciio::Actions::Elements::add_cross_elements                                 ],
+	'Delete cross caches'                 => ['C00-d', \&App::Asciio::Actions::Elements::delete_cross_elements_cache                        ],
+	'Add deep cross elements'             => ['0A0-m', \&App::Asciio::Actions::Elements::add_deep_cross_elements                            ],
 	},
 
 'stripes leader' => 
@@ -242,6 +244,8 @@ register_action_handlers
 	'Add ellipse'                         => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]       ],
 	'External command in a box'           => ['000-x', \&App::Asciio::Actions::Unsorted::external_command_output, 1                              ],
 	'External command in a box no frame'  => ['00S-X', \&App::Asciio::Actions::Unsorted::external_command_output, 0                              ],
+	'create code box'                     => ['C00-c', \&App::Asciio::Actions::Unsorted::create_code_box, 1                                      ],
+	'create code box no frame'            => ['0A0-c', \&App::Asciio::Actions::Unsorted::create_code_box, 0                                      ],
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],
 	},
 

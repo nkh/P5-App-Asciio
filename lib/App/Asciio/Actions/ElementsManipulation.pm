@@ -204,31 +204,39 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub select_makeup_elements
+sub select_cross_elements
 {
 my ($self) = @_;
 
 $self->deselect_all_elements();
 
-$self->select_makeup_elements();
+$self->select_cross_elements();
 
 $self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub switch_makeup_cross_mode
+sub switch_cross_mode
 {
 
 my ($self) = @_;
 
-$self->switch_makeup_cross_mode();
+$self->switch_cross_mode();
 
 $self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------
 
+sub close_cross_mode
+{
+my ($self) = @_;
+$self->close_cross_mode();
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
 
 sub select_connected
 {
@@ -288,13 +296,13 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub delete_makeup_elements
+sub delete_cross_elements
 {
 my ($self) = @_;
 
 $self->create_undo_snapshot();
 
-$self->delete_makeup_elements();
+$self->delete_cross_elements();
 
 $self->update_display();
 }

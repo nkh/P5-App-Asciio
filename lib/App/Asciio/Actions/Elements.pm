@@ -126,26 +126,33 @@ if(-e $help_path)
 
 #----------------------------------------------------------------------------------------------
 
-sub add_makeup_elements
+sub add_cross_elements
 {
 my ($self) = @_;
 $self->create_undo_snapshot();
 
-$self->add_makeup_elements();
+$self->add_cross_elements();
 
 $self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub add_deep_makeup_elements
+sub add_deep_cross_elements
 {
 my ($self) = @_;
 $self->create_undo_snapshot();
 
-$self->add_makeup_elements(1);
+$self->add_cross_elements(1);
 
 $self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+sub delete_cross_elements_cache
+{
+my ($self) = @_;
+$self->delete_cross_elements_cache();
 }
 
 #----------------------------------------------------------------------------------------------

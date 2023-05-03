@@ -37,7 +37,7 @@ $self->setup
 	$element_definition->{RESIZABLE},
 	$element_definition->{EDITABLE},
 	$element_definition->{AUTO_SHRINK},
-	$element_definition->{MAKE_UP_FLAG},
+	$element_definition->{CROSS_FLAG},
 	) ;
 
 return $self ;
@@ -47,7 +47,7 @@ return $self ;
 
 sub setup
 {
-my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable, $editable, $auto_shrink, $make_up_flag) = @_ ;
+my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable, $editable, $auto_shrink, $cross_flag) = @_ ;
 
 my $fill_char = ' ';
 
@@ -125,7 +125,7 @@ $self->set
 	RESIZABLE => $resizable,
 	EDITABLE => $editable,
 	AUTO_SHRINK => $auto_shrink,
-	MAKE_UP_FLAG => $make_up_flag,
+	CROSS_FLAG => $cross_flag,
 	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $end_x, HEIGHT => $end_y, TEXT => $text } ],
 	EXTENTS => [ 0, 0, $end_x, $end_y ],
 	) ;
@@ -375,7 +375,7 @@ if($reference_x == -1 && $reference_y == -1)
 		$self->{RESIZABLE},
 		$self->{EDITABLE},
 		$self->{AUTO_SHRINK},
-		$self->{MAKE_UP_FLAG},
+		$self->{CROSS_FLAG},
 		) ;
 	}
 else
@@ -392,7 +392,7 @@ else
 			$self->{RESIZABLE},
 			$self->{EDITABLE},
 			$self->{AUTO_SHRINK},
-			$self->{MAKE_UP_FLAG},
+			$self->{CROSS_FLAG},
 			) ;
 		}
 	}
@@ -423,7 +423,7 @@ $self->setup
 	$self->{RESIZABLE},
 	$self->{EDITABLE},
 	$self->{AUTO_SHRINK},
-	$self->{MAKE_UP_FLAG},
+	$self->{CROSS_FLAG},
 	) ;
 }
 
@@ -446,7 +446,7 @@ $self->setup
 	$self->{RESIZABLE},
 	$self->{EDITABLE},
 	$self->{AUTO_SHRINK},
-	$self->{MAKE_UP_FLAG},
+	$self->{CROSS_FLAG},
 	) ;
 }
 
@@ -502,7 +502,7 @@ $self->setup
 	$self->{RESIZABLE},
 	$self->{EDITABLE},
 	$self->{AUTO_SHRINK},
-	$self->{MAKE_UP_FLAG},
+	$self->{CROSS_FLAG},
 	) ;
 }
 

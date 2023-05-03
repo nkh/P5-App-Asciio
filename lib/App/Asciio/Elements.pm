@@ -75,6 +75,22 @@ for my $ruler_line_to_remove (@ruler_lines_to_remove)
 $self->{RULER_LINES} = [grep {! exists $removed{$_}} @{$self->{RULER_LINES}} ] ;
 }
 
+sub remove_ruler_lines_with_name
+{
+my ($self, $name) = @_ ;
+
+my %removed ;
+
+for my $ruler_line (@{$self->{RULER_LINES}})
+	{
+	if($ruler_line->{NAME} eq $name)
+		{
+		$removed{$ruler_line} ++ ;
+		}
+	}
+$self->{RULER_LINES} = [grep {! exists $removed{$_}} @{$self->{RULER_LINES}} ] ;
+}
+
 sub exists_ruler_line
 {
 my ($self, @ruler_lines_to_check) = @_ ;
@@ -179,23 +195,26 @@ $self->{MODIFIED }++ ;
 
 #-----------------------------------------------------------------------------
 {
-my %makeup_elements_cache;
+my %cross_elements_cache;
 
-sub create_makeup_element
+sub create_cross_elements
 {
-my ($self, $char, $X, $Y) = @_;
+my ($self, @char_list) = @_;
 
-unless(exists($makeup_elements_cache{$char}))
+my @new_elements;
+for my $char (@char_list)
 {
-	my $init_element = create_box(NAME => 'make_up_character', TEXT_ONLY => $char, AUTO_SHRINK => 1, MAKE_UP_FLAG => 1, RESIZABLE => 0, EDITABLE => 0);
-	$init_element->enable_autoconnect(0);
-	$makeup_elements_cache{$char} = Clone::clone($init_element);
+    unless(exists($cross_elements_cache{$char->[0]}))
+    {
+    $cross_elements_cache{$char->[0]} = create_box(NAME => 'cross_character', TEXT_ONLY => $char->[0], AUTO_SHRINK => 1, CROSS_FLAG => 1, RESIZABLE => 0, EDITABLE => 0);
+    $cross_elements_cache{$char->[0]}->enable_autoconnect(0);
+    }
+    my $new_element = Clone::clone($cross_elements_cache{$char->[0]});
+    @$new_element{'X', 'Y', 'SELECTED'} = ($char->[1], $char->[2], 0);
+    push @new_elements, $new_element;
 }
 
-
-my $new_element = Clone::clone($makeup_elements_cache{$char});
-@$new_element{'X', 'Y', 'SELECTED'} = ($X, $Y, 0);
-$self->add_elements($new_element);
+$self->add_elements(@new_elements);
 }
 }
 
@@ -445,11 +464,11 @@ $self->{MODIFIED }++ ;
 
 #-----------------------------------------------------------------------------
 
-sub delete_makeup_elements
+sub delete_cross_elements
 {
 my ($self) = @_;
 
-$self->delete_elements(grep{defined($_->{MAKE_UP_FLAG}) && ($_->{MAKE_UP_FLAG} == 1) } @{$self->{ELEMENTS}});
+$self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1) } @{$self->{ELEMENTS}});
 }
 
 #-----------------------------------------------------------------------------
@@ -632,37 +651,45 @@ for my $element (@{$self->{ELEMENTS}})
 
 #-----------------------------------------------------------------------------
 
-sub select_makeup_elements
+sub select_cross_elements
 {
 my ($self) = @_;
 
 for my $element (@{$self->{ELEMENTS}})
 {
-    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{MAKE_UP_FLAG}) && ($element->{MAKE_UP_FLAG} == 1));
+    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_FLAG}) && ($element->{CROSS_FLAG} == 1));
 }
 }
 
 #-----------------------------------------------------------------------------
 
-sub switch_makeup_cross_mode
+sub switch_cross_mode
 {
 
 my ($self) = @_;
 
-if($self->{MAKE_UP_CROSS_MODE} == 0)
+if($self->{CROSS_MODE} == 0)
 {
-    $self->{MAKE_UP_CROSS_MODE} = 1;
-	print("enter normal makeup cross mode\n");
+    $self->{CROSS_MODE} = 1;
+	print("enter normal cross mode\n");
 }
-elsif($self->{MAKE_UP_CROSS_MODE} == 1)
+elsif($self->{CROSS_MODE} == 1)
 {
-    $self->{MAKE_UP_CROSS_MODE} = 2;
-	print("enter deep makeup cross mode\n");	
+    $self->{CROSS_MODE} = 2;
+	print("enter deep cross mode\n");	
 } else 
 {
-    $self->{MAKE_UP_CROSS_MODE} = 0;
-	print("exit makeup cross mode\n");
+    $self->{CROSS_MODE} = 1;
+	print("enter normal cross mode\n");
 }
+}
+
+#-----------------------------------------------------------------------------
+sub close_cross_mode
+{
+	my ($self) = @_;
+	$self->{CROSS_MODE} = 0;
+	print("exit cross mode\n");
 }
 
 #-----------------------------------------------------------------------------
@@ -819,12 +846,13 @@ return($character_x, $character_y) ;
 }
 
 #-----------------------------------------------------------------------------
-# asciio: + X . '
+# ascii: + X . '
 # unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ 
 # todo: 1. performance problem
 #       2. ⍀ ⌿ these two symbols are not necessary
 #       3. unicode deep mode 
 #       4. char color
+#       5. deep mode have repeat characters
 
 {
 
@@ -835,51 +863,65 @@ my $undef_char = 'Ȝ';
 
 
 my @normal_char_func = (
-	['+', \&makeup_scene_cross],
-	['.', \&makeup_scene_dot],
-	['\'',\&makeup_scene_apostrophe],
-	['┼', \&makeup_scene_unicode_cross],
-	['┤', \&makeup_scene_unicode_cross_lose_right],
-	['├', \&makeup_scene_unicode_cross_lose_left],
-	['┬', \&makeup_scene_unicode_cross_lose_up],
-	['┴', \&makeup_scene_unicode_cross_lose_down],
-	['╭', \&makeup_scene_unicode_right_down],
-	['╮', \&makeup_scene_unicode_left_down],
-	['╯', \&makeup_scene_unicode_left_up],
-	['╰', \&makeup_scene_unicode_right_up],
+	['+', \&scene_cross],
+	['.', \&scene_dot],
+	['\'',\&scene_apostrophe],
+	['┼', \&scene_unicode_cross],
+	['┤', \&scene_unicode_cross_lose_right],
+	['├', \&scene_unicode_cross_lose_left],
+	['┬', \&scene_unicode_cross_lose_up],
+	['┴', \&scene_unicode_cross_lose_down],
+	['╭', \&scene_unicode_right_down],
+	['╮', \&scene_unicode_left_down],
+	['╯', \&scene_unicode_left_up],
+	['╰', \&scene_unicode_right_up],
 ) ;
 
 my @diagonal_char_func = (
-	['X', \&makeup_scene_x],
-	['╳', \&makeup_scene_unicode_x],
+	['X', \&scene_x],
+	['╳', \&scene_unicode_x],
 ) ;
 
-my @need_deal_char = ('-', '|', '.', '\'', '\\', '/', '─', '│', '╭', '╮', '╯', '╰') ;
+my %need_deal_char_hash = map {$_, 1} ('-', '|', '.', '\'', '\\', '/', '─', '│', '╭', '╮', '╯', '╰') ;
 
 my @deep_char_func = (
-	['+', \&makeup_scene_cross_deep],
+	['+', \&scene_cross_deep],
 ) ;
 
+sub delete_cross_elements_cache
+{
+my ($self) = @_;
 
-sub add_makeup_elements
+my $normal_char_cache_num = keys %normal_char_cache;
+my $diagonal_char_cache_num = keys %diagonal_char_cache;
+my $deep_char_cache_num = keys %deep_char_cache;
+
+%normal_char_cache = ();
+%diagonal_char_cache = ();
+%deep_char_cache = ();
+
+print("normal_char_cache_num: " . $normal_char_cache_num. " deleted!" . "\n");
+print("diagonal_char_cache_num: " . $diagonal_char_cache_num. " deleted!" . "\n");
+print("deep_char_cache_num: " . $deep_char_cache_num. " deleted!" . "\n");
+}
+
+sub add_cross_elements
 {
 my ($self, $deep_flag) = @_;
 
-$self->delete_makeup_elements();
+my ($old_cross_elements, @ascii_array, $old_key, %not_delete_cross_elements);
+my ($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end);
 
 #~ this func is slow
-my @ascii_array = $self->transform_elements_to_ascii_two_dimensional_array(0);
+($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end, $old_cross_elements, @ascii_array) = $self->transform_elements_to_ascii_two_dimensional_array_for_cross_mode();
 
-my @keep_elements;
-
-my ($row, $col, $scene_func, $origin_char) ;
+my ($row, $col, $scene_func, @elements_to_be_add) ;
 my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315, $normal_key, $diagonal_key);
 for $row (1 .. $#ascii_array)
 {
 	for $col (1 .. $#{$ascii_array[$row]})
 	{
-		$origin_char = $ascii_array[$row][$col];
-		next unless($origin_char && any { $_ eq $origin_char } @need_deal_char);
+		next unless(defined($ascii_array[$row][$col]) && (exists($need_deal_char_hash{$ascii_array[$row][$col]})));
 
 		($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
 
@@ -888,12 +930,28 @@ for $row (1 .. $#ascii_array)
 		unless(exists($normal_char_cache{$normal_key}))
 		{
 			$scene_func = first { $_->[1]($up, $down, $left, $right) } @normal_char_func;
-			$normal_char_cache{$normal_key} = ($scene_func) ? [1, $scene_func->[0]] : [0, '0'];
+			$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[0] : '';
 		}
 
-		if($normal_char_cache{$normal_key}[0]) {
-			$self->create_makeup_element($normal_char_cache{$normal_key}[1], $col, $row) if ($normal_char_cache{$normal_key}[1] ne $origin_char);
-			$ascii_array[$row][$col] = $normal_char_cache{$normal_key}[1];
+		if($normal_char_cache{$normal_key}) {
+			$old_key = $col . '-' . $row;
+			if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $normal_char_cache{$normal_key}))
+			{
+				if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
+				{
+					$not_delete_cross_elements{$old_key . '-' . $normal_char_cache{$normal_key}} = 1;
+				}
+			}
+			else
+			{
+				if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
+				{
+				push @elements_to_be_add, [$normal_char_cache{$normal_key}, $col, $row];
+				$old_cross_elements->{$old_key} = $normal_char_cache{$normal_key};
+				$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
+				}
+			}
+			$ascii_array[$row][$col] = $normal_char_cache{$normal_key};
 			next;
 		}
 
@@ -904,64 +962,100 @@ for $row (1 .. $#ascii_array)
 		unless(exists($diagonal_char_cache{$diagonal_key}))
 		{
 			$scene_func = first { $_->[1]($char_45, $char_135, $char_225, $char_315) } @diagonal_char_func;
-			$diagonal_char_cache{$diagonal_key} = ($scene_func) ? [1, $scene_func->[0]] : [0, '0'];
+			$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[0] : '';
 		}
 
-		if($diagonal_char_cache{$diagonal_key}[0])
+		if($diagonal_char_cache{$diagonal_key})
 		{
-			$self->create_makeup_element($diagonal_char_cache{$diagonal_key}[1], $col, $row) if ($diagonal_char_cache{$diagonal_key}[1] ne $origin_char);
-			$ascii_array[$row][$col] = $diagonal_char_cache{$diagonal_key}[1];
+			$old_key = $col . '-' . $row;
+			if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $diagonal_char_cache{$diagonal_key}))
+			{
+				if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
+				{
+					$not_delete_cross_elements{$old_key . '-' . $diagonal_char_cache{$diagonal_key}} = 1;
+				}
+			}
+			else
+			{
+				if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
+				{
+				push @elements_to_be_add, [$diagonal_char_cache{$diagonal_key}, $col, $row];
+				$old_cross_elements->{$old_key} = $diagonal_char_cache{$diagonal_key};
+				$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
+				}
+			}
+			$ascii_array[$row][$col] = $diagonal_char_cache{$diagonal_key};
 		}
 	}
 }
 
-if(($deep_flag && $deep_flag == 1) || ($self->{MAKE_UP_CROSS_MODE} == 2))
-{
-
-my $deep_key;
-my $continue_flag = 1;
-
-until($continue_flag == 0)
-{
-	$continue_flag = 0;
-
-	for $row (1 .. $#ascii_array)
+if((defined($deep_flag) && $deep_flag == 1) || ($self->{CROSS_MODE} == 2))
 	{
-		for $col (1 .. $#{$ascii_array[$row]})
+
+	my $deep_key;
+	my $continue_flag = 1;
+
+	until($continue_flag == 0)
+	{
+		$continue_flag = 0;
+
+		for $row (1 .. $#ascii_array)
 		{
-		$origin_char = $ascii_array[$row][$col];
-		next unless($origin_char && any { $_ eq $origin_char } @need_deal_char);
+			for $col (1 .. $#{$ascii_array[$row]})
+			{
+			next unless(defined($ascii_array[$row][$col]) && (exists($need_deal_char_hash{$ascii_array[$row][$col]})));
 
-		($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
+			($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
 
-		$deep_key = ($up || $undef_char) . ($down || $undef_char) . ($left || $undef_char) . ($right || $undef_char);
+			$deep_key = ($up || $undef_char) . ($down || $undef_char) . ($left || $undef_char) . ($right || $undef_char);
 
-		unless(exists($deep_char_cache{$deep_key}))
-		{
-			$scene_func = first { $_->[1]($up, $down, $left, $right) } @deep_char_func;
-			$deep_char_cache{$deep_key} = ($scene_func) ? [1, $scene_func->[0]] : [0, '0'];
-		}
+			unless(exists($deep_char_cache{$deep_key}))
+			{
+				$scene_func = first { $_->[1]($up, $down, $left, $right) } @deep_char_func;
+				$deep_char_cache{$deep_key} = ($scene_func) ? $scene_func->[0] : '';
+			}
 
-		if($deep_char_cache{$deep_key}[0]) 
-		{
-			$continue_flag = 1;
-			$self->create_makeup_element($deep_char_cache{$deep_key}[1], $col, $row) if ($deep_char_cache{$deep_key}[1] ne $origin_char);
-			$ascii_array[$row][$col] = $deep_char_cache{$deep_key}[1];
-		}
+			if($deep_char_cache{$deep_key}) 
+			{
+				
+				$old_key = $col . '-' . $row;
+				if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $deep_char_cache{$deep_key}))
+				{
+					if($deep_char_cache{$deep_key} ne $ascii_array[$row][$col])
+					{
+						$not_delete_cross_elements{$old_key . '-' . $deep_char_cache{$deep_key}} = 1;
+					}
+				}
+				else
+				{
+					if($deep_char_cache{$deep_key} ne $ascii_array[$row][$col])
+					{
+					push @elements_to_be_add, [$deep_char_cache{$deep_key}, $col, $row];
+					$old_cross_elements->{$old_key} = $deep_char_cache{$deep_key};
+					$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
+					$continue_flag = 1;
+					}
+				}
+				$ascii_array[$row][$col] = $deep_char_cache{$deep_key};
+			}
+			}
 		}
 	}
-}
-}
+	}
+
+	
+	$self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1) && !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) && ($cross_y_start < $_->{Y} < $cross_y_end) && ($cross_x_start < $_->{X} < $cross_x_end) } @{$self->{ELEMENTS}});
+	$self->create_cross_elements(@elements_to_be_add) if(@elements_to_be_add)  ;
 }
 }
 
 #-----------------------------------------------------------------------------
 # +
-sub makeup_scene_cross
+sub scene_cross
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $down && $left && $right) ;
+return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
 return (($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'') &&
 		($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'') &&
@@ -972,28 +1066,28 @@ return (($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'') &&
 
 #-----------------------------------------------------------------------------
 # +
-sub makeup_scene_cross_deep
+sub scene_cross_deep
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $down && $left && $right) ;
+return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
-return 1 if(($up && $up eq '-') && 
+return 1 if((defined($up) && $up eq '-') && 
 			($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
 			($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+') &&
 			($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+'));
 
-return 1 if(($down && $down eq '-') && 
+return 1 if((defined($down) && $down eq '-') && 
 			($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
 			($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+') &&
 			($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+'));
 
-return 1 if(($left && $left eq '|') && 
+return 1 if((defined($left) && $left eq '|') && 
 			($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
 			($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
 			($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+'));
 
-return 1 if(($right && $right eq '|') && 
+return 1 if((defined($right) && $right eq '|') && 
 			($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
 			($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
 			($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+'));
@@ -1011,15 +1105,15 @@ return (($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
 #         ---.  .---  ---.---  |   |
 #            |  |        |  ---.   .---
 #            |  |        |     |   |
-sub makeup_scene_dot
+sub scene_dot
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 if(($up && $up eq '|') && ($down && $down eq '|') && 
-			($left && $left eq '-') && ($right && $right eq '-'));
+return 0 if((defined($up) && $up eq '|') && (defined($down) && $down eq '|') && 
+			(defined($left) && $left eq '-') && (defined($right) && $right eq '-'));
 
-return ((($left && $left eq '-') && ($down && $down eq '|')) || 
-	   (($right && $right eq '-') && ($down && $down eq '|'))) ;
+return (((defined($left) && $left eq '-') && (defined($down) && $down eq '|')) || 
+	   ((defined($right) && $right eq '-') && (defined($down) && $down eq '|'))) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1027,25 +1121,25 @@ return ((($left && $left eq '-') && ($down && $down eq '|')) ||
 #       |          |       |
 #       |          |       |
 #       '---    ---'    ---'---
-sub makeup_scene_apostrophe
+sub scene_apostrophe
 {
 my ($up, $down, $left, $right) = @_;
 
-return 1 if((($up && $up eq '|') && ($right && $right eq '-')) && 
-			!($down && $down eq '|')) ;
+return 1 if(((defined($up) && $up eq '|') && (defined($right) && $right eq '-')) && 
+			!(defined($down) && $down eq '|')) ;
 
-return (($up && $up eq '|') && ($left && $left eq '-') && 
-		!(($down && $down eq '|') || ($right && $right eq '|'))) ;
+return ((defined($up) && $up eq '|') && (defined($left) && $left eq '-') && 
+		!((defined($down) && $down eq '|') || (defined($right) && $right eq '|'))) ;
 
 }
 
 #-----------------------------------------------------------------------------
 # ┼
-sub makeup_scene_unicode_cross
+sub scene_unicode_cross
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $down && $left && $right) ;
+return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
 return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 		($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
@@ -1055,13 +1149,13 @@ return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 
 #-----------------------------------------------------------------------------
 # ┤
-sub makeup_scene_unicode_cross_lose_right
+sub scene_unicode_cross_lose_right
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $down && $left) ;
+return 0 unless(defined($up) && defined($down) && defined($left)) ;
 
-return 0 if($right && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return 0 if(defined($right) && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
 
 return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 		($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
@@ -1070,13 +1164,13 @@ return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 
 #-----------------------------------------------------------------------------
 # ├
-sub makeup_scene_unicode_cross_lose_left
+sub scene_unicode_cross_lose_left
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $down && $right) ;
+return 0 unless(defined($up) && defined($down) && defined($right)) ;
 
-return 0 if($left && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
+return 0 if(defined($left) && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
 
 return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 		($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
@@ -1085,13 +1179,13 @@ return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 
 #-----------------------------------------------------------------------------
 # ┬
-sub makeup_scene_unicode_cross_lose_up
+sub scene_unicode_cross_lose_up
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($down && $left && $right) ;
+return 0 unless(defined($down) && defined($left) && defined($right)) ;
 
-return 0 if($up && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) ;
+return 0 if(defined($up) && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) ;
 
 return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
 		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰') &&
@@ -1100,13 +1194,13 @@ return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
 
 #-----------------------------------------------------------------------------
 # ┴
-sub makeup_scene_unicode_cross_lose_down
+sub scene_unicode_cross_lose_down
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $left && $right) ;
+return 0 unless(defined($up) && defined($left) && defined($right)) ;
 
-return 0 if($down && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')) ;
+return 0 if(defined($down) && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')) ;
 
 return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰') &&
@@ -1115,14 +1209,14 @@ return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 
 #-----------------------------------------------------------------------------
 # ╭
-sub makeup_scene_unicode_right_down
+sub scene_unicode_right_down
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($down && $right) ;
+return 0 unless(defined($down) && defined($right)) ;
 
-return 0 if(($up && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) || 
-			($left && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰'))) ;
+return 0 if((defined($up) && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) || 
+			(defined($left) && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰'))) ;
 
 return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
 		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
@@ -1130,14 +1224,14 @@ return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
 
 #-----------------------------------------------------------------------------
 # ╮
-sub makeup_scene_unicode_left_down
+sub scene_unicode_left_down
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($down && $left) ;
+return 0 unless(defined($down) && defined($left)) ;
 
-return 0 if (($up && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) ||
-			 ($right && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')));
+return 0 if ((defined($up) && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) ||
+			 (defined($right) && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')));
 
 return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
 		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
@@ -1145,14 +1239,14 @@ return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
 
 #-----------------------------------------------------------------------------
 # ╯
-sub makeup_scene_unicode_left_up
+sub scene_unicode_left_up
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $left) ;
+return 0 unless(defined($up) && defined($left)) ;
 
-return 0 if(($down && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')) || 
-			($right && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯'))) ;
+return 0 if((defined($down) && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')) || 
+			(defined($right) && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯'))) ;
 
 return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
@@ -1160,14 +1254,14 @@ return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 
 #-----------------------------------------------------------------------------
 # ╰
-sub makeup_scene_unicode_right_up
+sub scene_unicode_right_up
 {
 my ($up, $down, $left, $right) = @_;
 
-return 0 unless($up && $right) ;
+return 0 unless(defined($up) && defined($right)) ;
 
-return 0 if(($left && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) || 
-			($down && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')));
+return 0 if((defined($left) && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) || 
+			(defined($down) && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')));
 
 return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
@@ -1175,11 +1269,11 @@ return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
 
 #-----------------------------------------------------------------------------
 # X
-sub makeup_scene_x
+sub scene_x
 {
 my ($char_45, $char_135, $char_225, $char_315) = @_;
 
-return 0 unless($char_45 && $char_135 && $char_225 && $char_315);
+return 0 unless(defined($char_45) && defined($char_135) && defined($char_225) && defined($char_315));
 
 return (($char_45 eq '/' || $char_45 eq '^') && 
 		($char_135 eq '\\' || $char_135 eq 'v') && 
@@ -1190,11 +1284,11 @@ return (($char_45 eq '/' || $char_45 eq '^') &&
 
 #-----------------------------------------------------------------------------
 # ╳
-sub makeup_scene_unicode_x
+sub scene_unicode_x
 {
 my ($char_45, $char_135, $char_225, $char_315) = @_;
 
-return 0 unless($char_45 && $char_135 && $char_225 && $char_315);
+return 0 unless(defined($char_45) && defined($char_135) && defined($char_225) && defined($char_315));
 
 return (($char_45 eq '╱' || $char_45 eq '^') && 
 		($char_135 eq '╲' || $char_135 eq 'v') && 

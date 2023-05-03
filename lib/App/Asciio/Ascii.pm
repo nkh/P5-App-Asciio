@@ -156,6 +156,90 @@ if(is_markup_mode() && $format)
 return(@lines) ;
 }
 
+sub transform_elements_to_ascii_two_dimensional_array_for_cross_mode
+{
+my ($self)  = @_ ;
+
+my @cross_x_rulers = grep {$_->{NAME} eq "CROSS_X"} @{$self->{RULER_LINES}};
+my @cross_y_rulers = grep {$_->{NAME} eq "CROSS_Y"} @{$self->{RULER_LINES}};
+
+my ($max_x, $max_y) = ($self->{widget}->get_allocated_width(), $self->{widget}->get_allocated_height()) ;
+
+my ($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end);
+
+if(scalar(@cross_x_rulers) == 2)
+	{
+	$cross_x_start = min(map {$_->{POSITION}} @cross_x_rulers);
+	$cross_x_end = max(map {$_->{POSITION}} @cross_x_rulers);
+	}
+elsif(scalar(@cross_x_rulers) == 1)
+	{
+	$cross_x_start = 0;
+	$cross_x_end = $cross_x_rulers[0]->{POSITION};
+	}
+else
+	{
+	$cross_x_start = 0;
+	$cross_x_end = $max_x;
+	}
+
+if(scalar(@cross_y_rulers) == 2)
+	{
+	$cross_y_start = min(map {$_->{POSITION}} @cross_y_rulers);
+	$cross_y_end = max(map {$_->{POSITION}} @cross_y_rulers);
+	}
+elsif(scalar(@cross_y_rulers) == 1)
+	{
+	$cross_y_start = 0;
+	$cross_y_end = $cross_y_rulers[0]->{POSITION};
+	}
+else
+	{
+	$cross_y_start = 0;
+	$cross_y_end = $max_y;
+	}
+
+my (@lines, %cross_elements_location) ;
+
+for my $element (grep {($cross_y_start < $_->{Y} < $cross_y_end) && ($cross_x_start < $_->{X} < $cross_x_end)} @{$self->{ELEMENTS}})
+	{
+	if((defined($element->{CROSS_FLAG})) && ($element->{CROSS_FLAG} == 1))
+		{
+		$cross_elements_location{$element->{X} . '-' . $element->{Y}} = $element->{TEXT_ONLY};
+		next;
+		}
+	for my $strip (@{$element->get_stripes()})
+		{
+		my $line_index = 0 ;
+
+		for my $sub_strip (split("\n", $strip->{TEXT}))
+			{
+			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
+
+			if(is_markup_mode())
+			{
+				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
+				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
+			}
+
+			my $character_index = 0 ;
+			
+			for my $character (split '', $sub_strip)
+				{
+				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
+				
+				$lines[$y][$x] = $character if ($x >= 0 && $y >= 0) ;
+				$character_index += usc_length($character);
+				}
+			
+			$line_index++ ;
+			}
+		}
+	}
+
+return($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end, \%cross_elements_location, @lines) ;
+}
+
 #-----------------------------------------------------------------------------
 
 sub transform_elements_to_array
