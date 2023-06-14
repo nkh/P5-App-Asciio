@@ -22,7 +22,7 @@ setup/import_export/asciioe.pl
 setup/import_export/svg.pl
 setup/import_export/perl.pl
 
-setup/Stencils/Asciio
+setup/Asciio
 setup/Stencils/Computer
 setup/Stencils/People
 setup/Stencils/Divers

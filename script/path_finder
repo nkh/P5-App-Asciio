@@ -331,6 +331,7 @@ return $self->fillPath($open,$nodes,$target);
 }
 
 #-------------------------------------------------------------------------------
+my %seen ;
 
 sub getSurrounding
 {
@@ -352,6 +353,40 @@ my @direction_to_surroundings =
 	) ;
 
 my @surrounding ;
+
+my ($free_x) = sort { $a->[0] <=> $b->[0] }  grep { $_->[1] == $y && $_->[0] > $x && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
+my @straight_x ;
+if(defined $free_x)
+	{
+	# print "$x, $y -> @{$free_x}, $x + 1 .. $free_x->[0] - 1\n" ;
+	# use Data::TreeDumper;
+	# print DumpTree \%seen, 'seen' ;
+	# $a = <STDIN> ;
+	
+	for my $next_x ( $x + 1 .. $free_x->[0] - 1)
+		{
+		push @straight_x,  [ $next_x.'.'.$free_x->[1] , 1, 1] ;
+		$self->{scanned_cells}{$next_x.'.'.$free_x->[1]}++ ;
+		}
+	}
+ 
+my ($free_y) = sort { $a->[1] <=> $b->[1] }  grep { $_->[0] == $x && $_->[1] > $y && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
+my @straight_y ;
+if(defined $free_y)
+	{
+	# print "$x, $y -> @{$free_x}, $x + 1 .. $free_x->[0] - 1\n" ;
+	# use Data::TreeDumper;
+	# print DumpTree \%seen, 'seen' ;
+	# $a = <STDIN> ;
+	
+	for my $next_y ( $y + 1 .. $free_y->[1] - 1)
+		{
+		push @straight_y,  [ $free_y->[0].'.'.$next_y, 1, 1] ;
+		$self->{scanned_cells}{$free_y->[0].'.'.$next_y}++ ;
+		}
+	}
+
+return [ @straight_x, @straight_y ] if @straight_x + @straight_y ;
 
 for my $node (@{$direction_to_surroundings[$direction]})
 	{
