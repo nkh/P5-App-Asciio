@@ -114,7 +114,7 @@ my ($self) = @_ ;
 
 my $ascii = qx~xsel -p -o~ ;
 
-my $element = $self->add_new_element_named('Stencils/Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 $element->set_text('', $ascii) ;
 $self->select_elements(1, $element) ;
 
@@ -129,7 +129,7 @@ my ($self) = @_ ;
 
 my $ascii = qx~xsel -p -o~ ;
 
-my $element = $self->add_new_element_named('Stencils/Asciio/text', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('Asciio/text', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 $element->set_text('', $ascii) ;
 $self->select_elements(1, $element) ;
 
@@ -147,7 +147,7 @@ $ascii = decode("utf-8", $ascii);
 $ascii =~ s/\r//g;
 $ascii =~ s/\t/$self->{TAB_AS_SPACES}/g;
 
-my $element = $self->add_new_element_named('Stencils/Asciio/' . $obj, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named('Asciio/' . $obj, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 $element->set_text('', $ascii) ;
 $self->select_elements(1, $element) ;
 

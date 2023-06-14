@@ -47,7 +47,7 @@ add_connection($asciio, $box2, $box3, ) ;
 add_connection($asciio, $box3, $box1, 'up') ;
 optimize_connections($asciio) ;
 
-my $process = $asciio->add_new_element_named('Stencils/Asciio/Boxes/process', 5, 15) ;
+my $process = $asciio->add_new_element_named('Asciio/Boxes/process', 5, 15) ;
 $process->set_text("line 1\nline 2\nline 3") ;
 
 print $asciio->transform_elements_to_ascii_buffer() ;

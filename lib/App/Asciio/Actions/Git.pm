@@ -25,7 +25,7 @@ if($destination_element)
 	}
 else
 	{
-	my $new_connector = $self->add_new_element_named('Stencils/Asciio/connector2', $x, $y) ;
+	my $new_connector = $self->add_new_element_named('Asciio/connector2', $x, $y) ;
 	connect_to_destination_element($self, $new_connector, $x, $y) ;
 	}
 }
