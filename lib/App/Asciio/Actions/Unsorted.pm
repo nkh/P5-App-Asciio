@@ -35,10 +35,11 @@ $self->display_message_modal(<<EOM) ;
 "alt+lef_mouse" "."         Quick link:
 
 "ib",                       insert a box
-"it",                       Add a text element
+"iB",                       insert a shrink box
+"i^b"                       Add multiple boxes
 
-"iB"                        Add multiple boxes
-"iT"                        Add multiple texts
+"it",                       Add a text element
+"i^t"                       Add multiple texts
 
 "ia"                        Add a wirl arrow
 "ad"                        Change arrow direction

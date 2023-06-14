@@ -391,6 +391,8 @@ A set of whirl arrows connected to each other.
 
  «A-b»              Add unicode box
 
+ «C-b»              Add multiple boxes
+
  «c»                Add connector
 
  «E»                Add exec-box no border
@@ -416,6 +418,8 @@ A set of whirl arrows connected to each other.
  «r»                Add vertical ruler
 
  «t»                Add text
+
+ «C-t»              Add multiple text
 
 =back
 
