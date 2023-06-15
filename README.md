@@ -33,6 +33,8 @@ Both GUI and TUI have vim-like bindings, the GUI has a few extra
 bindings that are usually found in GUI applications; bindings can be
 modified.
 
+Keyboard bindings are the best way to use Asciio, they can be modified.
+
 To list the bindings: $> perldoc App:Asciio.
  
 # DOCUMENTATION
@@ -75,6 +77,7 @@ You can also export the selection, in ASCII, to the Primary clipboard.
                                 (> <)
 
 ### if-box and process-box
+
        .--------------.    
       / a == b         \     __________
      (    &&            )    \         \
@@ -95,8 +98,6 @@ command.
       +============+============+============+============+
       |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |
       +------------+------------+------------+------------+
-      |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |
-      +------------+------------+------------+------------+
       |    250     ‖     -      |  80 min.   | 2.27 sec.  |
       +------------+------------+------------+------------+
 
@@ -104,13 +105,12 @@ command.
 
 Rotating the end clockwise or counter-clockwise changes its direction.
 
-            ^
-            |            ^  
-            |    -----.   \            
-            '------   |    \         
-      ------>         |     '-------
-                      |   
-                      v
+          ^            ^          
+          |    -----.   \         
+          |         |    \           
+          '----     |     '------- 
+    ------>         |             
+                    v             
 
 ### multi section wirl-arrow
 
@@ -126,21 +126,16 @@ A set of whirl arrows connected to each other.
 
 ### angled-arrow and axis
 
-       -------.       .-------
-               \     /
-                \   /
-
-                /   \
-               /     \
-        ------'       '-------
-  
-     ^
-     |   ^
-     |  /
-     | /
-      -------->
+    -------.       .-------
+            \     /
+             \   /            ^         
+                              |   ^     
+             /   \            |  /      
+            /     \           | /       
+     ------'       '-------    -------->
 
 ## Examples
+
               .---.  .---. .---.  .---.    .---.  .---.
      OS API   '---'  '---' '---'  '---'    '---'  '---'
                 |      |     |      |        |      |
@@ -160,7 +155,6 @@ A set of whirl arrows connected to each other.
               '---------------------------------------'
 
 
-                                  
                                  .-Base::Class::Derived_B
                                 /
      Something::Else           /
@@ -173,7 +167,6 @@ A set of whirl arrows connected to each other.
 
       _____ 
      | ___ |
-     ||   ||  
      ||___|| load
      | ooo |--.------------------.------------------------.
      '_____'  |                  |                        |
@@ -198,6 +191,8 @@ A set of whirl arrows connected to each other.
 ![SVG source](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg_source.png)
 
 ![SVG](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg.png)
+
+The "goat" project (https://github.com/blampe/goat) must be installed.
 
 # Asciio and Vim
 

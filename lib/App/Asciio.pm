@@ -58,9 +58,11 @@ saved as ASCII text or in a format that allows you to modify them later.
 Diagrams consist of boxes and text elements connected by arrows. Boxes stay
 connected when you move them around.
 
-
 Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that
-are usually found in GUI applications; bindings can be modified.
+are usually found in GUI applications.
+
+Keyboard bindings are the best way to use Asciio, they are listed at the end of
+this documentation. Bindings can also be modified.
 
 =head1 DOCUMENTATION
 
@@ -104,7 +106,6 @@ You can also export the selection, in ASCII, to the Primary clipboard.
 
 =head3 if-box and process-box
 
-                       
    .--------------.    
   / a == b         \     __________
  (    &&            )    \         \
@@ -125,8 +126,6 @@ already have text in a file you can use 'cat your_file' as the command.
   +============+============+============+============+
   |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |
   +------------+------------+------------+------------+
-  |     4      ‖  900 sec.  | 431.1 sec. | 0.08 sec.  |
-  +------------+------------+------------+------------+
   |    250     ‖     -      |  80 min.   | 2.27 sec.  |
   +------------+------------+------------+------------+
 
@@ -134,13 +133,12 @@ already have text in a file you can use 'cat your_file' as the command.
 
 Rotating the end clockwise or counter-clockwise changes its direction.
 
-        ^
-        |            ^  
-        |    -----.   \            
-        '------   |    \         
-  ------>         |     '-------
-                  |   
-                  v  
+        ^            ^          
+        |    -----.   \         
+        |         |    \           
+        '----     |     '------- 
+  ------>         |             
+                  v             
                   
 =head3 multi section wirl-arrow
 
@@ -159,40 +157,14 @@ A set of whirl arrows connected to each other.
 
    -------.       .-------
            \     /
-            \   /
-
-            /   \
-           /     \
-    ------'       '-------
+            \   /            ^         
+                             |   ^     
+            /   \            |  /      
+           /     \           | /       
+    ------'       '-------    -------->
   
- ^
- |   ^
- |  /
- | /
-  -------->
-
 =head2 Examples
 
-          .---.  .---. .---.  .---.    .---.  .---.
- OS API   '---'  '---' '---'  '---'    '---'  '---'
-            |      |     |      |        |      |
-            v      v     |      v        |      v
-          .------------. | .-----------. |  .-----.
-          | Filesystem | | | Scheduler | |  | MMU |
-          '------------' | '-----------' |  '-----'
-                 |       |      |        |
-                 v       |      |        v
-              .----.     |      |    .---------.
-              | IO |<----'      |    | Network |
-              '----'            |    '---------'
-                 |              |         |
-                 v              v         v
-          .---------------------------------------.
-          |                  HAL                  |
-          '---------------------------------------'
-
-
-                                  
                              .----Base::Class::Derived_B
                             /
  Something::Else           /
@@ -205,7 +177,6 @@ A set of whirl arrows connected to each other.
 
   _____ 
  | ___ |
- ||   ||  
  ||___|| load
  | ooo |--.------------------.------------------------.
  '_____'  |                  |                        |
@@ -253,6 +224,10 @@ A set of whirl arrows connected to each other.
         ┌─────────────┐           ┌─────────────┐
         │ HBA card1   │           │ HBA card2   │
         └─────────────┘           └─────────────┘
+
+## Exporting to SVG
+
+The "goat" project (https://github.com/blampe/goat) must be installed.
 
 =head2 Bindings
 

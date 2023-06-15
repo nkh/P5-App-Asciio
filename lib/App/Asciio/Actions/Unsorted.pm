@@ -39,7 +39,7 @@ my ($self) = @_ ;
 
 $self->display_message_modal(<<EOM) ;
 
-"alt+lef_mouse" "."         Quick link:
+"alt+lef_mouse" "."         Quick link
 
 "ib",                       insert a box
 "iB",                       insert a shrink box
@@ -71,14 +71,14 @@ $self->display_message_modal(<<EOM) ;
 
 "right-clik"                Show context menu.
 
-"+" "none"                  Zoom in
-"-" "none"                  Zoom out
+"+"                         Zoom in
+"-"                         Zoom out
 
 ":e"                        Open
 ":w"                        Save
 ":q"                        Quit
 
-"none" ":m"                 Displays manpage
+":m"                        Displays manpage
 
 EOM
 }
