@@ -58,10 +58,10 @@ register_action_handlers
 'Move selected elements up quick'             => ['0A0-Up',                                 \&App::Asciio::Actions::ElementsManipulation::move_selection_up, 10               ],
 'Move selected elements down quick'           => ['0A0-Down',                               \&App::Asciio::Actions::ElementsManipulation::move_selection_down, 10             ],
 
-'Move selected elements left 2'               => ['h',                                      \&App::Asciio::Actions::ElementsManipulation::move_selection_left                 ],
-'Move selected elements right 2'              => ['l',                                      \&App::Asciio::Actions::ElementsManipulation::move_selection_right                ],
-'Move selected elements up 2'                 => ['k',                                      \&App::Asciio::Actions::ElementsManipulation::move_selection_up                   ],
-'Move selected elements down 2'               => ['j',                                      \&App::Asciio::Actions::ElementsManipulation::move_selection_down                 ],
+'Move selected elements left 2'               => [['000-h', 'h'],                           \&App::Asciio::Actions::ElementsManipulation::move_selection_left                 ],
+'Move selected elements right 2'              => [['000-l', 'l'],                           \&App::Asciio::Actions::ElementsManipulation::move_selection_right                ],
+'Move selected elements up 2'                 => [['000-k', 'k'],                           \&App::Asciio::Actions::ElementsManipulation::move_selection_up                   ],
+'Move selected elements down 2'               => [['000-j', 'j'],                           \&App::Asciio::Actions::ElementsManipulation::move_selection_down                 ],
 
 'Shrink box'                                  => ['000-s',                                  \&App::Asciio::Actions::ElementsManipulation::shrink_box                          ],
 
