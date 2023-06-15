@@ -20,7 +20,14 @@ my (undef, $manpage) = tempfile() ;
 
 system("perldoc App::Asciio >$manpage") ;
 
-qx"$self->{BROWSER} 'file://$manpage' &" ;
+if(defined $ENV{BROWSER} && $ENV{BROWSER} ne '')
+	{
+	qx"$ENV{BROWSER} --new-window 'file://$manpage' &" ;
+	}
+else
+	{
+	$self->display_message_modal("Environmen variable 'BROWSER' not set.") ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -110,7 +117,14 @@ my ($self) = @_ ;
 
 my $mapping_file = get_keyboard_mapping_file($self) ;
 
-qx"$self->{BROWSER} 'file://$mapping_file' &" ;
+if(defined $ENV{BROWSER} && $ENV{BROWSER} ne '')
+	{
+	qx"$ENV{BROWSER} --new-window 'file://$mapping_file' &" ;
+	}
+else
+	{
+	$self->display_message_modal("Environmen variable 'BROWSER' not set.") ;
+	}
 }
 
 sub get_keyboard_mapping_file
