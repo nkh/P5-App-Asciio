@@ -668,28 +668,16 @@ sub switch_cross_mode
 
 my ($self) = @_;
 
-if($self->{CROSS_MODE} == 0)
-{
-    $self->{CROSS_MODE} = 1;
-	print("enter normal cross mode\n");
-}
-elsif($self->{CROSS_MODE} == 1)
-{
-    $self->{CROSS_MODE} = 2;
-	print("enter deep cross mode\n");	
-} else 
-{
-    $self->{CROSS_MODE} = 1;
-	print("enter normal cross mode\n");
-}
-}
-
-#-----------------------------------------------------------------------------
-sub close_cross_mode
-{
-	my ($self) = @_;
-	$self->{CROSS_MODE} = 0;
+if($self->{CROSS_MODE} == 1)
+	{
+    $self->{CROSS_MODE} = 0;
 	print("exit cross mode\n");
+	}
+else 
+	{
+    $self->{CROSS_MODE} = 1;
+	print("enter cross mode\n");
+	}
 }
 
 #-----------------------------------------------------------------------------
@@ -850,15 +838,12 @@ return($character_x, $character_y) ;
 # unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ 
 # todo: 1. performance problem
 #       2. ⍀ ⌿ these two symbols are not necessary
-#       3. unicode deep mode 
-#       4. char color
-#       5. deep mode have repeat characters
+#       3. char color
 
 {
 
 my %normal_char_cache;
 my %diagonal_char_cache;
-my %deep_char_cache;
 my $undef_char = 'Ȝ';
 
 
@@ -884,30 +869,23 @@ my @diagonal_char_func = (
 
 my %need_deal_char_hash = map {$_, 1} ('-', '|', '.', '\'', '\\', '/', '─', '│', '╭', '╮', '╯', '╰') ;
 
-my @deep_char_func = (
-	['+', \&scene_cross_deep],
-) ;
-
 sub delete_cross_elements_cache
 {
 my ($self) = @_;
 
 my $normal_char_cache_num = keys %normal_char_cache;
 my $diagonal_char_cache_num = keys %diagonal_char_cache;
-my $deep_char_cache_num = keys %deep_char_cache;
 
 %normal_char_cache = ();
 %diagonal_char_cache = ();
-%deep_char_cache = ();
 
 print("normal_char_cache_num: " . $normal_char_cache_num. " deleted!" . "\n");
 print("diagonal_char_cache_num: " . $diagonal_char_cache_num. " deleted!" . "\n");
-print("deep_char_cache_num: " . $deep_char_cache_num. " deleted!" . "\n");
 }
 
 sub add_cross_elements
 {
-my ($self, $deep_flag) = @_;
+my ($self) = @_;
 
 my ($old_cross_elements, @ascii_array, $old_key, %not_delete_cross_elements);
 my ($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end);
@@ -951,7 +929,6 @@ for $row (1 .. $#ascii_array)
 				$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
 				}
 			}
-			$ascii_array[$row][$col] = $normal_char_cache{$normal_key};
 			next;
 		}
 
@@ -984,69 +961,16 @@ for $row (1 .. $#ascii_array)
 				$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
 				}
 			}
-			$ascii_array[$row][$col] = $diagonal_char_cache{$diagonal_key};
 		}
 	}
 }
-
-if((defined($deep_flag) && $deep_flag == 1) || ($self->{CROSS_MODE} == 2))
-	{
-
-	my $deep_key;
-	my $continue_flag = 1;
-
-	until($continue_flag == 0)
-	{
-		$continue_flag = 0;
-
-		for $row (1 .. $#ascii_array)
-		{
-			for $col (1 .. $#{$ascii_array[$row]})
-			{
-			next unless(defined($ascii_array[$row][$col]) && (exists($need_deal_char_hash{$ascii_array[$row][$col]})));
-
-			($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
-
-			$deep_key = ($up || $undef_char) . ($down || $undef_char) . ($left || $undef_char) . ($right || $undef_char);
-
-			unless(exists($deep_char_cache{$deep_key}))
-			{
-				$scene_func = first { $_->[1]($up, $down, $left, $right) } @deep_char_func;
-				$deep_char_cache{$deep_key} = ($scene_func) ? $scene_func->[0] : '';
-			}
-
-			if($deep_char_cache{$deep_key}) 
-			{
-				
-				$old_key = $col . '-' . $row;
-				if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $deep_char_cache{$deep_key}))
-				{
-					if($deep_char_cache{$deep_key} ne $ascii_array[$row][$col])
-					{
-						$not_delete_cross_elements{$old_key . '-' . $deep_char_cache{$deep_key}} = 1;
-					}
-				}
-				else
-				{
-					if($deep_char_cache{$deep_key} ne $ascii_array[$row][$col])
-					{
-					push @elements_to_be_add, [$deep_char_cache{$deep_key}, $col, $row];
-					$old_cross_elements->{$old_key} = $deep_char_cache{$deep_key};
-					$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
-					$continue_flag = 1;
-					}
-				}
-				$ascii_array[$row][$col] = $deep_char_cache{$deep_key};
-			}
-			}
-		}
-	}
-	}
-
-	
-	$self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1) && !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) && ($cross_y_start < $_->{Y} < $cross_y_end) && ($cross_x_start < $_->{X} < $cross_x_end) } @{$self->{ELEMENTS}});
-	$self->create_cross_elements(@elements_to_be_add) if(@elements_to_be_add)  ;
+$self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1) 
+	&& !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) 
+	&& ($cross_y_start < $_->{Y} < $cross_y_end) 
+	&& ($cross_x_start < $_->{X} < $cross_x_end) } @{$self->{ELEMENTS}}) ;
+$self->create_cross_elements(@elements_to_be_add) if(@elements_to_be_add)  ;
 }
+
 }
 
 #-----------------------------------------------------------------------------
@@ -1057,45 +981,10 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
-return (($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'') &&
-		($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'') &&
-		($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'') &&
-		($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'')) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# +
-sub scene_cross_deep
-{
-my ($up, $down, $left, $right) = @_;
-
-return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
-
-return 1 if((defined($up) && $up eq '-') && 
-			($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
-			($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+') &&
-			($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+'));
-
-return 1 if((defined($down) && $down eq '-') && 
-			($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
-			($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+') &&
-			($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+'));
-
-return 1 if((defined($left) && $left eq '|') && 
-			($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
-			($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
-			($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+'));
-
-return 1 if((defined($right) && $right eq '|') && 
-			($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
-			($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
-			($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+'));
-
-return (($up eq '|' || $up eq '^' || $up eq '.' || $up eq '\'' || $up eq '+') &&
-		($down eq '|' || $down eq 'v' || $down eq '.' || $down eq '\'' || $down eq '+') &&
-		($left eq '-' || $left eq '<' || $left eq '.' || $left eq '\'' || $left eq '+') &&
-		($right eq '-' || $right eq '>' || $right eq '.' || $right eq '\'' || $right eq '+')) ;
+return (($up eq '|' || $up eq '.' || $up eq '\'') &&
+		($down eq '|' || $down eq '.' || $down eq '\'') &&
+		($left eq '-' || $left eq '.' || $left eq '\'') &&
+		($right eq '-' || $right eq '.' || $right eq '\'')) ;
 
 }
 
@@ -1141,10 +1030,10 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
-return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
-		($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰') &&
-		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
+		($down eq '│' || $down eq '╰' || $down eq '╯') &&
+		($left eq '─' || $left eq '╭' || $left eq '╰') &&
+		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1155,11 +1044,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($left)) ;
 
-return 0 if(defined($right) && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return 0 if(defined($right) && ($right eq '─' || $right eq '╮' || $right eq '╯')) ;
 
-return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
-		($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
+return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
+		($down eq '│' || $down eq '╰' || $down eq '╯') &&
+		($left eq '─' || $left eq '╭' || $left eq '╰')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1170,11 +1059,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($right)) ;
 
-return 0 if(defined($left) && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
+return 0 if(defined($left) && ($left eq '─' || $left eq '╭' || $left eq '╰')) ;
 
-return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
-		($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
-		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
+		($down eq '│' || $down eq '╰' || $down eq '╯') &&
+		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1185,11 +1074,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($down) && defined($left) && defined($right)) ;
 
-return 0 if(defined($up) && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) ;
+return 0 if(defined($up) && ($up eq '│' || $up eq '╭' || $up eq '╮')) ;
 
-return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰') &&
-		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return (($down eq '│' || $down eq '╰' || $down eq '╯') &&
+		($left eq '─' || $left eq '╭' || $left eq '╰') &&
+		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1200,10 +1089,10 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($left) && defined($right)) ;
 
-return 0 if(defined($down) && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')) ;
+return 0 if(defined($down) && ($down eq '│' || $down eq '╰' || $down eq '╯')) ;
 
-return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
-		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰') &&
+return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
+		($left eq '─' || $left eq '╭' || $left eq '╰') &&
 		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
 }
 
@@ -1215,11 +1104,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($down) && defined($right)) ;
 
-return 0 if((defined($up) && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) || 
-			(defined($left) && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰'))) ;
+return 0 if((defined($up) && ($up eq '│' || $up eq '╭' || $up eq '╮')) || 
+			(defined($left) && ($left eq '─' || $left eq '╭' || $left eq '╰'))) ;
 
-return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
-		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return (($down eq '│' || $down eq '╰' || $down eq '╯') &&
+		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1230,11 +1119,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($down) && defined($left)) ;
 
-return 0 if ((defined($up) && ($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮')) ||
-			 (defined($right) && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')));
+return 0 if ((defined($up) && ($up eq '│' || $up eq '╭' || $up eq '╮')) ||
+			 (defined($right) && ($right eq '─' || $right eq '╮' || $right eq '╯')));
 
-return (($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
+return (($down eq '│' || $down eq '╰' || $down eq '╯') &&
+		($left eq '─' || $left eq '╭' || $left eq '╰')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1245,11 +1134,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($left)) ;
 
-return 0 if((defined($down) && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')) || 
-			(defined($right) && ($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯'))) ;
+return 0 if((defined($down) && ($down eq '│' || $down eq '╰' || $down eq '╯')) || 
+			(defined($right) && ($right eq '─' || $right eq '╮' || $right eq '╯'))) ;
 
-return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
-		($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) ;
+return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
+		($left eq '─' || $left eq '╭' || $left eq '╰')) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1260,11 +1149,11 @@ my ($up, $down, $left, $right) = @_;
 
 return 0 unless(defined($up) && defined($right)) ;
 
-return 0 if((defined($left) && ($left eq '─' || $left eq '<' || $left eq '╭' || $left eq '╰')) || 
-			(defined($down) && ($down eq '│' || $down eq 'v' || $down eq '╰' || $down eq '╯')));
+return 0 if((defined($left) && ($left eq '─' || $left eq '╭' || $left eq '╰')) || 
+			(defined($down) && ($down eq '│' || $down eq '╰' || $down eq '╯')));
 
-return (($up eq '│' || $up eq '^' || $up eq '╭' || $up eq '╮') &&
-		($right eq '─' || $right eq '>' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
+		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
 }
 
 #-----------------------------------------------------------------------------

@@ -50,7 +50,10 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	if($element->isa('App::Asciio::stripes::section_wirl_arrow'))
 		{
-		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
+		unless(defined $element->{NAME} && $element->{NAME} eq 'line')
+			{
+			App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
+			}
 		}
 
 	if($element->isa('App::Asciio::stripes::angled_arrow'))
@@ -79,7 +82,10 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	if($element->isa('App::Asciio::stripes::section_wirl_arrow'))
 		{
-		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'dash' }, 0) ;
+		unless(defined $element->{NAME} && $element->{NAME} eq 'line')
+			{
+			App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'dash' }, 0) ;
+			}
 		}
 
 	if($element->isa('App::Asciio::stripes::angled_arrow'))
@@ -132,18 +138,6 @@ my ($self) = @_;
 $self->create_undo_snapshot();
 
 $self->add_cross_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub add_deep_cross_elements
-{
-my ($self) = @_;
-$self->create_undo_snapshot();
-
-$self->add_cross_elements(1);
 
 $self->update_display();
 }
