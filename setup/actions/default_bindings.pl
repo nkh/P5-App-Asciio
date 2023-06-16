@@ -48,8 +48,9 @@ register_action_handlers
 'Select elements by search words'             => ['C00-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words ],
 'Select cross elements'                       => ['0A0-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_cross_elements              ],
 'Switch cross mode'                           => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode            ],
-'Close cross mode'                            => ['0A0-c',                                  \&App::Asciio::Actions::ElementsManipulation::close_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
+'add ascii line'                              => ['C0S-button-press-1',                     \&App::Asciio::Actions::Unsorted::create_line, 0                                  ], 
+'add unicode line'                            => ['C0S-button-press-3',                     \&App::Asciio::Actions::Unsorted::create_line, 1                                  ], 
 
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
@@ -133,7 +134,6 @@ register_action_handlers
 	'Make Ascii default'                  => ['00S-A', \&App::Asciio::Actions::Elements::make_ascii                                          ],
 	'Add cross elements'                  => ['C00-m', \&App::Asciio::Actions::Elements::add_cross_elements                                 ],
 	'Delete cross caches'                 => ['C00-d', \&App::Asciio::Actions::Elements::delete_cross_elements_cache                        ],
-	'Add deep cross elements'             => ['0A0-m', \&App::Asciio::Actions::Elements::add_deep_cross_elements                            ],
 	},
 
 'stripes leader' => 

@@ -7,7 +7,7 @@ CANVAS_WIDTH => 3000,
 CANVAS_HEIGHT => 4000,
 
 CROSS_MODE => 0,
-MARKUP_MODE => 1,
+MARKUP_MODE => 0,
 
 DOUBLE_WIDTH_QR => qr/
 			[\x{3400}-\x{4db5}] |
@@ -36,7 +36,7 @@ COLOR_SCHEMES =>
 		grid => [0.12, 0.12, 0.12],
 		grid_2 => [0.22, 0.22, 0.22],
 		ruler_line => [0.10, 0.23, 0.31],
-		cross_mode_ruler_line => [0.10, 0.23, 0.31],
+		cross_mode_ruler_line => [0.00, 0.00, 0.00],
 		selected_element_background => [0.10, 0.16, 0.20],
 		element_background => [0.04, 0.04, 0.04],
 		element_foreground => [0.59, 0.59, 0.59] ,
