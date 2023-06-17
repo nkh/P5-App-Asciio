@@ -151,5 +151,17 @@ $self->delete_cross_elements_cache();
 
 #----------------------------------------------------------------------------------------------
 
+sub create_line
+{
+my ($self, $line_type) = @_;
+$self->create_undo_snapshot();
+
+$self->create_line($line_type);
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
 1 ;
 

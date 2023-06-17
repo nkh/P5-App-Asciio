@@ -49,8 +49,8 @@ register_action_handlers
 'Select cross elements'                       => ['0A0-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_cross_elements              ],
 'Switch cross mode'                           => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
-'add ascii line'                              => ['C0S-button-press-1',                     \&App::Asciio::Actions::Unsorted::create_line, 0                                  ], 
-'add unicode line'                            => ['C0S-button-press-3',                     \&App::Asciio::Actions::Unsorted::create_line, 1                                  ], 
+'add ascii line'                              => ['C0S-button-press-1',                     \&App::Asciio::Actions::Elements::create_line, 0                                  ], 
+'add unicode line'                            => ['C0S-button-press-3',                     \&App::Asciio::Actions::Elements::create_line, 1                                  ], 
 
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
