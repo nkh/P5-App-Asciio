@@ -28,7 +28,7 @@ $window->add($scwin);
 
 my @asciios ;
 
-my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25) ;
+my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
 
 push @asciios, $asciio ;
 

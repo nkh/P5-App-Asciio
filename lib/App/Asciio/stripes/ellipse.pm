@@ -919,7 +919,7 @@ return unless $self->{EDITABLE} ;
 my $text_only = $self->{TEXT_ONLY} ;
 $text_only = make_vertical_text($text_only)  if $self->{VERTICAL_TEXT} ;
 
-$text_only = $self->display_box_edit_dialog($text_only, '', $asciio) ;
+$text_only = $self->display_box_edit_dialog($text_only, '', $asciio, $self->{X}, $self->{Y}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;

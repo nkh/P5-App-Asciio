@@ -461,7 +461,7 @@ return unless $self->{EDITABLE} ;
 my $text = $self->{TEXT_ONLY} ;
 $text = make_vertical_text($text) if $self->{VERTICAL_TEXT} ;
 
-($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text, $asciio) ;
+($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text, $asciio, $self->{X}, $self->{Y}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 
