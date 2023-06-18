@@ -24,11 +24,11 @@ $self->response(1) ;
 
 sub display_box_edit_dialog
 {
-my ($self, $text, undef, $asciio, $X, $Y) = @_ ;
+my ($self, $text, undef, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
 my $gtk_popup_box_type = get_gtk_popup_box_type();
 if(($gtk_popup_box_type != 0) && (defined $X) && (defined $Y))
 	{
-	return $self->display_box_edit_dialog_for_mini_edit_mode($text, undef, $asciio, $X, $Y) ;
+	return $self->display_box_edit_dialog_for_mini_edit_mode($text, undef, $asciio, $X, $Y, $text_begin_x, $text_begin_y) ;
 	}
 else
 	{
@@ -101,7 +101,7 @@ return $new_text ;
 
 sub display_box_edit_dialog_for_mini_edit_mode
 {
-my ($self, $text, undef, $asciio, $X, $Y) = @_ ;
+my ($self, $text, undef, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
 
 $text ='' unless defined $text ;
 my @text_lines ;
@@ -129,7 +129,7 @@ my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')
 $dialog->set_default_size($text_width, $text_heigh);
 $dialog->set_border_width(0);
 $dialog->set_decorated(0);
-$dialog->move($root_x+($X*$character_width)-$h_value, $root_y+($Y*$character_height)-$v_value);
+$dialog->move($root_x+(($X+$text_begin_x)*$character_width)-$h_value, $root_y+(($Y+$text_begin_y)*$character_height)-$v_value);
 
 my $vbox = Gtk3::VBox->new(FALSE, 5);
 $vbox->add(Gtk3::Label->new (""));

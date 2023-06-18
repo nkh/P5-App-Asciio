@@ -1240,9 +1240,6 @@ elsif($line_type == 1)
 			] ;
 	}
 
-
-$self->create_undo_snapshot();
-
 my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
 	({
 	POINTS => [[1, 0, 'right']],
@@ -1259,7 +1256,6 @@ $my_line_obj->allow_connection('start', 0);
 $my_line_obj->allow_connection('end', 0);
 
 $self->add_element_at($my_line_obj, $self->{MOUSE_X}, $self->{MOUSE_Y});
-$self->update_display();
 
 }
 

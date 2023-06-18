@@ -114,6 +114,11 @@ for (1 .. ($end_y - (@lines + $extra_height + @title_lines)))
 
 $text .= $box_bottom ;
 
+my ($text_begin_x, $text_begin_y, $title_separator_exist) = (0, 0, 0) ;
+$text_begin_y++ if($box_top) ;
+$text_begin_x = usc_length($box_left);
+$title_separator_exist = 1 if($title_separator);
+
 $self->set
 	(
 	TEXT => $text,
@@ -121,6 +126,9 @@ $self->set
 	WIDTH => $end_x,
 	HEIGHT => $end_y,
 	TEXT_ONLY => $text_only,
+	TEXT_BEGIN_X => $text_begin_x,
+	TEXT_BEGIN_Y => $text_begin_y,
+	TITLE_SEPARATOR_EXIST => $title_separator_exist,
 	BOX_TYPE => $box_type,
 	RESIZABLE => $resizable,
 	EDITABLE => $editable,
@@ -461,12 +469,7 @@ return unless $self->{EDITABLE} ;
 my $text = $self->{TEXT_ONLY} ;
 $text = make_vertical_text($text) if $self->{VERTICAL_TEXT} ;
 
-($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text, $asciio, $self->{X}, $self->{Y}) ;
-# todo:
-# cancel select? 
-# It can solve the problem of quickly editing the left mouse button movement, 
-# but it doesn't feel very good and violates the original intention
-# $asciio->select_elements(0, $self) ;
+($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text, $asciio, $self->{X}, $self->{Y}, $self->{TEXT_BEGIN_X}, $self->{TEXT_BEGIN_Y}, $self->{TITLE_SEPARATOR_EXIST}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 

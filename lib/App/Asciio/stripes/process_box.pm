@@ -44,6 +44,7 @@ my @lines = split("\n", $text_only) ;
 @lines = ('')  unless @lines;
 
 my $number_of_lines = scalar(@lines) ;
+my $text_lines = $number_of_lines ;
 
 if($end_y - 3 > $number_of_lines)
 	{
@@ -169,6 +170,8 @@ $self->set
 	LEFT_CENTER_X => $left_center_x,
 	RESIZE_POINT_X => $text_width_plus_offset + $side_glyphs_size - 1,
 	TEXT_ONLY => $text_only,
+	TEXT_BEGIN_X => int(($y_offset/2)+2),
+	TEXT_BEGIN_Y => int(($y_offset-$text_lines+2)/2),
 	EDITABLE => $editable,
 	RESIZABLE => $resizable,
 	EXTENTS => [0, 0, $element_width, $y_offset +  1],
@@ -329,7 +332,7 @@ my ($self, $asciio) = @_ ;
 
 return unless $self->{EDITABLE} ;
 
-my ($text_only) = $asciio->display_edit_dialog('process object', $self->{TEXT_ONLY}, $asciio, $self->{X}, $self->{Y}) ;
+my ($text_only) = $asciio->display_edit_dialog('process object', $self->{TEXT_ONLY}, $asciio, $self->{X}, $self->{Y}, $self->{TEXT_BEGIN_X}, $self->{TEXT_BEGIN_Y}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;
