@@ -839,6 +839,7 @@ return($character_x, $character_y) ;
 # todo: 1. performance problem
 #       2. ⍀ ⌿ these two symbols are not necessary
 #       3. char color
+#       4. Support for other tab symbols, including arrows and boxes
 
 {
 

@@ -316,7 +316,7 @@ my ($self, $asciio) = @_ ;
 
 return unless $self->{EDITABLE} ;
 
-my ($text_only) = $asciio->display_edit_dialog('asciio', $self->{TEXT_ONLY}, $asciio) ;
+my ($text_only) = $asciio->display_edit_dialog('asciio', $self->{TEXT_ONLY}, $asciio, $self->{X}, $self->{Y}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;

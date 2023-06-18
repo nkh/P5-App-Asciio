@@ -20,6 +20,8 @@ my $rows = $self->{BOX_TYPE} ;
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')  ;
+$dialog->set_position("mouse");
+$dialog->set_border_width(0);
 $dialog->set_default_size(450, 305);
 $dialog->add_button('gtk-ok' => 'ok');
 

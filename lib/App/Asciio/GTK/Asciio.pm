@@ -41,7 +41,7 @@ our $VERSION = '0.01' ;
 
 sub new
 {
-my ($class, $window, $width, $height) = @_ ;
+my ($class, $window, $width, $height, $sc_window) = @_ ;
 
 my $self = App::Asciio::new($class) ;
 $self->{UI} = 'GUI' ;
@@ -56,6 +56,8 @@ $window->signal_connect(button_release_event => \&button_release_event, $self);
 my $drawing_area = Gtk3::DrawingArea->new;
 
 $self->{widget} = $drawing_area ;
+$self->{root_window} = $window ;
+$self->{sc_window} = $sc_window ;
 
 $drawing_area->signal_connect(draw => \&expose_event, $self);
 
