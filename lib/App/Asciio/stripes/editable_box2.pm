@@ -462,6 +462,11 @@ my $text = $self->{TEXT_ONLY} ;
 $text = make_vertical_text($text) if $self->{VERTICAL_TEXT} ;
 
 ($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $text, $asciio, $self->{X}, $self->{Y}) ;
+# todo:
+# cancel select? 
+# It can solve the problem of quickly editing the left mouse button movement, 
+# but it doesn't feel very good and violates the original intention
+# $asciio->select_elements(0, $self) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 
