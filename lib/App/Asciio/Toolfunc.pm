@@ -63,21 +63,13 @@ sub is_markup_mode
 	return($MARKUP_MODE);
 }
 
-# todo: The display of the text input box in minimalist mode not only locates the element, 
-#       but also locates the plain text position of the element
-
 sub switch_gtk_popup_box_type
 {
-# 0: full mode 1: minimalist mode with title 2: Minimalistic mode without title
+# 0: full mode 1: minimalist mode with title
 if($GTK_POPUP_BOX_TYPE == 0)
 	{
 	$GTK_POPUP_BOX_TYPE = 1;
-	print("gtk popup box type enter minimalist edit mode with title, ESC to close dianogal\n");
-	}
-elsif($GTK_POPUP_BOX_TYPE == 1)
-	{
-	$GTK_POPUP_BOX_TYPE = 2;
-	print("gtk popup box type enter minimalistic edit mode without title, ESC to close dianogal\n");
+	print("gtk popup box type enter minimalist edit mode, ESC or click to close dianogal\n");
 	}
 else
 	{

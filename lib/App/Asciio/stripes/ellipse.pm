@@ -657,7 +657,11 @@ push @final_stripes,
     'X_OFFSET' => $strip->[0],
     'Y_OFFSET' => $#sigle_strips,
 };
-  
+
+# position to the center of the ellipse if text not found
+$text_begin_x = int($element_width/2) unless(defined $text_begin_x);
+$text_begin_y = int($max_row/2) unless(defined $text_begin_y);
+
 $self->set
 (
     STRIPES => \@final_stripes,
@@ -666,6 +670,8 @@ $self->set
     LEFT_CENTER_X => -1,
     RESIZE_POINT_X => $resize_point_x,
     TEXT_ONLY => $text_only,
+    TEXT_BEGIN_X => $text_begin_x,
+    TEXT_BEGIN_Y => $text_begin_y,
     EDITABLE => $editable,
     RESIZABLE => $resizable,
     BOX_TYPE => $box_type,
@@ -919,7 +925,7 @@ return unless $self->{EDITABLE} ;
 my $text_only = $self->{TEXT_ONLY} ;
 $text_only = make_vertical_text($text_only)  if $self->{VERTICAL_TEXT} ;
 
-$text_only = $self->display_box_edit_dialog($text_only, '', $asciio, $self->{X}, $self->{Y}) ;
+$text_only = $self->display_box_edit_dialog($text_only, '', $asciio, $self->{X}, $self->{Y}, $self->{TEXT_BEGIN_X}, $self->{TEXT_BEGIN_Y}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;

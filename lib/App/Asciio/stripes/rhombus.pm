@@ -143,6 +143,8 @@ my $half_line_num = int($height / 2);
 my $half_element_width = int($element_width / 2);
 
 my (@stripes, $strip_text, $width, $x_offset, $left_center_x, $resize_point_x, $text_offset) ;
+my ($text_begin_x, $text_begin_y) ;
+$text_begin_y = $start_text_row ;
 
 # divided into 5 parts
 # up up-middle middle middle-down down
@@ -165,6 +167,10 @@ for my $y_offset (0 .. $height - 1)
 			my $text = shift @text_lines ;
 			
 			$text_offset = int(($element_width-$text_width)/2) unless $text_offset ;
+			unless(defined $text_begin_x)
+				{
+				$text_begin_x = $text_offset;
+				}
 			
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
@@ -187,6 +193,10 @@ for my $y_offset (0 .. $height - 1)
 			my $text = shift @text_lines ;
 			
 			$text_offset = int(($element_width-$text_width)/2) unless $text_offset ; 
+			unless(defined $text_begin_x)
+				{
+				$text_begin_x = $text_offset;
+				}
 			
 			my $padding = $text_offset - $x_offset - 1;
 			$padding = 0 if $padding < 0;
@@ -207,6 +217,10 @@ for my $y_offset (0 .. $height - 1)
 			{
 			my $text = shift @text_lines ;
 			$text_offset = int(($element_width-$text_width)/2) unless $text_offset ;
+			unless(defined $text_begin_x)
+				{
+				$text_begin_x = $text_offset;
+				}
 			
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
@@ -236,6 +250,13 @@ for my $y_offset (0 .. $height - 1)
 		} ;
 	}
 
+# position to the center of the rhombus if text not found
+unless(defined $text_begin_x)
+	{
+	$text_begin_x = int($element_width / 2) ;
+	}
+
+
 $self->set
 	(
 	STRIPES => \@stripes,
@@ -244,6 +265,8 @@ $self->set
 	LEFT_CENTER_X => $left_center_x,
 	RESIZE_POINT_X => $resize_point_x,
 	TEXT_ONLY => $text_only,
+	TEXT_BEGIN_X => $text_begin_x,
+	TEXT_BEGIN_Y => $text_begin_y,
 	EDITABLE => $editable,
 	RESIZABLE => $resizable,
 	BOX_TYPE => $box_type,
@@ -492,7 +515,7 @@ return unless $self->{EDITABLE} ;
 my $text_only = $self->{TEXT_ONLY} ;
 $text_only = make_vertical_text($text_only)  if $self->{VERTICAL_TEXT} ;
 
-$text_only = $self->display_box_edit_dialog($text_only, '', $asciio, $self->{X}, $self->{Y}) ;
+$text_only = $self->display_box_edit_dialog($text_only, '', $asciio, $self->{X}, $self->{Y}, $self->{TEXT_BEGIN_X}, $self->{TEXT_BEGIN_Y}) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 $text_only =~ s/\t/$tab_as_space/g ;

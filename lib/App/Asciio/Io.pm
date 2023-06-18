@@ -98,7 +98,9 @@ return $title ;
 Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT => 
 	qw
 		(
-		widget  
+		widget
+		root_window
+		sc_window
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
 		TITLE

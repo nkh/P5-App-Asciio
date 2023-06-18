@@ -3,11 +3,17 @@ package App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::stripes::group ;
 use Scalar::Util ;
 
+use App::Asciio::Toolfunc ;
+
 #----------------------------------------------------------------------------------------------
 
 sub edit_selected_element
 {
 my ($self) = @_ ;
+
+# In gtk3's minimalist input mode, mouse clicks will cause elements to move, 
+# and this phenomenon is prevented by consuming semaphores
+$self->{EDIT_SEMAPHORE} = 3 if(get_gtk_popup_box_type() != 0) ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 

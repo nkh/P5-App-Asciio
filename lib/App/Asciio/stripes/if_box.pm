@@ -50,6 +50,7 @@ for my $line (split("\n", $text_only))
 	}
 
 my $number_of_lines = scalar(@lines) ;
+my $text_of_lines = $number_of_lines ;
 
 my $lines_to_add = ($number_of_lines + 1) % 2 ; # always odd
 unshift @lines, map {''} (1 ..  $lines_to_add / 2) ;
@@ -109,6 +110,8 @@ $self->set
 	WIDTH => $width,
 	HEIGHT => $number_of_lines + 2,
 	TEXT_ONLY => $text_only,
+	TEXT_BEGIN_X => int((($text_of_lines+2)/2)+1),
+	TEXT_BEGIN_Y => 1,
 	RESIZABLE => $resizable,
 	EDITABLE => $editable,
 	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $width, HEIGHT => $height, TEXT => $text} ],
@@ -241,7 +244,7 @@ my ($self, $asciio) = @_ ;
 
 return unless $self->{EDITABLE} ;
 
-my ($text) = $asciio->display_edit_dialog('if object', $self->{TEXT_ONLY}, $asciio, $self->{X}, $self->{Y}) ;
+my ($text) = $asciio->display_edit_dialog('if object', $self->{TEXT_ONLY}, $asciio, $self->{X}, $self->{Y}, $self->{TEXT_BEGIN_X}, $self->{TEXT_BEGIN_Y}) ;
 
 $text //= $self->{TEXT} ;
 
