@@ -14,6 +14,14 @@ use List::Util qw(max) ;
 
 #-----------------------------------------------------------------------------
 
+sub on_focus_out_event
+{
+my ($self, $event, $window) = @_;
+$self->response(1) ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub display_box_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y) = @_ ;
@@ -188,6 +196,10 @@ $textview->grab_focus() ;
 $vbox->show() ;
 
 $dialog->get_content_area()->add($vbox) ;
+
+$dialog->add_events('GDK_FOCUS_CHANGE_MASK') ;
+$dialog->signal_connect(focus_out_event => \&on_focus_out_event, $window) ;
+
 $dialog->run() ;
 
 my $new_text =  $textview->get_buffer->get_text($text_buffer->get_start_iter, $text_buffer->get_end_iter, TRUE) ;
@@ -197,6 +209,7 @@ $dialog->destroy ;
 
 return($new_text, $new_title) ;
 }
+
 
 #-----------------------------------------------------------------------------
 
@@ -254,11 +267,15 @@ $textview->grab_focus() ;
 $vbox->show() ;
 
 $dialog->get_content_area()->add($vbox) ;
-$dialog->run() ;
 
+$dialog->add_events('GDK_FOCUS_CHANGE_MASK') ;
+# todo: Can only be clicked with the right mouse button, 
+# the left mouse button click will trigger the element to move
+$dialog->signal_connect(focus_out_event => \&on_focus_out_event, $window) ;
+
+$dialog->run() ;
 my $new_text =  $textview->get_buffer->get_text($text_buffer->get_start_iter, $text_buffer->get_end_iter, TRUE) ;
 $dialog->destroy ;
-
 return($new_text, $title) ;
 }
 

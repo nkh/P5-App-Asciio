@@ -197,6 +197,14 @@ return $button;
 }
 
 #-----------------------------------------------------------------------------
+
+sub on_focus_out_event
+{
+my ($self, $event, $window) = @_;
+$self->response(1) ;
+}
+
+#-----------------------------------------------------------------------------
 sub display_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y) = @_ ;
@@ -307,6 +315,8 @@ $textview->show();
 $vbox->show();
 
 $dialog->get_content_area->add ($vbox) ;
+$dialog->add_events('GDK_FOCUS_CHANGE_MASK') ;
+$dialog->signal_connect(focus_out_event => \&on_focus_out_event, $window) ;
 
 $dialog->run() ;
 
