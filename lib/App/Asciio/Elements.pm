@@ -849,26 +849,58 @@ my $undef_char = 'Ȝ';
 
 
 my @normal_char_func = (
-	['+', \&scene_cross],
-	['.', \&scene_dot],
-	['\'',\&scene_apostrophe],
-	['┼', \&scene_unicode_cross],
-	['┤', \&scene_unicode_cross_lose_right],
-	['├', \&scene_unicode_cross_lose_left],
-	['┬', \&scene_unicode_cross_lose_up],
-	['┴', \&scene_unicode_cross_lose_down],
-	['╭', \&scene_unicode_right_down],
-	['╮', \&scene_unicode_left_down],
-	['╯', \&scene_unicode_left_up],
-	['╰', \&scene_unicode_right_up],
+	['+', \&scene_cross, 0],
+	['.', \&scene_dot, 0],
+	['\'',\&scene_apostrophe, 0],
+	['┼', \&scene_unicode_cross, 0],
+	['┤', \&scene_unicode_cross_lose_right, 0],
+	['├', \&scene_unicode_cross_lose_left, 0],
+	['┬', \&scene_unicode_cross_lose_up, 0],
+	['┴', \&scene_unicode_cross_lose_down, 0],
+	['╭', \&scene_unicode_right_down, 0],
+	['╮', \&scene_unicode_left_down, 0],
+	['╯', \&scene_unicode_left_up, 0],
+	['╰', \&scene_unicode_right_up, 0],
+	['╋', \&scene_unicode_cross, 1],
+	['┫', \&scene_unicode_cross_lose_right, 1],
+	['┣', \&scene_unicode_cross_lose_left, 1],
+	['┳', \&scene_unicode_cross_lose_up, 1],
+	['┻', \&scene_unicode_cross_lose_down, 1],
+	['┏', \&scene_unicode_right_down, 1],
+	['┓', \&scene_unicode_left_down, 1],
+	['┛', \&scene_unicode_left_up, 1],
+	['┗', \&scene_unicode_right_up, 1],
+	['╬', \&scene_unicode_cross, 2],
+	['╣', \&scene_unicode_cross_lose_right, 2],
+	['╠', \&scene_unicode_cross_lose_left, 2],
+	['╦', \&scene_unicode_cross_lose_up, 2],
+	['╩', \&scene_unicode_cross_lose_down, 2],
+	['╔', \&scene_unicode_right_down, 2],
+	['╗', \&scene_unicode_left_down, 2],
+	['╝', \&scene_unicode_left_up, 2],
+	['╚', \&scene_unicode_right_up, 2],
 ) ;
+
+my %mark_map = (
+	'─' => ['─', '━', '═'],
+	'│' => ['│', '┃', '║'],
+	'┼' => ['┼', '╋', '╬'],
+	'┤' => ['┤', '┫', '╣'],
+	'├' => ['├', '┣', '╠'],
+	'┬' => ['┬', '┳', '╦'],
+	'┴' => ['┴', '┻', '╩'],
+	'╭' => ['╭', '┏', '╔'],
+	'╮' => ['╮', '┓', '╗'],
+	'╯' => ['╯', '┛', '╝'],
+	'╰' => ['╰', '┗', '╚'],
+ ) ;
 
 my @diagonal_char_func = (
 	['X', \&scene_x],
 	['╳', \&scene_unicode_x],
 ) ;
 
-my %need_deal_char_hash = map {$_, 1} ('-', '|', '.', '\'', '\\', '/', '─', '│', '╭', '╮', '╯', '╰') ;
+my %need_deal_char_hash = map {$_, 1} ( '-', '|', '.', '\'', '\\', '/', '─', '│', '╭', '╮', '╯', '╰', '━', '┃', '┏', '┓', '┛', '┗', '═', '║', '╔', '╗', '╝', '╚') ;
 
 sub delete_cross_elements_cache
 {
@@ -908,7 +940,7 @@ for $row (1 .. $#ascii_array)
 
 		unless(exists($normal_char_cache{$normal_key}))
 		{
-			$scene_func = first { $_->[1]($up, $down, $left, $right) } @normal_char_func;
+			$scene_func = first { $_->[1]($up, $down, $left, $right, $->[2]) } @normal_char_func;
 			$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[0] : '';
 		}
 
@@ -972,13 +1004,11 @@ $self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1)
 $self->create_cross_elements(@elements_to_be_add) if(@elements_to_be_add)  ;
 }
 
-}
-
 #-----------------------------------------------------------------------------
 # +
 sub scene_cross
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
@@ -997,7 +1027,7 @@ return (($up eq '|' || $up eq '.' || $up eq '\'') &&
 #            |  |        |     |   |
 sub scene_dot
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 if((defined($up) && $up eq '|') && (defined($down) && $down eq '|') && 
 			(defined($left) && $left eq '-') && (defined($right) && $right eq '-'));
@@ -1013,7 +1043,7 @@ return (((defined($left) && $left eq '-') && (defined($down) && $down eq '|')) |
 #       '---    ---'    ---'---
 sub scene_apostrophe
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 1 if(((defined($up) && $up eq '|') && (defined($right) && $right eq '-')) && 
 			!(defined($down) && $down eq '|')) ;
@@ -1027,134 +1057,134 @@ return ((defined($up) && $up eq '|') && (defined($left) && $left eq '-') &&
 # ┼
 sub scene_unicode_cross
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($left) && defined($right)) ;
 
-return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
-		($down eq '│' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '╭' || $left eq '╰') &&
-		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index]) &&
+		($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index]) &&
+		($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index]) &&
+		($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ┤
 sub scene_unicode_cross_lose_right
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($left)) ;
 
-return 0 if(defined($right) && ($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return 0 if(defined($right) && ($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 
-return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
-		($down eq '│' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '╭' || $left eq '╰')) ;
+return (($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index]) &&
+		($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index]) &&
+		($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ├
 sub scene_unicode_cross_lose_left
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($down) && defined($right)) ;
 
-return 0 if(defined($left) && ($left eq '─' || $left eq '╭' || $left eq '╰')) ;
+return 0 if(defined($left) && ($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index])) ;
 
-return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
-		($down eq '│' || $down eq '╰' || $down eq '╯') &&
-		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index]) &&
+		($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index]) &&
+		($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ┬
 sub scene_unicode_cross_lose_up
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($down) && defined($left) && defined($right)) ;
 
-return 0 if(defined($up) && ($up eq '│' || $up eq '╭' || $up eq '╮')) ;
+return 0 if(defined($up) && ($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index])) ;
 
-return (($down eq '│' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '╭' || $left eq '╰') &&
-		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return (($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index]) &&
+		($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index]) &&
+		($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ┴
 sub scene_unicode_cross_lose_down
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($left) && defined($right)) ;
 
-return 0 if(defined($down) && ($down eq '│' || $down eq '╰' || $down eq '╯')) ;
+return 0 if(defined($down) && ($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index])) ;
 
-return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
-		($left eq '─' || $left eq '╭' || $left eq '╰') &&
-		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index]) &&
+		($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index]) &&
+		($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ╭
 sub scene_unicode_right_down
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($down) && defined($right)) ;
 
-return 0 if((defined($up) && ($up eq '│' || $up eq '╭' || $up eq '╮')) || 
-			(defined($left) && ($left eq '─' || $left eq '╭' || $left eq '╰'))) ;
+return 0 if((defined($up) && ($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index])) || 
+			(defined($left) && ($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index]))) ;
 
-return (($down eq '│' || $down eq '╰' || $down eq '╯') &&
-		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return (($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index]) &&
+		($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ╮
 sub scene_unicode_left_down
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($down) && defined($left)) ;
 
-return 0 if ((defined($up) && ($up eq '│' || $up eq '╭' || $up eq '╮')) ||
-			 (defined($right) && ($right eq '─' || $right eq '╮' || $right eq '╯')));
+return 0 if ((defined($up) && ($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index])) ||
+			 (defined($right) && ($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])));
 
-return (($down eq '│' || $down eq '╰' || $down eq '╯') &&
-		($left eq '─' || $left eq '╭' || $left eq '╰')) ;
+return (($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index]) &&
+		($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ╯
 sub scene_unicode_left_up
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($left)) ;
 
-return 0 if((defined($down) && ($down eq '│' || $down eq '╰' || $down eq '╯')) || 
-			(defined($right) && ($right eq '─' || $right eq '╮' || $right eq '╯'))) ;
+return 0 if((defined($down) && ($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index])) || 
+			(defined($right) && ($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index]))) ;
 
-return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
-		($left eq '─' || $left eq '╭' || $left eq '╰')) ;
+return (($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index]) &&
+		($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
 # ╰
 sub scene_unicode_right_up
 {
-my ($up, $down, $left, $right) = @_;
+my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless(defined($up) && defined($right)) ;
 
-return 0 if((defined($left) && ($left eq '─' || $left eq '╭' || $left eq '╰')) || 
-			(defined($down) && ($down eq '│' || $down eq '╰' || $down eq '╯')));
+return 0 if((defined($left) && ($left eq $mark_map{'─'}[$index] || $left eq $mark_map{'╭'}[$index] || $left eq $mark_map{'╰'}[$index])) || 
+			(defined($down) && ($down eq $mark_map{'│'}[$index] || $down eq $mark_map{'╰'}[$index] || $down eq $mark_map{'╯'}[$index])));
 
-return (($up eq '│' || $up eq '╭' || $up eq '╮') &&
-		($right eq '─' || $right eq '╮' || $right eq '╯')) ;
+return (($up eq $mark_map{'│'}[$index] || $up eq $mark_map{'╭'}[$index] || $up eq $mark_map{'╮'}[$index]) &&
+		($right eq $mark_map{'─'}[$index] || $right eq $mark_map{'╮'}[$index] || $right eq $mark_map{'╯'}[$index])) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1186,6 +1216,7 @@ return (($char_45 eq '╱' || $char_45 eq '^') &&
 		($char_315 eq '╲' || $char_315 eq '^')) ;
 }
 
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -1233,6 +1264,50 @@ elsif($line_type == 1)
 			['rightup',    '─',  '─', '╯', '│', '│', 1],
 			['downright',  '│',  '│', '╰', '─', '─', 1],
 			['rightdown',  '─',  '─', '╮', '│', '│', 1],
+			['45',         '/',  '/',  '',  '', '/', 1],
+			['135',       '\\', '\\',  '',  '', '\\', 1],
+			['225',        '/',  '/',  '',  '', '/', 1],
+			['315',       '\\', '\\',  '',  '', '\\', 1],
+			] ;
+	}
+elsif($line_type == 2)
+	{
+		$arrow_type = [
+			['origin',      '',  '*',  '',  '',  '', 1],
+			['up',         '┃',  '┃',  '',  '', '┃', 1],
+			['down',       '┃',  '┃',  '',  '', '┃', 1],
+			['left',       '━',  '━',  '',  '', '━', 1],
+			['upleft',     '┃',  '┃', '┓', '━', '━', 1],
+			['leftup',     '━',  '━', '┗', '┃', '┃', 1],
+			['downleft',   '┃',  '┃', '┛', '━', '━', 1],
+			['leftdown',   '━',  '━', '┏', '┃', '┃', 1],
+			['right',      '━',  '━',  '',  '', '━', 1],
+			['upright',    '┃',  '┃', '┏', '━', '━', 1],
+			['rightup',    '━',  '━', '┛', '┃', '┃', 1],
+			['downright',  '┃',  '┃', '┗', '━', '━', 1],
+			['rightdown',  '━',  '━', '┓', '┃', '┃', 1],
+			['45',         '/',  '/',  '',  '', '/', 1],
+			['135',       '\\', '\\',  '',  '', '\\', 1],
+			['225',        '/',  '/',  '',  '', '/', 1],
+			['315',       '\\', '\\',  '',  '', '\\', 1],
+			] ;
+	}
+elsif($line_type == 3)
+	{
+		$arrow_type = [
+			['origin',      '',  '*',  '',  '',  '', 1],
+			['up',         '║',  '║',  '',  '', '║', 1],
+			['down',       '║',  '║',  '',  '', '║', 1],
+			['left',       '═',  '═',  '',  '', '═', 1],
+			['upleft',     '║',  '║', '╗', '═', '═', 1],
+			['leftup',     '═',  '═', '╚', '║', '║', 1],
+			['downleft',   '║',  '║', '╝', '═', '═', 1],
+			['leftdown',   '═',  '═', '╔', '║', '║', 1],
+			['right',      '═',  '═',  '',  '', '═', 1],
+			['upright',    '║',  '║', '╔', '═', '═', 1],
+			['rightup',    '═',  '═', '╝', '║', '║', 1],
+			['downright',  '║',  '║', '╚', '═', '═', 1],
+			['rightdown',  '═',  '═', '╗', '║', '║', 1],
 			['45',         '/',  '/',  '',  '', '/', 1],
 			['135',       '\\', '\\',  '',  '', '\\', 1],
 			['225',        '/',  '/',  '',  '', '/', 1],
