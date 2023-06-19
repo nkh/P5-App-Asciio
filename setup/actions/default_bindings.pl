@@ -51,7 +51,7 @@ register_action_handlers
 'Switch cross mode'                           => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
 'add ascii line'                              => ['C0S-button-press-1',                     \&App::Asciio::Actions::Elements::create_line, 0                                  ], 
-'add unicode line'                            => ['C0S-button-press-3',                     \&App::Asciio::Actions::Elements::create_line, 1                                  ], 
+'add unicode line 1'                          => ['C0S-button-press-3',                     \&App::Asciio::Actions::Elements::create_line, 1                                  ],
 'switch gtk popup box type'                   => ['C0S-T',                                  \&App::Asciio::Toolfunc::switch_gtk_popup_box_type,                               ], 
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
@@ -248,6 +248,8 @@ register_action_handlers
 	'create code box'                     => ['C00-c', \&App::Asciio::Actions::Unsorted::create_code_box, 1                                      ],
 	'create code box no frame'            => ['0A0-c', \&App::Asciio::Actions::Unsorted::create_code_box, 0                                      ],
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],
+	'add unicode line 2'                  => ['C00-i', \&App::Asciio::Actions::Elements::create_line, 2                                          ],
+	'add unicode line 3'                  => ['0A0-i', \&App::Asciio::Actions::Elements::create_line, 3                                          ],
 	},
 
 'slides leader' => 
