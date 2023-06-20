@@ -56,6 +56,54 @@ my %box_types =
 			[1, 'bottom',          '╰', '─',   '╯', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
+	unicode_with_filler_type1 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '█', '',   1, ],
+		],
+	unicode_with_filler_type2 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '▒', '',   1, ],
+		],
+	unicode_with_filler_type3 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '░', '',   1, ],
+		],
+	unicode_with_filler_type4 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '▚', '',   1, ],
+		],
+	unicode_bold =>
+		[
+			[1, 'top',             '┏', '━',   '┓', 1, ],
+			[0, 'title separator', '┃', '━',   '┃', 1, ],
+			[1, 'body separator',  '┃ ', '┃', ' ┃', 1, ], 
+			[1, 'bottom',          '┗', '━',   '┛', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_double_line =>
+		[
+			[1, 'top',             '╔', '═',   '╗', 1, ],
+			[0, 'title separator', '║', '═',   '║', 1, ],
+			[1, 'body separator',  '║ ', '║', ' ║', 1, ], 
+			[1, 'bottom',          '╚', '═',   '╝', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
 	unicode_hollow_dot =>
 		[
 			[1, 'top',             '∘',  '∘',  '∘', 1, ],
@@ -180,6 +228,12 @@ if(@selected_elements == 1 && ($element->isa('App::Asciio::stripes::editable_box
 			[ '/box type/star',                     \&change_box_type,      { ELEMENT => $element, TYPE => 'star' } ],
 			[ '/box type/math_parantheses',         \&change_box_type,      { ELEMENT => $element, TYPE => 'math_parantheses' } ],
 			[ '/box type/unicode',                  \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode' } ], 
+			[ '/box type/unicode_bold',             \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_bold' } ], 
+			[ '/box type/unicode_double_line',      \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_double_line' } ], 
+			[ '/box type/unicode_with_filler_type1',\&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_with_filler_type1' } ], 
+			[ '/box type/unicode_with_filler_type2',\&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_with_filler_type2' } ], 
+			[ '/box type/unicode_with_filler_type3',\&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_with_filler_type3' } ], 
+			[ '/box type/unicode_with_filler_type4',\&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_with_filler_type4' } ], 
 			[ '/box type/unicode_hollow_dot',       \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_hollow_dot' } ], 
 			[ '/box type/unicode_math_parantheses', \&change_box_type,      { ELEMENT => $element, TYPE => 'unicode_math_parantheses' } ] ;
 		}

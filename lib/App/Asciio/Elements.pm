@@ -940,7 +940,7 @@ for $row (1 .. $#ascii_array)
 
 		unless(exists($normal_char_cache{$normal_key}))
 		{
-			$scene_func = first { $_->[1]($up, $down, $left, $right, $->[2]) } @normal_char_func;
+			$scene_func = first { $_->[1]($up, $down, $left, $right, $_->[2]) } @normal_char_func;
 			$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[0] : '';
 		}
 
