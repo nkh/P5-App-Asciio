@@ -10,6 +10,7 @@ use File::HomeDir ;
 
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
+use App::Asciio::Toolfunc ;
 
 
 #----------------------------------------------------------------------------------------------
@@ -26,7 +27,11 @@ my ($name, $edit) = @{$name_and_edit} ;
 
 my $element = $self->add_new_element_named($name, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
-$element->edit($self) if $edit;
+if($edit)
+	{
+	$element->edit($self);
+	$self->{EDIT_SEMAPHORE} = 3 if(get_gtk_popup_box_type() != 0) ;
+	}
 
 $self->select_elements(1, $element);
 

@@ -234,6 +234,27 @@ $self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------
+sub set_git_mode_connector_char_list
+{
+
+my ($self) = @_;
+
+$self->set_git_mode_connector_char_list();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+sub switch_git_mode_connector_char
+{
+
+my ($self) = @_;
+
+$self->switch_git_mode_connector_char();
+
+$self->update_display();
+}
+----------------------------------------------------------------------------------------------
 
 sub select_connected
 {

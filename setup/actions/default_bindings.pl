@@ -53,6 +53,8 @@ register_action_handlers
 'add ascii line'                              => ['C0S-button-press-1',                     \&App::Asciio::Actions::Elements::create_line, 0                                  ], 
 'add unicode line 1'                          => ['C0S-button-press-3',                     \&App::Asciio::Actions::Elements::create_line, 1                                  ],
 'switch gtk popup box type'                   => ['C0S-T',                                  \&App::Asciio::Toolfunc::switch_gtk_popup_box_type,                               ], 
+'set git mode connector char list'            => ['C00-g',                                  \&App::Asciio::Actions::ElementsManipulation::set_git_mode_connector_char_list    ],
+'swich git mode connector char'               => ['00S-G',                                  \&App::Asciio::Actions::ElementsManipulation::switch_git_mode_connector_char      ],
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
 'Edit selected element'                       => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element     ],

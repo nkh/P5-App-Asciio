@@ -9,6 +9,15 @@ use warnings ;
 use List::MoreUtils qw(first_value) ;
 
 #----------------------------------------------------------------------------------------------
+{
+
+my $git_connector_char = '*' ;
+
+sub set_git_connector_char
+{
+my ($self, $set_char) = @_ ;
+$git_connector_char = $set_char ;
+}
 
 sub quick_link
 {
@@ -26,8 +35,10 @@ if($destination_element)
 else
 	{
 	my $new_connector = $self->add_new_element_named('Asciio/connector2', $x, $y) ;
+	$new_connector->set_text('', $git_connector_char) ;
 	connect_to_destination_element($self, $new_connector, $x, $y) ;
 	}
+}
 }
 
 #----------------------------------------------------------------------------------------------
