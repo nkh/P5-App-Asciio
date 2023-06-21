@@ -211,13 +211,91 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub select_cross_elements
+sub select_cross_filler_elements_from_selected_elements
 {
 my ($self) = @_;
 
-$self->deselect_all_elements();
+$self->select_cross_filler_elements_from_selected_elements();
 
-$self->select_cross_elements();
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub select_cross_elements_from_selected_elements
+{
+my ($self) = @_;
+
+
+$self->select_cross_elements_from_selected_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub select_normal_elements_from_selected_elements
+{
+my ($self) = @_;
+
+
+$self->select_normal_elements_from_selected_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub switch_to_normal_elements_from_selected_elements
+{
+my ($self) = @_;
+
+$self->switch_to_normal_elements_from_selected_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub switch_to_cross_elements_from_selected_elements
+{
+my ($self) = @_;
+
+$self->switch_to_cross_elements_from_selected_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub switch_to_cross_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+$self->switch_to_cross_filler_elements_from_selected_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub switch_to_normal_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+$self->switch_to_normal_filler_elements_from_selected_elements();
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub select_normal_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+
+$self->select_normal_filler_elements_from_selected_elements();
 
 $self->update_display();
 }
@@ -228,6 +306,8 @@ sub switch_cross_mode
 {
 
 my ($self) = @_;
+
+$self->delete_cross_elements_cache();
 
 $self->switch_cross_mode();
 
@@ -290,19 +370,6 @@ $self->create_undo_snapshot() ;
 
 $self->delete_elements($self->get_selected_elements(1)) ;
 $self->update_display() ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub delete_cross_elements
-{
-my ($self) = @_;
-
-$self->create_undo_snapshot();
-
-$self->delete_cross_elements();
-
-$self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------

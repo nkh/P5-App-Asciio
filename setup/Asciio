@@ -6,11 +6,12 @@ use utf8 ;
 use App::Asciio::Stencil qw(create_box create_element) ;
 
 [
-create_box(NAME => 'box',        TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], ),
-create_box(NAME => 'shrink_box', TEXT_ONLY => 'text', WITH_FRAME => 1, WITH_SIZE => [4, 2], AUTO_SHRINK => 1,),
-create_box(NAME => 'text',       TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
-create_box(NAME => 'connector',  TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
-create_box(NAME => 'connector2', TEXT_ONLY => '*',    AUTO_SHRINK => 1,),
+create_box(NAME => 'box',            TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], ),
+create_box(NAME => 'Cross/box',      TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], CROSS_ENUM => 3),
+create_box(NAME => 'shrink_box',     TEXT_ONLY => 'text', WITH_FRAME => 1, WITH_SIZE => [4, 2], AUTO_SHRINK => 1,),
+create_box(NAME => 'text',           TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
+create_box(NAME => 'connector',      TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
+create_box(NAME => 'connector2',     TEXT_ONLY => '*',    AUTO_SHRINK => 1,),
 
 create_box
 	(
@@ -31,6 +32,18 @@ create_box
 create_element
 	(
 	NAME => 'wirl_arrow',
+	CLASS => 'App::Asciio::stripes::section_wirl_arrow',
+	POINTS => [[2, -2, 'up']],
+	DIRECTION => '',
+	ALLOW_DIAGONAL_LINES => 0,
+	EDITABLE => 1,
+	RESIZABLE => 1,
+	),
+
+create_element
+	(
+	NAME => 'Cross/wirl_arrow',
+	CROSS_ENUM => 3,
 	CLASS => 'App::Asciio::stripes::section_wirl_arrow',
 	POINTS => [[2, -2, 'up']],
 	DIRECTION => '',
@@ -82,6 +95,17 @@ create_element
 
 create_element
 	(
+	NAME => 'Cross/angled_arrow',
+	CROSS_ENUM => 3,
+	CLASS => 'App::Asciio::stripes::angled_arrow',
+	END_X => 3,
+	END_Y => -2,
+	DIRECTION => 'up-right',
+	RESIZABLE => 1,
+	) ,
+
+create_element
+	(
 	NAME => 'angled_arrow unicode',
 	CLASS => 'App::Asciio::stripes::angled_arrow',
 	END_X => 3,
@@ -109,6 +133,17 @@ create_element
 create_element
 	(
 	NAME => 'axis',
+	CLASS => 'App::Asciio::stripes::editable_arrow2',
+	END_X => 3,
+	END_Y => -3,
+	RESIZABLE => 1,
+	EDITABLE => 1,
+	) ,
+
+create_element
+	(
+	NAME => 'Cross/axis',
+	CROSS_ENUM => 3,
 	CLASS => 'App::Asciio::stripes::editable_arrow2',
 	END_X => 3,
 	END_Y => -3,
@@ -153,6 +188,15 @@ create_element
 create_element
 	(
 	NAME => 'Boxes/exec',
+	CLASS => 'App::Asciio::stripes::exec_box',
+	TEXT_ONLY => '',
+	EDITABLE => 1,
+	) ,
+
+create_element
+	(
+	NAME => 'Cross/exec box',
+	CROSS_ENUM => 3,
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '',
 	EDITABLE => 1,

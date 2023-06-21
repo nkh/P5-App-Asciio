@@ -206,7 +206,8 @@ for my $char (@char_list)
 {
     unless(exists($cross_elements_cache{$char->[0]}))
     {
-    $cross_elements_cache{$char->[0]} = create_box(NAME => 'cross_character', TEXT_ONLY => $char->[0], AUTO_SHRINK => 1, CROSS_FLAG => 1, RESIZABLE => 0, EDITABLE => 0);
+	# undef or 0: normal element 1: normal filler element 2: cross filler element 3: cross type element
+    $cross_elements_cache{$char->[0]} = create_box(NAME => 'cross filler', TEXT_ONLY => $char->[0], AUTO_SHRINK => 1, RESIZABLE => 0, EDITABLE => 0, CROSS_ENUM => 2);
     $cross_elements_cache{$char->[0]}->enable_autoconnect(0);
     }
     my $new_element = Clone::clone($cross_elements_cache{$char->[0]});
@@ -464,15 +465,6 @@ $self->{MODIFIED }++ ;
 
 #-----------------------------------------------------------------------------
 
-sub delete_cross_elements
-{
-my ($self) = @_;
-
-$self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1) } @{$self->{ELEMENTS}});
-}
-
-#-----------------------------------------------------------------------------
-
 sub edit_element
 {
 my ($self, $selected_element) = @_ ;
@@ -651,15 +643,124 @@ for my $element (@{$self->{ELEMENTS}})
 
 #-----------------------------------------------------------------------------
 
-sub select_cross_elements
+sub select_cross_filler_elements_from_selected_elements
 {
 my ($self) = @_;
 
-for my $element (@{$self->{ELEMENTS}})
+my @selected_elements = $self->get_selected_elements(1) ;
+
+$self->deselect_all_elements() ;
+
+for my $element (@selected_elements)
 {
-    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_FLAG}) && ($element->{CROSS_FLAG} == 1));
+    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 2));
 }
 }
+
+#-----------------------------------------------------------------------------
+
+sub select_cross_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+$self->deselect_all_elements() ;
+
+for my $element (@selected_elements)
+{
+    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 3));
+}
+}
+
+#-----------------------------------------------------------------------------
+
+sub select_normal_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+$self->deselect_all_elements() ;
+
+for my $element (@selected_elements)
+{
+    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (! defined($element->{CROSS_ENUM}) || ($element->{CROSS_ENUM} == 0));
+}
+}
+
+#-----------------------------------------------------------------------------
+
+sub switch_to_normal_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $element (@selected_elements)
+{
+    $element->{CROSS_ENUM} = undef if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 3));
+}
+}
+
+#-----------------------------------------------------------------------------
+
+sub switch_to_cross_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $element (@selected_elements)
+{
+    $element->{CROSS_ENUM} = 3 if (! defined($element->{CROSS_ENUM}) || ($element->{CROSS_ENUM} == 0));
+}
+}
+
+#-----------------------------------------------------------------------------
+
+sub switch_to_cross_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $element (@selected_elements)
+{
+    $element->{CROSS_ENUM} = 2 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
+}
+}
+
+#-----------------------------------------------------------------------------
+
+sub switch_to_normal_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $element (@selected_elements)
+{
+    $element->{CROSS_ENUM} = 1 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 2));
+}
+}
+
+#-----------------------------------------------------------------------------
+
+sub select_normal_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+$self->deselect_all_elements() ;
+
+for my $element (@selected_elements)
+{
+    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
+}
+}
+
 
 #-----------------------------------------------------------------------------
 
@@ -900,7 +1001,8 @@ my @diagonal_char_func = (
 	['╳', \&scene_unicode_x],
 ) ;
 
-my %need_deal_char_hash = map {$_, 1} ( '-', '|', '.', '\'', '\\', '/', '─', '│', '╭', '╮', '╯', '╰', '━', '┃', '┏', '┓', '┛', '┗', '═', '║', '╔', '╗', '╝', '╚') ;
+my %need_deal_char_hash = map {$_, 1} ( '-', '|', '.', '\'', '\\', '/', '─', '│', 
+							'╭', '╮', '╯', '╰', '━', '┃', '┏', '┓', '┛', '┗', '═', '║', '╔', '╗', '╝', '╚') ;
 
 sub delete_cross_elements_cache
 {
@@ -997,7 +1099,7 @@ for $row (1 .. $#ascii_array)
 		}
 	}
 }
-$self->delete_elements(grep{defined($_->{CROSS_FLAG}) && ($_->{CROSS_FLAG} == 1) 
+$self->delete_elements(grep{defined($_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} == 2) 
 	&& !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) 
 	&& ($cross_y_start < $_->{Y} < $cross_y_end) 
 	&& ($cross_x_start < $_->{X} < $cross_x_end) } @{$self->{ELEMENTS}}) ;
@@ -1222,7 +1324,9 @@ return (($char_45 eq '╱' || $char_45 eq '^') &&
 
 sub create_line
 {
-my ($self, $line_type) = @_;
+my ($self, $all_type) = @_;
+
+my ($line_type, $cross_type) = @{$all_type} ;
 
 my $arrow_type ;
 
@@ -1324,7 +1428,10 @@ my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
 	RESIZABLE => 1,
 	ARROW_TYPE => $arrow_type,
 	});
-
+if($cross_type)
+	{
+	$my_line_obj->{CROSS_ENUM} = 3;
+	}
 $my_line_obj->{NAME} = 'line';
 $my_line_obj->enable_autoconnect(0);
 $my_line_obj->allow_connection('start', 0);

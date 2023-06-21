@@ -55,7 +55,7 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	if($element->isa('App::Asciio::stripes::section_wirl_arrow'))
 		{
-		unless(defined $element->{NAME} && $element->{NAME} eq 'line')
+		unless(defined $element->{NAME} && $element->{NAME} =~ /line/)
 			{
 			App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
 			}
@@ -87,7 +87,7 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	if($element->isa('App::Asciio::stripes::section_wirl_arrow'))
 		{
-		unless(defined $element->{NAME} && $element->{NAME} eq 'line')
+		unless(defined $element->{NAME} && $element->{NAME} =~ /line/)
 			{
 			App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'dash' }, 0) ;
 			}
@@ -133,18 +133,6 @@ if(-e $help_path)
 	
 	$self->update_display() ;
 	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub add_cross_elements
-{
-my ($self) = @_;
-$self->create_undo_snapshot();
-
-$self->add_cross_elements();
-
-$self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------

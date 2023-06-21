@@ -201,9 +201,9 @@ else
 
 my (@lines, %cross_elements_location) ;
 
-for my $element (grep {($cross_y_start < $_->{Y} < $cross_y_end) && ($cross_x_start < $_->{X} < $cross_x_end)} @{$self->{ELEMENTS}})
+for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1) && ($cross_y_start < $_->{Y} < $cross_y_end) && ($cross_x_start < $_->{X} < $cross_x_end)} @{$self->{ELEMENTS}})
 	{
-	if((defined($element->{CROSS_FLAG})) && ($element->{CROSS_FLAG} == 1))
+	if((defined($element->{CROSS_ENUM})) && ($element->{CROSS_ENUM} == 2))
 		{
 		$cross_elements_location{$element->{X} . '-' . $element->{Y}} = $element->{TEXT_ONLY};
 		next;
