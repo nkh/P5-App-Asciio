@@ -1,3 +1,5 @@
+use utf8;
+
 FONT_FAMILY => 'Monospace',
 FONT_SIZE => 12,
 FONT_MIN => 3,
@@ -9,7 +11,7 @@ CANVAS_HEIGHT => 4000,
 CROSS_MODE => 0,
 MARKUP_MODE => 0,
 GTK_POPUP_BOX_TYPE => 0,
-GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+'],
+GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 
 DOUBLE_WIDTH_QR => qr/
 			[\x{3400}-\x{4db5}] |

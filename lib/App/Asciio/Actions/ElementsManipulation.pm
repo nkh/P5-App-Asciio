@@ -11,9 +11,6 @@ sub edit_selected_element
 {
 my ($self) = @_ ;
 
-# In gtk3's minimalist input mode, mouse clicks will cause elements to move, 
-# and this phenomenon is prevented by consuming semaphores
-$self->{EDIT_SEMAPHORE} = 3 if(get_gtk_popup_box_type() != 0) ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
@@ -24,6 +21,10 @@ if(@selected_elements == 1)
 	
 	delete $selected_elements[0]{CACHE}{RENDERING} ;
 	
+	# In gtk3's minimalist input mode, mouse clicks will cause elements to move, 
+	# and this phenomenon is prevented by consuming semaphores
+	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{GTK_POPUP_BOX_TYPE}) && ($self->{GTK_POPUP_BOX_TYPE} != 0)) ;
+
 	$self->update_display();
 	}
 }
@@ -234,27 +235,6 @@ $self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------
-sub set_git_mode_connector_char_list
-{
-
-my ($self) = @_;
-
-$self->set_git_mode_connector_char_list();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-sub switch_git_mode_connector_char
-{
-
-my ($self) = @_;
-
-$self->switch_git_mode_connector_char();
-
-$self->update_display();
-}
-----------------------------------------------------------------------------------------------
 
 sub select_connected
 {

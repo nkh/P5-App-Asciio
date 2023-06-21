@@ -13,7 +13,7 @@ use List::MoreUtils qw(first_value) ;
 
 my $git_connector_char = '*' ;
 
-sub set_git_connector_char
+sub git_mode_set_connector_char
 {
 my ($self, $set_char) = @_ ;
 $git_connector_char = $set_char ;
@@ -86,6 +86,30 @@ if(@destination_connections)
 }
 
 #----------------------------------------------------------------------------------------------
+{
+
+my $git_mode_arrow_type = [
+		# name: $start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection
+		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
+		['up'         , "'",  '|', '?', '?', '.', '?', '?', 1],
+		['down'       , '.',  '|', '?', '?', "'", '?', '?', 1],
+		['left'       , '-',  '-', '?', '?', '-', '?', '?', 1],
+		['right'      , '-',  '-', '?', '?', '-', '?', '?', 1],
+		['up-left'    , "'", '\\', '.', '-', '-', '|', "'", 1],
+		['left-up'    , '-', '\\', "'", '-', '.', '|', "'", 1],
+		['down-left'  , '.',  '/', "'", '-', '-', '|', "'", 1],
+		['left-down'  , '-',  '/', '.', '-', "'", '|', "'", 1],
+		['up-right'   , "'",  '/', '.', '-', '-', '|', "'", 1],
+		['right-up'   , '-',  '/', "'", '-', '.', '|', "'", 1],
+		['down-right' , '.', '\\', "'", '-', '-', '|', "'", 1],
+		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
+	] ;
+
+sub git_mode_change_arrow_type
+{
+my ($self, $set_type) = @_ ;
+$git_mode_arrow_type = $set_type ;
+}
 
 sub connect_from_connector
 {
@@ -105,6 +129,7 @@ my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					RESIZABLE => 1,
 					}) ;
 
+$angled_arrow->set_arrow_type($git_mode_arrow_type) ;
 $angled_arrow->enable_autoconnect(0) ;
 
 $self->add_element_at_no_connection
@@ -132,6 +157,9 @@ $self->add_connections
 
 $self->move_elements_to_back($angled_arrow) ;
 }
+
+}
+
 
 #----------------------------------------------------------------------------------------------
 

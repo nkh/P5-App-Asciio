@@ -482,6 +482,20 @@ if(exists $arrow_types{$data->{TYPE}})
 }
 
 #----------------------------------------------------------------------------------------------
+sub git_mode_change_arrow_type
+{
+my ($self, $data) = @_ ;
+
+my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
+
+print("now git mode angled arrow type " . $data->{TYPE} . "\n") ;
+
+use App::Asciio::Actions::Git ;
+App::Asciio::Actions::Git->git_mode_change_arrow_type($new_type) ;
+}
+
+
+#----------------------------------------------------------------------------------------------
 
 sub angled_arrow_context_menu
 {
@@ -503,8 +517,11 @@ if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 			$self->update_display() ;
 			}
 		],
-		[ '/arrow type/dash',           \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_dash', } ] ,
-		[ '/arrow type/unicode',        \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_unicode', } ] ;
+		[ '/arrow type/dash',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_dash', } ] ,
+		[ '/arrow type/unicode',          \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_unicode', } ] ,
+		[ '/git mode arrow type/dash',    \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', } ] ,
+		[ '/git mode arrow type/unicode', \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_unicode', } ] ;
+
 	}
 
 return @context_menu_entries ;

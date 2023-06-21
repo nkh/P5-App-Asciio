@@ -7,7 +7,6 @@ require Exporter ;
 @EXPORT = qw(
 	set_double_width_qr_and_markup_mode
 	usc_length
-	is_markup_mode
 	make_vertical_text
 	new_box
 	new_wirl_arrow
@@ -15,7 +14,6 @@ require Exporter ;
 	move_named_connector
 	optimize_connections
 	get_canonizer
-	get_gtk_popup_box_type
 	) ;
 
 use strict ;
@@ -32,7 +30,6 @@ use utf8 ;
 
 my $DOUBLE_WIDTH_QR ;
 my $MARKUP_MODE ;
-my $GTK_POPUP_BOX_TYPE ;
 
 sub set_double_width_qr_and_markup_mode
 {
@@ -40,14 +37,6 @@ my ($self) = @_ ;
 die "DOUBLE_WIDTH_QR not set" unless defined $self->{DOUBLE_WIDTH_QR} ;
 $DOUBLE_WIDTH_QR = $self->{DOUBLE_WIDTH_QR} ;
 $MARKUP_MODE = $self->{MARKUP_MODE} ;
-if(defined $self->{GTK_POPUP_BOX_TYPE})
-	{
-	$GTK_POPUP_BOX_TYPE = $self->{GTK_POPUP_BOX_TYPE} ;
-	}
-else
-	{
-	$GTK_POPUP_BOX_TYPE = 0;
-	}
 }
 
 sub usc_length
@@ -56,31 +45,6 @@ my ($string) = @_ ;
 
 $string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if($MARKUP_MODE);
 return length($string) + ($string =~ s/$DOUBLE_WIDTH_QR/x/g) ;
-}
-
-sub is_markup_mode
-{
-	return($MARKUP_MODE);
-}
-
-sub switch_gtk_popup_box_type
-{
-# 0: full mode 1: minimalist mode with title
-if($GTK_POPUP_BOX_TYPE == 0)
-	{
-	$GTK_POPUP_BOX_TYPE = 1;
-	print("gtk popup box type enter minimalist edit mode, ESC or click to close dianogal\n");
-	}
-else
-	{
-	$GTK_POPUP_BOX_TYPE = 0;
-	print("gtk popup box type enter full edit mode\n");
-	}
-}
-
-sub get_gtk_popup_box_type
-{
-	return($GTK_POPUP_BOX_TYPE);
 }
 
 }

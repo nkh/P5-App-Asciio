@@ -30,7 +30,7 @@ my $element = $self->add_new_element_named($name, $self->{MOUSE_X}, $self->{MOUS
 if($edit)
 	{
 	$element->edit($self);
-	$self->{EDIT_SEMAPHORE} = 3 if(get_gtk_popup_box_type() != 0) ;
+	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{GTK_POPUP_BOX_TYPE}) && ($self->{GTK_POPUP_BOX_TYPE} != 0)) ;
 	}
 
 $self->select_elements(1, $element);

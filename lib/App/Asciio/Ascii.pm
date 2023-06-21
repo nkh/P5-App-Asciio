@@ -85,7 +85,7 @@ for my $element (@elements)
 			my $origin_strip = $sub_strip ;
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 
-			if(is_markup_mode())
+			if($self->{MARKUP_MODE})
 			{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
 				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
@@ -131,7 +131,7 @@ for my $element (@elements)
 		}
 	}
 
-if(is_markup_mode() && $format)
+if($self->{MARKUP_MODE} && $format)
 	{
 	my $new_col;
 	for my $row (0 .. $#lines)
@@ -216,7 +216,7 @@ for my $element (grep {($cross_y_start < $_->{Y} < $cross_y_end) && ($cross_x_st
 			{
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 
-			if(is_markup_mode())
+			if($self->{MARKUP_MODE})
 			{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
 				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
