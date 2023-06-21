@@ -663,34 +663,6 @@ for my $element (@{$self->{ELEMENTS}})
 
 #-----------------------------------------------------------------------------
 
-sub set_git_mode_connector_char_list
-{
-my ($self) = @_;
-
-my $char_list = $self->display_edit_dialog("input git mode char list", join('', $self->{GIT_MODE_CONNECTOR_CHAR_LIST}), $self);
-return unless($char_list) ;
-
-print("set git mode connector char list " . $char_list . "\n") ;
-my @new_char_list = split('', $char_list);
-
-$self->{GIT_MODE_CONNECTOR_CHAR_LIST} = \@new_char_list ;
-}
-
-#-----------------------------------------------------------------------------
-sub switch_git_mode_connector_char
-{
-my ($self) = @_;
-
-my $set_char = shift @{$self->{GIT_MODE_CONNECTOR_CHAR_LIST}} ;
-print("now git mode connector char " . $set_char . "\n") ;
-
-use App::Asciio::Actions::Git ;
-App::Asciio::Actions::Git->set_git_connector_char($set_char) ;
-push @{$self->{GIT_MODE_CONNECTOR_CHAR_LIST}}, $set_char ;
-}
-
-#-----------------------------------------------------------------------------
-
 sub switch_cross_mode
 {
 

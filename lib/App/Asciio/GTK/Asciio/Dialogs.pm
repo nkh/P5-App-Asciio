@@ -208,8 +208,7 @@ $self->response(1) ;
 sub display_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
-my $gtk_popup_box_type = get_gtk_popup_box_type();
-if(($gtk_popup_box_type != 0) && (defined $X) && (defined $Y))
+if(($asciio->{GTK_POPUP_BOX_TYPE} != 0) && (defined $X) && (defined $Y))
 	{
 	return $self->display_edit_dialog_for_mini_edit_mode($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) ;
 	}

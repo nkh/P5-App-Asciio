@@ -25,14 +25,13 @@ $self->response(1) ;
 sub display_box_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) = @_ ;
-my $gtk_popup_box_type = get_gtk_popup_box_type();
-if(($gtk_popup_box_type == 0) && (defined $X) && (defined $Y))
+if(($asciio->{GTK_POPUP_BOX_TYPE} != 0) && (defined $X) && (defined $Y))
 	{
-	return $self->display_box_edit_dialog_for_normal_mode($title, $text, $asciio) ;
+	return $self->display_box_edit_dialog_for_mini_mode_with_title($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) ;
 	}
 else
     {
-    return $self->display_box_edit_dialog_for_mini_mode_with_title($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) ;
+    return $self->display_box_edit_dialog_for_normal_mode($title, $text, $asciio) ;
     }
 }
 
