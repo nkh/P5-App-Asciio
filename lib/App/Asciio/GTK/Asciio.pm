@@ -330,29 +330,9 @@ for my $element (@{$self->{ELEMENTS}})
 	}
 
 # draw ruler lines
-for my $line (grep { !($_->{NAME} =~ /CROSS_X|CROSS_Y/) } @{$self->{RULER_LINES}})
+for my $line (@{$self->{RULER_LINES}})
 	{
-
 	$gc->set_source_rgb(@{$self->get_color('ruler_line')});
-	
-	if($line->{TYPE} eq 'VERTICAL')
-		{
-		$gc->move_to($line->{POSITION} * $character_width, 0) ;
-		$gc->line_to($line->{POSITION} * $character_width, $widget_height) ;
-		}
-	else
-		{
-		$gc->move_to(0, $line->{POSITION} * $character_height) ;
-		$gc->line_to($widget_width, $line->{POSITION} * $character_height);
-		}
-	}
-$gc->stroke() ;
-
-# draw cross mode x y end ruler lines
-for my $line (grep {$_->{NAME} eq "CROSS_X" || $_->{NAME} eq "CROSS_Y"} @{$self->{RULER_LINES}})
-	{
-
-	$gc->set_source_rgb(@{$self->get_color('cross_mode_ruler_line')});
 	
 	if($line->{TYPE} eq 'VERTICAL')
 		{
