@@ -268,28 +268,6 @@ $self->update_display();
 
 #----------------------------------------------------------------------------------------------
 
-sub switch_to_cross_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-$self->switch_to_cross_filler_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub switch_to_normal_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-$self->switch_to_normal_filler_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
 sub select_normal_filler_elements_from_selected_elements
 {
 my ($self) = @_;

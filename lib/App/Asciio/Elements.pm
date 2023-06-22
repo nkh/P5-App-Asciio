@@ -700,6 +700,7 @@ my @selected_elements = $self->get_selected_elements(1) ;
 for my $element (@selected_elements)
 {
     $element->{CROSS_ENUM} = undef if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 3));
+	$element->{CROSS_ENUM} = 1 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 2));
 }
 }
 
@@ -714,34 +715,7 @@ my @selected_elements = $self->get_selected_elements(1) ;
 for my $element (@selected_elements)
 {
     $element->{CROSS_ENUM} = 3 if (! defined($element->{CROSS_ENUM}) || ($element->{CROSS_ENUM} == 0));
-}
-}
-
-#-----------------------------------------------------------------------------
-
-sub switch_to_cross_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-my @selected_elements = $self->get_selected_elements(1) ;
-
-for my $element (@selected_elements)
-{
-    $element->{CROSS_ENUM} = 2 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
-}
-}
-
-#-----------------------------------------------------------------------------
-
-sub switch_to_normal_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-my @selected_elements = $self->get_selected_elements(1) ;
-
-for my $element (@selected_elements)
-{
-    $element->{CROSS_ENUM} = 1 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 2));
+	$element->{CROSS_ENUM} = 2 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
 }
 }
 
@@ -1023,10 +997,9 @@ sub add_cross_elements
 my ($self) = @_;
 
 my ($old_cross_elements, @ascii_array, $old_key, %not_delete_cross_elements);
-my ($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end);
 
 #~ this func is slow
-($cross_x_start, $cross_x_end, $cross_y_start, $cross_y_end, $old_cross_elements, @ascii_array) = $self->transform_elements_to_ascii_two_dimensional_array_for_cross_mode();
+($old_cross_elements, @ascii_array) = $self->transform_elements_to_ascii_two_dimensional_array_for_cross_mode();
 
 my ($row, $col, $scene_func, @elements_to_be_add) ;
 my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315, $normal_key, $diagonal_key);
@@ -1099,10 +1072,8 @@ for $row (1 .. $#ascii_array)
 		}
 	}
 }
-$self->delete_elements(grep{defined($_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} == 2) 
-	&& !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) 
-	&& ($cross_y_start < $_->{Y} < $cross_y_end) 
-	&& ($cross_x_start < $_->{X} < $cross_x_end) } @{$self->{ELEMENTS}}) ;
+$self->delete_elements(grep{ defined($_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} == 2) 
+	&& !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) } @{$self->{ELEMENTS}}) ;
 $self->create_cross_elements(@elements_to_be_add) if(@elements_to_be_add)  ;
 }
 
