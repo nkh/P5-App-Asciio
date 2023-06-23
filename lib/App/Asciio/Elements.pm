@@ -75,22 +75,6 @@ for my $ruler_line_to_remove (@ruler_lines_to_remove)
 $self->{RULER_LINES} = [grep {! exists $removed{$_}} @{$self->{RULER_LINES}} ] ;
 }
 
-sub remove_ruler_lines_with_name
-{
-my ($self, $name) = @_ ;
-
-my %removed ;
-
-for my $ruler_line (@{$self->{RULER_LINES}})
-	{
-	if($ruler_line->{NAME} eq $name)
-		{
-		$removed{$ruler_line} ++ ;
-		}
-	}
-$self->{RULER_LINES} = [grep {! exists $removed{$_}} @{$self->{RULER_LINES}} ] ;
-}
-
 sub exists_ruler_line
 {
 my ($self, @ruler_lines_to_check) = @_ ;
@@ -649,6 +633,8 @@ my ($self) = @_;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
+@selected_elements = @{$self->{ELEMENTS}} unless(@selected_elements) ;
+
 $self->deselect_all_elements() ;
 
 for my $element (@selected_elements)
@@ -664,6 +650,8 @@ sub select_cross_elements_from_selected_elements
 my ($self) = @_;
 
 my @selected_elements = $self->get_selected_elements(1) ;
+
+@selected_elements = @{$self->{ELEMENTS}} unless(@selected_elements) ;
 
 $self->deselect_all_elements() ;
 
@@ -681,6 +669,8 @@ my ($self) = @_;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
+@selected_elements = @{$self->{ELEMENTS}} unless(@selected_elements) ;
+
 $self->deselect_all_elements() ;
 
 for my $element (@selected_elements)
@@ -691,11 +681,39 @@ for my $element (@selected_elements)
 
 #-----------------------------------------------------------------------------
 
+sub select_normal_filler_elements_from_selected_elements
+{
+my ($self) = @_;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+@selected_elements = @{$self->{ELEMENTS}} unless(@selected_elements) ;
+
+$self->deselect_all_elements() ;
+
+for my $element (@selected_elements)
+{
+    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
+}
+}
+
+#-----------------------------------------------------------------------------
+
 sub switch_to_normal_elements_from_selected_elements
 {
 my ($self) = @_;
 
 my @selected_elements = $self->get_selected_elements(1) ;
+
+unless(@selected_elements)
+	{
+	@selected_elements = @{$self->{ELEMENTS}} ;
+	print("switch all elements to normal elements!\n") ;
+	}
+else
+	{
+	print("switch selected elements to normal elements!\n") ;
+	}
 
 for my $element (@selected_elements)
 {
@@ -712,29 +730,22 @@ my ($self) = @_;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
+unless(@selected_elements)
+	{
+	@selected_elements = @{$self->{ELEMENTS}} ;
+	print("switch all elements to corss elements!\n") ;
+	}
+else
+	{
+	print("switch selected elements to corss elements!\n") ;
+	}
+
 for my $element (@selected_elements)
 {
     $element->{CROSS_ENUM} = 3 if (! defined($element->{CROSS_ENUM}) || ($element->{CROSS_ENUM} == 0));
 	$element->{CROSS_ENUM} = 2 if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
 }
 }
-
-#-----------------------------------------------------------------------------
-
-sub select_normal_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-my @selected_elements = $self->get_selected_elements(1) ;
-
-$self->deselect_all_elements() ;
-
-for my $element (@selected_elements)
-{
-    $element->{SELECTED} = ++$self->{SELECTION_INDEX} if (defined($element->{CROSS_ENUM}) && ($element->{CROSS_ENUM} == 1));
-}
-}
-
 
 #-----------------------------------------------------------------------------
 
@@ -996,82 +1007,82 @@ sub add_cross_elements
 {
 my ($self) = @_;
 
-my ($old_cross_elements, @ascii_array, $old_key, %not_delete_cross_elements);
+my ($old_cross_elements, $ascii_array_ref, @ascii_array, $old_key, %not_delete_cross_elements, $index_ref);
 
 #~ this func is slow
-($old_cross_elements, @ascii_array) = $self->transform_elements_to_ascii_two_dimensional_array_for_cross_mode();
+($old_cross_elements, $ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_two_dimensional_array_for_cross_mode();
+@ascii_array = @{$ascii_array_ref} ;
 
-my ($row, $col, $scene_func, @elements_to_be_add) ;
+my ($row, $col, $scene_func, @elements_to_be_add, $cross_index) ;
 my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315, $normal_key, $diagonal_key);
-for $row (1 .. $#ascii_array)
-{
-	for $col (1 .. $#{$ascii_array[$row]})
+for $cross_index (@{$index_ref})
 	{
-		next unless(defined($ascii_array[$row][$col]) && (exists($need_deal_char_hash{$ascii_array[$row][$col]})));
+	($row, $col) = ($cross_index->[0], $cross_index->[1]) ;
+	next unless((exists($need_deal_char_hash{$ascii_array[$row][$col]})));
 
-		($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
+	($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
 
-		$normal_key = ($up || $undef_char) . ($down || $undef_char) . ($left || $undef_char) . ($right || $undef_char);
+	$normal_key = ($up || $undef_char) . ($down || $undef_char) . ($left || $undef_char) . ($right || $undef_char);
 
-		unless(exists($normal_char_cache{$normal_key}))
+	unless(exists($normal_char_cache{$normal_key}))
+	{
+		$scene_func = first { $_->[1]($up, $down, $left, $right, $_->[2]) } @normal_char_func;
+		$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[0] : '';
+	}
+
+	if($normal_char_cache{$normal_key}) {
+		$old_key = $col . '-' . $row;
+		if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $normal_char_cache{$normal_key}))
 		{
-			$scene_func = first { $_->[1]($up, $down, $left, $right, $_->[2]) } @normal_char_func;
-			$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[0] : '';
-		}
-
-		if($normal_char_cache{$normal_key}) {
-			$old_key = $col . '-' . $row;
-			if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $normal_char_cache{$normal_key}))
+			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
 			{
-				if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
-				{
-					$not_delete_cross_elements{$old_key . '-' . $normal_char_cache{$normal_key}} = 1;
-				}
+				$not_delete_cross_elements{$old_key . '-' . $normal_char_cache{$normal_key}} = 1;
 			}
-			else
-			{
-				if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
-				{
-				push @elements_to_be_add, [$normal_char_cache{$normal_key}, $col, $row];
-				$old_cross_elements->{$old_key} = $normal_char_cache{$normal_key};
-				$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
-				}
-			}
-			next;
 		}
-
-		($char_45, $char_135, $char_225, $char_315) = ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
-		
-		$diagonal_key = ($char_45 || $undef_char) . ($char_135 || $undef_char) . ($char_225 || $undef_char) . ($char_315 || $undef_char);
-
-		unless(exists($diagonal_char_cache{$diagonal_key}))
+		else
 		{
-			$scene_func = first { $_->[1]($char_45, $char_135, $char_225, $char_315) } @diagonal_char_func;
-			$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[0] : '';
-		}
-
-		if($diagonal_char_cache{$diagonal_key})
-		{
-			$old_key = $col . '-' . $row;
-			if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $diagonal_char_cache{$diagonal_key}))
+			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
 			{
-				if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
-				{
-					$not_delete_cross_elements{$old_key . '-' . $diagonal_char_cache{$diagonal_key}} = 1;
-				}
+			push @elements_to_be_add, [$normal_char_cache{$normal_key}, $col, $row];
+			$old_cross_elements->{$old_key} = $normal_char_cache{$normal_key};
+			$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
 			}
-			else
+		}
+		next;
+	}
+
+	($char_45, $char_135, $char_225, $char_315) = ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
+	
+	$diagonal_key = ($char_45 || $undef_char) . ($char_135 || $undef_char) . ($char_225 || $undef_char) . ($char_315 || $undef_char);
+
+	unless(exists($diagonal_char_cache{$diagonal_key}))
+	{
+		$scene_func = first { $_->[1]($char_45, $char_135, $char_225, $char_315) } @diagonal_char_func;
+		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[0] : '';
+	}
+
+	if($diagonal_char_cache{$diagonal_key})
+	{
+		$old_key = $col . '-' . $row;
+		if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $diagonal_char_cache{$diagonal_key}))
+		{
+			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
 			{
-				if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
-				{
-				push @elements_to_be_add, [$diagonal_char_cache{$diagonal_key}, $col, $row];
-				$old_cross_elements->{$old_key} = $diagonal_char_cache{$diagonal_key};
-				$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
-				}
+				$not_delete_cross_elements{$old_key . '-' . $diagonal_char_cache{$diagonal_key}} = 1;
+			}
+		}
+		else
+		{
+			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
+			{
+			push @elements_to_be_add, [$diagonal_char_cache{$diagonal_key}, $col, $row];
+			$old_cross_elements->{$old_key} = $diagonal_char_cache{$diagonal_key};
+			$not_delete_cross_elements{$old_key . '-' . $ascii_array[$row][$col]} = undef;
 			}
 		}
 	}
-}
+	}
+
 $self->delete_elements(grep{ defined($_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} == 2) 
 	&& !(defined $not_delete_cross_elements{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) } @{$self->{ELEMENTS}}) ;
 $self->create_cross_elements(@elements_to_be_add) if(@elements_to_be_add)  ;

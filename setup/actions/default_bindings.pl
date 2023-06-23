@@ -254,10 +254,10 @@ register_action_handlers
 	{
 	SHORTCUTS => '000-x',
 	
-	'Add cross box'                       => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Cross/box', 0]                 ],
-	'Add cross exec box'                  => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Cross/exec box', 1]            ],
-	'Add cross arrow'                     => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Cross/wirl_arrow', 0]          ],
-	'Add cross angled arrow'              => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Stencils/Asciio/Cross/angled_arrow', 0]        ],
+	'Add cross box'                       => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/box', 0]                 ],
+	'Add cross exec box'                  => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/exec box', 1]            ],
+	'Add cross arrow'                     => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/wirl_arrow', 0]          ],
+	'Add cross angled arrow'              => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/angled_arrow', 0]        ],
 	
 	'add cross unicode line 2'            => ['000-i', \&App::Asciio::Actions::Elements::create_line, [2, 1]                                               ],
 	'add cross unicode line 3'            => ['C00-i', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                               ],
