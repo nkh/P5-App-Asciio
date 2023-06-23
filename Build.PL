@@ -41,6 +41,7 @@ lib/App/Asciio/Actions/Debug.pm
 lib/App/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/stripes/editable_box2.pm
+lib/App/Asciio/stripes/center_connect_box.pm
 lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
