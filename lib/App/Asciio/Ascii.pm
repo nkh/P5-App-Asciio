@@ -160,7 +160,7 @@ sub transform_elements_to_ascii_two_dimensional_array_for_cross_mode
 {
 my ($self)  = @_ ;
 
-my (@lines, %cross_elements_location) ;
+my (@lines, %cross_elements_location, @index_arr, %uniq_index) ;
 
 for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1)} @{$self->{ELEMENTS}})
 	{
@@ -189,7 +189,12 @@ for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1)} @{$
 				{
 				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
 				
-				$lines[$y][$x] = $character if ($x >= 0 && $y >= 0) ;
+				if($x >= 0 && $y >= 0)
+					{
+					$lines[$y][$x] = $character ;
+					push @index_arr, [$y, $x] unless(exists $uniq_index{$y . '-' . $x});
+					$uniq_index{$y . '-' . $x} = 1;
+					}
 				$character_index += usc_length($character);
 				}
 			
@@ -198,7 +203,7 @@ for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1)} @{$
 		}
 	}
 
-return(\%cross_elements_location, @lines) ;
+return(\%cross_elements_location, \@lines, \@index_arr) ;
 }
 
 #-----------------------------------------------------------------------------
