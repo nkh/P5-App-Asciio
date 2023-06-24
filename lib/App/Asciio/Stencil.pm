@@ -88,13 +88,15 @@ eval $code ;
 
 if($@)
 	{
+	my $error = $@ ;
+	
 	use Data::TreeDumper ;
 	warn "Can't create new element with definition:\n" ;
 	warn DumpTree \%element_definition ;
 	warn '-' x 80 . "\n" ;
 	warn "code:\n$code" ;
-	warn '-' x 80 . "\n" ;
-	warn $@ ;
+	warn '-' x 80 . "\n\n" ;
+	warn $error ;
 	}
 
 return $element ;
