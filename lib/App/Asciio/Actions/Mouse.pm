@@ -288,7 +288,6 @@ my ($x, $y) = @{$event->{COORDINATES}}[0, 1] ;
 if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
 	{
 	mouse_drag($self, $x, $y) ;
-	return ;
 	}
 
 ($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
@@ -336,6 +335,45 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub mouse_drag_canvas
+{
+my ($self, $event) = @_ ;
+
+my ($x, $y) = @{$event->{COORDINATES}}[0, 1] ;
+
+if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
+	{
+	my ($character_width, $character_height) = $self->get_character_size() ;
+	
+	my $h_value = $self->{sc_window}->get_hadjustment()->get_value() ;
+	my $v_value = $self->{sc_window}->get_vadjustment()->get_value() ;
+	
+	my $new_h_value = $h_value - (($x - $self->{PREVIOUS_X}) * $character_width) ;
+	my $new_v_value = $v_value - (($y - $self->{PREVIOUS_Y}) * $character_height) ;
+	
+	if($new_h_value >= 0)
+		{
+		$self->{sc_window}->get_hadjustment()->set_value($new_h_value) ;
+		}
+	else
+		{
+		# scrollbar reached top
+		}
+	
+	if($new_v_value >= 0)
+		{
+		$self->{sc_window}->get_vadjustment()->set_value($new_v_value) ;
+		}
+	else
+		{
+		# scrollbar reached top
+		}
+	}
+
 }
 
 #----------------------------------------------------------------------------------------------
