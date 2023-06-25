@@ -91,6 +91,7 @@ register_action_handlers
 'Insert flex point'                           => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                      ],
 
 'Mouse motion'                                => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                       ], 
+'Mouse motion 2'                              => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                       ],
 'Mouse drag canvas'                           => ['C00-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_drag_canvas                                  ],         
 
 # mouse emulation
