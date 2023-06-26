@@ -5,8 +5,7 @@ documentation format and structure
 	output
 		text info
 		md
-		linked md
-		html
+		#html
 
 
 text interface

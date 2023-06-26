@@ -16,14 +16,21 @@
                                   | Moscow |
                                   '--------'
 
+Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams can be saved as ASCII text or in a format that allows you to modify them later.
+
+Diagrams consist of boxes and text elements connected by arrows. Boxes stay connected when you move them around.
+
+Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.
+
+ASCII format is easy and universal, many tools exist to manipulate it and even transform it to other formats.
+
+I've used it a lot to draw trees and graphs when my hand drawn pictures were good enough for presentations. Having the possibility to copy and modify the graphs/diagrams makes it possible to present changes in an attractive way.
+
 
 ## History
 
-Asciio is born in Oslo ... as a dare; someone coined a cool name and it's been under development for 20 years. It proved to very useful for embeding graphs in code, documentation, requirements, ... 
+Asciio is born in Oslo ... as a dare; someone coined a cool name and it's been under development for 20 years. It proved to very useful for embedding graphs in code, documentation, requirements, ... 
 
-I've used it a lot to draw trees and graphs when I didn't draw them by hand. 
-
-ASCII is easy and universal.
 
 ```
                           .------.

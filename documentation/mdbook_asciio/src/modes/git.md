@@ -3,7 +3,9 @@
 
 The git mode allows you to draw git graph quickly. It adds a binding 
 
-    'Mouse quick link git' => [['0A0-button-press-3', '00S-semicolon'],  \&App::Asciio::Actions::Git::quick_link]
+```perl
+'Mouse quick link git' => [['0A0-button-press-3', '00S-semicolon'],  \&App::Asciio::Actions::Git::quick_link]
+```
 
 when you press the semicolon:
 
@@ -29,3 +31,4 @@ when you press the semicolon:
  '-------------'                             *-------'
 
 ```
+

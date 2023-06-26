@@ -215,17 +215,17 @@ register_action_handlers
 	{
 	SHORTCUTS => '000-i',
 	
-	# 'Insert from file'     => [ 'f' ], ???
+	# 'Add from file'     => [ 'f' ], ???
 	
 	'Add box'                             => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                 ],
-	'Create multiple box elements'        => ['C00-b', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1          ],
+	'Add multiple boxes'                  => ['C00-b', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1          ],
 	'Add unicode box'                     => ['0A0-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box unicode', 0]         ],
 	'Add shrink box'                      => ['00S-B', \&App::Asciio::Actions::Elements::add_element, ['Asciio/shrink_box', 1]          ],
 	'Add exec box'                        => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]          ],
 	'Add exec box no border'              => ['00S-E', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec no border', 1]],
 	
 	'Add text'                            => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]                ],
-	'Create multiple text elements'       => ['C00-t', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0          ],
+	'Add multiple texts'                  => ['C00-t', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0          ],
 	
 	'Add arrow'                           => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]          ],
 	'Add unicode arrow'                   => ['0A0-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow unicode', 0]  ],
@@ -240,8 +240,8 @@ register_action_handlers
 	'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]       ],
 	'Add rhombus'                         => ['C00-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]       ],
 	'Add ellipse'                         => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]       ],
-	'External command in a box'           => ['000-x', \&App::Asciio::Actions::Unsorted::external_command_output, 1                              ],
-	'External command in a box no frame'  => ['00S-X', \&App::Asciio::Actions::Unsorted::external_command_output, 0                              ],
+	'Add external command box'            => ['000-x', \&App::Asciio::Actions::Unsorted::external_command_output, 1                              ],
+	'Add external command box no frame'   => ['00S-X', \&App::Asciio::Actions::Unsorted::external_command_output, 0                              ],
 	'create code box'                     => ['C00-c', \&App::Asciio::Actions::Unsorted::create_code_box, 1                                      ],
 	'create code box no frame'            => ['0A0-c', \&App::Asciio::Actions::Unsorted::create_code_box, 0                                      ],
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],
@@ -262,15 +262,14 @@ register_action_handlers
 	
 	'add cross unicode line 2'            => ['000-i', \&App::Asciio::Actions::Elements::create_line, [2, 1]                                               ],
 	'add cross unicode line 3'            => ['C00-i', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                               ],
-
-    'Select cross elements'               => ['000-c', \&App::Asciio::Actions::ElementsManipulation::select_cross_elements_from_selected_elements               ],
+	
+	'Select cross elements'               => ['000-c', \&App::Asciio::Actions::ElementsManipulation::select_cross_elements_from_selected_elements               ],
 	'Select cross filler elements'        => ['000-f', \&App::Asciio::Actions::ElementsManipulation::select_cross_filler_elements_from_selected_elements        ],
 	'Select normal elements'              => ['000-n', \&App::Asciio::Actions::ElementsManipulation::select_normal_elements_from_selected_elements              ],
 	'Select normal filler elements'       => ['0A0-f', \&App::Asciio::Actions::ElementsManipulation::select_normal_filler_elements_from_selected_elements       ],
-
+	
 	'change to cross elements'            => ['C00-c', \&App::Asciio::Actions::ElementsManipulation::switch_to_cross_elements_from_selected_elements            ],
 	'change to normal elements'           => ['C00-n', \&App::Asciio::Actions::ElementsManipulation::switch_to_normal_elements_from_selected_elements           ],
-
 	},
 
 'slides leader' => 

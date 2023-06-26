@@ -10,8 +10,3 @@ See the "Exporter" section to learn how to write your own.
 
 ![Unicode](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_unicode.png)
 
-## Export to SVG example
-
-![SVG source](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg_source.png)
-
-![SVG](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg.png)

@@ -26,7 +26,10 @@
 	
 - [Editing](editing.md)
 	
-- [Export](exporting.md)
+- [Export/Save](exporting.md)
+	- [Asciio format](export/asciio.md)
+	- [text](export/text.md)
+	- [SVG](export/svg.md)
 
 - [Working efficiently](working_efficiently.md)
 
@@ -73,6 +76,8 @@
 - [For Developers](for_developers/README.md)
 	- [Scripting](for_developers/scripting.md)
 	- [Modifying Asciio](for_developers/modify_Asciio.md)
+		- [Bindings](for_developers/bindings.md)
+
 	- [Debugging](for_developers/debugging.md)
 
 -----------
