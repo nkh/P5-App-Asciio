@@ -979,7 +979,7 @@ Please report errors at  https://github.com/nkh/P5-App-Asciio/issues.
 =head1 LICENSE AND COPYRIGHT
 
 This program is free software; you can redistribute it and/or modify it under
-the same terms as Perl itself.
+the same terms as Perl itself or GPL3.
 
 =head2 Docker Image
 

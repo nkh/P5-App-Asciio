@@ -1,3 +1,13 @@
+documentation format and structure
+	makdown
+	directory structure reflecting contents
+
+	output
+		text info
+		md
+		linked md
+		html
+
 
 text interface
 	vim script

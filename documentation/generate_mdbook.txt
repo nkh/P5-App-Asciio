@@ -1,0 +1,14 @@
+install mdbook from: https://rust-lang.github.io/mdBook/guide/installation.html
+
+$> cd to $ASCIIO/documentation/mdbook_asciio
+$> mdbook serve --open # will open the documentation in your browser
+
+
+Tips:
+
+The main entry point in the documentation is $ASCIIO/documentation/mdbook_asciio/src/SUMMARY.md
+
+if you add a section in that file (while "mdbook serve" is running) and save it, the file for that new section is automatically created
+
+while editing any of the md files, save and the documentation will be updated in the browser within a second or so
+

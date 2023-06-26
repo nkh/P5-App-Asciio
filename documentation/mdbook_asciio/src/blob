@@ -1,0 +1,164 @@
+# Summary
+
+# User Guide
+
+[Introduction](README.md)
+
+	- [history](history.md)
+		goal
+		exporting as text
+
+		working with graphs
+                          .------.
+              .-----------| root |---------.
+              |           '------'         |       other process
+              |               .------------|-------------.
+              v               |            v             |
+            .--.              |          .--.            |
+        .---'--'              |      .---'--'---.        |
+        |     |               |      |          |        |
+        v     |               |      v          v        |
+      .--.    |      link     |    .--.       .--.       |
+   .--'--'    .--------------------'--'       '--'       |
+   |          |               |      |                   |
+   v          |               |      v                   |
+ .--.         v               |    .--.                  |
+ '--'       .--.              |    '--'                  |
+            '--'              |                          |
+                              '--------------------------'
+
+- [Installation](guide/installation.md)
+
+- [Accessing documentation](accessing_documentation.md)
+	man page
+		browser
+		inline
+	user manual
+		info
+		html
+		...
+- [Unicode support](unicode_support.md)
+
+- [UIs](UIs.md)
+	GTK3
+	TUI
+		mouse emulation
+- [Bindings types](binding_types.md)
+	mouse
+	keyboard
+		direct bindings
+		vim-bindings
+
+- [Stencils](stencils.md)
+	- [Asciio objects](stencils/asciio_objects.md)
+		boxes
+		arrows
+			angled
+			multi section
+		arrow heads
+	- [verbatim objects](stencils/verbatim.md)
+	- [adding your own stencils](stencils/user.md)
+	
+- [Editing](editing.md)
+	inline
+	framing, resizing and shrinking
+	
+- [Export](exporting.md)
+	text
+	b64
+	png
+	svg
+		goat
+- [Working efficiently](working_efficiently.md)
+	mouse bindings
+	multiple entry
+	reusing output
+	scripting
+		create from description description
+	working with many objects
+
+	- [Grouping](grouping.md)
+		connectors
+	
+
+- [Modes](modes.md)
+	- [git](modes/git.md)
+	- [cross](modes/git.md)
+	- [slides](modes/slides.md)
+
+- [lots of examples](examples.md)
+	- [example 1](examples/example1.md)
+	- [example 2](examples/example2.md)
+	- [videos](videos/videos.md)
+
+# Bindings
+
+- [Bindings](Bindings.md)
+	- [Bindings types](binding_types.md)
+	- [mouse](bindings/mouse.md)
+		«double-click»     Edit selected element
+		«C00-button-1»     Add to delection
+		«0A0-button-1»     Quick link
+		«0AS-button-1»     Duplicate elements
+		«CA0-button-1»     Insert flex point
+	
+	- [single key bindings](bindings/single_key.md)
+		«Enter»            Edit selected element
+		«d»                Delete selected element(s)
+		«u»   «C00-z»      Undo
+		«C»-r «C00-y»      Redo
+		«.»                Quick link
+		«,»                Quick copy
+		«R»                Remove rulers
+	
+		«C00-a»            Select all elements
+	
+	- [multiple key bindings](bindings/multiple_keys.md)
+		- [Moving elements](bindings/moving.md)
+		- [Selecting elements](selecting.md)
+			mouse
+			keyboard
+		- [Resizing elements](bindings/resizing.md)
+		
+		- [Clipboard](clipboard.md)
+			«C00-c»            Copy to clipboard
+			«C00-v»            Insert from clipboard
+			«C00-e»            Export to clipboard & primary as ascii
+			«C0S-V»            Import from primary to box
+		- [«:» command group:](bindings/commands.md)
+			saving
+			reading
+			importing
+		- [«i» Insert group](bindings/inserting.md)
+			arrows
+			boxes
+			exec box
+				tables
+				diagon
+			triangles
+		- [«a» arrow group](bindings/arrows.md)
+		- [«A» align group](bindings/aligning.md)
+		- [«g» grouping group](bindings/grouping.md)
+		- [«A-g» stripes-group group](bindings/grouping_stripes.md)
+		- [«z» display group](bindings/display.md)
+			«+»                Zoom in
+			«-»                Zoom out
+		- [«S» slides group](bindings/slides.md)
+		- [«D» debug group](bindings/.md)
+
+- [Configuration](configuration.md)
+	structure
+	setup popup menues
+
+# Reference Guide
+
+- [For Developers](for_developers/README.md)
+	- [Sripting](for_developers/scripting.md)
+	- [Modifying Asciio](for_developers/modi.md)
+	- [Debugging](for_developers/debugging.md)
+		- [«D» debug group](bindings/.md)
+
+-----------
+
+[Contributors](misc/contributors.md)
+

@@ -1,0 +1,11 @@
+[book]
+authors = ["Nadim Khemir"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Asciio"
+
+# [preprocessor.indexing]
+# [preprocessor.toc]
+
+# [output.linkcheck] 
