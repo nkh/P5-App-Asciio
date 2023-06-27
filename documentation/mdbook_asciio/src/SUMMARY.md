@@ -24,15 +24,18 @@
 	- [verbatim objects](stencils/verbatim.md)
 	- [adding your own stencils](stencils/user.md)
 	
-- [Editing](editing.md)
+- [Working efficiently](working_efficiently.md)
+
+	- [Keyboard](editing/keyboard.md)
+
+	- [Mouse](editing/mouse.md)
+
+	- [Grouping](editing/grouping.md)
 
 - [Export/Save](exporting.md)
 	- [Asciio format](export/asciio.md)
 	- [text](export/text.md)
 	- [SVG](export/svg.md)
-
-- [Working efficiently](working_efficiently.md)
-	- [Grouping](grouping.md)
 
 - [Modes](modes.md)
 	- [Git](modes/git.md)
@@ -51,7 +54,7 @@
 	- [Mouse](bindings/mouse.md)
 	
 	- [Single key](bindings/single_key.md)
-		- [GUI bindings](bindings/guil.md)
+		- [GUI bindings](bindings/gui.md)
 		- [Moving elements](bindings/moving.md)
 		- [Selecting elements](bindings/selecting.md)
 		- [Resizing elements](bindings/resizing.md)
