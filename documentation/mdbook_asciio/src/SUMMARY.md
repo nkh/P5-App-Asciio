@@ -4,17 +4,17 @@
 
 # User Guide
 
-- [Installation](guide/installation.md)
+- [Installation and running](guide/installation.md)
 
-- [Accessing documentation](accessing_documentation.md)
-
-- [Interface](Interface.md)
+- [Asciio's interface](Interface.md)
 
 - [Unicode support](unicode_support.md)
 
-- [UIs](UIs.md)
+- [Accessing documentation](accessing_documentation.md)
 
-- [Bindings types](binding_types.md)
+- [UIs](UIs.md)
+	- [GUI](UI/GUI.md)
+	- [TUI](UI/TUI.md)
 
 - [Stencils](stencils.md)
 	- [Asciio boxes and text](stencils/asciio_boxes.md)
@@ -25,14 +25,13 @@
 	- [adding your own stencils](stencils/user.md)
 	
 - [Editing](editing.md)
-	
+
 - [Export/Save](exporting.md)
 	- [Asciio format](export/asciio.md)
 	- [text](export/text.md)
 	- [SVG](export/svg.md)
 
 - [Working efficiently](working_efficiently.md)
-
 	- [Grouping](grouping.md)
 
 - [Modes](modes.md)
@@ -46,7 +45,7 @@
 	- [Unicode Example](examples/unicode_example.md)
 	- [Videos](videos/videos.md)
 
-# Bindings
+## Bindings
 
 - [Bindings](Bindings.md)
 	- [Mouse](bindings/mouse.md)
@@ -69,9 +68,14 @@
 		- [«S» Slides group](bindings/slides.md)
 		- [«D» Debug group](bindings/debug.md)
 
-- [Configuration](configuration.md)
+# Configuration
 
-# Reference Guide
+- [Configuration](configuration.md)
+	- [user bindings](config/user_bindings.md)
+
+-----------
+
+# Developer Guide
 
 - [For Developers](for_developers/README.md)
 	- [Scripting](for_developers/scripting.md)

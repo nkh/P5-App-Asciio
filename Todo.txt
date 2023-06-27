@@ -7,6 +7,9 @@ documentation format and structure
 		md
 		#html
 
+	document usage of peek and key-mon
+		https://github.com/phw/peek
+		https://github.com/scottkirkwood/key-mon
 
 text interface
 	vim script

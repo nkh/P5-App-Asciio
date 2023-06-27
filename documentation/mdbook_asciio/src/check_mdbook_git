@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo missing in mdbook:
+./in_git_not_in_mdbook ; exit1=$?
+
+echo missing in git:
+./in_mdbook_not_in_git ; exit2=$?
+
+((exit1 && exit2)) 
+

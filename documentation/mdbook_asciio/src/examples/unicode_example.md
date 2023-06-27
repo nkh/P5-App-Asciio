@@ -8,5 +8,5 @@ The "goat" project (https://github.com/blampe/goat) has been chosen to make the 
 See the "Exporter" section to learn how to write your own.
 
 
-![Unicode](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_unicode.png)
+![Unicode](asciio_unicode.png)
 

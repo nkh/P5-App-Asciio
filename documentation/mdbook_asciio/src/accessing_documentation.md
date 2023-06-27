@@ -1,7 +1,19 @@
 # Accessing documentation
 
-Asciio's documentation is available in multiple formats. This HTML documentation gemnerated by mdbook, a manpage and info pages; they are available from within Asciio.
+Asciio's documentation is available in multiple formats
 
-There's also a bindings list, short help, and a "user" documentation.
+- this HTML documentation, gemnerated by mdbook
+
+- a manpage, available from within Asciio.
+
+- info pages
+
+There's also:
+
+- a bindings list
+
+- a short help
+
+- a "user" defined documentation.
 
 

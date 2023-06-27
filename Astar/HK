@@ -1,0 +1,17 @@
+#!/bin/bash
+
+HK=${1:-2}
+
+for xs in $(seq 1 54)
+	do
+		for ys in $(seq 1 30)
+			do
+			# ys=4 ;
+			xe=28 ; ye=7
+			routing_time=$(script/path_finder -ds --oc 1 $xs.$ys $xe.$ye -ss 1 -ds --json --no_map_display | jq '.routing_time')
+			routing_time_HK=$(script/path_finder -ds --oc 1 $xs.$ys $xe.$ye -ss 1 -ds --json --no_map_display -HK $HK | jq '.routing_time')
+			
+			# echo $routing_time --- $routing_time_HK
+			perl -e 'print $ARGV[0] / $ARGV[1] . "\n"' $routing_time $routing_time_HK
+		done
+	done 

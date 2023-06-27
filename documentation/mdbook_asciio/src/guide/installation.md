@@ -19,6 +19,14 @@ working on the  GTK3 port and you'll need to install manually.
     ./Build install
 ```
 
+# Running asciio
+
+    $> asciio [file.asciio] # GUI application using Gtk3
+
+    $> tasciio [file.asciio] # TUI application
+
+    $> asciio_to_text file.asciio # converts asciio files to ASCII
+
 # Previous version docker image
 
     There are docker images made by third parties, use a search engine for

@@ -84,7 +84,6 @@ Goals when adding bindings:
 	'Change to cross elements'            => ['s'],
 	'Change to normal elements'           => ['S'],
 	},
-
 ```
 
 
