@@ -133,9 +133,16 @@ if(@selected_elements)
 		my $is_selected = $self->is_element_selected($element) ;
 		if($seen_selected && !$is_selected)
 			{
-			if($box_only)
+			if($box_only == 1)
 				{
 				if(ref($element) !~ /arrow/)
+					{
+					$next_element = $element ; last ;
+					}
+				}
+			elsif($box_only == 2)
+				{
+				if(ref($element) =~ /arrow/)
 					{
 					$next_element = $element ; last ;
 					}

@@ -38,6 +38,8 @@ register_action_handlers_remove_old_shortcuts
 	'Select element by id'                                   => [ 'not_set-Select element by id' ],
 	'Select next non arrow'                                  => [ 'C-n' ],
 	'Select previous non arrow'                              => [ '~Select previous non arrow' ],
+	'Select next arrow'                                      => [ 'C-m' ],
+	'Select previous arrow'                                  => [ '~Select previous arrow' ],
 	
 	# sizing
 	'Make element narrower'                                  => [ '1' ],
