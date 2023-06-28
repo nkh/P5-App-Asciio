@@ -22,20 +22,18 @@
 	- [Asciio connectors](stencils/connectors.md)
 	- [Asciio shapes](stencils/asciio_shapes.md)
 	- [verbatim objects](stencils/verbatim.md)
-	- [adding your own stencils](stencils/user.md)
+	- [user stencils](stencils/user.md)
 	
 - [Working efficiently](working_efficiently.md)
-
 	- [Keyboard](editing/keyboard.md)
-
 	- [Mouse](editing/mouse.md)
-
 	- [Grouping](editing/grouping.md)
 
 - [Export/Save](exporting.md)
 	- [Asciio format](export/asciio.md)
 	- [text](export/text.md)
 	- [SVG](export/svg.md)
+	- [Clipboard](export/clipboard.md)
 
 - [Modes](modes.md)
 	- [Git](modes/git.md)
@@ -43,8 +41,8 @@
 	- [Slides](modes/slides.md)
 
 - [Examples](examples.md)
-	- [Example 1](examples/example1.md)
-	- [Example 2](examples/example2.md)
+	- [Class hierarchy](examples/example1.md)
+	- [German railway](examples/example2.md)
 	- [Unicode Example](examples/unicode_example.md)
 	- [Videos](videos/videos.md)
 
@@ -75,6 +73,7 @@
 
 - [Configuration](configuration.md)
 	- [user bindings](config/user_bindings.md)
+	- [user stencils](config/user_stencils.md)
 
 -----------
 

@@ -1,4 +1,14 @@
 # Asciio boxes
+
+## Elements
+
+### body
+
+### connector
+
+### text
+
+## Types
          «B»                Add shrink box
 
          «b»                Add box
@@ -26,7 +36,7 @@
          «t»                Add text
 
    
-## boxes and text
+## Boxes
                     .----------.
                     |  title   |
      .----------.   |----------|   ************
@@ -37,6 +47,15 @@
                                 (\_/)         |
             text                (O.o)  <------'
                                 (> <)
+### auto-shrink
+
+### auto-connection
+
+### border-connection
+
+### rotate box/text
+
+
 
 ## if-box and process-box
 
@@ -46,7 +65,7 @@
       \ 'string' ne '' /      ) process )
        '--------------'      /_________/
 
-### user boxes and exec-boxes
+## exec-boxes
 
 For simple elements, put your design in a box, with or without a frame.
 

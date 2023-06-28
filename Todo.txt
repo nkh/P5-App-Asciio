@@ -11,6 +11,21 @@ documentation format and structure
 		https://github.com/phw/peek
 		https://github.com/scottkirkwood/key-mon
 
+geo-selection
+	selecting without tab is slow if there are many components
+	movement with emulated cursors are slow
+	select based on location
+		enter geo-location
+			remove currently selected from candidates
+			chose a direction, up/down/left/right
+			remove half of the elements
+			select a middle object in the remaining objects
+				and select it
+			loop until found or none left
+
+		in case of error, reset everything and restart
+
+
 text interface
 	vim script
 		open file under cursor

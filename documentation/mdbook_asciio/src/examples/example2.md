@@ -1,35 +1,54 @@
-# example 2
+# German railroad
+
+*Graph-Easy* is an application that generates graphs in ASCII, a bit like GraphViz.
+
+[![Graph-Easy](https://github-readme-stats.vercel.app/api/pin/?username=ironcamel&repo=Graph-Easy)](https://github.com/ironcamel/Graph-Easy)
+
 
 ```
-       ╭───────────────────────────────────────────────────────╮
-       │ 中文韩文和unicode符号支持以及全新的菱形元素           │
-       │ Chinese Korean and unicode symbols and rhombus object │
-       ╰───────────────────────────────────────────────────────╯
-                            ,',
-                          ,'   ',
-                        ,'       ',
-              ╭────────:           :───────────╮
-              │         ',       ,'            │
-              │           ',   ,'              │
-              │             ','                │
-              │              │                 v
-              v              v              ⎛     ⎞
-            ┌───┐          ╭───╮            ⎜     ⎟
-            │   │          │   │            ⎜     ⎟
-            └───┘          ╰───╯            ⎝     ⎠
-
-            ┌──────────────┐          ┌──────────────┐
-            │ 主机1(host1) │          │ 主机2(host2) │
-            └──────────────┘          └──────────────┘
-              ^   ^                           ^   ^
-              │   │                           │   │
-              │   ╰───────────────────────╮   │   │
-              │                           │   │   │
-              │       ╭───────────────────│───╯   │
-              │       │                   │       │
-        PCIEx4│ PCIEx4│            PCIEx4 │ PCIEx4│
-            ┌─────────────┐           ┌─────────────┐
-            │ HBA card1   │           │ HBA card2   │
-            └─────────────┘           └─────────────┘
+               ..................................
+               :                                v
++------+     +--------+     .............     +---------+     +---------+
+| Bonn | --> | Berlin | --> :           : --> | Potsdam | ==> | Cottbus |
++------+     +--------+     :           :     +---------+     +---------+
+               ^            :           :                       ^
+               |            : Frankfurt :                       |
+               |            :           :                       |
+             +--------+     :           :     +---------+       |
+             |   x    | --> :           : <-- |    y    | ------+
+             +--------+     :...........:     +---------+
+                              |
+                              |
+                              v
+                            +-----------+
+                            |  Dresden  |
+                            +-----------+
 ```
+
+I re-drew the example above in Asciio.
+
+```
+
+                 .------------------------------.
+                 |                              |
+                 |                              v
+.------.    .--------.    .-----------.    .---------.  .---------.
+| Bonn |-.->| Berlin |-.->| Frankfurt |-.->| Potsdam |->| Cottbus |
+'------' |  '--------' |  '-----------' |  '---------'  '---------'
+         |             |                |                    ^
+       .---.           |                |  .---------.       |
+       | x |-----------'                '->| Dresden |       |
+       '---'           |                   '---------'       |
+       .---.           |                                     |
+       | y |-----------'-------------------------------------'
+       '---'
+
+```
+
+There are few interesting things to notice:
+
+- Graph-Easy smartly changes the size of the boxes to accommodate more connections
+- Asciio doesn't have a routing functionality for graph, it would be a nice addition
+- Asciio has 4 connectors per box (but you can get around it)
+
 

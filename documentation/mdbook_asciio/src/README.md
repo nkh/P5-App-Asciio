@@ -1,3 +1,4 @@
+```
          ___                               .-------.
         /   |  __________________          | Tokyo |
        / /| | / ___/ ___/ / / __ \         '-------'   .-----------.
@@ -15,10 +16,11 @@
                                   .--------.
                                   | Moscow |
                                   '--------'
+```
 
 Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams can be saved as ASCII text or in a format that allows you to modify them later.
 
-Diagrams consist of boxes and text elements connected by arrows. Boxes stay connected when you move them around.
+Diagrams consist of boxes and text elements connected by arrows. The elements stay connected when you move them around.
 
 Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.
 
