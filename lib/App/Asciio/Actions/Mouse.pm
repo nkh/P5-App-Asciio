@@ -376,7 +376,7 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 else
 	{
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) 
+	($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 	}
 }
 

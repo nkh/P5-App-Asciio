@@ -51,8 +51,7 @@ register_action_handlers
 'Select elements by search words'             => ['C00-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words ],
 'Switch cross mode'                           => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
-'add cross ascii line'                        => ['C0S-button-press-1',                     \&App::Asciio::Actions::Elements::create_line, [0, 1]                                  ], 
-'add cross unicode line 1'                    => ['C0S-button-press-3',                     \&App::Asciio::Actions::Elements::create_line, [1, 1]                                  ],
+
 'switch gtk popup box type'                   => ['C0S-T',                                  \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type,                            ], 
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
@@ -248,10 +247,10 @@ register_action_handlers
 	'create code box'                     => ['C00-c', \&App::Asciio::Actions::Unsorted::create_code_box, 1                                      ],
 	'create code box no frame'            => ['0A0-c', \&App::Asciio::Actions::Unsorted::create_code_box, 0                                      ],
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                           ],
-	'add ascii line'                      => ['CA0-i', \&App::Asciio::Actions::Elements::create_line, [0, 0]                                     ], 
-	'add unicode line 1'                  => ['C0S-i', \&App::Asciio::Actions::Elements::create_line, [1, 0]                                     ],
-	'add unicode line 2'                  => ['C00-i', \&App::Asciio::Actions::Elements::create_line, [2, 0]                                     ],
-	'add unicode line 3'                  => ['0A0-i', \&App::Asciio::Actions::Elements::create_line, [3, 0]                                     ],
+	'Add ascii line'                      => ['000-w', \&App::Asciio::Actions::Elements::create_line, [0, 0]                                     ], 
+	'Add unicode line'                    => ['00S-W', \&App::Asciio::Actions::Elements::create_line, [1, 0]                                     ],
+	'Add unicode bold line'               => ['C00-w', \&App::Asciio::Actions::Elements::create_line, [2, 0]                                     ],
+	'Add unicode double line'             => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, [3, 0]                                     ],
 	},
 
 'Cross element Insert leader' => 
@@ -263,8 +262,10 @@ register_action_handlers
 	'Add cross arrow'                     => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/wirl_arrow', 0]          ],
 	'Add cross angled arrow'              => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/angled_arrow', 0]        ],
 	
-	'add cross unicode line 2'            => ['000-i', \&App::Asciio::Actions::Elements::create_line, [2, 1]                                               ],
-	'add cross unicode line 3'            => ['C00-i', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                               ],
+	'add cross ascii line'                => ['000-w', \&App::Asciio::Actions::Elements::create_line, [0, 1]                                  ], 
+	'add cross unicode line'              => ['00S-W', \&App::Asciio::Actions::Elements::create_line, [1, 1]                                  ],
+	'Add cross unicode bold line'         => ['C00-w', \&App::Asciio::Actions::Elements::create_line, [2, 1]                                  ],
+	'Add cross unicode double line'       => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                  ],
 	
 	'Select cross elements'               => ['000-c', \&App::Asciio::Actions::ElementsManipulation::select_cross_elements_from_selected_elements               ],
 	'Select cross filler elements'        => ['000-f', \&App::Asciio::Actions::ElementsManipulation::select_cross_filler_elements_from_selected_elements        ],
