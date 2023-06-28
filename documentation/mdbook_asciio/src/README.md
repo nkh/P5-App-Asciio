@@ -31,7 +31,7 @@ I've used it a lot to draw trees and graphs when my hand drawn pictures were goo
 
 ## History
 
-Asciio is born in Oslo ... as a dare; someone coined a cool name and it's been under development for 20 years. It proved to very useful for embedding graphs in code, documentation, requirements, ... 
+Asciio was born ... as a dare; someone coined a cool name at a conference in Oslo it's been under development for 20 years. It proved to very useful for embedding graphs in code, documentation, requirements, ... 
 
 
 ```

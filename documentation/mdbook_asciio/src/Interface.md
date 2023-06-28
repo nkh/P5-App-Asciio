@@ -1,18 +1,19 @@
 # Interface
 
-Asciio input can be done by mouse and keyboard, both are defined in a configuration files that you can change. 
+Asciio input is from mouse and keyboard bindings, they are defined in a configuration files that you can change. 
 
-minimal interface 
+Asciio's interface is minimal by design.
 
-- keyboard bindings
-- mouse binidings
-- popup menus
+## keyboard bindings
 
-The bindings more vim-like and which make the many bindings much easier to remember.
+This is the preferred method, and the fastest. The bindings are vim-like and which make the many bindings much easier to remember. See the *Bindings* section
 
-You can do a lot of thing with just the mouse and the popup menus but that would be a mistake, keyboard bindings are much faster and more efficient, including moving elements around.
+## mouse binidings
 
-The mouse shines when quick-linking elements, they allow you to create a base diagram fast but editing and fine tuning goes faster with the keyboard or keyboard + mouse.
+Although work can mostly be done  using the keyboard, the mouse is still useful in some ccases (selecting in a TUI is difficult) and it even shines when creating new diagrams. See *Working efficiently*
 
-Learn the keyboard bindings they are a very good way to use Asciio.
+## popup menus
+
+My least favorite way of using Asciio, it's slow and cumbersome for most actions. I try to reduce the amount of menu and sub menus.
+
 
