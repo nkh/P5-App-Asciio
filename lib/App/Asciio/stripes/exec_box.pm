@@ -51,6 +51,9 @@ App::Asciio::stripes::editable_box2::setup
 	$element_definition->{AUTO_SHRINK},
 	) ;
 
+$self->{RUN_VERBATIM} = $element_definition->{RUN_VERBATIM} // 0 ; 
+$self->{VERBATIM_COMMAND} = $element_definition->{VERBATIM_COMMAND} // '' ; 
+
 return $self ;
 }
 
@@ -65,7 +68,17 @@ my $output = 'command failed' ;
 
 if(defined $command && $command ne '')
 	{
-	(my $command_stderr_redirected = $command) =~ s/$/ 2>&1/gsm ;
+	my $command_stderr_redirected ;
+	
+	if($self->{RUN_VERBATIM})
+		{
+		$command_stderr_redirected = $command ;
+		}
+	else
+		{
+		($command_stderr_redirected = $command) =~ s/$/ 2>&1/gsm ;
+		}
+	
 	$output = `$command_stderr_redirected` ;
 	
 	if($?)
@@ -107,7 +120,7 @@ return unless $self->{EDITABLE} ;
 
 my $text = $self->{TEXT_ONLY} ;
 
-($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $self->{COMMAND} // '', $asciio) ;
+($text, my $title) = $self->display_box_edit_dialog($self->{TITLE}, $self->{COMMAND} // $self->{VERBATIM_COMMAND} // '', $asciio) ;
 
 my $tab_as_space = $asciio->{TAB_AS_SPACES} ;
 

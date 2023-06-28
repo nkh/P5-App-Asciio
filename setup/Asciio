@@ -213,6 +213,27 @@ create_element
 
 create_element
 	(
+	NAME => 'Boxes/exec verbatim',
+	CLASS => 'App::Asciio::stripes::exec_box',
+	TEXT_ONLY => '$',
+	EDITABLE => 1,
+	NO_BORDER => 1,
+	RUN_VERBATIM => 1,
+	) ,
+
+create_element
+	(
+	NAME => 'Boxes/exec add lines',
+	CLASS => 'App::Asciio::stripes::exec_box',
+	TEXT_ONLY => '$',
+	EDITABLE => 1,
+	NO_BORDER => 1,
+	RUN_VERBATIM => 1,
+	VERBATIM_COMMAND => "nl -n ln -w 2 -s' ' 2>&1 "
+	) ,
+
+create_element
+	(
 	NAME => 'Shape/triangle/down',
 	CLASS => 'App::Asciio::stripes::triangle_down',
 	RESIZABLE => 1,
