@@ -40,6 +40,9 @@ register_action_handlers
 'Select previous element'                     => [['00S-ISO_Left_Tab', '00S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0]    ],
 'Select next non arrow'                       => [['C00-Tab', 'C00-n'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 1] ],
 'Select previous non arrow'                   => [['C0S-ISO_Left_Tab', 'C0S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 1] ],
+'Select next arrow'                           => [['CA0-Tab', 'C00-m'],                              \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 2] ],
+'Select previous arrow'                       => [['CAS-ISO_Left_Tab', 'C0S-M'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 2] ],
+
 'Select element by id'                        => ['0A0-Tab',                                \&App::Asciio::Actions::ElementsManipulation::select_element_by_id                ],
 
 'Select all elements'                         => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementsManipulation::select_all_elements                 ],
