@@ -92,9 +92,12 @@ my ($self, $title) = @_;
 
 $self->SUPER::set_title($title) ;
 
+my $cross_mode_title = '' ;
+$cross_mode_title = ' - cross_mode:on' if($self->{CROSS_MODE}) ;
+
 if(defined $title)
 	{
-	$self->{widget}->get_toplevel()->set_title($title . ' - asciio') ;
+	$self->{widget}->get_toplevel()->set_title($title . ' - asciio' . $cross_mode_title) ;
 	}
 }
 
@@ -112,7 +115,7 @@ $self->SUPER::set_font($font_family, $font_size) ;
 sub switch_gtk_popup_box_type
 {
 my ($self) = @_ ;
-$self->{GTK_POPUP_BOX_TYPE} ^= 1 ;
+$self->{EDIT_TEXT_INLINE} ^= 1 ;
 }
 
 #-----------------------------------------------------------------------------
@@ -191,7 +194,24 @@ for my $element (@{$self->{ELEMENTS}})
 	$is_selected = 1 if $is_selected > 0 ;
 	
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
-	
+
+	# cross elements and fillers backgroud colors
+	if(defined $element->{CROSS_ENUM})
+		{
+			if($element->{CROSS_ENUM} == 1)
+				{
+				$background_color = $self->get_color('normal_filler_background');
+				}
+			elsif($element->{CROSS_ENUM} == 2)
+				{
+				$background_color = $self->get_color('cross_filler_background');
+				}
+			elsif($element->{CROSS_ENUM} == 3)
+				{
+				$background_color = $self->get_color('cross_element_backgroud');
+				}
+		}
+
 	if($is_selected)
 		{
 		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])

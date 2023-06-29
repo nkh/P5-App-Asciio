@@ -168,6 +168,23 @@ for my $element (@{$self->{ELEMENTS}})
 	$is_selected = 1 if $is_selected > 0 ;
 	
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
+
+	# cross elements and fillers backgroud colors
+	if(defined $element->{CROSS_ENUM})
+		{
+			if($element->{CROSS_ENUM} == 1)
+				{
+				$background_color = $self->get_color('normal_filler_background');
+				}
+			elsif($element->{CROSS_ENUM} == 2)
+				{
+				$background_color = $self->get_color('cross_filler_background');
+				}
+			elsif($element->{CROSS_ENUM} == 3)
+				{
+				$background_color = $self->get_color('cross_element_backgroud');
+				}
+		}
 	
 	if($is_selected)
 		{
