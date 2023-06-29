@@ -10,7 +10,7 @@ CANVAS_HEIGHT => 4000,
 
 CROSS_MODE => 0,
 MARKUP_MODE => 0,
-GTK_POPUP_BOX_TYPE => 0,
+EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 
 DOUBLE_WIDTH_QR => qr/
@@ -61,6 +61,9 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
+		cross_element_backgroud => [0.15, 0.25, 0.15],
+		cross_filler_background => [0.13, 0.37, 0.13],
+		normal_filler_background => [0.12, 0.07, 0.12],
 		}, 
 	'system' =>
 		{
@@ -90,6 +93,9 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
+		cross_element_backgroud => [0.93, 0.93, 0.88],
+		cross_filler_background => [0.83, 0.83, 0.78],
+		normal_filler_background => [1.00, 0.88, 1.00],
 		} 
 	},
 

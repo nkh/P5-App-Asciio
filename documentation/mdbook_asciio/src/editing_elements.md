@@ -36,4 +36,10 @@ Binding: «zi»
 
 ## Setting the editing mode in the user configuration
 
-tbd: once variable name is changed
+```perl
+EDIT_TEXT_INLINE => 0,
+```
+- `EDIT_TEXT_INLINE => 0` Indicates that the default editing mode is `Dialog editing`
+- `EDIT_TEXT_INLINE => 1` Indicates that the default editing mode is `Inline editing`
+ 
+

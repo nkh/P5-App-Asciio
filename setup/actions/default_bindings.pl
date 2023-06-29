@@ -269,9 +269,9 @@ register_action_handlers
 	'Add cross unicode double line'       => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                  ],
 	
 	'Select cross elements'               => ['000-c', \&App::Asciio::Actions::ElementsManipulation::select_cross_elements_from_selected_elements               ],
-	'Select cross filler elements'        => ['000-f', \&App::Asciio::Actions::ElementsManipulation::select_cross_filler_elements_from_selected_elements        ],
+	'Select cross fillers'                => ['000-f', \&App::Asciio::Actions::ElementsManipulation::select_cross_filler_elements_from_selected_elements        ],
 	'Select normal elements'              => ['000-n', \&App::Asciio::Actions::ElementsManipulation::select_normal_elements_from_selected_elements              ],
-	'Select normal filler elements'       => ['0A0-f', \&App::Asciio::Actions::ElementsManipulation::select_normal_filler_elements_from_selected_elements       ],
+	'Select normal fillers'               => ['0A0-f', \&App::Asciio::Actions::ElementsManipulation::select_normal_filler_elements_from_selected_elements       ],
 	
 	'change to cross elements'            => ['C00-c', \&App::Asciio::Actions::ElementsManipulation::switch_to_cross_elements_from_selected_elements            ],
 	'change to normal elements'           => ['C00-n', \&App::Asciio::Actions::ElementsManipulation::switch_to_normal_elements_from_selected_elements           ],

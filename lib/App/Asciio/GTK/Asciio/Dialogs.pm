@@ -208,7 +208,7 @@ $self->response(1) ;
 sub display_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
-if(($asciio->{GTK_POPUP_BOX_TYPE} != 0) && (defined $X) && (defined $Y))
+if(($asciio->{EDIT_TEXT_INLINE} != 0) && (defined $X) && (defined $Y))
 	{
 	return $self->display_edit_dialog_for_mini_edit_mode($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) ;
 	}

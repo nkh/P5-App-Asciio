@@ -15,6 +15,7 @@ use List::MoreUtils qw(any minmax first_value) ;
 use App::Asciio::Setup ;
 use App::Asciio::Dialogs ;
 use App::Asciio::Elements ;
+use App::Asciio::Cross ;
 use App::Asciio::Menues ;
 use App::Asciio::Actions ;
 use App::Asciio::Undo ;
@@ -723,7 +724,7 @@ sub update_display
 {
 my ($self) = @_;
 
-$self->add_cross_elements() if ($self->{CROSS_MODE} != 0) ;
+$self->add_cross_fillers() if ($self->{CROSS_MODE} != 0) ;
 
 $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
 }

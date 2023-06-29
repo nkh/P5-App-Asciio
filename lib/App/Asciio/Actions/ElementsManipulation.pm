@@ -15,7 +15,7 @@ my @selected_elements = $self->get_selected_elements(1) ;
 
 if(@selected_elements == 1)
 	{
-	$self->{GTK_POPUP_BOX_TYPE} ^= 1 if $alternate_mode ;
+	$self->{EDIT_TEXT_INLINE} ^= 1 if $alternate_mode ;
 	
 	$self->create_undo_snapshot() ;
 	$self->edit_element($selected_elements[0]) ;
@@ -24,9 +24,9 @@ if(@selected_elements == 1)
 	
 	# In gtk3's minimalist input mode, mouse clicks will cause elements to move, 
 	# and this phenomenon is prevented by consuming semaphores
-	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{GTK_POPUP_BOX_TYPE}) && ($self->{GTK_POPUP_BOX_TYPE} != 0)) ;
+	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{EDIT_TEXT_INLINE}) && ($self->{EDIT_TEXT_INLINE} != 0)) ;
 	
-	$self->{GTK_POPUP_BOX_TYPE} ^= 1 if $alternate_mode ;
+	$self->{EDIT_TEXT_INLINE} ^= 1 if $alternate_mode ;
 	
 	$self->update_display();
 	}

@@ -16,6 +16,7 @@ lib/App/Asciio/Ascii.pm
 lib/App/Asciio/Connections.pm
 lib/App/Asciio/Dialogs.pm
 lib/App/Asciio/Elements.pm
+lib/App/Asciio/Cross.pm
 lib/App/Asciio/Io.pm
 lib/App/Asciio/Menues.pm
 lib/App/Asciio/Setup.pm
