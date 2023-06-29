@@ -25,6 +25,9 @@ geo-selection
 
 		in case of error, reset everything and restart
 
+		can we achieve he same result without state?
+			no entering geo-state
+			no list of not matching currently selected
 
 text interface
 	vim script

@@ -53,6 +53,7 @@ App::Asciio::stripes::editable_box2::setup
 
 $self->{RUN_VERBATIM} = $element_definition->{RUN_VERBATIM} // 0 ; 
 $self->{VERBATIM_COMMAND} = $element_definition->{VERBATIM_COMMAND} // '' ; 
+$self->{RUN_ONCE} = $element_definition->{RUN_ONCE} // 0 ; 
 
 return $self ;
 }
@@ -66,35 +67,50 @@ my ($self, $asciio, $title, $text) = @_ ;
 my $command = $self->{COMMAND} = $text ;
 my $output = 'command failed' ;
 
-if(defined $command && $command ne '')
+if($self->{RUN_DONE})
 	{
-	my $command_stderr_redirected ;
-	
-	if($self->{RUN_VERBATIM})
-		{
-		$command_stderr_redirected = $command ;
-		}
-	else
-		{
-		($command_stderr_redirected = $command) =~ s/$/ 2>&1/gsm ;
-		}
-	
-	$output = `$command_stderr_redirected` ;
-	
-	if($?)
-		{
-		$output = '' unless defined $output ;
-		$output = "Can't execute '$command':\noutput:\n$output\nerror:\n$! [$?]" ;
-		}
+	$output = $text ;
 	}
 else
 	{
-	$output = 'no command' ;
+	if(defined $command && $command ne '')
+		{
+		my $command_stderr_redirected ;
+		
+		if($self->{RUN_VERBATIM})
+			{
+			$command_stderr_redirected = $command ;
+			}
+		else
+			{
+			($command_stderr_redirected = $command) =~ s/$/ 2>&1/gsm ;
+			}
+		
+		$output = `timeout 2 $command_stderr_redirected` ;
+		
+		if($?)
+			{
+			$output = '' unless defined $output ;
+			$output = "Can't execute '$command':\noutput:\n$output\nerror:\n$! [$?]" ;
+			}
+		else
+			{
+			if($self->{RUN_ONCE})
+				{
+				$self->{RUN_DONE}++ ;
+				$self->{COMMAND} = $output ;
+				}
+			}
+		}
+	else
+		{
+		$output = 'no command' ;
+		}
+	
+	$output = decode("utf-8", $output) ;
+	$output =~ s/\r//g;
+	$output =~ s/\t/$asciio->{TAB_AS_SPACES}/g;
 	}
-
-$output = decode("utf-8", $output) ;
-$output =~ s/\r//g;
-$output =~ s/\t/$asciio->{TAB_AS_SPACES}/g;
 
 App::Asciio::stripes::editable_box2::setup
 	(

@@ -187,7 +187,8 @@ create_element
 
 create_element
 	(
-	NAME => 'Boxes/exec',
+	NAME => 'Cross/exec box',
+	CROSS_ENUM => 3,
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '',
 	EDITABLE => 1,
@@ -195,8 +196,7 @@ create_element
 
 create_element
 	(
-	NAME => 'Cross/exec box',
-	CROSS_ENUM => 3,
+	NAME => 'Boxes/exec',
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '',
 	EDITABLE => 1,
@@ -217,8 +217,19 @@ create_element
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '$',
 	EDITABLE => 1,
-	NO_BORDER => 1,
+	# NO_BORDER => 1,
 	RUN_VERBATIM => 1,
+	) ,
+
+create_element
+	(
+	NAME => 'Boxes/exec verbatim once',
+	CLASS => 'App::Asciio::stripes::exec_box',
+	TEXT_ONLY => '$',
+	EDITABLE => 1,
+	# NO_BORDER => 1,
+	RUN_VERBATIM => 1,
+	RUN_ONCE => 1,
 	) ,
 
 create_element
@@ -227,9 +238,9 @@ create_element
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '$',
 	EDITABLE => 1,
-	NO_BORDER => 1,
+	# NO_BORDER => 1,
 	RUN_VERBATIM => 1,
-	VERBATIM_COMMAND => "nl -n ln -w 2 -s' ' 2>&1 "
+	VERBATIM_COMMAND => "nl -n ln -b a -w 2 -s' ' 2>&1 <<EOT"
 	) ,
 
 create_element

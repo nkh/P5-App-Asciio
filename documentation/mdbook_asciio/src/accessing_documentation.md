@@ -15,5 +15,7 @@ There's also:
 - a short help
 
 - a "user" defined documentation.
+         «h»                Add help box
+
 
 
