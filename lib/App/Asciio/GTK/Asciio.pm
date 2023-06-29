@@ -231,7 +231,6 @@ for my $element (@{$self->{ELEMENTS}})
 		my @renderings ;
 		
 		my $stripes = $element->get_stripes() ;
-		# $self->update_quadrants($element) ;
 		
 		for my $strip (@{$stripes})
 			{
@@ -427,7 +426,7 @@ unless (defined $self->{CACHE}{EXTRA_POINT})
 	my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height);
 	
 	my $gc = Cairo::Context->create($surface);
-	$gc->set_line_width(1);
+	$gc->set_line_width(2);
 	$gc->set_source_rgb(@{$self->get_color('extra_point')});
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
@@ -454,6 +453,7 @@ for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUS
 	
 	for my $connection_point ($element->get_connection_points())
 		{
+		next if $element->{AUTOCONNECT_DISABLED} ;
 		next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
 		
 		$gc->set_source_surface
@@ -466,17 +466,20 @@ for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUS
 		$gc->paint;
 		}
 	
-	for my $extra_point ($element->get_extra_points())
-		{
-		$gc->set_source_surface
-			(
-			$extra_point_rendering,
-			(($extra_point->{X}  + $element->{X}) * $character_width), # can be additions
-			(($extra_point->{Y}  + $element->{Y}) * $character_height),
-			);
-		
-		$gc->paint;
-		}
+	unless(defined $self->{DRAGGING})
+	{
+		for my $extra_point ($element->get_extra_points())
+			{
+			$gc->set_source_surface
+				(
+				$extra_point_rendering,
+				(($extra_point->{X}  + $element->{X}) * $character_width), # can be additions
+				(($extra_point->{Y}  + $element->{Y}) * $character_height),
+				);
+			
+			$gc->paint;
+			}
+	}
 	
 	$gc->show_page;
 	}
