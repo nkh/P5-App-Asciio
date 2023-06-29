@@ -19,7 +19,7 @@ my $rows = $self->{ARROW_TYPE} ;
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new('Arrow attributes', $window, 'destroy-with-parent')  ;
-$dialog->set_default_size(450, 505);
+$dialog->set_default_size(450, 350);
 $dialog->add_button('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new (FALSE, 5);

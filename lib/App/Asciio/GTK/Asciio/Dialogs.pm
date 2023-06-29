@@ -231,7 +231,7 @@ my $window = new Gtk3::Window() ;
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
 $dialog->set_position("mouse");
 $dialog->set_border_width(0);
-$dialog->set_default_size (300, 150);
+$dialog->set_default_size (500, 400);
 $dialog->add_button ('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new(FALSE, 5) ;

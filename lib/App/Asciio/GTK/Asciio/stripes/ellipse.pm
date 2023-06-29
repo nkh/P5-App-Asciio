@@ -66,13 +66,14 @@ my $rows = $self->{BOX_TYPE} ;
 
 my $window = new Gtk3::Window() ;
 
-my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')  ;
+my $dialog = Gtk3::Dialog->new('Ellipse attributes', $window, 'destroy-with-parent')  ;
 $dialog->set_position("mouse");
 $dialog->set_border_width(0);
 $dialog->set_default_size(450, 605);
 $dialog->add_button('gtk-ok' => 'ok');
 
-my $vbox = Gtk3::VBox->new(FALSE, 5);
+my $vbox = Gtk3::Box->new( 'vertical', 8 );
+# my $vbox = Gtk3::VBox->new(FALSE, 5);
 $vbox->add(Gtk3::Label->new (""));
 
 my $treeview = Gtk3::TreeView->new_with_model(create_model_for_ellipse($rows));
@@ -143,7 +144,7 @@ my ($v_value, $h_value) = ($asciio->{sc_window}->get_vadjustment()->get_value(),
 
 my $window = new Gtk3::Window() ;
 
-my $dialog = Gtk3::Dialog->new('Box attributes', $window, 'destroy-with-parent')  ;
+my $dialog = Gtk3::Dialog->new('Ellips attributes', $window, 'destroy-with-parent')  ;
 $dialog->set_default_size($text_width, $text_heigh);
 $dialog->set_border_width(0);
 $dialog->set_decorated(0);
