@@ -112,20 +112,8 @@ $self->SUPER::set_font($font_family, $font_size) ;
 sub switch_gtk_popup_box_type
 {
 my ($self) = @_ ;
-
-# 0: full mode 1: minimalist mode with title
-if((! defined $self->{GTK_POPUP_BOX_TYPE}) || ($self->{GTK_POPUP_BOX_TYPE} == 1))
-	{
-	$self->{GTK_POPUP_BOX_TYPE} = 0 ;
-	print("gtk popup box type enter full edit mode\n");
-	}
-else
-	{
-	$self->{GTK_POPUP_BOX_TYPE} = 1 ;
-	print("gtk popup box type enter minimalist edit mode, ESC or click to close dianogal\n");
-	}
+$self->{GTK_POPUP_BOX_TYPE} ^= 1 ;
 }
-
 
 #-----------------------------------------------------------------------------
 

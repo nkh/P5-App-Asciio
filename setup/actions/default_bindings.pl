@@ -40,8 +40,8 @@ register_action_handlers
 'Select previous element'                     => [['00S-ISO_Left_Tab', '00S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0]    ],
 'Select next non arrow'                       => [['C00-Tab', 'C00-n'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 1] ],
 'Select previous non arrow'                   => [['C0S-ISO_Left_Tab', 'C0S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 1] ],
-'Select next arrow'                           => [['CA0-Tab', 'C00-m'],                              \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 2] ],
-'Select previous arrow'                       => [['CAS-ISO_Left_Tab', 'C0S-M'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 2] ],
+'Select next arrow'                           => [['CA0-Tab', 'C00-m'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 2] ],
+'Select previous arrow'                       => [['CAS-ISO_Left_Tab', 'C0S-M'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 2] ],
 
 'Select element by id'                        => ['0A0-Tab',                                \&App::Asciio::Actions::ElementsManipulation::select_element_by_id                ],
 
@@ -52,10 +52,10 @@ register_action_handlers
 'Switch cross mode'                           => ['0A0-s',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode            ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
 
-'switch gtk popup box type'                   => ['C0S-T',                                  \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type,                            ], 
-
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
-'Edit selected element'                       => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element     ],
+
+'Edit selected element'                       => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element               ],
+'Edit selected element inline'                => [['C00-2button-press-1','C00-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element, [1]          ],
 
 'Move selected elements left'                 => ['000-Left',                               \&App::Asciio::Actions::ElementsManipulation::move_selection_left                 ],
 'Move selected elements right'                => ['000-Right',                              \&App::Asciio::Actions::ElementsManipulation::move_selection_right                ],
@@ -168,6 +168,7 @@ register_action_handlers
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements  ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display     ],
 	'Change font'                         => ['000-f', \&App::Asciio::Actions::Unsorted::change_font           ],
+	'Edit inline'                         => ['000-i', \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type,  ], 
 	},
 
 'arrow leader' => 

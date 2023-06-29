@@ -18,7 +18,7 @@
 
 - [Stencils](stencils.md)
 	- [Asciio boxes and text](stencils/asciio_boxes.md)
-		- [Asciio f and process](stencils/asciio_if_and_process.md)
+		- [Asciio if and process](stencils/asciio_if_and_process.md)
 		- [Asciio exec-box](stencils/asciio_exec_box.md)
 	- [Asciio arrows](stencils/asciio_arrows.md)
 	- [Asciio connectors](stencils/connectors.md)
@@ -26,6 +26,8 @@
 	- [verbatim objects](stencils/verbatim.md)
 	- [user stencils](stencils/user.md)
 	
+- [Editing elements text and attributes](editing_elements.md)
+
 - [Working efficiently](working_efficiently.md)
 	- [Keyboard](editing/keyboard.md)
 	- [Mouse](editing/mouse.md)
