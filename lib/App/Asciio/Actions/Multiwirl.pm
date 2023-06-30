@@ -6,6 +6,7 @@ use warnings ;
 use utf8 ;
 
 use Clone ;
+use App::Asciio::Toolfunc ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -521,9 +522,9 @@ if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 		],
 		[ '/arrow type/dash',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_dash', } ] ,
 		[ '/arrow type/unicode',          \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_unicode', } ] ,
-		[ '/git mode arrow type/dash',    \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_ENUM => 0 } ] ,
-		[ '/git mode arrow type/dash cross',\&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_ENUM => 3 } ] ,
-		[ '/git mode arrow type/unicode', \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_unicode', CROSS_ENUM => 0 } ] ;
+		[ '/git mode arrow type/dash',    \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_ENUM => ENUM_NORMAL_ELEMENT } ] ,
+		[ '/git mode arrow type/dash cross',\&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_ENUM => ENUM_CROSS_ELEMENT } ] ,
+		[ '/git mode arrow type/unicode', \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_unicode', CROSS_ENUM => ENUM_NORMAL_ELEMENT } ] ;
 
 	}
 

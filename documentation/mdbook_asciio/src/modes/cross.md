@@ -41,6 +41,10 @@ Add this line in your user configuration.
 CROSS_MODE => 1,
 ```
 
+In the GUI, open the file and enable cross mode, the cross mode title will be displayed at the top
+
+![cross_mode_title_bar_gui](cross_mode_title_bar_gui.png)
+
 ### Dynamically
 
 Binding: «Alt-x» 'Switch cross mode'

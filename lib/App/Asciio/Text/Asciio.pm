@@ -172,15 +172,15 @@ for my $element (@{$self->{ELEMENTS}})
 	# cross elements and fillers backgroud colors
 	if(defined $element->{CROSS_ENUM})
 		{
-			if($element->{CROSS_ENUM} == 1)
+			if($element->{CROSS_ENUM} == ENUM_NORMAL_FILLER)
 				{
 				$background_color = $self->get_color('normal_filler_background');
 				}
-			elsif($element->{CROSS_ENUM} == 2)
+			elsif($element->{CROSS_ENUM} == ENUM_CROSS_FILLER)
 				{
 				$background_color = $self->get_color('cross_filler_background');
 				}
-			elsif($element->{CROSS_ENUM} == 3)
+			elsif($element->{CROSS_ENUM} == ENUM_CROSS_ELEMENT)
 				{
 				$background_color = $self->get_color('cross_element_backgroud');
 				}
