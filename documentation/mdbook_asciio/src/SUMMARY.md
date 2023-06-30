@@ -55,6 +55,7 @@
 
 - [Bindings](Bindings.md)
 	- [Mouse](bindings/mouse.md)
+	- [Why vim-like bindings](bindings/vim-like.md)
 	
 	- [Single key](bindings/single_key.md)
 		- [GUI bindings](bindings/gui.md)
