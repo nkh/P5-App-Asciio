@@ -33,6 +33,7 @@
 	- [Keyboard](editing/keyboard.md)
 	- [Mouse](editing/mouse.md)
 	- [Grouping](editing/grouping.md)
+	- [Strip groups](editing/strip-groups.md)
 
 - [Export/Save](exporting.md)
 	- [Asciio format](export/asciio.md)

@@ -35,4 +35,6 @@ working on the  GTK3 port and you'll need to install manually.
     example image:
     https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb
 
+# Platforms
 
+Asciio is developed on both Linux and Windows (cygwin).
