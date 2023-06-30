@@ -30,10 +30,24 @@ for my $action (@actions)
 	if(exists $self->{CURRENT_ACTIONS}{$action})
 		{
 		my $is_group = $self->{CURRENT_ACTIONS}{$action}{IS_GROUP} ;
+		my $in_capture = defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY} ;
+		
+		my $group_tag = $is_group ? defined $self->{CURRENT_ACTIONS}{$action}{ESCAPE_KEY}
+						? "[C] "
+						: "[G] "
+					  : '' ;
+		
+		my $capture_tag = $in_capture ? "[$self->{CURRENT_ACTIONS}{NAME}] " : '' ;
 		
 		$self->{ACTION_VERBOSE}->
 			(
-			sprintf "%-20s %-40s [%s]", "${modifiers}$action_key", $self->{CURRENT_ACTIONS}{$action}{NAME}, $self->{CURRENT_ACTIONS}{$action}{ORIGIN}
+			sprintf
+				(
+				"%-30s %-30s [%s]",
+				"${modifiers}$action_key $group_tag$capture_tag",
+				$self->{CURRENT_ACTIONS}{$action}{NAME},
+				$self->{CURRENT_ACTIONS}{$action}{ORIGIN}
+				)
 			) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion' ;
 		
 		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
@@ -56,13 +70,30 @@ for my $action (@actions)
 				] ;
 			}
 		
-		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group ;
+		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture ;
 		}
 	else
 		{
-		$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-20s\e[m", "${modifiers}$action_key") if $self->{ACTION_VERBOSE} ; 
+		if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
+			{
+			my $escape_key = "escape key: $self->{CURRENT_ACTIONS}{ESCAPE_KEY}" ;
+			
+			if($action eq $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
+				{
+				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
+				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+				}
+			else
+				{
+				$self->{ACTION_VERBOSE}->("\e[31m$action, [$self->{CURRENT_ACTIONS}{NAME}], $escape_key\e[m") if $self->{ACTION_VERBOSE} ; 
+				}
+			}
+		else
+			{
+			$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-30s\e[m", "$action") if $self->{ACTION_VERBOSE} ; 
+			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+			}
 		
-		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 		$self->update_display() ;
 		}
 	}
@@ -92,12 +123,12 @@ for my $action (@actions)
 		{
 		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
 			{
-			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action [group]\e[0m") if $self->{ACTION_VERBOSE} ;
+			$self->{ACTION_VERBOSE}->(sprintf '%30s %s', '', "\e[32m$action [group]\e[0m") if $self->{ACTION_VERBOSE} ;
 			$current_actions_by_name = $self->{CURRENT_ACTIONS}{$action} ;
 			}
 		else
 			{
-			$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[32m$action\e[0m") if $self->{ACTION_VERBOSE} ;
+			$self->{ACTION_VERBOSE}->(sprintf '%30s %s', '', "\e[32m$action\e[0m") if $self->{ACTION_VERBOSE} ;
 			
 			if(defined $current_actions_by_name->{$action}{ARGUMENTS})
 				{
@@ -122,7 +153,7 @@ for my $action (@actions)
 		}
 	else
 		{
-		$self->{ACTION_VERBOSE}->(sprintf '%20s %s', '', "\e[31m$action\e[0m") if $self->{ACTION_VERBOSE} ;
+		$self->{ACTION_VERBOSE}->(sprintf '%30s %s', '', "\e[31m$action\e[0m") if $self->{ACTION_VERBOSE} ;
 		last ;
 		}
 	}

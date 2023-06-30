@@ -78,6 +78,10 @@
 
 - [Configuration](configuration.md)
 	- [user bindings](config/user_bindings.md)
+		- [Group bindings](config/user_bindings/group_bindings.md)
+		- [Capturing groups](config/user_bindings/capturing_groups.md)
+		- [Binding override](config/user_bindings/binding_override.md)
+
 	- [user stencils](config/user_stencils.md)
 
 -----------

@@ -236,7 +236,6 @@ for my $action_file (@{ $action_files })
 				print "\told was '$self->{ACTIONS}{$shortcut}{NAME}' defined in file '$self->{ACTIONS}{$shortcut}{ORIGIN}'\n" ;
 				}
 				
-			# print "\e[32maction_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
 			$self->{ACTIONS}{$shortcut} = $action_handler ;
 			
 			if (! defined $action_handler->{CODE} && ! defined $action_handler->{CONTEXT_MENU_SUB})
@@ -309,6 +308,8 @@ my %handler ;
 die "Asciio: group '$group_name' is without shortcuts in '$action_file'.\n"
 	unless exists $group_definition->{SHORTCUTS} ;
 
+my $escape_key = $group_definition->{ESCAPE_KEY} ;
+
 for my $name (keys %{$group_definition})
 	{
 	my $action_handler ;
@@ -358,9 +359,10 @@ for my $name (keys %{$group_definition})
 		}
 	}
 
-@handler{'IS_GROUP', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
+@handler{'IS_GROUP', 'ESCAPE_KEY', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
 	(
 	1,
+	$escape_key,
 	$group_definition->{SHORTCUTS},
 	sub { $_[0]->{CURRENT_ACTIONS} = \%handler },
 	$group_name,

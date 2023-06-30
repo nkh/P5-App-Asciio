@@ -286,7 +286,6 @@ register_action_handlers
 	'next slide'                          => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
 	'first slide'                         => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
 	},
-
 ) ;
 
 #----------------------------------------------------------------------------------------------
