@@ -78,6 +78,7 @@
 
 - [Configuration](configuration.md)
 	- [user bindings](config/user_bindings.md)
+		- [Binding format](config/user_bindings/binding_format.md)
 		- [Group bindings](config/user_bindings/group_bindings.md)
 		- [Capturing groups](config/user_bindings/capturing_groups.md)
 		- [Binding override](config/user_bindings/binding_override.md)
