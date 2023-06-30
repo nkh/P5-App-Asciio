@@ -33,6 +33,7 @@ lib/App/Asciio/Actions/Ruler.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Elements.pm
 lib/App/Asciio/Actions/ElementsManipulation.pm
+lib/App/Asciio/Actions/Arrow.pm
 lib/App/Asciio/Actions/Multiwirl.pm
 lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Box.pm

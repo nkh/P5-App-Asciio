@@ -99,17 +99,17 @@ else
     }
 
 $self->set
-    (
-    GLYPHS => $glyphs,
+	(
+	GLYPHS => $glyphs,
 	ARROW_TYPE => $arrow_type,
-    STRIPES => $stripes,
-    WIDTH => $width,
-    HEIGHT => $height,
-    DIRECTION => $direction,
-    END_X => $end_x,
-    END_Y => $end_y,
-    EXTENTS => [$ex1, $ey1, $ex2, $ey2],
-    ) ;
+	STRIPES => $stripes,
+	WIDTH => $width,
+	HEIGHT => $height,
+	DIRECTION => $direction,
+	END_X => $end_x,
+	END_Y => $end_y,
+	EXTENTS => [$ex1, $ey1, $ex2, $ey2],
+	) ;
 }
 
 #-----------------------------------------------------------------------------

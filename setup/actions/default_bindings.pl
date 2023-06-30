@@ -12,6 +12,7 @@ use App::Asciio::Actions::Presentation ;
 use App::Asciio::Actions::Unsorted ;
 use App::Asciio::Actions::Ruler ;
 use App::Asciio::Actions::ElementsManipulation ;
+use App::Asciio::Actions::Arrow ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Toolfunc ;
 
@@ -175,8 +176,8 @@ register_action_handlers
 	{
 	SHORTCUTS => '000-a',
 	
-	'Change arrow direction'              => ['000-d', \&App::Asciio::Actions::ElementsManipulation::change_arrow_direction           ],
-	'Flip arrow start and end'            => ['000-f', \&App::Asciio::Actions::ElementsManipulation::flip_arrow_ends                  ],
+	'Change arrow direction'              => ['000-d', \&App::Asciio::Actions::Arrow::change_arrow_direction                          ],
+	'Flip arrow start and end'            => ['000-f', \&App::Asciio::Actions::Arrow::flip_arrow_ends                                 ],
 	'Append multi_wirl section'           => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section,                             ],
 	'Insert multi_wirl section'           => ['000-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
 	'Prepend multi_wirl section'          => ['0A0-s', \&App::Asciio::Actions::Multiwirl::prepend_section                             ],
@@ -285,6 +286,35 @@ register_action_handlers
 	'previous slide'                      => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
 	'next slide'                          => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
 	'first slide'                         => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
+	},
+
+'insert on click' =>
+	{
+	SHORTCUTS => '0A0-i',
+	ESCAPE_KEY => '000-Escape',
+	
+	'Mouse motion'             => ['000-motion_notify',  \&App::Asciio::Actions::Mouse::mouse_motion                                          ], 
+
+	'click element insert'     => [ '000-button-press-1',  \&App::Asciio::Actions::Elements::click_choice_add_element                         ],
+	'click element arrow'      => [ '000-a',               \&App::Asciio::Actions::Elements::click_element_choice, ['Asciio/angled_arrow', 0] ],
+	'click element box'        => [ '000-b',               \&App::Asciio::Actions::Elements::click_element_choice, ['Asciio/box', 0]          ],
+	'click element text'       => [ '000-t',               \&App::Asciio::Actions::Elements::click_element_choice, ['Asciio/text', 0]         ],
+
+	},
+
+'move arrow ends' =>
+	{
+	SHORTCUTS => '0A0-a',
+	ESCAPE_KEY => '000-Escape',
+	
+	'arrow start up'       => [ '000-Up',    \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1] ],
+	'arrow start down'     => [ '000-Down',  \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1] ],
+	'arrow start right'    => [ '000-Right', \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0] ],
+	'arrow start left'     => [ '000-Left',  \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0] ],
+	'arrow end up'         => [ '00S-Up',    \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1] ],
+	'arrow end down'       => [ '00S-Down',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1] ],
+	'arrow end right'      => [ '00S-Right', \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0] ],
+	'arrow end left'       => [ '00S-Left',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
 	},
 ) ;
 

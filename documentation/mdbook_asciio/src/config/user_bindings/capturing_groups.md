@@ -7,7 +7,7 @@ If a group has an ESCAPE_KEY, the group is a capturing group. The group's bindin
 
 'capture group' =>
 	{
-	SHORTCUTS => '0A0-C',
+	SHORTCUTS => '0A0-c',
 	ESCAPE_KEY => '000-Escape',
 	
 	'capture x'     => [ '000-x', sub { print "captured x\n"; } ],

@@ -33,8 +33,8 @@ for my $action (@actions)
 		my $in_capture = defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY} ;
 		
 		my $group_tag = $is_group ? defined $self->{CURRENT_ACTIONS}{$action}{ESCAPE_KEY}
-						? "[C] "
-						: "[G] "
+						? "[c] "
+						: "[g] "
 					  : '' ;
 		
 		my $capture_tag = $in_capture ? "[$self->{CURRENT_ACTIONS}{NAME}] " : '' ;

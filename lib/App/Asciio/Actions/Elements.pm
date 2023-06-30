@@ -12,6 +12,18 @@ use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::Toolfunc ;
 
+{
+my $click_choice_element = ['Asciio/box', 0] ;
+
+sub click_choice_add_element
+{
+my ($self) = @_ ;
+App::Asciio::Actions::Elements::add_element($self, $click_choice_element) ;
+print "elements: " . scalar($self->{ELEMENTS}) . "\n" ;
+}
+
+sub click_element_choice { $click_choice_element = $_->[1] ; }
+}
 
 #----------------------------------------------------------------------------------------------
 
