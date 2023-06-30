@@ -31,6 +31,7 @@ register_action_handlers_remove_old_shortcuts
 	'Select all elements'                                    => [ 'V' ],
 	'Deselect all elements'                                  => [ 'Escape' ],
 	'Select connected elements'                              => [ 'v' ],
+	'Switch cross mode'                                      => ['A-x'],
 	'Select next element'                                    => [ 'n' ],
 	'Select previous element'                                => [ 'N' ],
 	'Select next element move mouse'                         => [ 'Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
@@ -223,6 +224,29 @@ register_action_handlers_remove_old_shortcuts
 		'Dump selected elements'                         => [ 'E' ],
 		'Display numbered objects'                       => [ 't' ],
 		'Test'                                           => [ 'o' ],
+		},
+
+	'Cross element Insert leader' => 
+		{
+		SHORTCUTS => 'x',
+		
+		'Add cross box'                       => [ 'b' ],
+		'Add cross exec box'                  => [ 'e' ],
+		'Add cross arrow'                     => [ 'a' ],
+		'Add cross angled arrow'              => [ 'A' ],
+		
+		'add cross ascii line'                => [ 'w' ],
+		'add cross unicode line'              => ['S-W'],
+		'Add cross unicode bold line'         => ['C-w'],
+		'Add cross unicode double line'       => ['A-w'],
+		
+		'Select cross elements'               => ['c'],
+		'Select cross fillers'                => ['f'],
+		'Select normal elements'              => ['n'],
+		'Select normal fillers'               => ['A-f'],
+		
+		'change to cross elements'            => ['C-c'],
+		'change to normal elements'           => ['C-n'],
 		},
 	) ;
 

@@ -158,15 +158,15 @@ return(@lines) ;
 
 sub transform_elements_to_ascii_two_dimensional_array_for_cross_mode
 {
-my ($self)  = @_ ;
+my ($self, $cross_filler_chars)  = @_ ;
 
-my (@lines, %cross_elements_location, @index_arr, %uniq_index) ;
+my (@lines, %cross_fillers_location, @cross_point_index, %cross_point_index_hash, $cross_point) ;
 
-for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1)} @{$self->{ELEMENTS}})
+for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > ENUM_NORMAL_FILLER)} @{$self->{ELEMENTS}})
 	{
-	if((defined($element->{CROSS_ENUM})) && ($element->{CROSS_ENUM} == 2))
+	if((defined($element->{CROSS_ENUM})) && ($element->{CROSS_ENUM} == ENUM_CROSS_FILLER))
 		{
-		$cross_elements_location{$element->{X} . '-' . $element->{Y}} = $element->{TEXT_ONLY};
+		$cross_fillers_location{$element->{X} . '-' . $element->{Y}} = $element->{TEXT_ONLY};
 		next;
 		}
 	for my $strip (@{$element->get_stripes()})
@@ -191,9 +191,35 @@ for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1)} @{$
 				
 				if($x >= 0 && $y >= 0)
 					{
-					$lines[$y][$x] = $character ;
-					push @index_arr, [$y, $x] unless(exists $uniq_index{$y . '-' . $x});
-					$uniq_index{$y . '-' . $x} = 1;
+					$cross_point = $y . '-' . $x ;
+
+					# The characters retained in the array are characters that may be crossing, 
+					# and other characters are discarded
+					if(exists $cross_filler_chars->{$character})
+						{
+						if(defined $lines[$y][$x])
+							{
+							push @{$lines[$y][$x]}, $character ;
+							}
+						else
+							{
+							$lines[$y][$x] = [$character] ;
+							}
+						}
+					else
+						{
+						delete $lines[$y][$x] if(defined $lines[$y][$x]) ;
+						}
+					
+					# The cross point is the number of array elements greater than 1
+					if((defined $lines[$y][$x]) && (scalar @{$lines[$y][$x]} > 1))
+						{
+						$cross_point_index_hash{$cross_point} = 1 ;
+						}
+					else
+						{
+						delete $cross_point_index_hash{$cross_point} if(defined $cross_point_index_hash{$cross_point}) ;
+						}
 					}
 				$character_index += usc_length($character);
 				}
@@ -203,7 +229,12 @@ for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > 1)} @{$
 		}
 	}
 
-return(\%cross_elements_location, \@lines, \@index_arr) ;
+for(keys %cross_point_index_hash)
+	{
+	push @cross_point_index, [map {int} split('-', $_)] ;
+	}
+
+return(\%cross_fillers_location, \@lines, \@cross_point_index) ;
 }
 
 #-----------------------------------------------------------------------------

@@ -14,11 +14,21 @@ require Exporter ;
 	move_named_connector
 	optimize_connections
 	get_canonizer
+	ENUM_NORMAL_ELEMENT
+	ENUM_NORMAL_FILLER
+	ENUM_CROSS_FILLER
+	ENUM_CROSS_ELEMENT
 	) ;
 
 use strict ;
 use warnings ;
 use utf8 ;
+use constant {
+	ENUM_NORMAL_ELEMENT => 0,
+	ENUM_NORMAL_FILLER  => 1,
+	ENUM_CROSS_FILLER   => 2,
+	ENUM_CROSS_ELEMENT  => 3,
+};
 
 # use App::Asciio::stripes::editable_box2 ;
 # use App::Asciio::stripes::process_box ;
