@@ -54,8 +54,8 @@ register_action_handlers
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
 
-'Edit selected element'                       => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element               ],
-'Edit selected element inline'                => [['C00-2button-press-1','C00-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element, [1]          ],
+'Edit selected element'                       => [['000-2button-press-1','000-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element, 0            ],
+'Edit selected element inline'                => [['C00-2button-press-1','C00-Return'],     \&App::Asciio::Actions::ElementsManipulation::edit_selected_element, 1            ],
 
 'Move selected elements left'                 => ['000-Left',                               \&App::Asciio::Actions::ElementsManipulation::move_selection_left                 ],
 'Move selected elements right'                => ['000-Right',                              \&App::Asciio::Actions::ElementsManipulation::move_selection_right                ],
