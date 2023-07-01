@@ -73,11 +73,20 @@ Only elements marked as cross-mode elements will have their intersections patche
 
 The cross-mode elements background is displayed in a different color.
 
-![cross_mode_difference](cross_mode_difference.gif)
+## Cross-mode lines vs Normal lines
 
-![cross_mode_unicode_exemple](cross_mode_unicode_exemple.gif)
+![cross_mode_difference](cross_lines.gif)
 
-You can exported cross elements:
+## Line and Box
+
+![cross_mode_difference](cross_box_line.gif)
+
+## Lines and boxes and lines 
+
+![cross_mode_difference](cross_line_curved.gif)
+
+
+## Exported to text
 
 ```
                 
@@ -113,8 +122,6 @@ You can exported cross elements:
                 
 ```
 
-![cross_mode_and_strip_group](cross_mode_and_strip_group.gif)
-
 ## Conversion between ordinary elements and cross-mode elements
 
 You can convert non cross-mode elements into cross-mode elements and vice versa. If no elements are selected, all the elements are transformed.
@@ -127,8 +134,6 @@ You can convert non cross-mode elements into cross-mode elements and vice versa.
 «C-n»                change to normal elements
 
 ```
-
-![cross_mode_elements_convert](cross_mode_elements_convert.gif)
 
 ## cross-mode fillers
 
