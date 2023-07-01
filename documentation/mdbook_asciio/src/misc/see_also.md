@@ -11,6 +11,8 @@ ASCII Math and other:
 
 Fun! [AACircuit](https://github.com/Blokkendoos/AACircuit)
 
+[schemascii](https://github.com/dragoncoder047/schemascii)
+
 [asciidiagram](https://github.com/Twinside/asciidiagram)
 
 Impressive [shaape](https://github.com/christiangoltz/shaape )
