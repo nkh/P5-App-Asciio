@@ -97,7 +97,7 @@
 		- [Bindings](for_developers/bindings.md)
 
 	- [Debugging](for_developers/debugging.md)
-	- [algorithm](for_developers/cross_algorithm.md)
+	- [Cross algorithm](for_developers/cross_algorithm.md)
 
 -----------
 

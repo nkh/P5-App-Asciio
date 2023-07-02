@@ -33,6 +33,10 @@ The cross-mode lets you create graphics like this table
 
 ## Enabling cross-mode
 
+The cross mode is displayed in the title bar when on.
+
+![cross_mode_title_bar_gui](cross_mode_title_bar_gui.png)
+
 ### Globally
 
 Add this line in your user configuration.
@@ -40,10 +44,6 @@ Add this line in your user configuration.
 ```perl
 CROSS_MODE => 1,
 ```
-
-In the GUI, open the file and enable cross mode, the cross mode title will be displayed at the top
-
-![cross_mode_title_bar_gui](cross_mode_title_bar_gui.png)
 
 ### Dynamically
 
@@ -79,15 +79,15 @@ The cross-mode elements background is displayed in a different color.
 
 ## Cross-mode lines vs Normal lines
 
-![cross_mode_difference](cross_lines.gif)
+![cross lines](cross_lines.gif)
 
 ## Line and Box
 
-![cross_mode_difference](cross_box_line.gif)
+![cross boxes](cross_box_line.gif)
 
 ## Lines and boxes and lines 
 
-![cross_mode_difference](cross_line_curved.gif)
+![cross demo](cross_demo.gif)
 
 
 ## Exported to text
