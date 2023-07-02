@@ -156,7 +156,7 @@ if($self->{MARKUP_MODE} && $format)
 return(@lines) ;
 }
 
-sub transform_elements_to_ascii_two_dimensional_array_for_cross_mode
+sub transform_elements_to_ascii_array_for_cross_mode
 {
 my ($self, $cross_filler_chars)  = @_ ;
 
