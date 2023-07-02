@@ -128,7 +128,9 @@ for my $action_file (@{ $action_files })
 	my $context = new Eval::Context() ;
 	
 	my (%action_handlers, $remove_old_shortcuts) ;
-	
+
+	my $location = $action_file =~ /^\// ? $action_file : "$setup_path/$action_file" ;
+
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
@@ -137,7 +139,7 @@ for my $action_file (@{ $action_files })
 				register_action_handlers_remove_old_shortcuts => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
 				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
-		CODE_FROM_FILE => "$setup_path/$action_file",
+		CODE_FROM_FILE => $location,
 		) ;
 	
 	die "Asciio: can't load setup file '$action_file': $! $@\n" if $@ ;

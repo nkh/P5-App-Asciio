@@ -95,6 +95,7 @@ qw(
 setup/setup.ini
 
 setup/actions/default_bindings.pl
+setup/actions/single_click_insert.pl
 
 setup/asciio_object/basic.pl
 setup/hooks/canonize_connections.pl

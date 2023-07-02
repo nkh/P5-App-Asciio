@@ -12,19 +12,6 @@ use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::Toolfunc ;
 
-{
-my $click_choice_element = ['Asciio/box', 0] ;
-
-sub click_choice_add_element
-{
-my ($self) = @_ ;
-App::Asciio::Actions::Elements::add_element($self, $click_choice_element) ;
-print "elements: " . scalar($self->{ELEMENTS}) . "\n" ;
-}
-
-sub click_element_choice { $click_choice_element = $_->[1] ; }
-}
-
 #----------------------------------------------------------------------------------------------
 
 sub add_element
@@ -72,7 +59,7 @@ for my $element (@{$self->{ELEMENTS}})
 			App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'unicode' }, 0) ;
 			}
 		}
-
+	
 	if($element->isa('App::Asciio::stripes::angled_arrow'))
 		{
 		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'angled_arrow_unicode' }, 0) ;
@@ -104,7 +91,7 @@ for my $element (@{$self->{ELEMENTS}})
 			App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'dash' }, 0) ;
 			}
 		}
-
+	
 	if($element->isa('App::Asciio::stripes::angled_arrow'))
 		{
 		App::Asciio::Actions::Multiwirl::change_arrow_type($self, { ELEMENT => $element, TYPE => 'angled_arrow_dash' }, 0) ;

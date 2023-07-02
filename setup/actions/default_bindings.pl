@@ -288,20 +288,6 @@ register_action_handlers
 	'first slide'                         => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
 	},
 
-'insert on click' =>
-	{
-	SHORTCUTS => '0A0-i',
-	ESCAPE_KEY => '000-Escape',
-	
-	'Mouse motion'             => ['000-motion_notify',  \&App::Asciio::Actions::Mouse::mouse_motion                                          ], 
-
-	'click element insert'     => [ '000-button-press-1',  \&App::Asciio::Actions::Elements::click_choice_add_element                         ],
-	'click element arrow'      => [ '000-a',               \&App::Asciio::Actions::Elements::click_element_choice, ['Asciio/angled_arrow', 0] ],
-	'click element box'        => [ '000-b',               \&App::Asciio::Actions::Elements::click_element_choice, ['Asciio/box', 0]          ],
-	'click element text'       => [ '000-t',               \&App::Asciio::Actions::Elements::click_element_choice, ['Asciio/text', 0]         ],
-
-	},
-
 'move arrow ends' =>
 	{
 	SHORTCUTS => '0A0-a',

@@ -95,8 +95,6 @@ my ($self, $direction) = @_ ;
 
 $self->create_undo_snapshot() ;
 
-print "arrow move start @$direction\n" ;
-
 for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1))
 	{
 	$_->{X} += $direction->[0] ;
@@ -140,8 +138,6 @@ sub move_arrow_end
 my ($self, $direction) = @_ ;
 
 $self->create_undo_snapshot() ;
-
-print "arrow move end @$direction\n" ;
 
 for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1))
 	{
