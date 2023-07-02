@@ -302,6 +302,10 @@ register_action_handlers
 	'arrow end right'      => [ '00S-Right', \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0] ],
 	'arrow end left'       => [ '00S-Left',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
 	},
+
+'set overlays'   => [ '0A0-o', sub { $_[0]->set_overlays_sub(sub { [0, 0, 'O'], [1, 0, 'K'] }) ; $_[0]->update_display ; } ],
+'reset overlays' => [ '000-o', sub { $_[0]->set_overlays_sub(undef) ; $_[0]->update_display ; } ],
+
 ) ;
 
 #----------------------------------------------------------------------------------------------

@@ -187,6 +187,8 @@ $gc->paint;
 # draw elements
 my $element_index = 0 ;
 
+my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
@@ -194,8 +196,8 @@ for my $element (@{$self->{ELEMENTS}})
 	$is_selected = 1 if $is_selected > 0 ;
 	
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
-
-	# cross elements and fillers backgroud colors
+	
+	# cross elements and fillers background colors
 	if(defined $element->{CROSS_ENUM})
 		{
 			if($element->{CROSS_ENUM} == ENUM_NORMAL_FILLER)
@@ -211,7 +213,7 @@ for my $element (@{$self->{ELEMENTS}})
 				$background_color = $self->get_color('cross_element_backgroud');
 				}
 		}
-
+	
 	if($is_selected)
 		{
 		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
@@ -296,7 +298,6 @@ for my $element (@{$self->{ELEMENTS}})
 						{
 						my $layout = Pango::Cairo::create_layout($gc) ;
 						
-						my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 						$layout->set_font_description($font_description) ;
 						if($self->{MARKUP_MODE} && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
 							{
@@ -309,6 +310,7 @@ for my $element (@{$self->{ELEMENTS}})
 							{
 							$layout->set_text($line) ;
 							}
+						
 						Pango::Cairo::show_layout($gc, $layout);
 						}
 					
@@ -335,6 +337,8 @@ for my $element (@{$self->{ELEMENTS}})
 		$gc->paint;
 		}
 	}
+
+$self->draw_overlay($gc, $character_width, $character_height) ;
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
@@ -559,6 +563,40 @@ if ($self->{MOUSE_TOGGLE})
 	}
 
 return TRUE;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_overlay
+{
+my ($self, $gc, $character_width, $character_height) = @_ ;
+
+my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+my $gco = Cairo::Context->create($surface) ;
+
+my $layout = Pango::Cairo::create_layout($gco) ;
+my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+$layout->set_font_description($font_description) ;
+
+for ($self->get_overlays())
+	{
+	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+	
+	$background_color //= $self->get_color('cross_filler_background');
+	$foreground_color //= $self->get_color('element_foreground') ;
+	
+	$gco->set_source_rgb(@{$background_color});
+	$gco->rectangle(0, 0, $character_width, $character_height) ;
+	$gco->fill();
+	
+	$gco->set_source_rgb(@{$foreground_color});
+	
+	$layout->set_text($overlay) ;
+	Pango::Cairo::show_layout($gco, $layout) ;
+	
+	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
+	$gc->paint;
+	}
 }
 
 #-----------------------------------------------------------------------------

@@ -98,6 +98,7 @@
 
 	- [Debugging](for_developers/debugging.md)
 	- [Cross algorithm](for_developers/cross_algorithm.md)
+	- [Overlay](for_developers/overlay.md)
 
 -----------
 
