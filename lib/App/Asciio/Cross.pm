@@ -269,7 +269,7 @@ my ($self) = @_;
 my ($old_cross_elements, $ascii_array_ref, @ascii_array, $old_key, %not_delete_cross_fillers, $index_ref);
 
 #~ this sub is slow
-($old_cross_elements, $ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_two_dimensional_array_for_cross_mode(\%cross_filler_chars);
+($old_cross_elements, $ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_mode(\%cross_filler_chars);
 @ascii_array = @{$ascii_array_ref} ;
 
 my ($row, $col, $scene_func, @elements_to_be_add, $cross_index) ;
@@ -300,7 +300,7 @@ for $cross_index (@{$index_ref})
 		
 		if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $normal_char_cache{$normal_key}))
 			{
-			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
+			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
 				{
 				# todo: If more than 2 crossing occur, the originally reserved filler may be blocked by 
 				#       the characters behind, and the filler need to be forced to move to the foreground. 
@@ -311,7 +311,7 @@ for $cross_index (@{$index_ref})
 			}
 		else
 			{
-			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col])
+			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
 			{
 			push @elements_to_be_add, [$normal_char_cache{$normal_key}, $col, $row];
 			}
@@ -342,14 +342,14 @@ for $cross_index (@{$index_ref})
 		$old_key = $col . '-' . $row;
 		if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $diagonal_char_cache{$diagonal_key}))
 			{
-			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
+			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1])
 				{
 				$not_delete_cross_fillers{$old_key . '-' . $diagonal_char_cache{$diagonal_key}} = 1;
 				}
 			}
 		else
 			{
-			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col])
+			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1])
 				{
 				push @elements_to_be_add, [$diagonal_char_cache{$diagonal_key}, $col, $row];
 				}
