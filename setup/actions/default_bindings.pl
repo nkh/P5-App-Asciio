@@ -305,7 +305,6 @@ register_action_handlers
 
 'set overlays'   => [ '0A0-o', sub { $_[0]->set_overlays_sub(sub { [0, 0, 'O'], [1, 0, 'K'] }) ; $_[0]->update_display ; } ],
 'reset overlays' => [ '000-o', sub { $_[0]->set_overlays_sub(undef) ; $_[0]->update_display ; } ],
-
 ) ;
 
 #----------------------------------------------------------------------------------------------

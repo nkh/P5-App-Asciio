@@ -71,6 +71,22 @@ for my $action (@actions)
 			}
 		
 		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture ;
+		
+		if($is_group && defined $self->{CURRENT_ACTIONS}{ENTER_GROUP})
+			{
+			$self->{CURRENT_ACTIONS}{ENTER_GROUP}->($self) ;
+			}
+			
+		if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
+			{
+			my $escape_key = "escape key: $self->{CURRENT_ACTIONS}{ESCAPE_KEY}" ;
+			
+			if($action eq $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
+				{
+				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
+				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+				}
+			}
 		}
 	else
 		{

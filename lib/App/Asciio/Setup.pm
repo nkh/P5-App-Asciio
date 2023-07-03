@@ -123,14 +123,29 @@ sub setup_action_handlers
 {
 my($self, $setup_path, $action_files) = @_ ;
 
+use strict ; use warnings ;
+
+use Module::Util qw(find_installed) ;
+use File::Basename ;
+
+my $installed = find_installed('App::Asciio') ;
+my ($basename, $path, $ext) = File::Basename::fileparse($installed, ('\..*')) ;
+my $asciio_setup_path = $path . $basename . '/setup/' ;
+
 for my $action_file (@{ $action_files })
 	{
 	my $context = new Eval::Context() ;
 	
 	my (%action_handlers, $remove_old_shortcuts) ;
-
+	
+	if($action_file =~ /^$asciio_setup_path/)
+		{
+		$setup_path = $asciio_setup_path ;
+		substr($action_file, 0, length("$asciio_setup_path/")) = '' 
+		}
+	
 	my $location = $action_file =~ /^\// ? $action_file : "$setup_path/$action_file" ;
-
+	
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
@@ -361,9 +376,10 @@ for my $name (keys %{$group_definition})
 		}
 	}
 
-@handler{'IS_GROUP', 'ESCAPE_KEY', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
+@handler{'IS_GROUP', 'ENTER_GROUP', 'ESCAPE_KEY', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
 	(
 	1,
+	$group_definition->{ENTER_GROUP},
 	$escape_key,
 	$group_definition->{SHORTCUTS},
 	sub { $_[0]->{CURRENT_ACTIONS} = \%handler },

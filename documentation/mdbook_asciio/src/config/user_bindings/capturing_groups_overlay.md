@@ -1,4 +1,10 @@
+# Capturing groups with overlay
 
+![capture with overlay](capture_overlay.gif)
+
+## Define  overlays
+
+```perl
 my $click_choice_element = ['Asciio/box', 0] ;
 my $box_overlay =
 	[
@@ -34,6 +40,11 @@ my $arrow_overlay =
 	[0, 0,  "'"],
 	] ;
 
+```
+
+## Declare callbacks
+
+```perl
 my $click_element_overlay = $box_overlay ;
 
 sub click_choice_add_element { App::Asciio::Actions::Elements::add_element($_[0], $click_choice_element) ; }
@@ -63,8 +74,11 @@ my @overlays = map { [ $asciio->{MOUSE_X} + $_->[0], $asciio->{MOUSE_Y} + $_->[1
 
 @overlays
 }
+```
 
-#----------------------------------------------------------------------------------------------
+## Declare bindings
+
+```perl
 
 register_action_handlers
 (
@@ -84,3 +98,5 @@ register_action_handlers
 	
 	},
 ) ;
+```
+
