@@ -19,6 +19,8 @@
 
 
 
-An (15 years!) old video that shows some basic usage:
+Some older videos (15 years!) that show some basic usage:
 
 [![old video](old_video.jpg)](https://www.youtube.com/watch?v=0l9W84PhOyI)
+
+[asciio 1.0](https://www.youtube.com/watch?v=d5Fq17Bxurs)

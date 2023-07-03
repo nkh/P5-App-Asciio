@@ -10,7 +10,7 @@ A binding contains:
 
 Example:
 
-```
+```perl
 
 'Edit selected element inline'  => 
     [
