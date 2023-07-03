@@ -371,6 +371,10 @@ for (0 .. $#$element_type)
 
 $data->{ELEMENT}->set_box_type($element_type) ;
 
+$self->delete_connections_containing($data->{ELEMENT}) if $self->is_connected($data->{ELEMENT}) ;
+
+$self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
+
 $self->update_display() ;
 }
 
