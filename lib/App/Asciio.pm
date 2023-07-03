@@ -916,9 +916,7 @@ my ($x1, $x2, $y1, $y2) = $element->get_extents() ;
 my $overlays_sub ;
 
 sub set_overlays_sub { $overlays_sub = $_[1] ; }
-sub test_get_overlays { [ 0, 0, 'T'], [ 1, 0, 'e'], [ 2, 0, 's'], [ 3, 0, 't'],  }
-
-sub get_overlays { my ($self) = @_ ; defined $overlays_sub ? $overlays_sub->($self) : test_get_overlays() ; }
+sub get_overlays { my ($self) = @_ ; $overlays_sub->($self) if defined $overlays_sub ; }
 
 }
 

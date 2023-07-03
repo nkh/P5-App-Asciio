@@ -1,14 +1,6 @@
 # Overlay
 
-This *overlay* branch contains:
-- code for the overlay functionality
-- a default callback which writes 'test' at the top of the canvas
-- a test callback that writes 'ok' at the top of the canvas
-- test bindings
-	- to set a test callback «Alt-o»
-	- to reset to the default callback «o»
-
-After the elements are drawn, a user defined call back is called.
+After Asciio draws the elements, a user defined call back is called.
 
 ## User defined callback
 

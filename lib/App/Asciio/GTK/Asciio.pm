@@ -578,7 +578,7 @@ my $layout = Pango::Cairo::create_layout($gco) ;
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 $layout->set_font_description($font_description) ;
 
-for ($self->get_overlays())
+for ($self->get_overlays() || ())
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 	
