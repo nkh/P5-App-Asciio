@@ -168,6 +168,7 @@ register_action_handlers
 	'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme       ],
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements  ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display     ],
+	'Flip hint lines'                     => ['000-h', \&App::Asciio::Actions::Unsorted::flip_hint_lines       ],
 	'Change font'                         => ['000-f', \&App::Asciio::Actions::Unsorted::change_font           ],
 	'Edit inline'                         => ['000-i', \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type,  ], 
 	},

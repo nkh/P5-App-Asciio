@@ -454,6 +454,7 @@ unless (defined $self->{CACHE}{EXTRA_POINT})
 	$gc->set_source_rgb(@{$self->get_color('extra_point')});
 	$gc->rectangle(0, 0, $character_width, $character_height);
 	$gc->stroke() ;
+	$gc->set_line_width(1);
 	
 	$self->{CACHE}{EXTRA_POINT} = $surface ;
 	}
@@ -559,6 +560,29 @@ if ($self->{MOUSE_TOGGLE})
 	$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
 	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
 	$gc->fill() ;
+	$gc->stroke() ;
+	}
+
+# draw hint_lines
+if($self->{DRAW_HINT_LINES})
+	{
+	my ($xs, $ys, $xe, $ye) = $self->get_extent_box() ; 
+
+	$gc->set_line_width(1);
+	$gc->set_source_rgb(@{$self->get_color('hint_line')});
+
+	$gc->move_to($xs * $character_width, 0) ;
+	$gc->line_to($xs * $character_width, $widget_height) ;
+
+	$gc->move_to(0, $ys * $character_height) ;
+	$gc->line_to($widget_width, $ys * $character_height);
+
+	$gc->move_to($xe * $character_width, 0) ;
+	$gc->line_to($xe * $character_width, $widget_height) ;
+
+	$gc->move_to(0, $ye * $character_height) ;
+	$gc->line_to($widget_width, $ye * $character_height);
+
 	$gc->stroke() ;
 	}
 

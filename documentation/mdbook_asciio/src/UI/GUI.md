@@ -21,3 +21,19 @@
 
 ```
 
+## Grid
+
+### Grid lines
+
+### Grid color
+
+### Grid background color
+
+## Hint lines
+
+![hint lines](hint_lines.png)
+
+## Rulers
+
+## Night Colors
+

@@ -1,5 +1,6 @@
 
 DRAW_CONNECTION_POINTS => 1,
+DRAW_HINT_LINES => 0,
 ACTION_VERBOSE => 0,
 LAST_ACTION => '',
 DIALOGS => 
@@ -25,6 +26,7 @@ COLOR_SCHEMES =>
 		grid => 'dark white',
 		grid_2 => 'dark white',
 		ruler_line => 'ansi88',
+		hint_line => [0.74, 0.77, 0.85],
 		selected_element_background => 'on_ansi31',
 		element_background => 'on_black',
 		element_foreground => 'white' ,
@@ -52,6 +54,7 @@ COLOR_SCHEMES =>
 		grid => 'dark white',
 		grid_2 => 'dark white',
 		ruler_line => 'ansi88',
+		hint_line => [0.74, 0.77, 0.85],
 		selected_element_background => 'on_ansi31',
 		element_background => 'on_black',
 		element_foreground => 'white' ,

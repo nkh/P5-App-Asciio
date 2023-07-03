@@ -8,7 +8,7 @@ use warnings;
 use utf8;
 use Carp ;
 
-use Data::Dumper ;
+# use Data::Dumper ;
 use Data::TreeDumper ;
 use File::Slurp ;
 use Clone;
@@ -714,6 +714,25 @@ for my $strip (@{$element->get_stripes()})
 	}
 
 return($is_under) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_extent_box
+{
+my ($self) = @_ ;
+
+my ($xs, $ys, $xe, $ye) ;
+
+for (grep { ref($_) !~ /arrow/ } $self->get_selected_elements(1))
+	{
+	$xs = min($xs//10_000, $_->{X} + $_->{EXTENTS}[0]) ;
+	$ys = min($ys//10_000, $_->{Y} + $_->{EXTENTS}[1]) ;
+	$xe = max($xe//0, $_->{X} + $_->{EXTENTS}[2]) ;
+	$ye = max($ye//0, $_->{Y} + $_->{EXTENTS}[3]) ;
+	}
+
+($xs // 0, $ys // 0, $xe // 0, $ye // 0) ;
 }
 
 #-----------------------------------------------------------------------------
