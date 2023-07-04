@@ -916,10 +916,15 @@ my ($x1, $x2, $y1, $y2) = $element->get_extents() ;
 my $overlays_sub ;
 
 sub set_overlays_sub { $overlays_sub = $_[1] ; }
-sub get_overlays { my ($self) = @_ ; defined $overlays_sub ? $overlays_sub->($self) : () ; }
+sub get_overlays { defined $overlays_sub ? $overlays_sub->(@_) : () ; }
 
 }
 
+#-----------------------------------------------------------------------------
+
+sub show_pointer { ; }
+sub hide_pointer { ; }
+    
 #-----------------------------------------------------------------------------
 
 sub get_character_size

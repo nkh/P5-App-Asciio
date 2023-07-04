@@ -45,8 +45,8 @@ my ($asciio, $args) = @_ ;
 $asciio->update_display ;
 }
 
-sub click_element_enter { print "enter!!\n" ; my ($asciio) = @_ ; $asciio->set_overlays_sub(\&click_element_overlay) ; $asciio->update_display ; }
-sub click_element_escape { my ($asciio) = @_ ; $asciio->set_overlays_sub(undef) ; $asciio->update_display ; }
+sub click_element_enter { my ($asciio) = @_ ; $asciio->hide_pointer ; $asciio->set_overlays_sub(\&click_element_overlay) ; $asciio->update_display ; }
+sub click_element_escape { my ($asciio) = @_ ; $asciio->set_overlays_sub(undef) ; $asciio->show_pointer ; $asciio->update_display ; }
 
 sub click_element_mouse_motion 
 {
@@ -58,7 +58,25 @@ $asciio->update_display() ;
 
 sub click_element_overlay
 {
-my ($asciio) = @_ ;
+my ($asciio, $UI_type, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+
+# draw directly
+if($UI_type eq 'GUI')
+	{
+	my $surface = Cairo::ImageSurface->create('argb32', 50, 50) ;
+	my $gco = Cairo::Context->create($surface) ;
+	
+	my $background_color = $asciio->get_color('cross_filler_background') ;
+	$gco->set_source_rgb(@$background_color) ;
+	
+	$gco->rectangle(0, 0, $character_width, $character_height) ;
+	$gco->fill() ;
+	
+	$gc->set_source_surface($surface, ($asciio->{MOUSE_X} - 1 ) * $character_width, ($asciio->{MOUSE_Y} - 1) * $character_height);
+	$gc->paint() ; 
+	}
+
+# send a list of characters to draw
 my @overlays = map { [ $asciio->{MOUSE_X} + $_->[0], $asciio->{MOUSE_Y} + $_->[1], $_->[2] ] } @$click_element_overlay ;
 
 @overlays

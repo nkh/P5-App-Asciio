@@ -29,6 +29,30 @@ use App::Asciio::GTK::Asciio::Menues ;
 
 use App::Asciio::Toolfunc ;
 
+sub hide_pointer
+{
+my ($asciio) = @_ ;
+
+my $display = $asciio->{widget}->get_display();
+my $cursor = Gtk3::Gdk::Cursor->new_for_display($display, 'blank-cursor');
+
+my $win = $asciio->{widget}->get_parent_window() ;
+$win->set_cursor($cursor);
+# fleur
+# x_cursor
+}
+
+sub show_pointer
+{
+my ($asciio) = @_ ;
+
+my $display = $asciio->{widget}->get_display();
+my $cursor = Gtk3::Gdk::Cursor->new_for_display($display, 'arrow');
+
+my $win = $asciio->{widget}->get_parent_window() ;
+$win->set_cursor($cursor);
+}
+    
 #-----------------------------------------------------------------------------
 
 our $VERSION = '0.01' ;
@@ -327,7 +351,7 @@ for my $element (@{$self->{ELEMENTS}})
 		}
 	}
 
-$self->draw_overlay($gc, $character_width, $character_height) ;
+$self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})
@@ -582,7 +606,7 @@ return TRUE;
 
 sub draw_overlay
 {
-my ($self, $gc, $character_width, $character_height) = @_ ;
+my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
 
 my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
 my $gco = Cairo::Context->create($surface) ;
@@ -591,11 +615,12 @@ my $layout = Pango::Cairo::create_layout($gco) ;
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 $layout->set_font_description($font_description) ;
 
-for ($self->get_overlays())
+for ($self->get_overlays('GUI', $gc, $widget_width, $widget_height, $character_width, $character_height))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 	
-	$background_color //= $self->get_color('cross_filler_background');
+	# $background_color //= $self->get_color('cross_filler_background');
+	$background_color //= $self->get_color('element_background');
 	$foreground_color //= $self->get_color('element_foreground') ;
 	
 	$gco->set_source_rgb(@{$background_color});
