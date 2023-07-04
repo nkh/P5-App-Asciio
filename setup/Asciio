@@ -7,7 +7,7 @@ use App::Asciio::Stencil qw(create_box create_element) ;
 
 [
 create_box(NAME => 'box',            TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], ),
-create_box(NAME => 'Cross/box',      TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], CROSS_ENUM => ENUM_CROSS_ELEMENT),
+create_box(NAME => 'Cross/box',      TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], CROSS_FLAG => 1),
 create_box(NAME => 'shrink_box',     TEXT_ONLY => 'text', WITH_FRAME => 1, WITH_SIZE => [4, 2], AUTO_SHRINK => 1,),
 create_box(NAME => 'text',           TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
 create_box(NAME => 'connector',      TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
@@ -43,7 +43,7 @@ create_element
 create_element
 	(
 	NAME => 'Cross/wirl_arrow',
-	CROSS_ENUM => ENUM_CROSS_ELEMENT,
+	CROSS_FLAG => 1,
 	CLASS => 'App::Asciio::stripes::section_wirl_arrow',
 	POINTS => [[2, -2, 'up']],
 	DIRECTION => '',
@@ -96,7 +96,7 @@ create_element
 create_element
 	(
 	NAME => 'Cross/angled_arrow',
-	CROSS_ENUM => ENUM_CROSS_ELEMENT,
+	CROSS_FLAG => 1,
 	CLASS => 'App::Asciio::stripes::angled_arrow',
 	END_X => 3,
 	END_Y => -2,
@@ -164,7 +164,7 @@ create_element
 create_element
 	(
 	NAME => 'Cross/axis',
-	CROSS_ENUM => ENUM_CROSS_ELEMENT,
+	CROSS_FLAG => 1,
 	CLASS => 'App::Asciio::stripes::editable_arrow2',
 	END_X => 3,
 	END_Y => -3,
@@ -209,7 +209,7 @@ create_element
 create_element
 	(
 	NAME => 'Cross/exec box',
-	CROSS_ENUM => ENUM_CROSS_ELEMENT,
+	CROSS_FLAG => 1,
 	CLASS => 'App::Asciio::stripes::exec_box',
 	TEXT_ONLY => '',
 	EDITABLE => 1,

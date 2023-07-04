@@ -13,82 +13,32 @@ use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 
+sub select_normal_elements_from_selected_elements
 {
-my %cross_elements_cache;
+	my ($self) = @_ ; 
 
-sub create_cross_fillers
-{
-my ($self, @char_list) = @_;
+	my @selected_elements = @{$self->{ELEMENTS}} ;
+	@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
 
-my @new_elements;
-for my $char (@char_list)
-	{
-	unless(exists($cross_elements_cache{$char->[0]}))
+	for (@selected_elements)
 		{
-		# undef or 0: normal element 1: normal filler element 2: cross filler element 3: cross type element
-		$cross_elements_cache{$char->[0]} = create_box(NAME => 'cross filler', TEXT_ONLY => $char->[0], AUTO_SHRINK => 1, RESIZABLE => 0, EDITABLE => 0, CROSS_ENUM => ENUM_CROSS_FILLER);
-		$cross_elements_cache{$char->[0]}->enable_autoconnect(0);
+		$_->{SELECTED} = (! defined $_->{CROSS_FLAG}) ? ++$self->{SELECTION_INDEX} : 0  ;
 		}
-	
-	my $new_element = Clone::clone($cross_elements_cache{$char->[0]});
-	@$new_element{'X', 'Y', 'SELECTED'} = ($char->[1], $char->[2], 0);
-	
-	push @new_elements, $new_element;
-	}
-
-	$self->add_elements(@new_elements);
-}
-
 }
 
 #-----------------------------------------------------------------------------
 
-sub select_cross_elements_type
-{
-my ($self, $type) = @_;
-
-my @selected_elements = @{$self->{ELEMENTS}} ;
-@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
-
-if($type == ENUM_NORMAL_ELEMENT)
-	{
-	for (@selected_elements)
-	{
-	$_->{SELECTED} = ((! defined $_->{CROSS_ENUM})|| (defined $_->{CROSS_ENUM} && $_->{CROSS_ENUM} == ENUM_NORMAL_ELEMENT)) ? ++$self->{SELECTION_INDEX} : 0  ;
-	}
-	}
-else
-	{
-	for (@selected_elements)
-	{
-	$_->{SELECTED} = defined $_->{CROSS_ENUM} && $_->{CROSS_ENUM} == $type ? ++$self->{SELECTION_INDEX} : 0  ;
-	}
-	}
-}
-
-sub select_normal_elements_from_selected_elements
-{
-	my ($self) = @_ ; 
-	$self->select_cross_elements_type(ENUM_NORMAL_ELEMENT); 
-}
-
-sub select_normal_filler_elements_from_selected_elements
-{
-	my ($self) = @_ ; 
-	$self->select_cross_elements_type(ENUM_NORMAL_FILLER); 
-}
-
-
-sub select_cross_filler_elements_from_selected_elements
-{
-	my ($self) = @_ ; 
-	$self->select_cross_elements_type(ENUM_CROSS_FILLER); 
-}
-
 sub select_cross_elements_from_selected_elements
 {
 	my ($self) = @_ ; 
-	$self->select_cross_elements_type(ENUM_CROSS_ELEMENT); 
+
+	my @selected_elements = @{$self->{ELEMENTS}} ;
+	@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
+
+	for (@selected_elements)
+		{
+		$_->{SELECTED} = defined $_->{CROSS_FLAG} ? ++$self->{SELECTION_INDEX} : 0  ;
+		}
 }
 
 #-----------------------------------------------------------------------------
@@ -102,8 +52,7 @@ my @selected_elements = @{$self->{ELEMENTS}} ;
 
 for (@selected_elements)
 	{
-	$_->{CROSS_ENUM} = undef if (defined $_->{CROSS_ENUM} && $_->{CROSS_ENUM} == ENUM_CROSS_ELEMENT) ;
-	$_->{CROSS_ENUM} = ENUM_NORMAL_FILLER if defined $_->{CROSS_ENUM} && $_->{CROSS_ENUM} == ENUM_CROSS_FILLER ;
+	$_->{CROSS_FLAG} = undef if (defined $_->{CROSS_FLAG}) ;
 	}
 }
 
@@ -118,21 +67,8 @@ my @selected_elements = @{$self->{ELEMENTS}} ;
 
 for (@selected_elements)
 	{
-	$_->{CROSS_ENUM} = ENUM_CROSS_ELEMENT if ((! defined $_->{CROSS_ENUM}) || (defined $_->{CROSS_ENUM} && $_->{CROSS_ENUM} == ENUM_NORMAL_ELEMENT)) ;
-	$_->{CROSS_ENUM} = ENUM_CROSS_FILLER if defined $_->{CROSS_ENUM} && $_->{CROSS_ENUM} == ENUM_NORMAL_FILLER ;
+	$_->{CROSS_FLAG} = 1 if (! defined $_->{CROSS_FLAG}) ;
 	}
-}
-
-#-----------------------------------------------------------------------------
-
-sub switch_cross_mode
-{
-
-my ($self) = @_;
-
-$self->{CROSS_MODE} ^= 1 ;
-
-$self->set_title($self->get_title()) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -142,7 +78,7 @@ $self->set_title($self->get_title()) ;
 
 {
 
-my ($undef_char, %normal_char_cache, %diagonal_char_cache) = ('Ȝ') ;
+my ($undef_char, %normal_char_cache, %diagonal_char_cache) = ('w') ;
 
 my @normal_char_func = (
 	['+', \&scene_cross,      0],
@@ -210,15 +146,17 @@ my @diagonal_char_func = (
 	['╳', \&scene_unicode_x],
 ) ;
 
-my %cross_filler_chars = map {$_, 1} 
+my %all_cross_filler_chars = map {$_, 1} 
 				( 
-				'-', '|', '.', '\'', '\\', '/', '+', 
+				'-', '|', '.', '\'', '\\', '/', '+', '╱', '╲', '╳',
 				'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
 				'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
 				'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
 				'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
 				'╛', '╙', '╘', '╖', '╕', '╓', '╒'
 				) ;
+
+my %diagonal_cross_filler_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
 
 my %unicode_left_chars_thin        = map {$_, 1} ('─',    '┼',    '├',    '┬',    '┴',    '╭',    '╰') ;
 my %unicode_left_chars_bold        = map {$_, 1} ('━',    '╋',    '┣',    '┳',    '┻',    '┏',    '┗') ;
@@ -258,35 +196,30 @@ my $diagonal_char_cache_num = keys %diagonal_char_cache;
 %normal_char_cache = ();
 %diagonal_char_cache = ();
 
-print("normal_char_cache_num: " . $normal_char_cache_num. " deleted!" . "\n");
-print("diagonal_char_cache_num: " . $diagonal_char_cache_num. " deleted!" . "\n");
 }
 
-sub add_cross_fillers
+sub get_cross_points_coordinates
 {
 my ($self) = @_;
 
-my ($old_cross_elements, $ascii_array_ref, @ascii_array, $old_key, %not_delete_cross_fillers, $index_ref);
+my ($ascii_array_ref, @ascii_array, $index_ref);
 
 #~ this sub is slow
-($old_cross_elements, $ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_mode(\%cross_filler_chars);
+($ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_overlay(\%all_cross_filler_chars);
 @ascii_array = @{$ascii_array_ref} ;
 
-my ($row, $col, $scene_func, @elements_to_be_add, $cross_index) ;
+my ($row, $col, $scene_func, @elements_to_be_add) ;
 my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315, $normal_key, $diagonal_key);
-for $cross_index (@{$index_ref})
+for(@{$index_ref})
 	{
-	($row, $col) = ($cross_index->[0], $cross_index->[1]) ;
+	($row, $col) = ($_->[0], $_->[1]) ;
 	
 	($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
 	
-	my ($up_key, $down_key, $left_key, $right_key) ;
-
-	$up_key = (defined $up) ? join('o', @{$up}) : $undef_char ;
-	$down_key = (defined $down) ? join('o', @{$down}) : $undef_char ;
-	$left_key = (defined $left) ? join('o', @{$left}) : $undef_char ;
-	$right_key = (defined $right) ? join('o', @{$right}) : $undef_char ;	
-	$normal_key = $up_key . '_' . $down_key . '_' . $left_key . '_' . $right_key ;
+	$normal_key = ((defined $up) ? join('o', @{$up}) : $undef_char) . '_' 
+		. ((defined $down) ? join('o', @{$down}) : $undef_char) . '_' 
+		. ((defined $left) ? join('o', @{$left}) : $undef_char) . '_' 
+		. ((defined $right) ? join('o', @{$right}) : $undef_char) ;
 	
 	unless(exists($normal_char_cache{$normal_key}))
 		{
@@ -296,40 +229,24 @@ for $cross_index (@{$index_ref})
 	
 	if($normal_char_cache{$normal_key})
 		{
-		$old_key = $col . '-' . $row;
-		
-		if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $normal_char_cache{$normal_key}))
-			{
-			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
-				{
-				# todo: If more than 2 crossing occur, the originally reserved filler may be blocked by 
-				#       the characters behind, and the filler need to be forced to move to the foreground. 
-				#       Since this situation is relatively rare and will consume CPU resources, 
-				#       it will not be implemented for the time being.
-				$not_delete_cross_fillers{$old_key . '-' . $normal_char_cache{$normal_key}} = 1;
-				}
-			}
-		else
-			{
-			if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
-			{
-			push @elements_to_be_add, [$normal_char_cache{$normal_key}, $col, $row];
-			}
-			}
+		if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
+		{
+		push @elements_to_be_add, [$col, $row, $normal_char_cache{$normal_key}];
+		}
 		
 		next;
 		}
+	
+	next unless(exists $diagonal_cross_filler_chars{$ascii_array[$row][$col][-1]}) ;
 	
 	($char_45, $char_135, $char_225, $char_315) = ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
 	
 	$diagonal_key = ($char_45 || $undef_char) . ($char_135 || $undef_char) . ($char_225 || $undef_char) . ($char_315 || $undef_char);
 
-	my ($char_45_key, $char_135_key, $char_225_key, $char_315_key) ;
-	$char_45_key = (defined $char_45) ? join('o', @{$char_45}) : $undef_char ;
-	$char_135_key = (defined $char_135) ? join('o', @{$char_135}) : $undef_char ;
-	$char_225_key = (defined $char_225) ? join('o', @{$char_225}) : $undef_char ;
-	$char_315_key = (defined $char_315) ? join('o', @{$char_315}) : $undef_char ;
-	$diagonal_key = $char_45_key . '_' . $char_135_key . '_' . $char_225_key . '_' . $char_315_key ;
+	$diagonal_key = ((defined $char_45) ? join('o', @{$char_45}) : $undef_char) . '_' 
+		. ((defined $char_135) ? join('o', @{$char_135}) : $undef_char) . '_' 
+		. ((defined $char_225) ? join('o', @{$char_225}) : $undef_char) . '_' 
+		. ((defined $char_315) ? join('o', @{$char_315}) : $undef_char) ;
 	
 	unless(exists($diagonal_char_cache{$diagonal_key}))
 		{
@@ -337,31 +254,13 @@ for $cross_index (@{$index_ref})
 		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[0] : '';
 		}
 	
-	if($diagonal_char_cache{$diagonal_key})
+	if($diagonal_char_cache{$diagonal_key} && ($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1]))
 		{
-		$old_key = $col . '-' . $row;
-		if(exists($old_cross_elements->{$old_key}) && ($old_cross_elements->{$old_key} eq $diagonal_char_cache{$diagonal_key}))
-			{
-			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1])
-				{
-				$not_delete_cross_fillers{$old_key . '-' . $diagonal_char_cache{$diagonal_key}} = 1;
-				}
-			}
-		else
-			{
-			if($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1])
-				{
-				push @elements_to_be_add, [$diagonal_char_cache{$diagonal_key}, $col, $row];
-				}
-			}
+		push @elements_to_be_add, [$col, $row, $diagonal_char_cache{$diagonal_key}];
 		}
 	}
 
-$self->delete_elements(grep{ defined($_->{CROSS_ENUM})
-	&& ($_->{CROSS_ENUM} == ENUM_CROSS_FILLER) 
-	&& !(defined $not_delete_cross_fillers{$_->{X} . '-' . $_->{Y} . '-' . $_->{TEXT_ONLY}}) } @{$self->{ELEMENTS}}) ;
-
-$self->create_cross_fillers(@elements_to_be_add) if(@elements_to_be_add)  ;
+return @elements_to_be_add ;
 }
 
 #-----------------------------------------------------------------------------
@@ -841,10 +740,10 @@ my ($char_45, $char_135, $char_225, $char_315) = @_;
 
 return 0 unless defined $char_45 && defined $char_135 && defined $char_225 && defined $char_315 ;
 
-return (any {$_ eq '/' || $_ eq '^'} @{$char_45})
-	&& (any {$_ eq '\\' || $_ eq 'v'} @{$char_135})
-	&& (any {$_ eq '/' || $_ eq 'v'} @{$char_225})
-	&& (any {$_ eq '\\' || $_ eq '^'} @{$char_315}) ;
+return (any {$_ eq '/'} @{$char_45})
+	&& (any {$_ eq '\\'} @{$char_135})
+	&& (any {$_ eq '/'} @{$char_225})
+	&& (any {$_ eq '\\'} @{$char_315}) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -855,10 +754,10 @@ my ($char_45, $char_135, $char_225, $char_315) = @_;
 
 return 0 unless defined $char_45 && defined $char_135 && defined $char_225 && defined $char_315 ;
 
-return (any {$_ eq '╱' || $_ eq '^'} @{$char_45})
-	&& (any {$_ eq '╲' || $_ eq 'v'} @{$char_135})
-	&& (any {$_ eq '╱' || $_ eq 'v'} @{$char_225})
-	&& (any {$_ eq '╲' || $_ eq '^'} @{$char_315}) ;
+return (any {$_ eq '╱'} @{$char_45})
+	&& (any {$_ eq '╲'} @{$char_135})
+	&& (any {$_ eq '╱'} @{$char_225})
+	&& (any {$_ eq '╲'} @{$char_315}) ;
 }
 
 }
@@ -965,7 +864,7 @@ my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
 
 if($cross_type)
 	{
-	$my_line_obj->{CROSS_ENUM} = ENUM_CROSS_ELEMENT;
+	$my_line_obj->{CROSS_FLAG} = 1;
 	}
 
 $my_line_obj->{NAME} = 'line';

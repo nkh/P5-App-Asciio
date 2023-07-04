@@ -489,7 +489,7 @@ my ($self, $data) = @_ ;
 
 my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
 my $cross_enum ;
-$cross_enum = $data->{CROSS_ENUM} if(defined $data->{CROSS_ENUM}) ;
+$cross_enum = $data->{CROSS_FLAG} if(defined $data->{CROSS_FLAG}) ;
 
 print("now git mode angled arrow type " . $data->{TYPE} . "\n") ;
 
@@ -522,9 +522,9 @@ if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 		],
 		[ '/arrow type/dash',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_dash', } ] ,
 		[ '/arrow type/unicode',          \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_unicode', } ] ,
-		[ '/git mode arrow type/dash',    \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_ENUM => ENUM_NORMAL_ELEMENT } ] ,
-		[ '/git mode arrow type/dash cross',\&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_ENUM => ENUM_CROSS_ELEMENT } ] ,
-		[ '/git mode arrow type/unicode', \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_unicode', CROSS_ENUM => ENUM_NORMAL_ELEMENT } ] ;
+		[ '/git mode arrow type/dash',    \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash' } ] ,
+		[ '/git mode arrow type/dash cross',\&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash', CROSS_FLAG => 1 } ] ,
+		[ '/git mode arrow type/unicode', \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_unicode' } ] ;
 
 	}
 

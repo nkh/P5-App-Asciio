@@ -53,9 +53,7 @@ Goals when adding bindings:
 	'Add cross unicode line 3'       => ['C00-i', \&App::Asciio::Actions::Cross::create_line, [3, 1]                                              ],
 	
 	'Select cross elements'          => ['000-c', \&App::Asciio::Actions::CrossManipulation::select_cross_elements_from_selected_elements         ],
-	'Select cross filler elements'   => ['000-f', \&App::Asciio::Actions::CrossManipulation::select_cross_filler_elements_from_selected_elements  ],
 	'Select normal elements'         => ['000-n', \&App::Asciio::Actions::CrossManipulation::select_normal_elements_from_selected_elements        ],
-	'Select normal filler elements'  => ['0A0-f', \&App::Asciio::Actions::CrossManipulation::select_normal_filler_elements_from_selected_elements ],
 	
 	'Change to cross elements'       => ['C00-c', \&App::Asciio::Actions::CrossManipulation::switch_to_cross_elements_from_selected_elements      ],
 	'Change to normal elements'      => ['C00-n', \&App::Asciio::Actions::CrossManipulation::switch_to_normal_elements_from_selected_elements     ],

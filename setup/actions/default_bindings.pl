@@ -50,7 +50,6 @@ register_action_handlers
 'Deselect all elements'                       => ['000-Escape',                             \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements               ],
 'Select connected elements'                   => ['000-v',                                  \&App::Asciio::Actions::ElementsManipulation::select_connected                    ],
 'Select elements by search words'             => ['C00-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words ],
-'Switch cross mode'                           => ['0A0-x',                                  \&App::Asciio::Actions::ElementsManipulation::switch_cross_mode                   ],
 'Select elements by search words ignore group'=> ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_search_words_ignore_group ],
 
 'Delete selected elements'                    => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements            ],
@@ -271,9 +270,7 @@ register_action_handlers
 	'Add cross unicode double line'       => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                  ],
 	
 	'Select cross elements'               => ['000-c', \&App::Asciio::Actions::ElementsManipulation::select_cross_elements_from_selected_elements               ],
-	'Select cross fillers'                => ['000-f', \&App::Asciio::Actions::ElementsManipulation::select_cross_filler_elements_from_selected_elements        ],
 	'Select normal elements'              => ['000-n', \&App::Asciio::Actions::ElementsManipulation::select_normal_elements_from_selected_elements              ],
-	'Select normal fillers'               => ['0A0-f', \&App::Asciio::Actions::ElementsManipulation::select_normal_filler_elements_from_selected_elements       ],
 	
 	'change to cross elements'            => ['C00-c', \&App::Asciio::Actions::ElementsManipulation::switch_to_cross_elements_from_selected_elements            ],
 	'change to normal elements'           => ['C00-n', \&App::Asciio::Actions::ElementsManipulation::switch_to_normal_elements_from_selected_elements           ],
@@ -304,7 +301,7 @@ register_action_handlers
 	'arrow end left'       => [ '00S-Left',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
 	},
 
-'set overlays'   => [ '0A0-o', sub { $_[0]->set_overlays_sub(sub { [0, 0, 'O'], [1, 0, 'K'] }) ; $_[0]->update_display ; } ],
+'set cross overlays'   => [ '0A0-o', sub { $_[0]->set_overlays_sub(\&App::Asciio::get_cross_points_coordinates) ; $_[0]->update_display ; } ],
 'reset overlays' => [ '000-o', sub { $_[0]->set_overlays_sub(undef) ; $_[0]->update_display ; } ],
 ) ;
 

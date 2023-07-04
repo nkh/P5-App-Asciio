@@ -241,9 +241,7 @@ register_action_handlers_remove_old_shortcuts
 		'Add cross unicode double line'       => ['A-w'],
 		
 		'Select cross elements'               => ['c'],
-		'Select cross fillers'                => ['f'],
 		'Select normal elements'              => ['n'],
-		'Select normal fillers'               => ['A-f'],
 		
 		'change to cross elements'            => ['C-c'],
 		'change to normal elements'           => ['C-n'],

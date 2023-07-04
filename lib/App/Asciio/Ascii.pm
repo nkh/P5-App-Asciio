@@ -131,6 +131,13 @@ for my $element (@elements)
 		}
 	}
 
+# If there is an overlay, the characters of the overlay need to be exported
+for($self->get_overlays())
+	{
+	$lines[$_->[1]][$_->[0]] = $_->[2] if defined $lines[$_->[1]][$_->[0]] ;
+	}
+
+
 if($self->{MARKUP_MODE} && $format)
 	{
 	my $new_col;
@@ -156,19 +163,14 @@ if($self->{MARKUP_MODE} && $format)
 return(@lines) ;
 }
 
-sub transform_elements_to_ascii_array_for_cross_mode
+sub transform_elements_to_ascii_array_for_cross_overlay
 {
 my ($self, $cross_filler_chars)  = @_ ;
 
-my (@lines, %cross_fillers_location, @cross_point_index, %cross_point_index_hash, $cross_point) ;
+my (@lines, @cross_point_index, %cross_point_index_hash, $cross_point) ;
 
-for my $element (grep {(defined $_->{CROSS_ENUM}) && ($_->{CROSS_ENUM} > ENUM_NORMAL_FILLER)} @{$self->{ELEMENTS}})
+for my $element (grep {defined $_->{CROSS_FLAG}} @{$self->{ELEMENTS}})
 	{
-	if((defined($element->{CROSS_ENUM})) && ($element->{CROSS_ENUM} == ENUM_CROSS_FILLER))
-		{
-		$cross_fillers_location{$element->{X} . '-' . $element->{Y}} = $element->{TEXT_ONLY};
-		next;
-		}
 	for my $strip (@{$element->get_stripes()})
 		{
 		my $line_index = 0 ;
@@ -234,7 +236,7 @@ for(keys %cross_point_index_hash)
 	push @cross_point_index, [map {int} split('-', $_)] ;
 	}
 
-return(\%cross_fillers_location, \@lines, \@cross_point_index) ;
+return(\@lines, \@cross_point_index) ;
 }
 
 #-----------------------------------------------------------------------------

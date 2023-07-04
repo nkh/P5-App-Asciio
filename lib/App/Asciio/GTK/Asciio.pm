@@ -198,20 +198,9 @@ for my $element (@{$self->{ELEMENTS}})
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
 	
 	# cross elements and fillers background colors
-	if(defined $element->{CROSS_ENUM})
+	if(defined $element->{CROSS_FLAG})
 		{
-			if($element->{CROSS_ENUM} == ENUM_NORMAL_FILLER)
-				{
-				$background_color = $self->get_color('normal_filler_background');
-				}
-			elsif($element->{CROSS_ENUM} == ENUM_CROSS_FILLER)
-				{
-				$background_color = $self->get_color('cross_filler_background');
-				}
-			elsif($element->{CROSS_ENUM} == ENUM_CROSS_ELEMENT)
-				{
-				$background_color = $self->get_color('cross_element_backgroud');
-				}
+		$background_color = $self->get_color('cross_element_backgroud');
 		}
 	
 	if($is_selected)

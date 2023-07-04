@@ -133,7 +133,7 @@ my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					}) ;
 
 $angled_arrow->set_arrow_type($git_mode_arrow_type) ;
-$angled_arrow->{CROSS_ENUM} = $angled_arrow_cross_enum if(defined $angled_arrow_cross_enum) ;
+$angled_arrow->{CROSS_FLAG} = $angled_arrow_cross_enum if(defined $angled_arrow_cross_enum) ;
 $angled_arrow->enable_autoconnect(0) ;
 
 $self->add_element_at_no_connection

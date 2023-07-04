@@ -16,7 +16,7 @@ use App::Asciio::Toolfunc ;
 
 sub new
 {
-my ($class, $elements, $connections, $as_one_strip) = @_ ;
+my ($class, $elements, $connections, $as_one_strip, $asciio_handle) = @_ ;
 
 my  @stripes ;
 
@@ -25,6 +25,10 @@ my ($min_x, $min_y, $max_x, $max_y) = (10_000, 10_000, 0, 0) ;
 
 my ($min_ex) = min( map { $_->{X} } @$elements) ;
 my ($min_ey) = min( map { $_->{Y} } @$elements) ;
+
+my (@all_overlay_chars, @fit_overlay_chars) ;
+
+my @all_overlay_chars = $asciio_handle->get_overlays() ;
 
 for my $element (@{$elements})
 	{
@@ -61,6 +65,14 @@ for my $element (@{$elements})
 				@background_color,
 				@foreground_color,
 				} ;
+			for(grep {
+					($_->[0] >= ($element->{X} + $stripe->{X_OFFSET})) 
+				&&	($_->[0] <  ($element->{X} + $stripe->{X_OFFSET} + $width))
+				&&	($_->[1] >= ($element->{Y} + $stripe->{Y_OFFSET}))
+				&&	($_->[1] <  ($element->{Y} + $stripe->{Y_OFFSET} + $height))} @all_overlay_chars)
+				{
+				push @fit_overlay_chars, [$_->[0] - $min_ex, $_->[1] - $min_ey, $_->[2]] ; 
+				}
 			}
 		
 		($total_width) = max($total_width, $stripe->{X_OFFSET} + $width + $element_offset_x) ;
@@ -100,6 +112,21 @@ if ($as_one_strip)
 		WIDTH => $total_width, 
 		HEIGHT => $total_height, 
 		}) ;
+	}
+else
+	{
+	# todo: color lost
+	for(@fit_overlay_chars)
+		{
+		push @stripes, 
+			{
+			TEXT => $_->[2],
+			X_OFFSET => $_->[0],
+			Y_OFFSET => $_->[1],
+			WIDTH => 1, 
+			HEIGHT => 1 , 
+			} ;
+		}
 	}
 
 return bless({

@@ -139,18 +139,6 @@ $self->select_all_elements_by_search_words_ignore_group();
 $self->update_display() ;
 }
 
-
-#----------------------------------------------------------------------------------------------
-
-sub select_cross_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-$self->select_cross_filler_elements_from_selected_elements();
-
-$self->update_display();
-}
-
 #----------------------------------------------------------------------------------------------
 
 sub select_cross_elements_from_selected_elements
@@ -197,32 +185,6 @@ my ($self) = @_;
 $self->create_undo_snapshot() ;
 
 $self->switch_to_cross_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub select_normal_filler_elements_from_selected_elements
-{
-my ($self) = @_;
-
-
-$self->select_normal_filler_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub switch_cross_mode
-{
-
-my ($self) = @_;
-
-$self->delete_cross_elements_cache();
-
-$self->switch_cross_mode();
 
 $self->update_display();
 }
@@ -547,7 +509,7 @@ if(@selected_elements > 1)
 	
 	@selected_elements = $self->get_selected_elements(1) ;
 	
-	my ($new_element, $ex, $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe) ;
+	my ($new_element, $ex, $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe, $self) ;
 	
 	@$new_element{'X', 'Y', 'SELECTED'} = ($ex, $ey, 1) ;
 	$self->add_elements($new_element) ;
