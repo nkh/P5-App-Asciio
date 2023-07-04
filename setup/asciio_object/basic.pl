@@ -62,9 +62,8 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
-		cross_element_backgroud => [0.15, 0.25, 0.15],
-		cross_filler_background => [0.13, 0.37, 0.13],
-		normal_filler_background => [0.12, 0.07, 0.12],
+		cross_element_background => [0.04, 0.04, 0.04],
+		crosselement_foreground => [0.59, 0.59, 0.59] ,
 		}, 
 	'system' =>
 		{
@@ -95,9 +94,8 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
-		cross_element_backgroud => [0.93, 0.93, 0.88],
-		cross_filler_background => [0.83, 0.83, 0.78],
-		normal_filler_background => [1.00, 0.88, 1.00],
+		cross_element_foregroud => [0, 0, 0],
+		cross_element_backgroud => [1, 1, 1],
 		} 
 	},
 

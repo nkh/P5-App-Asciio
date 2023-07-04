@@ -46,7 +46,6 @@ COLOR_SCHEMES =>
 		selection_rectangle => 'ansi31',
 		cross_element_backgroud => 'on_ansi94',
 		cross_filler_background => 'on_ansi65',
-		normal_filler_background => 'on_ansi25',
 		}, 
 	'system' =>
 		{
@@ -74,6 +73,5 @@ COLOR_SCHEMES =>
 		selection_rectangle => 'ansi31',
 		cross_element_backgroud => 'on_ansi94',
 		cross_filler_background => 'on_ansi65',
-		normal_filler_background => 'on_ansi25',
 		}, 
 	},

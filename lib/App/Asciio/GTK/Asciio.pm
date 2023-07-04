@@ -221,12 +221,6 @@ for my $element (@{$self->{ELEMENTS}})
 	
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
 	
-	# cross elements and fillers background colors
-	if(defined $element->{CROSS_FLAG})
-		{
-		$background_color = $self->get_color('cross_element_backgroud');
-		}
-	
 	if($is_selected)
 		{
 		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
@@ -619,7 +613,6 @@ for ($self->get_overlays('GUI', $gc, $widget_width, $widget_height, $character_w
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 	
-	# $background_color //= $self->get_color('cross_filler_background');
 	$background_color //= $self->get_color('element_background');
 	$foreground_color //= $self->get_color('element_foreground') ;
 	

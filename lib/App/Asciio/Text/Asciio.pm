@@ -168,12 +168,6 @@ for my $element (@{$self->{ELEMENTS}})
 	$is_selected = 1 if $is_selected > 0 ;
 	
 	my ($background_color, $foreground_color) =  $element->get_colors() ;
-
-	# cross elements and fillers backgroud colors
-	if(defined $element->{CROSS_FLAG})
-		{
-		$background_color = $self->get_color('cross_element_backgroud');
-		}
 	
 	if($is_selected)
 		{

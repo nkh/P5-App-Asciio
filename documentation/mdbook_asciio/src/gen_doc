@@ -1,0 +1,31 @@
+#!/bin/bash
+
+:>_concatenated_md
+
+readarray -t list < <(perl -ne '/^.*?\[.*?\]\((?<link>.+?)\)/ && print "$+{link}\n"' SUMMARY.md)
+
+# cat "${list[@]}" > _concatenated_md
+for md in "${list[@]}"
+	do
+		path="$(dirname "$md")" ; [[ "$path" == '.' ]] && path= || path="$path/"
+		
+		perl -pe 's~(^\!\[[^\]]+\]\()((?!http).+\))~$1'$path'$2~' "$md" >> _concatenated_md
+	done
+
+# uses template from https://github.com/ryangrose/easy-pandoc-templates
+# template=clean_menu.html
+# template=easy_template.html
+# template=bootstrap_menu.html
+
+# template=elegant_bootstrap_menu.html
+template=uikit.html
+
+title="Asciio"
+
+pandoc -s --template=$template --metadata title="$title" --toc -f markdown _concatenated_md -o "$title.html"
+
+pandoc --standalone -p --tab-stop=8 -f markdown --to man _concatenated_md -o $title.1
+# gzip < $title.1 > $title.1.gz
+# sudo cp $title.1.gz /usr/share/man/man1
+
+# vi set ft=bash:
