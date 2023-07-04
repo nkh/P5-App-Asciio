@@ -26,7 +26,7 @@ my ($min_x, $min_y, $max_x, $max_y) = (10_000, 10_000, 0, 0) ;
 my ($min_ex) = min( map { $_->{X} } @$elements) ;
 my ($min_ey) = min( map { $_->{Y} } @$elements) ;
 
-my (@all_overlay_chars, @fit_overlay_chars) ;
+my @fit_overlay_chars ;
 
 my @all_overlay_chars = $asciio_handle->get_overlays() ;
 
