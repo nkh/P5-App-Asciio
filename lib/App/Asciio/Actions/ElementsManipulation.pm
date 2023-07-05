@@ -143,56 +143,6 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub select_cross_elements_from_selected_elements
-{
-my ($self) = @_;
-
-
-$self->select_cross_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub select_normal_elements_from_selected_elements
-{
-my ($self) = @_;
-
-
-$self->select_normal_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub switch_to_normal_elements_from_selected_elements
-{
-my ($self) = @_;
-
-$self->create_undo_snapshot() ;
-
-$self->switch_to_normal_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub switch_to_cross_elements_from_selected_elements
-{
-my ($self) = @_;
-
-$self->create_undo_snapshot() ;
-
-$self->switch_to_cross_elements_from_selected_elements();
-
-$self->update_display();
-}
-
-#----------------------------------------------------------------------------------------------
-
 sub select_connected
 {
 my ($self) = @_ ;

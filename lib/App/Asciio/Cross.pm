@@ -1,5 +1,5 @@
 
-package App::Asciio ;
+package App::Asciio::Cross ;
 
 $|++ ;
 
@@ -9,66 +9,88 @@ use utf8;
 
 use Clone;
 
+use List::Util qw(first) ;
+use List::MoreUtils qw(any) ;
 use App::Asciio::Toolfunc ;
 
 #-----------------------------------------------------------------------------
 
-sub select_normal_elements_from_selected_elements
+sub transform_elements_to_ascii_array_for_cross_overlay
 {
-	my ($self) = @_ ; 
+my ($self, $asciio, $cross_filler_chars)  = @_ ;
 
-	my @selected_elements = @{$self->{ELEMENTS}} ;
-	@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
+my (@lines, @cross_point_index, %cross_point_index_hash, $cross_point) ;
 
-	for (@selected_elements)
-		{
-		$_->{SELECTED} = (! defined $_->{CROSS_FLAG}) ? ++$self->{SELECTION_INDEX} : 0  ;
-		}
-}
-
-#-----------------------------------------------------------------------------
-
-sub select_cross_elements_from_selected_elements
-{
-	my ($self) = @_ ; 
-
-	my @selected_elements = @{$self->{ELEMENTS}} ;
-	@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
-
-	for (@selected_elements)
-		{
-		$_->{SELECTED} = defined $_->{CROSS_FLAG} ? ++$self->{SELECTION_INDEX} : 0  ;
-		}
-}
-
-#-----------------------------------------------------------------------------
-
-sub switch_to_normal_elements_from_selected_elements
-{
-my ($self) = @_;
-
-my @selected_elements = @{$self->{ELEMENTS}} ;
-@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
-
-for (@selected_elements)
+for my $element (@{$asciio->{ELEMENTS}})
 	{
-	$_->{CROSS_FLAG} = undef if (defined $_->{CROSS_FLAG}) ;
+	next if(any {$_ eq ref($element)} @{$asciio->{CROSS_MODE_IGNORE}}) ;
+
+	for my $strip (@{$element->get_stripes()})
+		{
+		my $line_index = 0 ;
+
+		for my $sub_strip (split("\n", $strip->{TEXT}))
+			{
+			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
+
+			if($asciio->{MARKUP_MODE})
+			{
+				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
+				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
+			}
+
+			my $character_index = 0 ;
+			
+			for my $character (split '', $sub_strip)
+				{
+				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
+				
+				if($x >= 0 && $y >= 0)
+					{
+					$cross_point = $y . '-' . $x ;
+
+					# The characters retained in the array are characters that may be crossing, 
+					# and other characters are discarded
+					if(exists $cross_filler_chars->{$character})
+						{
+						if(defined $lines[$y][$x])
+							{
+							push @{$lines[$y][$x]}, $character ;
+							}
+						else
+							{
+							$lines[$y][$x] = [$character] ;
+							}
+						}
+					else
+						{
+						delete $lines[$y][$x] if(defined $lines[$y][$x]) ;
+						}
+					
+					# The cross point is the number of array elements greater than 1
+					if((defined $lines[$y][$x]) && (scalar @{$lines[$y][$x]} > 1))
+						{
+						$cross_point_index_hash{$cross_point} = 1 ;
+						}
+					else
+						{
+						delete $cross_point_index_hash{$cross_point} if(defined $cross_point_index_hash{$cross_point}) ;
+						}
+					}
+				$character_index += usc_length($character);
+				}
+			
+			$line_index++ ;
+			}
+		}
 	}
-}
 
-#-----------------------------------------------------------------------------
-
-sub switch_to_cross_elements_from_selected_elements
-{
-my ($self) = @_;
-
-my @selected_elements = @{$self->{ELEMENTS}} ;
-@selected_elements = $self->get_selected_elements(1) if $self->get_selected_elements(1) ;
-
-for (@selected_elements)
+for(keys %cross_point_index_hash)
 	{
-	$_->{CROSS_FLAG} = 1 if (! defined $_->{CROSS_FLAG}) ;
+	push @cross_point_index, [map {int} split('-', $_)] ;
 	}
+
+return(\@lines, \@cross_point_index) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -153,7 +175,7 @@ my %all_cross_filler_chars = map {$_, 1}
 				'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
 				'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
 				'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
-				'╛', '╙', '╘', '╖', '╕', '╓', '╒'
+				'╛', '╙', '╘', '╖', '╕', '╓', '╒', '<', '>', '^', 'v',
 				) ;
 
 my %diagonal_cross_filler_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
@@ -185,28 +207,18 @@ my @unicode_right_chars = ({%unicode_right_chars_thin}, {%unicode_right_chars_bo
 my @unicode_up_chars    = ({%unicode_up_chars_thin},    {%unicode_up_chars_bold},    {%unicode_up_chars_double})    ;
 my @unicode_down_chars  = ({%unicode_down_chars_thin},  {%unicode_down_chars_bold},  {%unicode_down_chars_double})  ;
 
-
-sub delete_cross_elements_cache
+sub get_cross_mode_overlays
 {
-my ($self) = @_;
-
-my $normal_char_cache_num = keys %normal_char_cache;
-my $diagonal_char_cache_num = keys %diagonal_char_cache;
-
-%normal_char_cache = ();
-%diagonal_char_cache = ();
-
-}
-
-sub get_cross_points_coordinates
-{
-my ($self) = @_;
+my ($self, $asciio) = @_;
 
 my ($ascii_array_ref, @ascii_array, $index_ref);
 
 #~ this sub is slow
-($ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_overlay(\%all_cross_filler_chars);
+($ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_overlay($asciio, \%all_cross_filler_chars);
 @ascii_array = @{$ascii_array_ref} ;
+
+# use Data::TreeDumper ;
+# print DumpTree [$ascii_array_ref, $index_ref] ;
 
 my ($row, $col, $scene_func, @elements_to_be_add) ;
 my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315, $normal_key, $diagonal_key);
@@ -241,8 +253,6 @@ for(@{$index_ref})
 	
 	($char_45, $char_135, $char_225, $char_315) = ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
 	
-	$diagonal_key = ($char_45 || $undef_char) . ($char_135 || $undef_char) . ($char_225 || $undef_char) . ($char_315 || $undef_char);
-
 	$diagonal_key = ((defined $char_45) ? join('o', @{$char_45}) : $undef_char) . '_' 
 		. ((defined $char_135) ? join('o', @{$char_135}) : $undef_char) . '_' 
 		. ((defined $char_225) ? join('o', @{$char_225}) : $undef_char) . '_' 
@@ -271,10 +281,10 @@ my ($up, $down, $left, $right, $index) = @_;
 
 return 0 unless defined $up && defined $down && defined $left && defined $right ;
 
-return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''} @{$up}) || (any {$_ eq '+'} @{$up}))
-	&& ((any {$_ eq '|'} @{$down}) || (any {$_ eq '.'} @{$down}) || (any {$_ eq '\''} @{$down}) || (any {$_ eq '+'} @{$down}))
-	&& ((any {$_ eq '-'} @{$left}) || (any {$_ eq '.'} @{$left}) || (any {$_ eq '\''} @{$left}) || (any {$_ eq '+'} @{$left}))
-	&& ((any {$_ eq '-'} @{$right}) || (any {$_ eq '.'} @{$right}) || (any {$_ eq '\''} @{$right}) || (any {$_ eq '+'} @{$right})) ;
+return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''} @{$up}) || (any {$_ eq '+'} @{$up}) || (any {$_ eq '^'} @{$up}))
+	&& ((any {$_ eq '|'} @{$down}) || (any {$_ eq '.'} @{$down}) || (any {$_ eq '\''} @{$down}) || (any {$_ eq '+'} @{$down}) || (any {$_ eq 'v'} @{$down}))
+	&& ((any {$_ eq '-'} @{$left}) || (any {$_ eq '.'} @{$left}) || (any {$_ eq '\''} @{$left}) || (any {$_ eq '+'} @{$left}) || (any {$_ eq '<'} @{$left}))
+	&& ((any {$_ eq '-'} @{$right}) || (any {$_ eq '.'} @{$right}) || (any {$_ eq '\''} @{$right}) || (any {$_ eq '+'} @{$right}) || (any {$_ eq '>'} @{$right})) ;
 
 }
 
@@ -740,10 +750,10 @@ my ($char_45, $char_135, $char_225, $char_315) = @_;
 
 return 0 unless defined $char_45 && defined $char_135 && defined $char_225 && defined $char_315 ;
 
-return (any {$_ eq '/'} @{$char_45})
-	&& (any {$_ eq '\\'} @{$char_135})
-	&& (any {$_ eq '/'} @{$char_225})
-	&& (any {$_ eq '\\'} @{$char_315}) ;
+return (any {$_ eq '/' || $_ eq '^'} @{$char_45})
+	&& (any {$_ eq '\\' || $_ eq 'v'} @{$char_135})
+	&& (any {$_ eq '/' || $_ eq 'v'} @{$char_225})
+	&& (any {$_ eq '\\' || $_ eq '^'} @{$char_315}) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -754,125 +764,12 @@ my ($char_45, $char_135, $char_225, $char_315) = @_;
 
 return 0 unless defined $char_45 && defined $char_135 && defined $char_225 && defined $char_315 ;
 
-return (any {$_ eq '╱'} @{$char_45})
-	&& (any {$_ eq '╲'} @{$char_135})
-	&& (any {$_ eq '╱'} @{$char_225})
-	&& (any {$_ eq '╲'} @{$char_315}) ;
+return (any {$_ eq '╱' || $_ eq '^'} @{$char_45})
+	&& (any {$_ eq '╲' || $_ eq 'v'} @{$char_135})
+	&& (any {$_ eq '╱' || $_ eq 'v'} @{$char_225})
+	&& (any {$_ eq '╲' || $_ eq '^'} @{$char_315}) ;
 }
 
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub create_line
-{
-my ($self, $all_type) = @_;
-
-my ($line_type, $cross_type) = @{$all_type} ;
-
-my @arrows =
-	(
-	[
-	['origin',       '',  '*',   '',  '',  '', 1],
-	['up',          '|',  '|',   '',  '', '|', 1],
-	['down',        '|',  '|',   '',  '', '|', 1],
-	['left',        '-',  '-',   '',  '', '-', 1],
-	['up-left',     '|',  '|',  '.', '-', '-', 1],
-	['left-up',     '-',  '-', '\'', '|', '|', 1],
-	['down-left',   '|',  '|', '\'', '-', '-', 1],
-	['left-down',   '-',  '-',  '.', '|', '|', 1],
-	['right',       '-',  '-',   '',  '', '-', 1],
-	['up-right',    '|',  '|',  '.', '-', '_', 1],
-	['right-up',    '-',  '-', '\'', '|', '|', 1],
-	['down-right',  '|',  '|', '\'', '-', '-', 1],
-	['right-down',  '-',  '-',  '.', '|', '|', 1],
-	['45',          '/',  '/',   '',  '', '/', 1],
-	['135',        '\\', '\\',   '',  '', '\\', 1],
-	['225',         '/',  '/',   '',  '', '/', 1],
-	['315',        '\\', '\\',   '',  '', '\\', 1],
-	],
-	[
-	['origin',      '',  '*',  '',  '',  '', 1],
-	['up',         '│',  '│',  '',  '', '│', 1],
-	['down',       '│',  '│',  '',  '', '│', 1],
-	['left',       '─',  '─',  '',  '', '─', 1],
-	['upleft',     '│',  '│', '╮', '─', '─', 1],
-	['leftup',     '─',  '─', '╰', '│', '│', 1],
-	['downleft',   '│',  '│', '╯', '─', '─', 1],
-	['leftdown',   '─',  '─', '╭', '│', '│', 1],
-	['right',      '─',  '─',  '',  '', '─', 1],
-	['upright',    '│',  '│', '╭', '─', '─', 1],
-	['rightup',    '─',  '─', '╯', '│', '│', 1],
-	['downright',  '│',  '│', '╰', '─', '─', 1],
-	['rightdown',  '─',  '─', '╮', '│', '│', 1],
-	['45',         '/',  '/',  '',  '', '/', 1],
-	['135',       '\\', '\\',  '',  '', '\\', 1],
-	['225',        '/',  '/',  '',  '', '/', 1],
-	['315',       '\\', '\\',  '',  '', '\\', 1],
-	], 
-	[
-	['origin',      '',  '*',  '',  '',  '', 1],
-	['up',         '┃',  '┃',  '',  '', '┃', 1],
-	['down',       '┃',  '┃',  '',  '', '┃', 1],
-	['left',       '━',  '━',  '',  '', '━', 1],
-	['upleft',     '┃',  '┃', '┓', '━', '━', 1],
-	['leftup',     '━',  '━', '┗', '┃', '┃', 1],
-	['downleft',   '┃',  '┃', '┛', '━', '━', 1],
-	['leftdown',   '━',  '━', '┏', '┃', '┃', 1],
-	['right',      '━',  '━',  '',  '', '━', 1],
-	['upright',    '┃',  '┃', '┏', '━', '━', 1],
-	['rightup',    '━',  '━', '┛', '┃', '┃', 1],
-	['downright',  '┃',  '┃', '┗', '━', '━', 1],
-	['rightdown',  '━',  '━', '┓', '┃', '┃', 1],
-	['45',         '/',  '/',  '',  '', '/', 1],
-	['135',       '\\', '\\',  '',  '', '\\', 1],
-	['225',        '/',  '/',  '',  '', '/', 1],
-	['315',       '\\', '\\',  '',  '', '\\', 1],
-	],
-	[
-	['origin',      '',  '*',  '',  '',  '', 1],
-	['up',         '║',  '║',  '',  '', '║', 1],
-	['down',       '║',  '║',  '',  '', '║', 1],
-	['left',       '═',  '═',  '',  '', '═', 1],
-	['upleft',     '║',  '║', '╗', '═', '═', 1],
-	['leftup',     '═',  '═', '╚', '║', '║', 1],
-	['downleft',   '║',  '║', '╝', '═', '═', 1],
-	['leftdown',   '═',  '═', '╔', '║', '║', 1],
-	['right',      '═',  '═',  '',  '', '═', 1],
-	['upright',    '║',  '║', '╔', '═', '═', 1],
-	['rightup',    '═',  '═', '╝', '║', '║', 1],
-	['downright',  '║',  '║', '╚', '═', '═', 1],
-	['rightdown',  '═',  '═', '╗', '║', '║', 1],
-	['45',         '/',  '/',  '',  '', '/', 1],
-	['135',       '\\', '\\',  '',  '', '\\', 1],
-	['225',        '/',  '/',  '',  '', '/', 1],
-	['315',       '\\', '\\',  '',  '', '\\', 1],
-	]
-	) ;
-
-my $arrow_type = $arrows[$line_type] ;
-
-my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
-			({
-			POINTS => [[1, 0, 'right']],
-			DIRECTION => 'left',
-			ALLOW_DIAGONAL_LINES => 0,
-			EDITABLE => 1,
-			RESIZABLE => 1,
-			ARROW_TYPE => $arrow_type,
-			});
-
-if($cross_type)
-	{
-	$my_line_obj->{CROSS_FLAG} = 1;
-	}
-
-$my_line_obj->{NAME} = 'line';
-$my_line_obj->enable_autoconnect(0);
-$my_line_obj->allow_connection('start', 0);
-$my_line_obj->allow_connection('end', 0);
-
-$self->add_element_at($my_line_obj, $self->{MOUSE_X}, $self->{MOUSE_Y});
 }
 
 #-----------------------------------------------------------------------------

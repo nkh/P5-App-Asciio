@@ -5,6 +5,7 @@ $|++ ;
 
 use strict;
 use warnings;
+use App::Asciio::Cross ;
 
 #-----------------------------------------------------------------------------
 
@@ -131,12 +132,14 @@ for my $element (@elements)
 		}
 	}
 
-# If there is an overlay, the characters of the overlay need to be exported
-for($self->get_overlays())
+# If there is cross overlay, the characters of the cross need to be exported
+if($self->{USE_CROSS_MODE})
 	{
-	$lines[$_->[1]][$_->[0]] = $_->[2] if defined $lines[$_->[1]][$_->[0]] ;
+	for(App::Asciio::Cross->get_cross_mode_overlays($self))
+		{
+		$lines[$_->[1]][$_->[0]] = $_->[2] if defined $lines[$_->[1]][$_->[0]] ;
+		}
 	}
-
 
 if($self->{MARKUP_MODE} && $format)
 	{
@@ -161,82 +164,6 @@ if($self->{MARKUP_MODE} && $format)
 	return(@new_lines);
 	}
 return(@lines) ;
-}
-
-sub transform_elements_to_ascii_array_for_cross_overlay
-{
-my ($self, $cross_filler_chars)  = @_ ;
-
-my (@lines, @cross_point_index, %cross_point_index_hash, $cross_point) ;
-
-for my $element (grep {defined $_->{CROSS_FLAG}} @{$self->{ELEMENTS}})
-	{
-	for my $strip (@{$element->get_stripes()})
-		{
-		my $line_index = 0 ;
-
-		for my $sub_strip (split("\n", $strip->{TEXT}))
-			{
-			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
-
-			if($self->{MARKUP_MODE})
-			{
-				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
-				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
-			}
-
-			my $character_index = 0 ;
-			
-			for my $character (split '', $sub_strip)
-				{
-				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
-				
-				if($x >= 0 && $y >= 0)
-					{
-					$cross_point = $y . '-' . $x ;
-
-					# The characters retained in the array are characters that may be crossing, 
-					# and other characters are discarded
-					if(exists $cross_filler_chars->{$character})
-						{
-						if(defined $lines[$y][$x])
-							{
-							push @{$lines[$y][$x]}, $character ;
-							}
-						else
-							{
-							$lines[$y][$x] = [$character] ;
-							}
-						}
-					else
-						{
-						delete $lines[$y][$x] if(defined $lines[$y][$x]) ;
-						}
-					
-					# The cross point is the number of array elements greater than 1
-					if((defined $lines[$y][$x]) && (scalar @{$lines[$y][$x]} > 1))
-						{
-						$cross_point_index_hash{$cross_point} = 1 ;
-						}
-					else
-						{
-						delete $cross_point_index_hash{$cross_point} if(defined $cross_point_index_hash{$cross_point}) ;
-						}
-					}
-				$character_index += usc_length($character);
-				}
-			
-			$line_index++ ;
-			}
-		}
-	}
-
-for(keys %cross_point_index_hash)
-	{
-	push @cross_point_index, [map {int} split('-', $_)] ;
-	}
-
-return(\@lines, \@cross_point_index) ;
 }
 
 #-----------------------------------------------------------------------------

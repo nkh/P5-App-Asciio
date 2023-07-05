@@ -58,11 +58,6 @@ if($element_definition{WITH_SIZE})
 # add name to be seen in the stencil list
 $element->{NAME} = $element_definition{NAME} ;
 
-if($element_definition{CROSS_FLAG})
-	{
-	$element->{CROSS_FLAG} = $element_definition{CROSS_FLAG} ;
-	}
-
 return $element ;
 }
 
@@ -79,8 +74,6 @@ use $element_definition{CLASS} ;
 \$element = new $element_definition{CLASS} (\\%element_definition) ;
 
 \$element->{NAME} = \$element_definition{NAME} ;
-
-\$element->{CROSS_FLAG} = \$element_definition{CROSS_FLAG} if(defined \$element_definition{CROSS_FLAG}) ;
 
 EOE
 

@@ -27,6 +27,7 @@ use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
 
+use App::Asciio::Cross ;
 use App::Asciio::Toolfunc ;
 
 sub hide_pointer
@@ -219,6 +220,7 @@ for my $element (@{$self->{ELEMENTS}})
 	$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
 	}
 
+$self->draw_cross_overlays($gc, $widget_width, $widget_height, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -468,6 +470,40 @@ if($self->{DRAW_HINT_LINES})
 	}
 
 return TRUE;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_cross_overlays
+{
+my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+
+my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+my $gco = Cairo::Context->create($surface) ;
+
+my $layout = Pango::Cairo::create_layout($gco) ;
+my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+$layout->set_font_description($font_description) ;
+
+for (App::Asciio::Cross->get_cross_mode_overlays($self))
+	{
+	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+	
+	$background_color //= $self->get_color('element_background');
+	$foreground_color //= $self->get_color('element_foreground') ;
+	
+	$gco->set_source_rgb(@{$background_color});
+	$gco->rectangle(0, 0, $character_width, $character_height) ;
+	$gco->fill();
+	
+	$gco->set_source_rgb(@{$foreground_color});
+	
+	$layout->set_text($overlay) ;
+	Pango::Cairo::show_layout($gco, $layout) ;
+	
+	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
+	$gc->paint;
+	}
 }
 
 #-----------------------------------------------------------------------------
