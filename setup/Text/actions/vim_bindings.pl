@@ -225,27 +225,6 @@ register_action_handlers_remove_old_shortcuts
 		'Display numbered objects'                       => [ 't' ],
 		'Test'                                           => [ 'o' ],
 		},
-
-	'Cross element Insert leader' => 
-		{
-		SHORTCUTS => 'x',
-		
-		'Add cross box'                       => [ 'b' ],
-		'Add cross exec box'                  => [ 'e' ],
-		'Add cross arrow'                     => [ 'a' ],
-		'Add cross angled arrow'              => [ 'A' ],
-		
-		'add cross ascii line'                => [ 'w' ],
-		'add cross unicode line'              => ['S-W'],
-		'Add cross unicode bold line'         => ['C-w'],
-		'Add cross unicode double line'       => ['A-w'],
-		
-		'Select cross elements'               => ['c'],
-		'Select normal elements'              => ['n'],
-		
-		'change to cross elements'            => ['C-c'],
-		'change to normal elements'           => ['C-n'],
-		},
 	) ;
 
 

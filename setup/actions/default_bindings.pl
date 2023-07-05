@@ -21,6 +21,8 @@ use App::Asciio::Toolfunc ;
 
 register_action_handlers
 (
+'flip cross mode'                        => [ '000-x',                                 sub { $_[0]->{USE_CROSS_MODE} ^= 1 ; $_[0]->update_display ; }                      ],
+
 'Undo'                                   => [['C00-z', '000-u'],                       \&App::Asciio::Actions::Unsorted::undo                                              ],
 'Redo'                                   => [['C00-y', 'C00-r'],                       \&App::Asciio::Actions::Unsorted::redo                                              ],
 'Zoom in'                                => [['000-plus', 'C00-j'],                    \&App::Asciio::Actions::Unsorted::zoom, 1                                           ],
@@ -288,27 +290,6 @@ register_action_handlers
 	'clone emulation down'               => ['C00-Down',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                          ],
 	},
 
-'Cross element Insert leader' => 
-	{
-	SHORTCUTS => '000-x',
-	
-	'Add cross box'                       => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/box', 0]                 ],
-	'Add cross exec box'                  => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/exec box', 1]            ],
-	'Add cross arrow'                     => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/wirl_arrow', 0]          ],
-	'Add cross angled arrow'              => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Cross/angled_arrow', 0]        ],
-	
-	'add cross ascii line'                => ['000-w', \&App::Asciio::Actions::Elements::create_line, [0, 1]                                  ], 
-	'add cross unicode line'              => ['00S-W', \&App::Asciio::Actions::Elements::create_line, [1, 1]                                  ],
-	'Add cross unicode bold line'         => ['C00-w', \&App::Asciio::Actions::Elements::create_line, [2, 1]                                  ],
-	'Add cross unicode double line'       => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, [3, 1]                                  ],
-	
-	'Select cross elements'               => ['000-c', \&App::Asciio::Actions::ElementsManipulation::select_cross_elements_from_selected_elements               ],
-	'Select normal elements'              => ['000-n', \&App::Asciio::Actions::ElementsManipulation::select_normal_elements_from_selected_elements              ],
-	
-	'change to cross elements'            => ['C00-c', \&App::Asciio::Actions::ElementsManipulation::switch_to_cross_elements_from_selected_elements            ],
-	'change to normal elements'           => ['C00-n', \&App::Asciio::Actions::ElementsManipulation::switch_to_normal_elements_from_selected_elements           ],
-	},
-
 'slides leader' => 
 	{
 	SHORTCUTS => '00S-S',
@@ -333,9 +314,6 @@ register_action_handlers
 	'arrow end right'                     => [ '00S-Right',          \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0] ],
 	'arrow end left'                      => [ '00S-Left',           \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
 	},
-
-'set cross overlays'   => [ '0A0-o', sub { $_[0]->set_overlays_sub(\&App::Asciio::get_cross_points_coordinates) ; $_[0]->update_display ; } ],
-'reset overlays' => [ '000-o', sub { $_[0]->set_overlays_sub(undef) ; $_[0]->update_display ; } ],
 ) ;
 
 

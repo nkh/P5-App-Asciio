@@ -32,6 +32,13 @@ ACTION_VERBOSE => undef,
 
 COLORS => {},
 
+USE_CROSS_MODE => 1,
+CROSS_MODE_IGNORE =>
+    [
+    'App::Asciio::stripes::ellipse',
+	'App::Asciio::stripes::if_box'
+    ],
+
 COLOR_SCHEMES =>
 	{
 	'night' =>
@@ -63,8 +70,6 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
-		cross_element_background => [0.04, 0.04, 0.04],
-		crosselement_foreground => [0.59, 0.59, 0.59] ,
 		}, 
 	'system' =>
 		{
@@ -96,8 +101,6 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
-		cross_element_foregroud => [0, 0, 0],
-		cross_element_backgroud => [1, 1, 1],
 		} 
 	},
 

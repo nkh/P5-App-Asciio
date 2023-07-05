@@ -38,28 +38,6 @@ Goals when adding bindings:
 
 - sort by name or key if possible
 
-``` perl
-
-'Cross element Insert leader' => 
-	{
-	SHORTCUTS => '000-x',
-	
-	'Add cross box'                  => ['000-b', \&App::Asciio::Actions::Cross::add_element, ['Asciio/Cross/box', 0]                             ],
-	'Add cross exec box'             => ['000-e', \&App::Asciio::Actions::Cross::add_element, ['Asciio/Cross/exec box', 1]                        ],
-	'Add cross arrow'                => ['000-a', \&App::Asciio::Actions::Cross::add_element, ['Asciio/Cross/wirl_arrow', 0]                      ],
-	'Add cross angled arrow'         => ['00S-A', \&App::Asciio::Actions::Cross::add_element, ['Asciio/Cross/angled_arrow', 0]                    ],
-	
-	'Add cross unicode line 2'       => ['000-i', \&App::Asciio::Actions::Cross::create_line, [2, 1]                                              ],
-	'Add cross unicode line 3'       => ['C00-i', \&App::Asciio::Actions::Cross::create_line, [3, 1]                                              ],
-	
-	'Select cross elements'          => ['000-c', \&App::Asciio::Actions::CrossManipulation::select_cross_elements_from_selected_elements         ],
-	'Select normal elements'         => ['000-n', \&App::Asciio::Actions::CrossManipulation::select_normal_elements_from_selected_elements        ],
-	
-	'Change to cross elements'       => ['C00-c', \&App::Asciio::Actions::CrossManipulation::switch_to_cross_elements_from_selected_elements      ],
-	'Change to normal elements'      => ['C00-n', \&App::Asciio::Actions::CrossManipulation::switch_to_normal_elements_from_selected_elements     ],
-	},
-
-```
 
 ```perl
 

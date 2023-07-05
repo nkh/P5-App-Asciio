@@ -105,13 +105,10 @@ my $git_mode_arrow_type = [
 		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
 	] ;
 
-my $angled_arrow_cross_enum ;
-
 sub git_mode_change_arrow_type
 {
-my ($self, $set_type, $cross_enum) = @_ ;
+my ($self, $set_type) = @_ ;
 $git_mode_arrow_type = $set_type ;
-$angled_arrow_cross_enum = $cross_enum ;
 }
 
 sub connect_from_connector
@@ -133,7 +130,6 @@ my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					}) ;
 
 $angled_arrow->set_arrow_type($git_mode_arrow_type) ;
-$angled_arrow->{CROSS_FLAG} = $angled_arrow_cross_enum if(defined $angled_arrow_cross_enum) ;
 $angled_arrow->enable_autoconnect(0) ;
 
 $self->add_element_at_no_connection

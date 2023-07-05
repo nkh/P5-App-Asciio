@@ -15,7 +15,6 @@ use List::MoreUtils qw(any minmax first_value) ;
 use App::Asciio::Setup ;
 use App::Asciio::Dialogs ;
 use App::Asciio::Elements ;
-use App::Asciio::Cross ;
 use App::Asciio::Menues ;
 use App::Asciio::Actions ;
 use App::Asciio::Undo ;
