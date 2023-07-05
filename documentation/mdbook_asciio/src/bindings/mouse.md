@@ -1,5 +1,9 @@
 # mouse
 
+TBD document the different key+mouse action
+
+- shift double click on arrow changes the direction
+
     Mouse emulation:
 
          «'»                Toggle» mouse

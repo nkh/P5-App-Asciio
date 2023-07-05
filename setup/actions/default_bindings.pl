@@ -91,6 +91,7 @@ register_action_handlers
 'Mouse duplicate elements'                    => [['0AS-button-press-1', '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                            ],
 
 'Insert flex point'                           => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                      ],
+'Mouse change arrow direction'                => ['00S-2button-press-1',                    \&App::Asciio::Actions::Arrow::change_arrow_direction                             ],      
 
 'Mouse motion'                                => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                       ], 
 'Mouse motion 2'                              => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                       ],
