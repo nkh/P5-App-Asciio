@@ -143,6 +143,15 @@ my ($self, $element, $x, $y) = @_ ;
 
 #-----------------------------------------------------------------------------
 
+sub set_elements_position
+{
+my ($self, $elements, $x, $y) = @_ ;
+
+@$_{'X', 'Y'} = ($x, $y) for @$elements ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub add_element_at
 {
 my ($self, $element, $x, $y) = @_ ;
@@ -720,11 +729,13 @@ return($is_under) ;
 
 sub get_extent_box
 {
-my ($self) = @_ ;
+my ($self, @elements) = @_ ;
 
-my ($xs, $ys, $xe, $ye) ;
+@elements = $self->get_selected_elements(1) unless @elements ;
 
-for (grep { ref($_) !~ /arrow/ } $self->get_selected_elements(1))
+my ($xs, $ys, $xe, $ye) = (10_000, 10_000, 0, 0) ;
+
+for (grep { ref($_) !~ /arrow/ } @elements)
 	{
 	$xs = min($xs//10_000, $_->{X} + $_->{EXTENTS}[0]) ;
 	$ys = min($ys//10_000, $_->{Y} + $_->{EXTENTS}[1]) ;

@@ -131,7 +131,7 @@ else
 
 return bless({
 		STRIPES => \@stripes,
-		EXTENTS => [$min_x, $max_x, $min_y, $max_y],
+		EXTENTS => [$min_x, $min_y, $max_x, $max_y],
 		EX => $min_ex,
 		EY => $min_ey,
 		WIDTH => $total_width,

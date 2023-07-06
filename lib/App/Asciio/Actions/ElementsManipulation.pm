@@ -1,5 +1,7 @@
 package App::Asciio::Actions::ElementsManipulation ;
 
+use strict ; use warnings ;
+
 use App::Asciio::stripes::group ;
 use Scalar::Util ;
 
@@ -115,7 +117,7 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub select_all_elements_by_search_words
+sub select_all_elements_by_words
 {
 my ($self) = @_ ;
 
@@ -128,7 +130,7 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub select_all_elements_by_search_words_ignore_group
+sub select_all_elements_by_words_no_group
 {
 my ($self) = @_ ;
 
@@ -482,14 +484,25 @@ if($x_offset != 0 || $y_offset != 0)
 
 sub create_stripes_group
 {
-my ($self, $as_one_stripe) = @_ ;
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+create_stripes_group_from_selected_elements(@_) ;
+
+$self->update_display();
+}
+
+sub create_stripes_group_from_selected_elements
+{
+my ($self, $as_one_stripe, $no_group_insertion) = @_ ;
+
+my $strip_group ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
 
-if(@selected_elements > 1)
+if(@selected_elements >= 1)
 	{
-	$self->create_undo_snapshot() ;
-	
 	my @connections ;
 	
 	my %selected_elements = map { $_ => 1 } $self->get_selected_elements(1) ;
@@ -509,24 +522,29 @@ if(@selected_elements > 1)
 	
 	@selected_elements = $self->get_selected_elements(1) ;
 	
-	my ($new_element, $ex, $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe, $self) ;
+	delete $_->{CACHE}{RENDERING} for @selected_elements ;
 	
-	@$new_element{'X', 'Y', 'SELECTED'} = ($ex, $ey, 1) ;
-	$self->add_elements($new_element) ;
+	($strip_group, my $ex, my $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe, $self) ;
 	
-	$self->delete_elements(@selected_elements) ;
+	@$strip_group{'X', 'Y', 'SELECTED'} = ($ex, $ey, 1) ;
+	
+	unless ($no_group_insertion)
+		{
+		$self->add_elements($strip_group) ;
+		$self->delete_elements(@selected_elements) ;
+		}
 	}
 
-$self->update_display();
+return $strip_group ;
 }
 
 #----------------------------------------------------------------------------------------------
 
 sub ungroup_stripes_group
 {
-my ($self) = @_ ;
+my ($self, $stripes_group) = @_ ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
+my @selected_elements = $stripes_group // $self->get_selected_elements(1) ;
 
 if(@selected_elements == 1 && ref $selected_elements[0] eq 'App::Asciio::stripes::group')
 	{

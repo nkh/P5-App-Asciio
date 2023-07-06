@@ -10,78 +10,79 @@ my @split_modules ;
 my @pm_files = qw(
 lib/App/Asciio.pm
 
-lib/App/Asciio/Toolfunc.pm
 lib/App/Asciio/Actions.pm
 lib/App/Asciio/Ascii.pm
 lib/App/Asciio/Connections.pm
+lib/App/Asciio/Cross.pm
 lib/App/Asciio/Dialogs.pm
 lib/App/Asciio/Elements.pm
-lib/App/Asciio/Cross.pm
 lib/App/Asciio/Io.pm
 lib/App/Asciio/Menues.pm
-lib/App/Asciio/Setup.pm
-lib/App/Asciio/Undo.pm
 lib/App/Asciio/Options.pm
+lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
+lib/App/Asciio/Toolfunc.pm
+lib/App/Asciio/Undo.pm
 
-lib/App/Asciio/Actions/Colors.pm
 lib/App/Asciio/Actions/Align.pm
-lib/App/Asciio/Actions/File.pm
-lib/App/Asciio/Actions/Presentation.pm
-lib/App/Asciio/Actions/Unsorted.pm
-lib/App/Asciio/Actions/Ruler.pm
+lib/App/Asciio/Actions/Arrow.pm
+lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
+lib/App/Asciio/Actions/Clone.pm
+lib/App/Asciio/Actions/Colors.pm
+lib/App/Asciio/Actions/Debug.pm
 lib/App/Asciio/Actions/Elements.pm
 lib/App/Asciio/Actions/ElementsManipulation.pm
-lib/App/Asciio/Actions/Arrow.pm
-lib/App/Asciio/Actions/Multiwirl.pm
-lib/App/Asciio/Actions/Mouse.pm
-lib/App/Asciio/Actions/Box.pm
+lib/App/Asciio/Actions/File.pm
 lib/App/Asciio/Actions/Git.pm
-lib/App/Asciio/Actions/Debug.pm
+lib/App/Asciio/Actions/Mouse.pm
+lib/App/Asciio/Actions/Multiwirl.pm
+lib/App/Asciio/Actions/Presentation.pm
+lib/App/Asciio/Actions/Ruler.pm
+lib/App/Asciio/Actions/Unsorted.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm
+lib/App/Asciio/stripes/center_connect_box.pm
 lib/App/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/stripes/editable_box2.pm
-lib/App/Asciio/stripes/center_connect_box.pm
+lib/App/Asciio/stripes/ellipse.pm
+lib/App/Asciio/stripes/exec_box.pm
+lib/App/Asciio/stripes/group.pm
 lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
-lib/App/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/stripes/rhombus.pm
-lib/App/Asciio/stripes/ellipse.pm
-lib/App/Asciio/stripes/triangle_down.pm
-lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/stripes/single_stripe.pm
-lib/App/Asciio/stripes/exec_box.pm
 lib/App/Asciio/stripes/stripes.pm
-lib/App/Asciio/stripes/group.pm
+lib/App/Asciio/stripes/triangle_down.pm
+lib/App/Asciio/stripes/triangle_up.pm
+lib/App/Asciio/stripes/wirl_arrow.pm
 
 lib/App/Asciio/Utils/Presentation.pm
 
 lib/App/Asciio/GTK/Asciio.pm
 
+lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
-lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 
-lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
-lib/App/Asciio/GTK/Asciio/stripes/editable_exec_box.pm
-lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
-lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
+lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
-lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
+lib/App/Asciio/GTK/Asciio/stripes/editable_exec_box.pm
 lib/App/Asciio/GTK/Asciio/stripes/ellipse.pm
+lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
+lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
+lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
 
 lib/App/Asciio/Text/Asciio.pm
 lib/App/Asciio/Text/Asciio/Dialogs.pm
 lib/App/Asciio/Text/Asciio/Menues.pm
 lib/App/Asciio/Text/Asciio/stripes/editable_arrow2.pm
-lib/App/Asciio/Text/Asciio/stripes/wirl_arrow.pm
-lib/App/Asciio/Text/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/Text/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/Text/Asciio/stripes/editable_exec_box.pm
+lib/App/Asciio/Text/Asciio/stripes/section_wirl_arrow.pm
+lib/App/Asciio/Text/Asciio/stripes/wirl_arrow.pm
 );
 
 for(@pm_files)
@@ -95,7 +96,6 @@ qw(
 setup/setup.ini
 
 setup/actions/default_bindings.pl
-setup/actions/single_click_insert.pl
 
 setup/asciio_object/basic.pl
 setup/hooks/canonize_connections.pl
@@ -107,8 +107,8 @@ setup/import_export/perl.pl
 
 setup/Asciio
 setup/Stencils/Computer
-setup/Stencils/People
 setup/Stencils/Divers
+setup/Stencils/People
 
 setup/GTK/setup.ini
 setup/GTK/import_export/png.pl

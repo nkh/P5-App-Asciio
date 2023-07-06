@@ -34,7 +34,8 @@ Binding: «b»                Add box
 
 ### A box with the frame drawn with Unicode characters
 
-Binding: «A-b»              Add unicode box
+***Binding:*** «A-b»              Add unicode box
+
 
 ### A text
 

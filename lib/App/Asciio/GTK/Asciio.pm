@@ -12,7 +12,7 @@ use Glib ':constants';
 use Gtk3 -init;
 use Pango ;
 
-use List::MoreUtils qw(minmax) ;
+use List::MoreUtils qw(all) ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
@@ -216,133 +216,7 @@ my $font_description = Pango::FontDescription->from_string($self->get_font_as_st
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
-	my $is_selected = $element->{SELECTED} // 0 ;
-	$is_selected = 1 if $is_selected > 0 ;
-	
-	my ($background_color, $foreground_color) =  $element->get_colors() ;
-	
-	if($is_selected)
-		{
-		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-			{
-			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
-			}
-		else
-			{
-			$background_color = $self->get_color('selected_element_background');
-			}
-		}
-	else
-		{
-		unless (defined $background_color)
-			{
-			if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-				{
-				$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
-				}
-			else
-				{
-				$background_color = $self->get_color('element_background') ;
-				}
-			}
-		}
-			
-	$foreground_color //= $self->get_color('element_foreground') ;
-	
-	my $color_set = $is_selected . '-'
-			. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
-			. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
-	
-	my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
-	
-	unless (defined $renderings)
-		{
-		my @renderings ;
-		
-		my $stripes = $element->get_stripes() ;
-		
-		for my $strip (@{$stripes})
-			{
-			my $line_index = 0 ;
-			
-			my $strip_background_color = $background_color ;
-			my $strip_foreground_color = $foreground_color ;
-			
-			unless ($is_selected)
-				{
-				$strip_background_color = $strip->{BACKGROUND} // $background_color ;
-				$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
-				}
-			
-			$color_set .= $strip_background_color . $strip_foreground_color ;
-			
-			for my $line (split /\n/, $strip->{TEXT})
-				{
-				$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
-				
-				unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
-					{
-					my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
-					
-					my $gc = Cairo::Context->create($surface);
-					$gc->set_source_rgba(@{$strip_background_color}, $self->{OPAQUE_ELEMENTS});
-					$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
-					$gc->fill();
-					
-					$gc->set_source_rgb(@{$strip_foreground_color});
-					
-					if($self->{NUMBERED_OBJECTS})
-						{
-						$gc->set_line_width(1);
-						$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
-						$gc->set_font_size($self->{FONT_SIZE});
-						$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
-						$gc->move_to(0, $character_height * 0.66) ;
-						$gc->show_text($element_index);
-						$gc->stroke;
-						}
-					else
-						{
-						my $layout = Pango::Cairo::create_layout($gc) ;
-						
-						$layout->set_font_description($font_description) ;
-						if($self->{MARKUP_MODE} && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
-							{
-							#~ link fomart: <span link="">something</span>
-							#~ convert to:  <span underline="double">something</span>
-							$line =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
-							$layout->set_markup($line) ;
-							}
-						else
-							{
-							$layout->set_text($line) ;
-							}
-						
-						Pango::Cairo::show_layout($gc, $layout);
-						}
-					
-					$self->{CACHE}{STRIPS}{$color_set}{$line} = $surface ; # keep reference
-					}
-				
-				my $strip_rendering = $self->{CACHE}{STRIPS}{$color_set}{$line} ;
-				push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
-				}
-			}
-		
-		$renderings = $element->{CACHE}{RENDERING}{$color_set} = \@renderings ;
-		}
-	
-	for my $rendering (@$renderings)
-		{
-		$gc->set_source_surface
-			(
-			$rendering->[0],
-			($element->{X} + $rendering->[1]) * $character_width, # can be single addition
-			($element->{Y} + $rendering->[2]) * $character_height
-			);
-		
-		$gc->paint;
-		}
+	$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
 	}
 
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
@@ -609,23 +483,199 @@ my $layout = Pango::Cairo::create_layout($gco) ;
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 $layout->set_font_description($font_description) ;
 
-for ($self->get_overlays('GUI', $gc, $widget_width, $widget_height, $character_width, $character_height))
+my $element_index = 0 ;
+
+my @overlay_elements = $self->get_overlays('GUI', $gc, $widget_width, $widget_height, $character_width, $character_height) ;
+for (@overlay_elements)
 	{
-	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+	if(! defined $_)
+		{
+		print "GTK::Asciio: got undef\n" ;
+		}
+	elsif(ref $_ eq 'ARRAY')
+		{
+		my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+		
+		$background_color //= $self->get_color('element_background');
+		$foreground_color //= $self->get_color('element_foreground') ;
+		
+		$gco->set_source_rgb(@{$background_color});
+		$gco->rectangle(0, 0, $character_width, $character_height) ;
+		$gco->fill();
+		
+		$gco->set_source_rgb(@{$foreground_color});
+		
+		$layout->set_text($overlay) ;
+		Pango::Cairo::show_layout($gco, $layout) ;
+		
+		$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
+		$gc->paint;
+		}
+	elsif(ref($_) =~ /^App::Asciio::stripes/)
+		{
+		$self->draw_element($_, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+		$element_index++ ; # should overlay stripes have number?
+		}
+	else
+		{
+		print "GTK::Asciio: got someting else " . ref($_) . "\n" ;
+		}
+	}
+# draw hint_lines
+if(@overlay_elements and $self->{DRAW_HINT_LINES})
+	{
+	my ($xs, $ys, $xe, $ye) = $self->get_extent_box(@overlay_elements) ; 
+
+	$gc->set_line_width(1);
+	$gc->set_source_rgb(@{$self->get_color('hint_line2')});
+
+	$gc->move_to($xs * $character_width, 0) ;
+	$gc->line_to($xs * $character_width, $widget_height) ;
+
+	$gc->move_to(0, $ys * $character_height) ;
+	$gc->line_to($widget_width, $ys * $character_height);
+
+	$gc->move_to($xe * $character_width, 0) ;
+	$gc->line_to($xe * $character_width, $widget_height) ;
+
+	$gc->move_to(0, $ye * $character_height) ;
+	$gc->line_to($widget_width, $ye * $character_height);
+
+	$gc->stroke() ;
+	}
+}
+
+# ------------------------------------------------------------------------------
+
+sub draw_element
+{
+my ($self, $element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+
+my $is_selected = $element->{SELECTED} // 0 ;
+$is_selected = 1 if $is_selected > 0 ;
+
+my ($background_color, $foreground_color) =  $element->get_colors() ;
+
+if($is_selected)
+	{
+	if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+		{
+		$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
+		}
+	else
+		{
+		$background_color = $self->get_color('selected_element_background');
+		}
+	}
+else
+	{
+	unless (defined $background_color)
+		{
+		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+			{
+			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
+			}
+		else
+			{
+			$background_color = $self->get_color('element_background') ;
+			}
+		}
+	}
+		
+$foreground_color //= $self->get_color('element_foreground') ;
+
+my $color_set = $is_selected . '-'
+		. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
+		. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
+
+my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
+
+unless (defined $renderings)
+	{
+	my @renderings ;
 	
-	$background_color //= $self->get_color('element_background');
-	$foreground_color //= $self->get_color('element_foreground') ;
+	my $stripes = $element->get_stripes() ;
 	
-	$gco->set_source_rgb(@{$background_color});
-	$gco->rectangle(0, 0, $character_width, $character_height) ;
-	$gco->fill();
+	for my $strip (@{$stripes})
+		{
+		my $line_index = 0 ;
+		
+		my $strip_background_color = $background_color ;
+		my $strip_foreground_color = $foreground_color ;
+		
+		unless ($is_selected)
+			{
+			$strip_background_color = $strip->{BACKGROUND} // $background_color ;
+			$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
+			}
+		
+		$color_set .= $strip_background_color . $strip_foreground_color ;
+		
+		for my $line (split /\n/, $strip->{TEXT})
+			{
+			$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
+			
+			unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
+				{
+				my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
+				
+				my $gc = Cairo::Context->create($surface);
+				$gc->set_source_rgba(@{$strip_background_color}, $self->{OPAQUE_ELEMENTS});
+				$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
+				$gc->fill();
+				
+				$gc->set_source_rgb(@{$strip_foreground_color});
+				
+				if($self->{NUMBERED_OBJECTS})
+					{
+					$gc->set_line_width(1);
+					$gc->select_font_face($self->{FONT_FAMILY}, 'normal', 'normal');
+					$gc->set_font_size($self->{FONT_SIZE});
+					$gc->rectangle(0, 0, $strip->{WIDTH} * $character_width, $character_height);
+					$gc->move_to(0, $character_height * 0.66) ;
+					$gc->show_text($element_index);
+					$gc->stroke;
+					}
+				else
+					{
+					my $layout = Pango::Cairo::create_layout($gc) ;
+					
+					$layout->set_font_description($font_description) ;
+					if($self->{MARKUP_MODE} && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
+						{
+						#~ link fomart: <span link="">something</span>
+						#~ convert to:  <span underline="double">something</span>
+						$line =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
+						$layout->set_markup($line) ;
+						}
+					else
+						{
+						$layout->set_text($line) ;
+						}
+					
+					Pango::Cairo::show_layout($gc, $layout);
+					}
+				
+				$self->{CACHE}{STRIPS}{$color_set}{$line} = $surface ; # keep reference
+				}
+			
+			my $strip_rendering = $self->{CACHE}{STRIPS}{$color_set}{$line} ;
+			push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
+			}
+		}
 	
-	$gco->set_source_rgb(@{$foreground_color});
+	$renderings = $element->{CACHE}{RENDERING}{$color_set} = \@renderings ;
+	}
+
+for my $rendering (@$renderings)
+	{
+	$gc->set_source_surface
+		(
+		$rendering->[0],
+		($element->{X} + $rendering->[1]) * $character_width, # can be single addition
+		($element->{Y} + $rendering->[2]) * $character_height
+		);
 	
-	$layout->set_text($overlay) ;
-	Pango::Cairo::show_layout($gco, $layout) ;
-	
-	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
 	$gc->paint;
 	}
 }

@@ -32,6 +32,7 @@
 - [Working efficiently](working_efficiently.md)
 	- [Keyboard](editing/keyboard.md)
 	- [Mouse](editing/mouse.md)
+	- [Cloning](editing/cloning.md)
 	- [Grouping](editing/grouping.md)
 	- [Strip groups](editing/strip-groups.md)
 
