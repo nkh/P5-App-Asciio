@@ -8,6 +8,30 @@ use warnings;
 
 use List::Util qw(min max) ;
 
+use App::Asciio::Actions::Multiwirl ;
+
+#----------------------------------------------------------------------------------------------
+
+sub interactive_change_arrow_direction
+{
+my ($self) = @_ ;
+my $changes_made = 0 ;
+
+for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1))
+	{
+	$self->create_undo_snapshot() unless $changes_made++ ;
+	$_->change_last_section_direction() ;
+	}
+
+for (grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} $self->get_selected_elements(1))
+	{
+	$self->create_undo_snapshot() unless $changes_made++ ;
+	$_->change_direction() ;
+	}
+
+$self->update_display() if $changes_made ;
+}
+
 #----------------------------------------------------------------------------------------------
 
 sub change_arrow_direction
@@ -109,7 +133,6 @@ for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_sele
 	for my $section (1 .. $_->get_number_of_sections())
 		{
 		my $last_section = $section - 1 ;
-		print "last_section: $last_section\n" ;
 		$_->move_connector("endsection_$last_section", -$direction->[0], -$direction->[1]) ;
 		}
 	
@@ -163,6 +186,36 @@ for (grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} $self->get_selected_e
 	}
 
 $self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub interactive_to_mouse
+{
+my ($self, $event) = @_ ;
+
+App::Asciio::Actions::Mouse::mouse_motion($self, $event) ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(1 == @selected_elements)
+	{
+	for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} @selected_elements)
+		{
+		App::Asciio::Actions::Multiwirl::move_last_section_to($self, $_, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+		$self->update_display() ;
+		}
+	
+	for (grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} @selected_elements)
+		{
+		$_->setup($_->{ARROW_TYPE}, $self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y}, $_->{DIRECTION}, $_->{EDITABLE}) ;
+		
+		$self->connect_elements($_) ;
+		$self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
+		
+		$self->update_display() ;
+		}
+	}
 }
 
 #----------------------------------------------------------------------------------------------

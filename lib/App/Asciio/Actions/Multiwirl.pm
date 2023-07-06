@@ -533,5 +533,82 @@ return @context_menu_entries ;
 
 #----------------------------------------------------------------------------------------------
 
+sub interactive_add_section
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(0 == @selected_elements)
+	{
+	App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]),
+	}
+elsif(1 == @selected_elements)
+	{
+	if(ref $selected_elements[0] eq 'App::Asciio::stripes::section_wirl_arrow')
+		{
+		my $arrow = $selected_elements[0] ;
+		
+		App::Asciio::Actions::Multiwirl::add_section_to_section_wirl_arrow
+			(
+			$self,
+			{
+				ELEMENT => $arrow,
+				X => $self->{MOUSE_X} - $arrow->{X},
+				Y => $self->{MOUSE_Y} - $arrow->{Y},
+			}
+			) ;
+		
+		$self->update_display() ;
+		}
+	else
+		{
+		# add multi wirl from element to mouse
+		my $element = $selected_elements[0] ;
+		
+		$self->create_undo_snapshot() ;
+		
+		my $arrow = $self->add_new_element_named('Asciio/wirl_arrow', $element->{X}, $element->{Y}) ;
+		
+		move_last_section_to($self, $arrow, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+		
+		$self->deselect_all_elements() ;
+		$self->select_elements(1, $arrow) ;
+		$self->update_display() ;
+		}
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub move_last_section_to
+{
+my ($self, $arrow, $x, $y) = @_ ;
+
+if($self->is_connected($arrow))
+	{
+	# disconnect current connections
+	$self->delete_connections_containing($arrow) ;
+	}
+
+my $last_section = $arrow->get_number_of_sections() - 1 ;
+
+my $end_section = $arrow->{ARROWS}[-1] ;
+my $offset = $arrow->{POINTS_OFFSETS}[-1] ;
+
+$arrow->move_connector
+	(
+	"endsection_$last_section",
+	$x - (($arrow->{X} + $offset->[0]) + $end_section->{END_X}),
+	$y - (($arrow->{Y} + $offset->[1]) + $end_section->{END_Y})
+	) ;
+
+# $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
+
+$self->connect_elements($arrow, @{$self->{ELEMENTS}}) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 1 ;
 

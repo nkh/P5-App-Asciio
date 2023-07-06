@@ -1000,6 +1000,22 @@ else
 
 #-----------------------------------------------------------------------------
 
+sub change_last_section_direction
+{
+my ($self, $x, $y) = @_ ;
+
+delete $self->{CACHE} ;
+
+my $direction = $self->{ARROWS}[-1]->get_direction() ;
+
+if($direction =~ /(.*)-(.*)/)
+	{
+	$self->{ARROWS}[-1]->resize(0, 0, 0, 0, "$2-$1") ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
 sub is_over_element
 {
 my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @_ ;
