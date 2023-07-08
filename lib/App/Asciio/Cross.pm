@@ -17,7 +17,7 @@ use App::Asciio::Toolfunc ;
 
 sub transform_elements_to_ascii_array_for_cross_overlay
 {
-my ($self, $asciio, $cross_filler_chars)  = @_ ;
+my ($self, $asciio, $cross_filler_chars, $start_x, $end_x, $start_y, $end_y)  = @_ ;
 
 my (@lines, @cross_point_index, %cross_point_index_hash, $cross_point) ;
 
@@ -32,6 +32,11 @@ for my $element (@{$asciio->{ELEMENTS}})
 		for my $sub_strip (split("\n", $strip->{TEXT}))
 			{
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
+			if((defined $start_y) && ($y < $start_y || $y >= $end_y))
+				{
+				$line_index++ ;
+				next ;
+				}
 
 			if($asciio->{MARKUP_MODE})
 			{
@@ -44,6 +49,11 @@ for my $element (@{$asciio->{ELEMENTS}})
 			for my $character (split '', $sub_strip)
 				{
 				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
+				if((defined $start_x) && ($x < $start_x || $x >= $end_x))
+					{
+					$character_index += usc_length($character);
+					next ;
+					}
 				
 				if($x >= 0 && $y >= 0)
 					{
@@ -209,12 +219,12 @@ my @unicode_down_chars  = ({%unicode_down_chars_thin},  {%unicode_down_chars_bol
 
 sub get_cross_mode_overlays
 {
-my ($self, $asciio) = @_;
+my ($self, $asciio, $start_x, $end_x, $start_y, $end_y) = @_;
 
 my ($ascii_array_ref, @ascii_array, $index_ref);
 
 #~ this sub is slow
-($ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_overlay($asciio, \%all_cross_filler_chars);
+($ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_overlay($asciio, \%all_cross_filler_chars, $start_x, $end_x, $start_y, $end_y);
 @ascii_array = @{$ascii_array_ref} ;
 
 # use Data::TreeDumper ;
