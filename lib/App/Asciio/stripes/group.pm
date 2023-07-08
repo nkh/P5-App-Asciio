@@ -26,6 +26,18 @@ my ($min_x, $min_y, $max_x, $max_y) = (10_000, 10_000, 0, 0) ;
 my ($min_ex) = min( map { $_->{X} } @$elements) ;
 my ($min_ey) = min( map { $_->{Y} } @$elements) ;
 
+# X Y are not the minimum coordinate of the element, 
+# there is a case where the arrow is reversed
+# X_OFFSET and Y_OFFSET may be negative
+for my $element (@{$elements})
+	{
+	for my $stripe (@{$element->get_stripes()})
+		{
+		$min_ex = min($min_ex, $element->{X} + $stripe->{X_OFFSET}) ;
+		$min_ey = min($min_ey, $element->{Y} + $stripe->{Y_OFFSET}) ;
+		}
+	}
+
 for my $element (@{$elements})
 	{
 	delete $element->{CACHE} ;
