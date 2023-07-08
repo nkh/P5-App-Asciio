@@ -78,6 +78,10 @@ $window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
 $window->signal_connect(button_press_event => \&button_press_event, $self);
 $window->signal_connect(button_release_event => \&button_release_event, $self);
 
+$window->signal_connect(configure_event => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+
 my $drawing_area = Gtk3::DrawingArea->new;
 
 $self->{widget} = $drawing_area ;
@@ -117,12 +121,9 @@ my ($self, $title) = @_;
 
 $self->SUPER::set_title($title) ;
 
-my $cross_mode_title = '' ;
-$cross_mode_title = ' - cross_mode:on' if($self->{CROSS_MODE}) ;
-
 if(defined $title)
 	{
-	$self->{widget}->get_toplevel()->set_title($title . ' - asciio' . $cross_mode_title) ;
+	$self->{widget}->get_toplevel()->set_title($title . ' - asciio') ;
 	}
 }
 
@@ -485,7 +486,16 @@ my $layout = Pango::Cairo::create_layout($gco) ;
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 $layout->set_font_description($font_description) ;
 
-for (App::Asciio::Cross->get_cross_mode_overlays($self))
+my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
+my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), $self->{sc_window}->get_hadjustment()->get_value()) ;
+
+my ($start_x, $end_x, $start_y, $end_y) = (
+	int($h_value/$character_width), 
+	int(($h_value+$windows_width)/$character_width),
+	int($v_value/$character_height),
+	int(($v_value+$windows_height)/$character_height)) ;
+
+for (App::Asciio::Cross->get_cross_mode_overlays($self, $start_x, $end_x, $start_y, $end_y))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 	

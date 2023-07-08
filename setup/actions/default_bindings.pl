@@ -256,10 +256,10 @@ register_action_handlers
 	'Add ellipse'                         => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
 	
 	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                       ],
-	'Add ascii line'                      => ['000-w', \&App::Asciio::Actions::Elements::create_line, [0, 0]                                 ], 
-	'Add unicode line'                    => ['00S-W', \&App::Asciio::Actions::Elements::create_line, [1, 0]                                 ],
-	'Add unicode bold line'               => ['C00-w', \&App::Asciio::Actions::Elements::create_line, [2, 0]                                 ],
-	'Add unicode double line'             => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, [3, 0]                                 ],
+	'Add ascii line'                      => ['000-w', \&App::Asciio::Actions::Elements::create_line, 0                                      ], 
+	'Add unicode line'                    => ['00S-W', \&App::Asciio::Actions::Elements::create_line, 1                                      ],
+	'Add unicode bold line'               => ['C00-w', \&App::Asciio::Actions::Elements::create_line, 2                                      ],
+	'Add unicode double line'             => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, 3                                      ],
 	},
 
 'clone' =>

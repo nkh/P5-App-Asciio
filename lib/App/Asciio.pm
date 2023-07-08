@@ -723,8 +723,6 @@ sub update_display
 {
 my ($self) = @_;
 
-$self->add_cross_fillers() if ($self->{CROSS_MODE} != 0) ;
-
 $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_character_size()) ;
 }
 
