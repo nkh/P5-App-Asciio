@@ -8,7 +8,8 @@ ZOOM_STEP => 3,
 CANVAS_WIDTH => 3000,
 CANVAS_HEIGHT => 4000,
 
-MARKUP_MODE => 0,
+USE_MARKUP_MODE => 0,
+
 EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 

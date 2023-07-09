@@ -86,7 +86,7 @@ for my $element (@elements)
 			my $origin_strip = $sub_strip ;
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 
-			if($self->{MARKUP_MODE})
+			if($self->{USE_MARKUP_MODE})
 			{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
 				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
@@ -141,7 +141,7 @@ if($self->{USE_CROSS_MODE})
 		}
 	}
 
-if($self->{MARKUP_MODE} && $format)
+if($self->{USE_MARKUP_MODE} && $format)
 	{
 	my $new_col;
 	for my $row (0 .. $#lines)

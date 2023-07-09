@@ -27,7 +27,7 @@
 	- [user stencils](stencils/user.md)
 	
 - [Editing elements text and attributes](editing_elements.md)
-	- [Markup mode]()
+	- [Markup mode](editing_elements/markup_mode.md)
 
 - [Working efficiently](working_efficiently.md)
 	- [Keyboard](editing/keyboard.md)
