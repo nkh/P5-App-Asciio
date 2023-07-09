@@ -13,11 +13,7 @@ use List::MoreUtils qw(first_value) ;
 
 my $git_connector_char = '*' ;
 
-sub git_mode_set_connector_char
-{
-my ($self, $set_char) = @_ ;
-$git_connector_char = $set_char ;
-}
+sub set_default_connector { my ($self, $char) = @_ ; $git_connector_char = $char ; }
 
 sub quick_link
 {
@@ -39,6 +35,7 @@ else
 	connect_to_destination_element($self, $new_connector, $x, $y) ;
 	}
 }
+
 }
 
 #----------------------------------------------------------------------------------------------
@@ -88,8 +85,9 @@ if(@destination_connections)
 #----------------------------------------------------------------------------------------------
 {
 
-my $git_mode_arrow_type = [
-		# name: $start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection
+my $git_arrow =
+	[
+		# name: start, body, connection, body_2, end, vertical, diagonal_connection
 		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
 		['up'         , "'",  '|', '?', '?', '.', '?', '?', 1],
 		['down'       , '.',  '|', '?', '?', "'", '?', '?', 1],
@@ -105,11 +103,9 @@ my $git_mode_arrow_type = [
 		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
 	] ;
 
-sub git_mode_change_arrow_type
-{
-my ($self, $set_type) = @_ ;
-$git_mode_arrow_type = $set_type ;
-}
+sub set_default_arrow { my ($self, $type) = @_ ; $git_arrow = App::Asciio::Arrows::clone($type) ; }
+
+#----------------------------------------------------------------------------------------------
 
 sub connect_from_connector
 {
@@ -129,7 +125,7 @@ my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					RESIZABLE => 1,
 					}) ;
 
-$angled_arrow->set_arrow_type($git_mode_arrow_type) ;
+$angled_arrow->set_arrow_type($git_arrow) ;
 $angled_arrow->enable_autoconnect(0) ;
 
 $self->add_element_at_no_connection

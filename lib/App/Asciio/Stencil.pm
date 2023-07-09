@@ -35,8 +35,8 @@ unless($element_definition{WITH_FRAME})
 	my $box_type = $element->get_box_type() ;
 	my ($title, $text) = $element->get_text() ;
 	
-	Readonly my  $TITLE_SEPARATOR => 1 ;
-	Readonly my  $DISPLAY => 0 ;
+	Readonly my $TITLE_SEPARATOR => 1 ;
+	Readonly my $DISPLAY => 0 ;
 	
 	for (0 .. $#$box_type)
 		{

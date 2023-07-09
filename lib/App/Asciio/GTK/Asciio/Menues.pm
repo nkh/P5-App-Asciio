@@ -25,13 +25,12 @@ for my $element (@{$self->{ELEMENT_TYPES}})
 	{
 	(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
 	
-	push @menu_items, 
-		[ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef],
+	push @menu_items, [ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef] ;
 	}
 
 for my $menu_entry (@{$self->get_context_menu_entries($popup_x, $popup_y)})
 	{
-	my($name, $sub, $data) = @{$menu_entry} ;
+	my ($name, $sub, $data) = @{$menu_entry} ;
 	(my $name_with_underscore = $name) =~ s/_/__/g ;
 	
 	push @menu_items, [ $name_with_underscore, undef , $self->menu_entry_wrapper($sub, $data), 0, '<Item>', undef],
@@ -44,7 +43,6 @@ push @menu_items,
 	['/File/save as',  undef , sub { $self->run_actions_by_name(['Save', 1]) ; }, 0 , '<Item>', undef],
 	) ;
 
-use App::Asciio::Io ;
 if($self->get_selected_elements(1) == 1)
 	{
 	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&App::Asciio::save_stencil), 0 , '<Item>', undef ] ;
@@ -67,7 +65,7 @@ for my $menu_entry_definition (map { $_->[0] } sort { $a->[1] cmp $b->[1] } map 
 	{
 	my ($path, undef, $sub, undef, $item) = @$menu_entry_definition ;
 	
-	$path =~ s~^/~~ or die "Menu path doesn't start at root" ;
+	$path =~ s~^/~~ or die "Menu path '$path' doesn't start at root" ;
 	my @path_elements = split m~/~, $path ;
 	my $name = pop @path_elements ;
 	
@@ -157,7 +155,7 @@ for my $context_menu_handler
 		}
 	}
 	
-return(\@context_menu_entries) ;
+return \@context_menu_entries ;
 }
 
 #------------------------------------------------------------------------------------------------------

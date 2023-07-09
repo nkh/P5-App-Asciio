@@ -1,6 +1,7 @@
 
 use App::Asciio::Actions::Align ;
 use App::Asciio::Actions::Arrow ;
+use App::Asciio::Actions::Asciio ;
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Clipboard ;
 use App::Asciio::Actions::Clone ;
@@ -14,7 +15,9 @@ use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::Actions::Presentation ;
 use App::Asciio::Actions::Ruler ;
+use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
+
 use App::Asciio::Toolfunc ;
 
 #----------------------------------------------------------------------------------------------
@@ -121,11 +124,12 @@ register_action_handlers
 
 'Mouse on element id'                    => ['000-m',                                  \&App::Asciio::Actions::Mouse::mouse_on_element_id                                  ],
 
-# context menus 
-'Box context_menu'                       => ['bo_context_menu', undef, undef,          \&App::Asciio::Actions::Box::box_context_menu                                       ],
+'Asciio context_menu'                    => ['as_context_menu', undef, undef,          \&App::Asciio::Actions::Asciio::context_menu                                        ],
+'Box context_menu'                       => ['bo_context_menu', undef, undef,          \&App::Asciio::Actions::Box::context_menu                                           ] ,
 'Multi_wirl context_menu'                => ['mw_context_menu', undef, undef,          \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu                          ],
 'Angled arrow context_menu'              => ['aa_ontext menu',  undef, undef,          \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu                        ],
-'Ruler context_menu'                     => ['ru_context_menu', undef, undef,          \&App::Asciio::Actions::Ruler::rulers_context_menu                                  ],
+'Ruler context_menu'                     => ['ru_context_menu', undef, undef,          \&App::Asciio::Actions::Ruler::context_menu                                         ],
+'Shapes context_menu'                    => ['sh_context_menu', undef, undef,          \&App::Asciio::Actions::Shapes::context_menu                                        ],
 
 'grouping leader' => 
 	{
@@ -174,7 +178,7 @@ register_action_handlers
 	'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme         ],
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements    ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display       ],
-	'Remove rulers'                       => ['0A0-r', \&App::Asciio::Actions::Ruler::remove_ruler               ],
+	'Remove rulers'                       => ['000-r', \&App::Asciio::Actions::Ruler::remove_ruler               ],
 	'Flip hint lines'                     => ['000-h', \&App::Asciio::Actions::Unsorted::flip_hint_lines         ],
 	'Change font'                         => ['000-f', \&App::Asciio::Actions::Unsorted::change_font             ],
 	'Edit inline'                         => ['000-i', \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type,    ], 

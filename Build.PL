@@ -11,7 +11,9 @@ my @pm_files = qw(
 lib/App/Asciio.pm
 
 lib/App/Asciio/Actions.pm
+lib/App/Asciio/Arrows.pm
 lib/App/Asciio/Ascii.pm
+lib/App/Asciio/Boxes.pm
 lib/App/Asciio/Connections.pm
 lib/App/Asciio/Cross.pm
 lib/App/Asciio/Dialogs.pm
@@ -25,7 +27,7 @@ lib/App/Asciio/Toolfunc.pm
 lib/App/Asciio/Undo.pm
 
 lib/App/Asciio/Actions/Align.pm
-lib/App/Asciio/Actions/Arrow.pm
+lib/App/Asciio/Actions/Asciio.pm
 lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Clone.pm
@@ -39,6 +41,7 @@ lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Multiwirl.pm
 lib/App/Asciio/Actions/Presentation.pm
 lib/App/Asciio/Actions/Ruler.pm
+lib/App/Asciio/Actions/Shapes.pm
 lib/App/Asciio/Actions/Unsorted.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm

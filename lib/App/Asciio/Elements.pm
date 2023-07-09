@@ -72,7 +72,7 @@ for my $ruler_line_to_remove (@ruler_lines_to_remove)
 		}
 	}
 
-$self->{RULER_LINES} = [grep {! exists $removed{$_}} @{$self->{RULER_LINES}} ] ;
+$self->{RULER_LINES} = [ grep { ! exists $removed{$_} } @{$self->{RULER_LINES}} ] ;
 }
 
 sub exists_ruler_line

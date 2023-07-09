@@ -1,7 +1,7 @@
 
 package App::Asciio::Actions::Ruler ;
 
-#----------------------------------------------------------------------------------------------
+use strict ; use warnings ;
 
 use Clone ;
 
@@ -13,16 +13,7 @@ my ($self, $data_argument) = @_ ;
 
 $self->create_undo_snapshot() ;
 
-my $data ;
-
-if(! defined $data_argument)
-	{
-	$data = {TYPE => 'VERTICAL', POSITION => $self->{MOUSE_X}} 
-	}
-else
-	{
-	$data = Clone::clone$data_argument ;
-	}
+my $data = defined $data_argument ? Clone::clone($data_argument) : {TYPE => 'VERTICAL', POSITION => $self->{MOUSE_X}}  ;
 
 if(! defined $data->{POSITION})
 	{
@@ -45,49 +36,47 @@ $self->update_display();
 
 sub remove_ruler
 {
-my ($self, $data) = @_ ;
-
-$data = {TYPE => 'VERTICAL', POSITION => $self->{MOUSE_X}} unless defined $data ;
+my ($self, $to_remove) = @_ ;
 
 $self->create_undo_snapshot() ;
-$self->remove_ruler_lines($data) ;
+
+$self->remove_ruler_lines
+	(
+	$to_remove // 
+		(
+		{ TYPE => 'VERTICAL', POSITION => $self->{MOUSE_X} },
+		{ TYPE => 'HORIZONTAL', POSITION => $self->{MOUSE_Y} },
+		)
+	) ;
+
 $self->update_display();
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub rulers_context_menu
+sub context_menu
 {
 my ($self, $popup_x, $popup_y) = @_ ;
+
+my $vertical =   {TYPE => 'VERTICAL',   POSITION => $popup_x} ;
+my $horizontal = {TYPE => 'HORIZONTAL', POSITION => $popup_y} ;
+
 my @context_menu_entries ;
 
-my ($x, $y) = ($popup_x, $popup_y) ;
+push @context_menu_entries, 
+	$self->exists_ruler_line($vertical) 
+		? ["/Asciio/Ruler/remove vertical ruler",   \&remove_ruler, $vertical]
+		: ["/Asciio/Ruler/add vertical ruler",      \&add_ruler, $vertical   ] ;
 
-my $vertical = {TYPE => 'VERTICAL', POSITION => $x} ;
-my $horizontal = {TYPE => 'HORIZONTAL', POSITION => $y} ;
+push @context_menu_entries, 
+	$self->exists_ruler_line($horizontal) 
+		? ["/Asciio/Ruler/remove horizontal ruler", \&remove_ruler, $horizontal]
+		: ["/Asciio/Ruler/add horizontal ruler",    \&add_ruler, $horizontal   ] ;
 
-if($self->exists_ruler_line($vertical))
-	{
-	push @context_menu_entries, ["/Ruler/remove vertical ruler", \&remove_ruler,  $vertical] ;
-	}
-else
-	{
-	push @context_menu_entries, ["/Ruler/add vertical ruler", \&add_ruler,  $vertical] ;
-	}
-	
-if($self->exists_ruler_line($horizontal))
-	{
-	push @context_menu_entries, ["/Ruler/remove horizontal ruler", \&remove_ruler,  $horizontal] ;
-	}
-else
-	{
-	push @context_menu_entries, ["/Ruler/add horizontal ruler", \&add_ruler,  $horizontal] ;
-	}
-
-return(@context_menu_entries) ;
+return @context_menu_entries ;
 }
 
 #----------------------------------------------------------------------------------------------
 
-
 1 ;
+

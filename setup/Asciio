@@ -72,7 +72,7 @@ create_element
 
 create_element
 	(
-	NAME => 'angled_arrow',
+	NAME => 'angled arrow',
 	CLASS => 'App::Asciio::stripes::angled_arrow',
 	END_X => 3,
 	END_Y => -2,
@@ -82,7 +82,7 @@ create_element
 
 create_element
 	(
-	NAME => 'angled_arrow unicode',
+	NAME => 'angled arrow unicode',
 	CLASS => 'App::Asciio::stripes::angled_arrow',
 	END_X => 3,
 	END_Y => -2,

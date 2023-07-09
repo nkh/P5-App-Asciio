@@ -5,7 +5,8 @@ use strict ;
 use warnings ;
 use utf8 ;
 
-use Clone ;
+use App::Asciio::Arrows ;
+
 use App::Asciio::Toolfunc ;
 
 #----------------------------------------------------------------------------------------------
@@ -158,12 +159,12 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 	push @context_menu_entries, [ '/append section', \&add_section_to_section_wirl_arrow, {ELEMENT => $element, X => $x, Y => $y,} ] ;
 	
 	$element->is_connection_allowed('start')
-		? push @context_menu_entries, ["/arrow connection/start doesn't connect", sub {$element->allow_connection('start',0) ;}]
-		: push @context_menu_entries, ["/arrow connection/start connects",        sub {$element->allow_connection('start',1) ;}] ;
+		? push @context_menu_entries, ["/arrow connection/start doesn't connect", sub {$element->allow_connection('start',0) ;} ]
+		: push @context_menu_entries, ["/arrow connection/start connects",        sub {$element->allow_connection('start',1) ;} ] ;
 		
 	$element->is_connection_allowed('end')
-		? push @context_menu_entries, ["/arrow connection/end doesn't connect", sub {$element->allow_connection('end',0) ;}]
-		: push @context_menu_entries, ["/arrow connection/end connects",        sub {$element->allow_connection('end',1) ;}] ;
+		? push @context_menu_entries, ["/arrow connection/end doesn't connect",   sub {$element->allow_connection('end',0) ;} ]
+		: push @context_menu_entries, ["/arrow connection/end connects",          sub {$element->allow_connection('end',1) ;} ] ;
 		
 	push @context_menu_entries, 
 		[
@@ -178,18 +179,25 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 		[
 		$element->are_diagonals_allowed() ? '/no diagonals' :  '/allow diagonals', 
 			sub { $element->allow_diagonals(! $element->are_diagonals_allowed()) }
-		],
-		[ '/arrow type/dash',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'dash',               X => $x, Y => $y } ] ,
-		[ '/arrow type/dash_no_arrow',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'dash_no_arrow',      X => $x, Y => $y } ] ,
-		[ '/arrow type/dot',                       \&change_arrow_type, { ELEMENT => $element, TYPE => 'dot',                X => $x, Y => $y } ],
-		[ '/arrow type/dot_no_arrow',              \&change_arrow_type, { ELEMENT => $element, TYPE => 'dot_no_arrow',       X => $x, Y => $y } ],
-		[ '/arrow type/octo',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'octo',               X => $x, Y => $y } ],
-		[ '/arrow type/star',                      \&change_arrow_type, { ELEMENT => $element, TYPE => 'star',               X => $x, Y => $y } ],
-		[ '/arrow type/unicode',                   \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode',            X => $x, Y => $y } ],
-		[ '/arrow type/unicode_bold',              \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_bold',       X => $x, Y => $y } ],
-		[ '/arrow type/unicode_double_line',       \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_double_line',X => $x, Y => $y } ],
-		[ '/arrow type/unicode_no_arrow',          \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_no_arrow',   X => $x, Y => $y } ],
-		[ '/arrow type/unicode_hollow_dot',        \&change_arrow_type, { ELEMENT => $element, TYPE => 'unicode_hollow_dot', X => $x, Y => $y } ] ;
+		] ;
+	
+	for 
+		(qw(
+		dash               
+		dash_no_arrow      
+		dot                
+		dot_no_arrow       
+		octo               
+		star               
+		unicode            
+		unicode_bold       
+		unicode_double_line
+		unicode_no_arrow   
+		unicode_hollow_dot 
+		))
+		{
+		push @context_menu_entries, [ "/arrow type/$_", \&App::Asciio::Arrows::change_type, { ELEMENT => $element, TYPE => $_ } ] ,
+		}
 	}
 
 return @context_menu_entries ;
@@ -203,298 +211,6 @@ my ($self, $arguments) = @_ ;
 
 $arguments->{ELEMENT}->allow_connection($arguments->{WHICH}, $arguments->{CONNECT}) ;
 }
-
-#----------------------------------------------------------------------------------------------
-
-my %arrow_types = 
-(
-	dash =>
-	[
-		['origin',       '',  '*',   '',  '',  '', 1],
-		['up',          '|',  '|',   '',  '', '^', 1],
-		['down',        '|',  '|',   '',  '', 'v', 1],
-		['left',        '-',  '-',   '',  '', '<', 1],
-		['upleft',      '|',  '|',  '.', '-', '<', 1],
-		['leftup',      '-',  '-', '\'', '|', '^', 1],
-		['downleft',    '|',  '|', '\'', '-', '<', 1],
-		['leftdown',    '-',  '-',  '.', '|', 'v', 1],
-		['right',       '-',  '-',   '',  '', '>', 1],
-		['upright',     '|',  '|',  '.', '-', '>', 1],
-		['rightup',     '-',  '-', '\'', '|', '^', 1],
-		['downright',   '|',  '|', '\'', '-', '>', 1],
-		['rightdown',   '-',  '-',  '.', '|', 'v', 1],
-		['45',          '/',  '/',   '',  '', '^', 1],
-		['135',        '\\', '\\',   '',  '', 'v', 1],
-		['225',         '/',  '/',   '',  '', 'v', 1],
-		['315',        '\\', '\\',   '',  '', '^', 1],
-	],
-	dash_no_arrow =>
-	[
-		['origin',      '',  '*',   '',  '',  '', 1],
-		['up',         '|',  '|',   '',  '', '.', 1],
-		['down',       '|',  '|',   '',  '', '.', 1],
-		['left',       '-',  '-',   '',  '', '.', 1],
-		['upleft',     '|',  '|',  '.', '-', '.', 1],
-		['leftup',     '-',  '-', '\'', '|', '.', 1],
-		['downleft',   '|',  '|', '\'', '-', '.', 1],
-		['leftdown',   '-',  '-',  '.', '|', '.', 1],
-		['right',      '-',  '-',   '',  '', '.', 1],
-		['upright',    '|',  '|',  '.', '-', '.', 1],
-		['rightup',    '-',  '-', '\'', '|', '.', 1],
-		['downright',  '|',  '|', '\'', '-', '.', 1],
-		['rightdown',  '-',  '-',  '.', '|', '.', 1],
-		['45',         '/',  '/',   '',  '', '.', 1],
-		['135',       '\\', '\\',   '',  '', '.', 1],
-		['225',        '/',  '/',   '',  '', '.', 1],
-		['315',      ' \\', '\\',   '',  '', '.', 1],
-	],
-	dot =>
-	[
-		['origin',     '', '*',   '',  '',  '', 1],
-		['up',        '.', '.',   '',  '', '^', 1],
-		['down',      '.', '.',   '',  '', 'v', 1],
-		['left',      '.', '.',   '',  '', '<', 1],
-		['upleft',    '.', '.',  '.', '.', '<', 1],
-		['leftup',    '.', '.', '\'', '.', '^', 1],
-		['downleft',  '.', '.', '\'', '.', '<', 1],
-		['leftdown',  '.', '.',  '.', '.', 'v', 1],
-		['right',     '.', '.',   '',  '', '>', 1],
-		['upright',   '.', '.',  '.', '.', '>', 1],
-		['rightup',   '.', '.', '\'', '.', '^', 1],
-		['downright', '.', '.', '\'', '.', '>', 1],
-		['rightdown', '.', '.',  '.', '.', 'v', 1],
-		['45',        '.', '.',   '',  '', '^', 1],
-		['135',       '.', '.',   '',  '', 'v', 1],
-		['225',       '.', '.',   '',  '', 'v', 1],
-		['315',       '.', '.',   '',  '', '^', 1],
-	],
-	dot_no_arrow =>
-	[
-		['origin',     '', '*',   '',  '',  '', 1],
-		['up',        '.', '.',   '',  '', '.', 1],
-		['down',      '.', '.',   '',  '', '.', 1],
-		['left',      '.', '.',   '',  '', '.', 1],
-		['upleft',    '.', '.',  '.', '.', '.', 1],
-		['leftup',    '.', '.', '\'', '.', '.', 1],
-		['downleft',  '.', '.', '\'', '.', '.', 1],
-		['leftdown',  '.', '.',  '.', '.', '.', 1],
-		['right',     '.', '.',   '',  '', '.', 1],
-		['upright',   '.', '.',  '.', '.', '.', 1],
-		['rightup',   '.', '.', '\'', '.', '.', 1],
-		['downright', '.', '.', '\'', '.', '.', 1],
-		['rightdown', '.', '.',  '.', '.', '.', 1],
-		['45',        '.', '.',   '',  '', '.', 1],
-		['135',       '.', '.',   '',  '', '.', 1],
-		['225',       '.', '.',   '',  '', '.', 1],
-		['315',       '.', '.',   '',  '', '.', 1],
-	],
-	star =>
-	[
-		['origin',     '', '*', '',   '',  '', 1],
-		['up',        '*', '*', '',   '', '^', 1],
-		['down',      '*', '*', '',   '', 'v', 1],
-		['left',      '*', '*', '',   '', '<', 1],
-		['upleft',    '*', '*', '*', '*', '<', 1],
-		['leftup',    '*', '*', '*', '*', '^', 1],
-		['downleft',  '*', '*', '*', '*', '<', 1],
-		['leftdown',  '*', '*', '*', '*', 'v', 1],
-		['right',     '*', '*',  '',  '', '>', 1],
-		['upright',   '*', '*', '*', '*', '>', 1],
-		['rightup',   '*', '*', '*', '*', '^', 1],
-		['downright', '*', '*', '*', '*', '>', 1],
-		['rightdown', '*', '*', '*', '*', 'v', 1],
-		['45',        '*', '*',  '',  '', '^', 1],
-		['135',       '*', '*',  '',  '', 'v', 1],
-		['225',       '*', '*',  '',  '', 'v', 1],
-		['315',       '*', '*',  '',  '', '^', 1],
-	],
-	octo =>
-	[
-		['origin',    '', '#',  '',  '',  '', 1],
-		['up',       '#', '#',  '',  '', '^', 1],
-		['down',     '#', '#',  '',  '', 'v', 1],
-		['left',     '#', '#',  '',  '', '<', 1],
-		['upleft',   '#', '#', '#', '#', '<', 1],
-		['leftup',   '#', '#', '#', '#', '^', 1],
-		['downleft', '#', '#', '#', '#', '<', 1],
-		['leftdown', '#', '#', '#', '#', 'v', 1],
-		['right',    '#', '#',  '',  '', '>', 1],
-		['upright',  '#', '#', '#', '#', '>', 1],
-		['rightup',  '#', '#', '#', '#', '^', 1],
-		['downright','#', '#', '#', '#', '>', 1],
-		['rightdown','#', '#', '#', '#', 'v', 1],
-		['45',       '#', '#',  '',  '', '^', 1],
-		['135',      '#', '#',  '',  '', 'v', 1],
-		['225',      '#', '#',  '',  '', 'v', 1],
-		['315',      '#', '#',  '',  '', '^', 1],
-	],
-	unicode =>
-	[
-		['origin',      '',  '*',  '',  '',  '', 1],
-		['up',         '│',  '│',  '',  '', '^', 1],
-		['down',       '│',  '│',  '',  '', 'v', 1],
-		['left',       '─',  '─',  '',  '', '<', 1],
-		['upleft',     '│',  '│', '╮', '─', '<', 1],
-		['leftup',     '─',  '─', '╰', '│', '^', 1],
-		['downleft',   '│',  '│', '╯', '─', '<', 1],
-		['leftdown',   '─',  '─', '╭', '│', 'v', 1],
-		['right',      '─',  '─',  '',  '', '>', 1],
-		['upright',    '│',  '│', '╭', '─', '>', 1],
-		['rightup',    '─',  '─', '╯', '│', '^', 1],
-		['downright',  '│',  '│', '╰', '─', '>', 1],
-		['rightdown',  '─',  '─', '╮', '│', 'v', 1],
-		['45',         '/',  '/',  '',  '', '^', 1],
-		['135',       '\\', '\\',  '',  '', 'v', 1],
-		['225',        '/',  '/',  '',  '', 'v', 1],
-		['315',       '\\', '\\',  '',  '', '^', 1],
-	],
-	unicode_bold =>
-	[
-		['origin',      '',  '*',  '',  '',  '', 1],
-		['up',         '┃',  '┃',  '',  '', '^', 1],
-		['down',       '┃',  '┃',  '',  '', 'v', 1],
-		['left',       '━',  '━',  '',  '', '<', 1],
-		['upleft',     '┃',  '┃', '┓', '━', '<', 1],
-		['leftup',     '━',  '━', '┗', '┃', '^', 1],
-		['downleft',   '┃',  '┃', '┛', '━', '<', 1],
-		['leftdown',   '━',  '━', '┏', '┃', 'v', 1],
-		['right',      '━',  '━',  '',  '', '>', 1],
-		['upright',    '┃',  '┃', '┏', '━', '>', 1],
-		['rightup',    '━',  '━', '┛', '┃', '^', 1],
-		['downright',  '┃',  '┃', '┗', '━', '>', 1],
-		['rightdown',  '━',  '━', '┓', '┃', 'v', 1],
-		['45',         '/',  '/',  '',  '', '^', 1],
-		['135',       '\\', '\\',  '',  '', 'v', 1],
-		['225',        '/',  '/',  '',  '', 'v', 1],
-		['315',       '\\', '\\',  '',  '', '^', 1],
-	],
-	unicode_double_line =>
-	[
-		['origin',      '',  '*',  '',  '',  '', 1],
-		['up',         '║',  '║',  '',  '', '^', 1],
-		['down',       '║',  '║',  '',  '', 'v', 1],
-		['left',       '═',  '═',  '',  '', '<', 1],
-		['upleft',     '║',  '║', '╗', '═', '<', 1],
-		['leftup',     '═',  '═', '╚', '║', '^', 1],
-		['downleft',   '║',  '║', '╝', '═', '<', 1],
-		['leftdown',   '═',  '═', '╔', '║', 'v', 1],
-		['right',      '═',  '═',  '',  '', '>', 1],
-		['upright',    '║',  '║', '╔', '═', '>', 1],
-		['rightup',    '═',  '═', '╝', '║', '^', 1],
-		['downright',  '║',  '║', '╚', '═', '>', 1],
-		['rightdown',  '═',  '═', '╗', '║', 'v', 1],
-		['45',         '/',  '/',  '',  '', '^', 1],
-		['135',       '\\', '\\',  '',  '', 'v', 1],
-		['225',        '/',  '/',  '',  '', 'v', 1],
-		['315',       '\\', '\\',  '',  '', '^', 1],
-	],
-	unicode_no_arrow =>
-	[
-		['origin',      '',  '*',  '',  '',  '', 1],
-		['up',         '│',  '│',  '',  '', '│', 1],
-		['down',       '│',  '│',  '',  '', '│', 1],
-		['left',       '─',  '─',  '',  '', '─', 1],
-		['upleft',     '│',  '│', '╮', '─', '─', 1],
-		['leftup',     '─',  '─', '╰', '│', '│', 1],
-		['downleft',   '│',  '│', '╯', '─', '─', 1],
-		['leftdown',   '─',  '─', '╭', '│', '│', 1],
-		['right',      '─',  '─',  '',  '', '─', 1],
-		['upright',    '│',  '│', '╭', '─', '─', 1],
-		['rightup',    '─',  '─', '╯', '│', '│', 1],
-		['downright',  '│',  '│', '╰', '─', '─', 1],
-		['rightdown',  '─',  '─', '╮', '│', '│', 1],
-		['45',         '/',  '/',  '',  '', '/', 1],
-		['135',       '\\', '\\',  '',  '', '\\', 1],
-		['225',        '/',  '/',  '',  '', '/', 1],
-		['315',       '\\', '\\',  '',  '', '\\', 1],
-	],
-	unicode_hollow_dot =>
-	[
-		['origin',     '', '*',  '',  '',  '', 1],
-		['up',        '∘', '∘',  '',  '', '^', 1],
-		['down',      '∘', '∘',  '',  '', 'v', 1],
-		['left',      '∘', '∘',  '',  '', '<', 1],
-		['upleft',    '∘', '∘', '∘', '∘', '<', 1],
-		['leftup',    '∘', '∘', '∘', '∘', '^', 1],
-		['downleft',  '∘', '∘', '∘', '∘', '<', 1],
-		['leftdown',  '∘', '∘', '∘', '∘', 'v', 1],
-		['right',     '∘', '∘',  '', '',  '>', 1],
-		['upright',   '∘', '∘', '∘', '∘', '>', 1],
-		['rightup',   '∘', '∘', '∘', '∘', '^', 1],
-		['downright', '∘', '∘', '∘', '∘', '>', 1],
-		['rightdown', '∘', '∘', '∘', '∘', 'v', 1],
-		['45',        '∘', '∘',  '',  '', '^', 1],
-		['135',       '∘', '∘',  '',  '', 'v', 1],
-		['225',       '∘', '∘',  '',  '', 'v', 1],
-		['315',       '∘', '∘',  '',  '', '^', 1],
-	],
-	angled_arrow_dash =>
-	[
-		# name: $start, $body, $connection, $body_2, $end, $vertical, $diagonal_connection
-		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
-		['up'         , "'",  '|', '?', '?', '.', '?', '?', 1],
-		['down'       , '.',  '|', '?', '?', "'", '?', '?', 1],
-		['left'       , '-',  '-', '?', '?', '-', '?', '?', 1],
-		['right'      , '-',  '-', '?', '?', '-', '?', '?', 1],
-		['up-left'    , "'", '\\', '.', '-', '-', '|', "'", 1],
-		['left-up'    , '-', '\\', "'", '-', '.', '|', "'", 1],
-		['down-left'  , '.',  '/', "'", '-', '-', '|', "'", 1],
-		['left-down'  , '-',  '/', '.', '-', "'", '|', "'", 1],
-		['up-right'   , "'",  '/', '.', '-', '-', '|', "'", 1],
-		['right-up'   , '-',  '/', "'", '-', '.', '|', "'", 1],
-		['down-right' , '.', '\\', "'", '-', '-', '|', "'", 1],
-		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
-	],
-	angled_arrow_unicode =>
-	[
-		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
-		['up'         , "'",  '│', '?', '?', '.', '?', '?', 1],
-		['down'       , '.',  '│', '?', '?', "'", '?', '?', 1],
-		['left'       , '─',  '─', '?', '?', '─', '?', '?', 1],
-		['right'      , '─',  '─', '?', '?', '─', '?', '?', 1],
-		['up-left'    , "'", '\\', '.', '─', '─', '│', "'", 1],
-		['left-up'    , '─', '\\', "'", '─', '.', '│', "'", 1],
-		['down-left'  , '.',  '/', "'", '─', '─', '│', "'", 1],
-		['left-down'  , '─',  '/', '.', '─', "'", '│', "'", 1],
-		['up-right'   , "'",  '/', '.', '─', '─', '│', "'", 1],
-		['right-up'   , '─',  '/', "'", '─', '.', '│', "'", 1],
-		['down-right' , '.', '\\', "'", '─', '─', '│', "'", 1],
-		['right-down' , '─', '\\', '.', '─', "'", '│', "'", 1],
-	],
-) ;
-
-
-sub change_arrow_type
-{
-my ($self, $data, $atomic_operation) = @_ ;
-
-$atomic_operation //= 1 ;
-
-if(exists $arrow_types{$data->{TYPE}})
-	{
-	$self->create_undo_snapshot() if $atomic_operation ;
-	
-	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
-	
-	$data->{ELEMENT}->set_arrow_type($new_type) ;
-	
-	$self->update_display() if $atomic_operation ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-sub git_mode_change_arrow_type
-{
-my ($self, $data) = @_ ;
-
-my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
-
-print("now git mode angled arrow type " . $data->{TYPE} . "\n") ;
-
-use App::Asciio::Actions::Git ;
-App::Asciio::Actions::Git->git_mode_change_arrow_type($new_type) ;
-}
-
 
 #----------------------------------------------------------------------------------------------
 
@@ -517,12 +233,15 @@ if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 			$element->enable_autoconnect(! $element->is_autoconnect_enabled()) ;
 			$self->update_display() ;
 			}
-		],
-		[ '/arrow type/dash',             \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_dash', } ] ,
-		[ '/arrow type/unicode',          \&change_arrow_type, { ELEMENT => $element, TYPE => 'angled_arrow_unicode', } ] ,
-		[ '/git mode arrow type/dash',    \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_dash' } ] ,
-		[ '/git mode arrow type/unicode', \&git_mode_change_arrow_type, { TYPE => 'angled_arrow_unicode' } ] ;
-
+		] ;
+	for 
+		(qw(
+		angled_arrow_dash               
+		angled_arrow_unicode      
+		))
+		{
+		push @context_menu_entries, [ "/arrow type/$_", \&App::Asciio::Arrows::change_type, { ELEMENT => $element, TYPE => $_ } ] ,
+		}
 	}
 
 return @context_menu_entries ;
