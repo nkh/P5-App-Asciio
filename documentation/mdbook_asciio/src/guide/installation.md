@@ -32,8 +32,13 @@ working on the  GTK3 port and you'll need to install manually.
     There are docker images made by third parties, use a search engine for
     the latest.
 
-    example image:
+    https://hub.docker.com/r/rodolfoap/asciio
+
+    example images:
+
     https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb
+
+    https://github.com/rodolfoap
 
 # Platforms
 
