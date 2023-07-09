@@ -88,6 +88,7 @@ register_action_handlers
 'Mouse quick link'                       => [['0A0-button-press-1', '000-period'],     \&App::Asciio::Actions::Mouse::quick_link                                           ],
 'Mouse quick link git'                   => [['0A0-button-press-3', '00S-semicolon'],  \&App::Asciio::Actions::Git::quick_link                                             ],
 'Mouse duplicate elements'               => [['0AS-button-press-1', '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                              ],
+'Mouse quick box'                        => [['C0S-button-press-1'],                   \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                    ],
 
 'Arrow to mouse'                         => ['CA0-motion_notify',                      \&App::Asciio::Actions::Arrow::interactive_to_mouse                                 ], 
 'Arrow mouse change direction'           => ['CA0-2button-press-1',                    \&App::Asciio::Actions::Arrow::change_arrow_direction                               ],      
