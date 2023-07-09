@@ -687,7 +687,7 @@ unless (defined $renderings)
 					my $layout = Pango::Cairo::create_layout($gc) ;
 					
 					$layout->set_font_description($font_description) ;
-					if($self->{MARKUP_MODE} && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
+					if($self->{USE_MARKUP_MODE} && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
 						{
 						#~ link fomart: <span link="">something</span>
 						#~ convert to:  <span underline="double">something</span>

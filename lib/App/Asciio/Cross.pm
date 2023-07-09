@@ -38,7 +38,7 @@ for my $element (@{$asciio->{ELEMENTS}})
 				next ;
 				}
 
-			if($asciio->{MARKUP_MODE})
+			if($asciio->{USE_MARKUP_MODE})
 			{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
 				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;

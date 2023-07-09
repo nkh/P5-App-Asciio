@@ -19,6 +19,42 @@ working on the  GTK3 port and you'll need to install manually.
     ./Build install
 ```
 
+In the windows environment, you can use asciio through WSL or cygwin.
+
+## WSL
+
+The use of WSL is not much different from the Linux environment.
+
+## Cygwin
+
+- First install [Cygwin](https://www.cygwin.com/).
+- Make sure the following components are installed correctly
+   - x11
+   - perl
+   - Gnome
+   - gun-make
+   - gcc-g++
+- Search for "cygpt" in all the packages to be installed, and install all 
+  the packages that appear.
+- Install all dependent modules of asciio
+
+Pay attention when installing perl modules, some may be installed through 
+cpan, but some cannot, and can only be installed manually.
+
+>When compiling, the Makefile of several modules has an unrecognized option 
+`-lnsl`. removed it when install it manually.
+
+Start asciio by the following method:
+
+```bash
+startxwin >/dev/null 2>&1 &
+export DISPLAY=:0.0
+asciio
+```
+
+
+
+
 # Running asciio
 
     $> asciio [file.asciio] # GUI application using Gtk3

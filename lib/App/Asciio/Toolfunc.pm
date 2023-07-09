@@ -3,9 +3,9 @@ package App::Asciio::Toolfunc ;
 
 require Exporter ;
 @ISA = qw(Exporter) ;
-# @EXPORT = qw(set_double_width_qr_and_markup_mode usc_length make_vertical_text);
+# @EXPORT = qw(set_asciio_handle usc_length make_vertical_text);
 @EXPORT = qw(
-	set_double_width_qr_and_markup_mode
+	set_asciio_handle
 	usc_length
 	make_vertical_text
 	new_box
@@ -28,23 +28,22 @@ use utf8 ;
 
 {
 
-my $DOUBLE_WIDTH_QR ;
-my $MARKUP_MODE ;
+my $ASCIIO_HANDLE ;
 
-sub set_double_width_qr_and_markup_mode
+sub set_asciio_handle
 {
 my ($self) = @_ ;
-die "DOUBLE_WIDTH_QR not set" unless defined $self->{DOUBLE_WIDTH_QR} ;
-$DOUBLE_WIDTH_QR = $self->{DOUBLE_WIDTH_QR} ;
-$MARKUP_MODE = $self->{MARKUP_MODE} ;
+
+$ASCIIO_HANDLE = $self unless(defined $ASCIIO_HANDLE) ;
+
 }
 
 sub usc_length
 {
 my ($string) = @_ ;
 
-$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if($MARKUP_MODE);
-return length($string) + ($string =~ s/$DOUBLE_WIDTH_QR/x/g) ;
+$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if($ASCIIO_HANDLE->{USE_MARKUP_MODE});
+return length($string) + ($string =~ s/$ASCIIO_HANDLE->{DOUBLE_WIDTH_QR}/x/g) ;
 }
 
 }
