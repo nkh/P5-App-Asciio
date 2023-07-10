@@ -39,8 +39,8 @@ register_action_handlers
 'Import from clipboard to box'           => [ '0AS-E' ,                                \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                     ],
 'Import from clipboard to text'          => [ '0AS-T' ,                                \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text                    ],
 
-'Select next element'                    => [['000-Tab', '000-n'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0]      ],
-'Select previous element'                => [['00S-ISO_Left_Tab', '00S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0]      ],
+'Select next element'                    => [['000-Tab', '000-n'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 0]   ],
+'Select previous element'                => [['00S-ISO_Left_Tab', '00S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 0]   ],
 'Select next non arrow'                  => [['C00-Tab', 'C00-n'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 1]   ],
 'Select previous non arrow'              => [['C0S-ISO_Left_Tab', 'C0S-N'],            \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 1]   ],
 'Select next arrow'                      => [['CA0-Tab', 'C00-m'],                     \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 2]   ],
@@ -89,7 +89,6 @@ register_action_handlers
 'Mouse selection flip'                   => ['C00-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
 
 'Mouse quick link'                       => [['0A0-button-press-1', '000-period'],     \&App::Asciio::Actions::Mouse::quick_link                                           ],
-'Mouse quick link git'                   => [['0A0-button-press-3', '00S-semicolon'],  \&App::Asciio::Actions::Git::quick_link                                             ],
 'Mouse duplicate elements'               => [['0AS-button-press-1', '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                              ],
 'Mouse quick box'                        => [['C0S-button-press-1'],                   \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                    ],
 
@@ -293,6 +292,33 @@ register_action_handlers
 	'clone emulation right'              => ['C00-Right',            \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                          ],
 	'clone emulation up'                 => ['C00-Up',               \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                          ],
 	'clone emulation down'               => ['C00-Down',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                          ],
+	},
+
+'git' =>
+	{
+	SHORTCUTS => '00S-G',
+	ESCAPE_KEY => '000-Escape',
+	
+	'Quick git'                          => [['000-button-press-3', '000-g'],       \&App::Asciio::Actions::Git::quick_link                                ],
+	
+	'Git add box'                        => [ '000-b',                              \&App::Asciio::Actions::Elements::add_element, ['Asciio/box',  1]      ],
+	'Git add text'                       => [ '000-t',                              \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]      ],
+	'Git add arrow'                      => [ '000-a',                              \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]],
+	'Git edit selected element'          => [['000-2button-press-1', '000-Return'], \&App::Asciio::Actions::Git::edit_selected_element                     ],
+	
+	'Git mouse left-click'               => [ '000-button-press-1',                 \&App::Asciio::Actions::Mouse::mouse_left_click                        ],
+	'Git change arrow direction'         => [ '000-d',                              \&App::Asciio::Actions::Arrow::change_arrow_direction                  ],
+	'Git undo'                           => [ '000-u',                              \&App::Asciio::Actions::Unsorted::undo                                 ],
+	'Git delete elements'                => [['000-Delete', '000-x'],               \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements ],
+	
+	'Git mouse motion'                   => [ '000-motion_notify',                  \&App::Asciio::Actions::Mouse::mouse_motion                            ], 
+	'Git move elements left'             => [ '000-Left',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_left      ],
+	'Git move elements right'            => [ '000-Right',                          \&App::Asciio::Actions::ElementsManipulation::move_selection_right     ],
+	'Git move elements up'               => [ '000-Up',                             \&App::Asciio::Actions::ElementsManipulation::move_selection_up        ],
+	'Git move elements down'             => [ '000-Down',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_down      ],
+	
+	'Git mouse right-click'              => [ '0A0-button-press-3',                 \&App::Asciio::Actions::Mouse::mouse_right_click                       ],
+	'Git flip hint lines'                => [ '000-h',                              \&App::Asciio::Actions::Unsorted::flip_hint_lines                      ],
 	},
 
 'slides leader' => 

@@ -111,6 +111,14 @@ sub connect_from_connector
 {
 my ($self,  $element, $source_connection, $destination_element, $destination_connection) = @_ ;
 
+my $direction = $element->{X} < $destination_element->{X}
+			? $element->{Y} < $destination_element->{Y}
+				? 'down-right'
+				: 'up-right'
+			: $element->{Y} < $destination_element->{Y}
+				? 'down-left' 
+				: 'up-left' ;
+
 my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					({
 					END_X => ($destination_element->{X} + $destination_connection->{X})
@@ -119,7 +127,8 @@ my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					END_Y => ($destination_element->{Y} + $destination_connection->{Y})
 							- ($element->{Y} + $source_connection->{Y}),
 					
-					DIRECTION => $element->{Y} < $destination_element->{Y} ? 'down-right' : 'up-right',
+					DIRECTION => $direction,
+					
 					ALLOW_DIAGONAL_LINES => 0,
 					EDITABLE => 1,
 					RESIZABLE => 1,
@@ -198,6 +207,20 @@ if($unconnected_connector_name)
 		
 	$self->add_connections($new_connection) ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+use App::Asciio::Actions::ElementsManipulation ;
+
+sub edit_selected_element
+{
+my ($self, $alternate_mode) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+App::Asciio::Actions::ElementsManipulation::edit_selected_element($self, $alternate_mode)
+	if @selected_elements == 1 && $selected_elements[0]->isa('App::Asciio::stripes::editable_box2') ;
 }
 
 #----------------------------------------------------------------------------------------------
