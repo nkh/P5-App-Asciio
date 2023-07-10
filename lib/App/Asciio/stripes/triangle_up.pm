@@ -256,6 +256,11 @@ else
 
 #-----------------------------------------------------------------------------
 
+sub is_auto_shrink { my($self) = @_ ; return $self->{AUTO_SHRINK} ; }
+sub flip_auto_shrink { my($self) = @_ ; $self->{AUTO_SHRINK} ^= 1 ; }
+
+#-----------------------------------------------------------------------------
+
 sub resize
 {
 my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;

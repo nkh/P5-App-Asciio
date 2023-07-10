@@ -80,12 +80,12 @@ for my $element (@elements)
 	for my $strip (@{$element->get_stripes()})
 		{
 		my $line_index = 0 ;
-
+		
 		for my $sub_strip (split("\n", $strip->{TEXT}))
 			{
 			my $origin_strip = $sub_strip ;
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
-
+			
 			if($self->{USE_MARKUP_MODE})
 			{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
@@ -116,7 +116,7 @@ for my $element (@elements)
 						}
 					}
 			}
-
+			
 			my $character_index = 0 ;
 			
 			for my $character (split '', $sub_strip)

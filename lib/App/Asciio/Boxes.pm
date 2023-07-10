@@ -2,6 +2,7 @@
 package App::Asciio::Boxes ;
 
 use strict ; use warnings ;
+use utf8 ;
 
 use Clone ;
 
@@ -230,13 +231,13 @@ my %box_types =
 
 sub change_type
 {
-my ($self, $data, $atomic_operation) = @_ ;
+my ($self, $data, $create_undo_snapshot) = @_ ;
 
-$atomic_operation //= 1 ;
+$create_undo_snapshot //= 1 ;
 
 if(exists $box_types{$data->{TYPE}})
 	{
-	$self->create_undo_snapshot() if $atomic_operation ;
+	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
 	my $element_type = $data->{ELEMENT}->get_box_type() ;
 	
@@ -249,7 +250,7 @@ if(exists $box_types{$data->{TYPE}})
 		
 	$data->{ELEMENT}->set_box_type($new_type) ;
 	
-	$self->update_display() if $atomic_operation ;
+	$self->update_display() if $create_undo_snapshot ;
 	}
 }
 

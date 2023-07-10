@@ -25,6 +25,17 @@ for my $action (@actions)
 	
 	my ($modifiers, $action_key) = $action =~ /(...-)?(.*)/ ;
 	
+	next if $action_key eq 'Shift_R' || $action_key eq 'Shift_L' ||  $action_key eq 'Alt_R' ||  $action_key eq 'Alt_L' ;
+	# C00-Shift_R
+	# C00-Shift_L
+	# C00-Alt_L
+	# C00-Alt_L
+	# CA0-Shift_R
+	# C00-Shift_L
+	# C0S-Shift_R
+	# 0A0-Shift_R
+	# 0A0-Shift_L
+	
 	my $action = encode('utf8', $action) ;
 	
 	if(exists $self->{CURRENT_ACTIONS}{$action})

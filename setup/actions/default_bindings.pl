@@ -81,6 +81,9 @@ register_action_handlers
 'Make element shorter'                   => ['000-3',                                  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0, -1]        ],
 'Make element wider'                     => ['000-4',                                  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [1,  0]        ],
 
+'Make elements Unicode'                  => ['C00-u',                                  \&App::Asciio::Actions::Asciio::make_selection_unicode, 1                           ],
+'Make elements not Unicode'              => ['C0S-U',                                  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                           ],
+
 # mouse
 'Mouse right-click'                      => ['000-button-press-3',                     \&App::Asciio::Actions::Mouse::mouse_right_click                                    ],
 
@@ -233,37 +236,40 @@ register_action_handlers
 	# 'Add from file'     => [ 'f' ], ???
 	
 	'Add box'                             => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                      ],
-	'Add multiple boxes'                  => ['C00-b', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1      ],
 	'Add unicode box'                     => ['0A0-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box unicode', 0]              ],
 	'Add shrink box'                      => ['00S-B', \&App::Asciio::Actions::Elements::add_element, ['Asciio/shrink_box', 1]               ],
-
-	'Add exec box'                        => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]               ],
-	'Add exec box verbatim'               => ['000-v', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim', 1]      ],
-	'Add exec box verbatim once'          => ['000-o', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim once', 1] ],
-	'Add line numbered box'               => ['C00-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]     ],
 	
 	'Add text'                            => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]                     ],
-	'Add multiple texts'                  => ['C00-t', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0      ],
 	
 	'Add arrow'                           => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]               ],
 	'Add unicode arrow'                   => ['0A0-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow unicode', 0]       ],
-	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled_arrow', 0]             ],
-	'Add unicode angled arrow'            => ['C00-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled_arrow unicode', 0]     ],
+	
+	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]             ],
+	'Add unicode angled arrow'            => ['0AS-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow unicode', 0]     ],
 	
 	'Add connector'                       => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]                ],
 	'Add connector type 2'                => ['00S-C', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector2', 0]               ],
-	'Add vertical ruler'                  => ['000-r', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'VERTICAL'}                   ],
-	'Add horizontal ruler'                => ['00S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                 ],
 	'Add if'                              => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/if', 1]                 ],
 	'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]            ],
-	'Add rhombus'                         => ['C00-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],
-	'Add ellipse'                         => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
+	'Add rhombus'                         => ['000-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],
+	'Add ellipse'                         => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
 	
-	'Add help box'                        => ['000-h', \&App::Asciio::Actions::Elements::add_help_box,                                       ],
-	'Add ascii line'                      => ['000-w', \&App::Asciio::Actions::Elements::create_line, 0                                      ], 
-	'Add unicode line'                    => ['00S-W', \&App::Asciio::Actions::Elements::create_line, 1                                      ],
-	'Add unicode bold line'               => ['C00-w', \&App::Asciio::Actions::Elements::create_line, 2                                      ],
-	'Add unicode double line'             => ['0A0-w', \&App::Asciio::Actions::Elements::create_line, 3                                      ],
+	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::create_line, 0                                      ], 
+	'Add unicode line'                    => ['00S-L', \&App::Asciio::Actions::Elements::create_line, 1                                      ],
+	'Add unicode bold line'               => ['0A0-l', \&App::Asciio::Actions::Elements::create_line, 2                                      ],
+	'Add unicode double line'             => ['0AS-L', \&App::Asciio::Actions::Elements::create_line, 3                                      ],
+	
+	'Add multiple texts'                  => ['C00-t', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0      ],
+	'Add multiple boxes'                  => ['C00-b', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1      ],
+	
+	'Add exec box'                        => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]               ],
+	'Add exec box verbatim'               => ['C00-v', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim', 1]      ],
+	'Add exec box verbatim once'          => ['C00-o', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim once', 1] ],
+	'Add line numbered box'               => ['C00-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]     ],
+	
+	'Add vertical ruler'                  => ['C00-r', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'VERTICAL'}                   ],
+	'Add horizontal ruler'                => ['C0S-R', \&App::Asciio::Actions::Ruler::add_ruler,      {TYPE => 'HORIZONTAL'}                 ],
+	'Add help box'                        => ['C00-h', \&App::Asciio::Actions::Elements::add_help_box,                                       ],
 	},
 
 'clone' =>
