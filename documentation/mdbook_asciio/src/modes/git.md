@@ -22,23 +22,20 @@ The *git mode* allows you to draw git graph quickly.
 
 The *git mode* redefines some bindings to allow you to work faster. Only the bindings listed below are available when editing.
 
-| action                 | binding                 |
-| --------------         | ---------               |
-| Exit git mode          | «Escape»                |
-| Undo                   | «u»                     |
-| Insert and link node   | «g» «right-click»       |
-| Change arrow direction | «d»                     |
-|                        |                         |
-| Add box                | «b»                     |
-| Add text               | «t»                     |
-| Add arrow              | «a»                     |
-|                        |                         |
-| Select objects         | «left-click»            |
-| Edit Selected element  | «Return» «double-click» |
-| Delete elements        | «Delete» «x»            |
-| Flip hint lines        | «h»                     |
-|                        |                         |
-| Display popup menu     | «alt+right-click»       |
+| action                     | binding                 |
+| --------------             | ---------               |
+| Exit git mode              | «Escape»                |
+| Undo                       | «u»                     |
+| ***Insert and link node*** | «g» «right-click»       |
+| Change arrow direction     | «d»                     |
+| Add box                    | «b»                     |
+| Add text                   | «t»                     |
+| Add arrow                  | «a»                     |
+| Select objects             | «left-click»            |
+| Edit Selected element      | «Return» «double-click» |
+| Delete elements            | «Delete» «x»            |
+| Flip hint lines            | «h»                     |
+| Display popup menu         | «alt+right-click»       |
 
 
 When you ***insert and link a node***:

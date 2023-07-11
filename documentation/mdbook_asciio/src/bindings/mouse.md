@@ -1,46 +1,47 @@
-# mouse
-
-TBD document the different key+mouse action
-
-- shift double click on arrow changes the direction
-
-    Mouse emulation:
-
-         «'»                Toggle» mouse
-
-         «Ö»                Mouse shift-left-click
-
-         «ö»                Mouse left-click
-
-         «ä»                Mouse right-click
-
-         «H»                Mouse drag left 3
-
-         «J»                Mouse drag down 3
-
-         «K»                Mouse drag up 3
-
-         «L»                Mouse drag right 3
-
-         «Down»             Mouse drag down
-
-         «Left»             Mouse drag left
-
-         «Right»            Mouse drag right
-
-         «Up»               Mouse drag up
+# Mouse
 
 
-         «A-Down»           Mouse drag down
+| action                       | binding             |
+| --------------               | ---------           |
+| Edit selected element        | 000-2button-press-1 |
+| Edit selected element inline | C00-2button-press-1 |
+| Mouse right-click            | 000-button-press-3, |
+| Mouse left-click             | 000-button-press-1, |
+| Mouse expand selection       | 00S-button-press-1, |
+| Mouse selection flip         | C00-button-press-1, |
+| Mouse quick link             | 0A0-button-press-1  |
+| Mouse duplicate elements     | 0AS-button-press-1  |
+| Mouse quick box              | C0S-button-press-1  |
+| Arrow to mouse               | CA0-motion_notify,  |
+| Arrow mouse change direction | CA0-2button-press-1 |
+| Arrow change direction       | CA0-d,              |
+| Wirl arrow add section       | CA0-button-press-1, |
+| Wirl arrow insert flex point | CA0-button-press-2, |
+| Mouse motion                 | 000-motion_notify,  |
+| Mouse motion 2               | 0AS-motion_notify,  |
+| Mouse drag canvas            | C00-motion_notify,  |
 
-         «A-Left»           Mouse drag left
 
-         «A-Right»          Mouse drag right
+## Mouse emulation
 
-         «A-Up»             Mouse drag up
-
-
-         «ö»                Mouse alt-left-click
-
-         «ö»                Mouse ctl-left-click
+| action                 | binding   |
+| --------------         | --------- |
+| Toggle mouse           | «'»       |
+| Mouse shift-left-click | «Ö»       |
+| Mouse left-click       | «ö»       |
+| Mouse right-click      | «ä»       |
+| Mouse drag left 3      | «H»       |
+| Mouse drag down 3      | «J»       |
+| Mouse drag up 3        | «K»       |
+| Mouse drag right 3     | «L»       |
+| Mouse drag down        | «Down»    |
+| Mouse drag left        | «Left»    |
+| Mouse drag right       | «Right»   |
+| Mouse drag up          | «Up»      |
+| Mouse drag down        | «A-Down»  |
+| Mouse drag left        | «A-Left»  |
+| Mouse drag right       | «A-Right» |
+| Mouse drag up          | «A-Up»    |
+| Mouse alt-left-click   | «ö»       |
+| Mouse ctl-left-click   | «ö»       |
 

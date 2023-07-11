@@ -252,10 +252,15 @@ register_action_handlers
 	'Add rhombus'                         => ['000-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],
 	'Add ellipse'                         => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
 	
-	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::create_line, 0                                      ], 
-	'Add unicode line'                    => ['00S-L', \&App::Asciio::Actions::Elements::create_line, 1                                      ],
-	'Add unicode bold line'               => ['0A0-l', \&App::Asciio::Actions::Elements::create_line, 2                                      ],
-	'Add unicode double line'             => ['0AS-L', \&App::Asciio::Actions::Elements::create_line, 3                                      ],
+	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
+	'Add unicode line'                    => ['00S-L', \&App::Asciio::Actions::Elements::add_line, 1                                         ],
+	'Add unicode bold line'               => ['0A0-l', \&App::Asciio::Actions::Elements::add_line, 2                                         ],
+	'Add unicode double line'             => ['0AS-L', \&App::Asciio::Actions::Elements::add_line, 3                                         ],
+	
+	'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
+	'Add unicode no-connect line'         => ['00S-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 1                          ],
+	'Add unicode no-connect bold line'    => ['0A0-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 2                          ],
+	'Add unicode no-connect double line'  => ['0AS-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 3                          ],
 	
 	'Add multiple texts'                  => ['C00-t', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0      ],
 	'Add multiple boxes'                  => ['C00-b', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1      ],

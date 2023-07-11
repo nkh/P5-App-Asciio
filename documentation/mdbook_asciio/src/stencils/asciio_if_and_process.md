@@ -1,15 +1,11 @@
-# Asciio f and process
+# Asciio if and process boxes
 
-         «i»                Add if-box
-
-         «p»                Add process
+| element         | binding   |
+| --------------- | --------- |
+| Add if box      | «ib»      |
+| Add process box | «ib»      |
 
    
 ## if-box and process-box
 
-       .--------------.    
-      / a == b         \     __________
-     (    &&            )    \         \
-      \ 'string' ne '' /      ) process )
-       '--------------'      /_________/
-
+![if_and_process.gif](if_and_process.gif)

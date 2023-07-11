@@ -1,78 +1,55 @@
 # Asciio arrows
 
-         «A»                Add angled arrow
+| element           | binding   |
+| ---------------   | --------- |
+| Add arrow         | «ia»      |
+| Add Unicode arrow | «i+Alt-a» |
+| Add angled arrow  | «iA»      |
 
-         «a»                Add arrow
-
-         «A-a»              Add unicode arrow
+![insert arrows](insert_arrows.gif)
 
 ## wirl-arrow
 
 Rotating the end clockwise or counter-clockwise changes its direction.
 
-          ^            ^          
-          |    -----.   \         
-          |         |    \           
-          '----     |     '------- 
-    ------>         |             
-                    v             
+![wirl arrows](wirl_arrow.gif)
 
 ## multi section wirl-arrow
 
 A set of whirl arrows connected to each other.
 
-     .----------.                     .
-     |          |                \   / \
-        .-------'           ^     \ /   \
-        |   .----------->    \     '     .
-        |   '----.            \          /
-        |        |             \        /
-        '--------'              '------'
+![insert arrows sections](arrow_section.gif)
 
 ## angled-arrow and axis
 
-    -------.       .-------
-            \     /
-             \   /            ^         
-                              |   ^     
-             /   \            |  /      
-            /     \           | /       
-     ------'       '-------    -------->
+![angled arrow and axis](angled_arrow_and_axis.gif)
 
-# Asciio lines
+Note that an axis doesn't connect.
 
-**line** is actually a special kind of **wirl-arrow** that removes the head and 
-tail and turns off the automatic link function. The function of the line 
-is mainly used to draw the table, and it is often used together with the 
-cross mode.
+### Connecting lines
 
-> cross mode are described separately in a separate chapter
+A specialized **wirl-arrow** with no head nor tail.
 
-- line in normal insert mode
+| element                 | binding         |
+| ---------------         | ---------       |
+| Add ASCII line          | «il»            |
+| Add Unicode line        | «iL»            |
+| Add Unicode bold line   | «i+Alt-l»       |
+| Add Unicode double line | «i+Shift+Alt-l» |
 
+![connecting lines](connecting_lines.gif)
 
-     «i» Insert group:
+### Non connecting lines
 
-         «w»                Add ascii line
+A specialized **wirl-arrow** with no head nor tail and auto-connection turned off, it's often used to draw the table in the crossing mode.
 
-         «S-W»              Add unicode line
+| element                                | binding         |
+| ---------------                        | ---------       |
+| Add ASCII non-connecting line          | «ik»            |
+| Add Unicode non-connecting line        | «iK»            |
+| Add Unicode non-connecting bold line   | «i+Alt-k»       |
+| Add Unicode non-connecting double line | «i+Shift+Alt-K» |
 
-         «C-w»              Add unicode bold line
-
-         «A-w»              Add unicode double line
-
-
-- line in cross mode
-
-     «x» cross group:
-
-         «w»                Add cross ascii line
-
-         «S-W»              Add cross unicode line
-
-         «C-w»              Add cross unicode bold line
-
-         «A-w»              Add cross unicode double line
 
 ## ascii line
 
@@ -120,9 +97,7 @@ cross mode.
 
 ```
 
-## lines in cross mode
-
-> Here's an example of using lines in a cross mode.
+## Example of non-connecting lines in crossing mode
 
 ```
                      ╔═════╦═════╦══════╦═════╦════╦═════╗
@@ -137,5 +112,4 @@ cross mode.
                      ╚═════╩═════╩══════╩═════╩════╩═════╝
 
 ```
-
 

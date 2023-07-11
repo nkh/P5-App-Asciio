@@ -73,12 +73,7 @@ if(-e $help_path)
 
 #----------------------------------------------------------------------------------------------
 
-sub create_line
-{
-my ($self, $line_type) = @_;
-$self->create_undo_snapshot();
-
-my @arrows =
+my @headless_arrows =
 	(
 	[
 	['origin',       '',  '*',   '',  '',  '', 1],
@@ -90,7 +85,7 @@ my @arrows =
 	['down-left',   '|',  '|', '\'', '-', '-', 1],
 	['left-down',   '-',  '-',  '.', '|', '|', 1],
 	['right',       '-',  '-',   '',  '', '-', 1],
-	['up-right',    '|',  '|',  '.', '-', '_', 1],
+	['up-right',    '|',  '|',  '.', '-', '-', 1],
 	['right-up',    '-',  '-', '\'', '|', '|', 1],
 	['down-right',  '|',  '|', '\'', '-', '-', 1],
 	['right-down',  '-',  '-',  '.', '|', '|', 1],
@@ -158,11 +153,44 @@ my @arrows =
 	]
 	) ;
 
-my $arrow_type = $arrows[$line_type] ;
+#----------------------------------------------------------------------------------------------
+
+sub add_line
+{
+my ($self, $line_type) = @_;
+$self->create_undo_snapshot();
+
+my $arrow_type = $headless_arrows[$line_type] ;
 
 my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
 			({
-			POINTS => [[1, 0, 'right']],
+			POINTS => [[5, 0, 'right']],
+			DIRECTION => 'left',
+			ALLOW_DIAGONAL_LINES => 0,
+			EDITABLE => 1,
+			RESIZABLE => 1,
+			ARROW_TYPE => $arrow_type,
+			});
+
+$my_line_obj->{NAME} = 'line';
+
+$self->add_element_at($my_line_obj, $self->{MOUSE_X}, $self->{MOUSE_Y});
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_non_connecting_line
+{
+my ($self, $line_type) = @_;
+$self->create_undo_snapshot();
+
+my $arrow_type = $headless_arrows[$line_type] ;
+
+my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
+			({
+			POINTS => [[2, 0, 'right']],
 			DIRECTION => 'left',
 			ALLOW_DIAGONAL_LINES => 0,
 			EDITABLE => 1,
