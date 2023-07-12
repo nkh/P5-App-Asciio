@@ -158,6 +158,8 @@ my ($self, $element, $x, $y) = @_ ;
 
 $self->add_element_at_no_connection($element, $x, $y) ;
 $self->connect_elements($element) ;
+
+$element
 }
 
 sub add_element_at_no_connection
@@ -166,6 +168,8 @@ my ($self, $element, $x, $y) = @_ ;
 
 $self->set_element_position($element, $x, $y) ;
 $self->add_elements_no_connection($element) ;
+
+$element
 }
 
 #-----------------------------------------------------------------------------

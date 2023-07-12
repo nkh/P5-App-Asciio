@@ -36,7 +36,7 @@ $self->set
 	TEXT => $text,
 	WIDTH =>  $width,
 	HEIGHT => $height,
-	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $self->{WIDTH}, HEIGHT => $self->{HEIGHT}, TEXT => $self->{TEXT}} ],
+	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $self->{WIDTH}, HEIGHT => $self->{HEIGHT}, TEXT => $text} ],
 	) ;
 }
 

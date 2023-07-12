@@ -21,6 +21,7 @@ lib/App/Asciio/Elements.pm
 lib/App/Asciio/Io.pm
 lib/App/Asciio/Menues.pm
 lib/App/Asciio/Options.pm
+lib/App/Asciio/Scripting.pm
 lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
 lib/App/Asciio/Toolfunc.pm
