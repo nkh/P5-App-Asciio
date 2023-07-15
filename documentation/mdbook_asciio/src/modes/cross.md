@@ -33,140 +33,83 @@ The cross-mode lets you create graphics like this table
 
 ## Enabling cross-mode
 
-The cross mode is displayed in the title bar when on.
-
-![cross_mode_title_bar_gui](cross_mode_title_bar_gui.png)
-
 ### Globally
 
 Add this line in your user configuration.
 
 ```perl
-CROSS_MODE => 1,
+USE_CROSS_MODE => 1,
 ```
 
 ### Dynamically
 
-Binding: «Alt-x» 'Switch cross mode'
-
-## Cross-mode elements
-
-Only elements marked as cross-mode elements will have their intersections patched.
-
-
-```
-«x» Cross-mode bindings:
-
-«b»                Add cross box
-
-«e»                Add cross exec box
-
-«a»                Add cross arrow
-
-«A»                Add cross angled arrow
-
-«w»                add cross ascii line
-
-«W»                add cross unicode line
-
-«C-w»              Add cross unicode bold line
-
-«A-w»              Add cross unicode double line
-
-```
-
-The cross-mode elements background is displayed in a different color.
-
-## Cross-mode lines vs Normal lines
-
-![cross lines](cross_lines.gif)
+Binding: «x» 'Switch cross mode'
 
 ## Line and Box
 
-![cross boxes](cross_box_line.gif)
+![cross_lines](cross_lines.gif)
 
-## Lines and boxes and lines 
+![cross_boxs](cross_boxs.gif)
 
-![cross demo](cross_demo.gif)
+## Lines and boxes
+
+![cross_box_line](cross_box_line.gif)
 
 
 ## Exported to text
 
 ```
-                
-                        ╒═════════════════╗
-                        │   ══════════════╬══╗
-                   ╭────┼──╮              ║  ║     ═════════════════╗
-                   │    │  │                 ║                      ║
-                   │    │  │                                        ║
-                   │    │  │                      ━━━━━━━━━━━┓      ║
-                   ╰────┼──╯                    ━━━━━━━━━━━━━╋━━━━  ║
-                        │                                    ┃      ║
-                        │    │    │    │       │     │       ┃      ║
-                        │    ├────┼────┼───────┼─────┼──     ┃      ║
-                        │    │    │    │       │     │       ┃      ║
-                             │    │    │       │     │       ┃      ║
-                                         ━━━━━━━━━━━━━━━━━━━━╋━━    ║
-                                                             ┃
-                                                     ╔═══════╗
-                     ╭───────╮                       ║       ║
-                     │  ╭────┴──╮                    ║       ║
-                     │  │       │                    ║       ║
-                     │  │       │                    ╚═══════╝
-                     ╰──┤       │
-                        ╰───────╯                              ╔═══════╗
-                                                               ║       ║
-                                                            ╔══╩════╗  ║
-                                                            ║       ║  ║
-                         ┏━━━━━━━┓     ╔═══════╗            ║       ╠══╝
-                         ┃       ┃     ║       ║            ║       ║
-                         ┃       ┃     ║       ║            ╚═══════╝
-                         ┃       ┃     ║       ║
-                         ┗━━━━━━━┛     ╚═══════╝
-                
-```
+        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
+        |        |      │        │    ┃        ┃    ║        ║
+        |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
+        |        |      │        │    ┃  ┃        ┃ ║        ║
+        '--------'      ╰────────╯    ┗━━┫        ┃ ╚════════╝
+                                         ┃        ┃
+                                         ┗━━━━━━━━┛
 
-## Conversion between ordinary elements and cross-mode elements
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │       ━━━━━╋━━━━━━     ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
 
-You can convert non cross-mode elements into cross-mode elements and vice versa. If no elements are selected, all the elements are transformed.
 
-```
-«x» Cross-mode group:
 
-«C-c»                change to cross elements
 
-«C-n»                change to normal elements
+
+                .--------.
+                |        |          ╭─┬────────┬─────╮
+                |  .-----'--.       │ │        │     │
+                |  |        |       │ │        │     │
+                '--.        |       │ │        │     │    ╔══════════════╗
+                   |        |       │ ╰────────╯     │    ║              ║
+                   '--------'       │                │    ║              ║
+                                    │                │    ║              ║
+                                    │        ╔═══════╧╗   ║              ║
+                                    │        ║        ║   ║              ║
+                                    ╰────────╢        ║   ║              ║
+                                             ║        ║   ║              ║
+                                             ╚════════╝   ╚══════════════╝
 
 ```
 
-## cross-mode fillers
+## Excluded elements
 
-Borders are filled with a special element, which can't be edited but can be deleted. They are colored differently.
+Some elements do not need to cross, such as ellipse, so they can 
+be excluded in the configuration file.
 
-The bindings below allow you to select different types of elements.
-
-
-```
-«x» Cross group:
-
-«c»                Select cross elements
-
-«f»                Select cross fillers
-
-«n»                Select normal elements
-
-«A-f»              Select normal fillers
-
+```perl
+CROSS_MODE_IGNORE =>
+    [
+    'App::Asciio::stripes::ellipse',
+	'App::Asciio::stripes::if_box'
+    ],
 ```
 
-There are four types of elements in cross-mode:
+Just write the full path of the element to be excluded.
 
-- cross elements, elements that participate in cross behavior in crossi-mode.
-- cross fillers, special elements that repair the borders of crossed elements
-- normal elements, no matter in what mode, they are not ahandled by the cross-mode
-- normal fillers, the result of a cross fillers after it is transformed into a normal element
-
-## Performance
-
-The cross-mode is resource intensive and can make large diagrams lag. Asciio has special group named, strip-group; when placed in a strip-group elements are "frozen" and will take much less resources. If you are done with designing an object with cross-elements, place it in a strip-group, you can reverse the operation if needed. 
 

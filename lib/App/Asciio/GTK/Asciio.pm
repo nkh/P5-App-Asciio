@@ -28,7 +28,7 @@ use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
 
 use App::Asciio::Cross ;
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 sub hide_pointer
 {

@@ -43,7 +43,7 @@ lib/App/Asciio/Options.pm
 lib/App/Asciio/Scripting.pm
 lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
-lib/App/Asciio/Toolfunc.pm
+lib/App/Asciio/String.pm
 lib/App/Asciio/Undo.pm
 
 lib/App/Asciio/Actions/Align.pm

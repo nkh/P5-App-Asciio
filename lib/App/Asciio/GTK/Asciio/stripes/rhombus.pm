@@ -3,7 +3,7 @@ package App::Asciio::stripes::rhombus ;
 
 use base App::Asciio::stripes::stripes ;
 use App::Asciio::GTK::Asciio::Boxfuncs ;
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 use strict;
 use warnings;

@@ -18,7 +18,6 @@ use App::Asciio::Actions::Ruler ;
 use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
 
-use App::Asciio::Toolfunc ;
 
 #----------------------------------------------------------------------------------------------
 

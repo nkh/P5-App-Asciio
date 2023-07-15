@@ -51,7 +51,7 @@ my ($return_line, $char_len) = ('', 1) ;
 
 for my $character (split '', $deal_line)
 	{
-	if($char_len != 1)
+	if($char_len > 1)
 		{
 		$char_len -= 1;
 		}
@@ -124,6 +124,18 @@ for my $element (@elements)
 				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
 				
 				$lines[$y][$x] = $character if ($x >= 0 && $y >= 0) ;
+				if($x >= 0 && $y >= 0)
+					{
+					if($character =~ /\p{gc:Mn}/)
+						{
+						push @{$lines[$y][$x-1]}, $character ;
+						}
+					else
+						{
+						$lines[$y][$x] = [$character] ;
+						}
+					}
+
 				$character_index += usc_length($character);
 				}
 			
@@ -137,7 +149,7 @@ if($self->{USE_CROSS_MODE})
 	{
 	for(App::Asciio::Cross->get_cross_mode_overlays($self))
 		{
-		$lines[$_->[1]][$_->[0]] = $_->[2] if defined $lines[$_->[1]][$_->[0]] ;
+		$lines[$_->[1]][$_->[0]] = [$_->[2]] if defined $lines[$_->[1]][$_->[0]] ;
 		}
 	}
 
@@ -153,7 +165,7 @@ if($self->{USE_MARKUP_MODE} && $format)
 				{
 				for my $single_char (split '', $markup_coordinate{$row . '-' . $col})
 					{
-					$new_lines[$row][$new_col] = $single_char;
+					$new_lines[$row][$new_col] = [$single_char];
 					$new_col += usc_length($single_char);
 					}
 				}
@@ -178,7 +190,7 @@ my @ascii ;
 
 for my $line (@lines)
 	{
-	my $ascii_line = join('', map {defined $_ ? $_ : ' '} @{$line})  ;
+	my $ascii_line = join('', map {defined $_ ? join('', @{$_}) : ' '} @{$line})  ;
 	if(defined $ascii_line)
 		{
 		my $write_line = del_black_in_line($ascii_line) ;

@@ -99,6 +99,7 @@ sub export_to_clipboard_as_ascii
 {
 my ($self) = @_ ;
 
+use open qw( :std :encoding(UTF-8) ) ;
 open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
 local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
 
@@ -112,6 +113,7 @@ sub export_to_clipboard_as_wiki
 {
 my ($self) = @_ ;
 
+use open qw( :std :encoding(UTF-8) ) ;
 open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
 local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
 

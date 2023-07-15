@@ -23,7 +23,7 @@ use App::Asciio::Ascii ;
 use App::Asciio::Options ;
 use App::Asciio::Actions ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 
@@ -667,7 +667,6 @@ $self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE}) ;
 $self->{TAB_AS_SPACES} = '   ' unless defined $self->{TAB_AS_SPACES} ;
 
 use_markup($self->{USE_MARKUP_MODE}) ;
-set_double_width_qr($self->{DOUBLE_WIDTH_QR}) ;
 }
 
 #-----------------------------------------------------------------------------

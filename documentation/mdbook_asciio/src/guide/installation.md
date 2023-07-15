@@ -34,7 +34,7 @@ The use of WSL is not much different from the Linux environment.
    - Gnome
    - gun-make
    - gcc-g++
-- Search for "cygpt" in all the packages to be installed, and install all 
+- Search for "gcrypt" in all the packages to be installed, and install all 
   the packages that appear.
 - Install all dependent modules of asciio
 

@@ -11,7 +11,6 @@ use File::HomeDir ;
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::stripes::section_wirl_arrow ;
-use App::Asciio::Toolfunc ;
 
 #----------------------------------------------------------------------------------------------
 

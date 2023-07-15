@@ -16,7 +16,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	['bottom', '\'', ] ,
 ] ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

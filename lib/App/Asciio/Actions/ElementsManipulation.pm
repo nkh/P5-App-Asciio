@@ -5,7 +5,6 @@ use strict ; use warnings ;
 use App::Asciio::stripes::group ;
 use Scalar::Util ;
 
-use App::Asciio::Toolfunc ;
 
 #----------------------------------------------------------------------------------------------
 
