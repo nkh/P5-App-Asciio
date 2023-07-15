@@ -25,7 +25,7 @@ ACTION_VERBOSE => undef,
 
 COLORS => {},
 
-USE_CROSS_MODE => 1,
+USE_CROSS_MODE => 0,
 CROSS_MODE_IGNORE =>
     [
     'App::Asciio::stripes::ellipse',
