@@ -16,6 +16,9 @@ use utf8 ;
 
 #-----------------------------------------------------------------------------
 
+use Memoize ;
+memoize('unicode_length') ;
+
 sub unicode_length
 {
 my ($string) = @_ ;

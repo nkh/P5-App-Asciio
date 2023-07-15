@@ -495,7 +495,7 @@ my ($start_x, $end_x, $start_y, $end_y) = (
 	int($v_value/$character_height),
 	int(($v_value+$windows_height)/$character_height)) ;
 
-for (App::Asciio::Cross->get_cross_mode_overlays($self, $start_x, $end_x, $start_y, $end_y))
+for (App::Asciio::Cross::get_cross_mode_overlays($self, $start_x, $end_x, $start_y, $end_y))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 	

@@ -115,7 +115,7 @@ for my $element (@elements)
 # If there is cross overlay, the characters of the cross need to be exported
 if($self->{USE_CROSS_MODE})
 	{
-	for(App::Asciio::Cross->get_cross_mode_overlays($self))
+	for(App::Asciio::Cross::get_cross_mode_overlays($self))
 		{
 		$lines[$_->[1]][$_->[0]] = [$_->[2]] if defined $lines[$_->[1]][$_->[0]] ;
 		}

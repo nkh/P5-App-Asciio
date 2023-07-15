@@ -15,89 +15,66 @@ use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_ascii_array_for_cross_overlay
+sub get_ascii_array_and_crossings
 {
 my ($asciio, $cross_filler_chars, $start_x, $end_x, $start_y, $end_y)  = @_ ;
 
-my (@lines, @cross_point_index, %cross_point_index_hash, $cross_point) ;
+my (@lines, @cross_point_index) ;
 
 for my $element (@{$asciio->{ELEMENTS}})
 	{
-	next if(any {$_ eq ref($element)} @{$asciio->{CROSS_MODE_IGNORE}}) ;
+	next if any { $_ eq ref($element) } @{$asciio->{CROSS_MODE_IGNORE}} ;
 	
 	for my $strip (@{$element->get_stripes()})
 		{
-		my $line_index = 0 ;
+		my $line_index = -1 ;
 		
 		for my $sub_strip (split("\n", $strip->{TEXT}))
 			{
-			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
-			if((defined $start_y) && ($y < $start_y || $y >= $end_y))
-				{
-				$line_index++ ;
-				next ;
-				}
+			$line_index++ ;
+			
+			my $y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
+			
+			next if defined $start_y && ($y < $start_y || $y >= $end_y) ; 
 			
 			if($asciio->{USE_MARKUP_MODE})
-			{
+				{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
 				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
-			}
+				}
 			
 			my $character_index = 0 ;
 			
 			for my $character (split '', $sub_strip)
 				{
 				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
+				
 				if((defined $start_x) && ($x < $start_x || $x >= $end_x))
 					{
-					$character_index += unicode_length($character);
-					next ;
+					# skip
 					}
-				
-				if($x >= 0 && $y >= 0)
+				elsif($x >= 0 && $y >= 0)
 					{
-					$cross_point = $y . '-' . $x ;
-					
-					# The characters retained in the array are characters that may be crossing, 
-					# and other characters are discarded
+					# keep the characters that may be crossing in the array 
+					# other characters are discarded
 					if(exists $cross_filler_chars->{$character})
 						{
-						if(defined $lines[$y][$x])
-							{
-							push @{$lines[$y][$x]}, $character ;
-							}
-						else
-							{
-							$lines[$y][$x] = [$character] ;
-							}
+						# The cross point is the number of array elements greater than 1
+						# push @cross_point_index, [$y, $x] if scalar @{$lines[$y][$x]} ;
+						push @cross_point_index, [$y, $x] if defined $lines[$y][$x] ;
+						
+						$lines[$y][$x] = $character ;
 						}
 					else
 						{
-						delete $lines[$y][$x] if(defined $lines[$y][$x]) ;
-						}
-					
-					# The cross point is the number of array elements greater than 1
-					if((defined $lines[$y][$x]) && (scalar @{$lines[$y][$x]} > 1))
-						{
-						$cross_point_index_hash{$cross_point} = 1 ;
-						}
-					else
-						{
-						delete $cross_point_index_hash{$cross_point} if(defined $cross_point_index_hash{$cross_point}) ;
+						delete $lines[$y][$x] ;
 						}
 					}
+				
 				$character_index += unicode_length($character);
 				}
-			
-			$line_index++ ;
 			}
 		}
-	}
-
-for(keys %cross_point_index_hash)
-	{
-	push @cross_point_index, [map {int} split('-', $_)] ;
 	}
 
 return(\@lines, \@cross_point_index) ;
@@ -107,6 +84,11 @@ return(\@lines, \@cross_point_index) ;
 # ascii: + X . '
 # unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ 
 # todo: 1. performance problem
+
+use Readonly ;
+Readonly my $CHARACTER => 0 ;
+Readonly my $FUNCTION  => 1 ;
+Readonly my $INDEX     => 2 ;
 
 {
 
@@ -178,15 +160,15 @@ my @diagonal_char_func = (
 	['╳', \&scene_unicode_x],
 ) ;
 
-my %all_cross_filler_chars = map {$_, 1} 
-				( 
-				'-', '|', '.', '\'', '\\', '/', '+', '╱', '╲', '╳',
-				'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
-				'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
-				'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
-				'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
-				'╛', '╙', '╘', '╖', '╕', '╓', '╒', '<', '>', '^', 'v',
-				) ;
+my %crossing_chars = map {$_, 1} 
+			( 
+			'-', '|', '.', '\'', '\\', '/', '+', '╱', '╲', '╳',
+			'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
+			'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
+			'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
+			'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
+			'╛', '╙', '╘', '╖', '╕', '╓', '╒', '<', '>', '^', 'v',
+			) ;
 
 my %diagonal_cross_filler_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
 
@@ -221,66 +203,52 @@ sub get_cross_mode_overlays
 {
 my ($asciio, $start_x, $end_x, $start_y, $end_y) = @_;
 
-my ($ascii_array_ref, @ascii_array, $index_ref);
-
-#~ this sub is slow
-($ascii_array_ref, $index_ref) = transform_elements_to_ascii_array_for_cross_overlay($asciio, \%all_cross_filler_chars, $start_x, $end_x, $start_y, $end_y);
-@ascii_array = @{$ascii_array_ref} ;
+my ($ascii_array, $crossings) = get_ascii_array_and_crossings($asciio, \%crossing_chars, $start_x, $end_x, $start_y, $end_y);
+my @ascii_array = @{$ascii_array} ;
 
 # use Data::TreeDumper ;
-# print DumpTree [$ascii_array_ref, $index_ref] ;
+# print DumpTree [$ascii_array, $crossings] ;
 
-my ($row, $col, $scene_func, @elements_to_be_add) ;
-my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315, $normal_key, $diagonal_key);
-for(@{$index_ref})
+my @overlays ;
+
+for(@{$crossings})
 	{
-	($row, $col) = ($_->[0], $_->[1]) ;
+	my ($row, $col) = @{$_} ;
 	
-	($up, $down, $left, $right) = ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
+	my ($up,                        $down,                      $left,                      $right) = 
+	   ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
 	
-	$normal_key = ((defined $up) ? join('o', @{$up}) : $undef_char) . '_' 
-		. ((defined $down) ? join('o', @{$down}) : $undef_char) . '_' 
-		. ((defined $left) ? join('o', @{$left}) : $undef_char) . '_' 
-		. ((defined $right) ? join('o', @{$right}) : $undef_char) ;
+	my $normal_key = ($up // $undef_char) . ($down // $undef_char) . ($left // $undef_char) . ($right // $undef_char) ;
 	
-	unless(exists($normal_char_cache{$normal_key}))
+	unless(exists $normal_char_cache{$normal_key})
 		{
-		$scene_func = first { $_->[1]($up, $down, $left, $right, $_->[2]) } @normal_char_func;
-		$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[0] : '';
+		my $scene_func = first { $_->[$FUNCTION]([$up//()], [$down//()], [$left//()], [$right//()], $_->[$INDEX]) } @normal_char_func;
+		$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	
 	if($normal_char_cache{$normal_key})
 		{
-		if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
-		{
-		push @elements_to_be_add, [$col, $row, $normal_char_cache{$normal_key}];
-		}
-		
+		push @overlays, [$col, $row, $normal_char_cache{$normal_key}];
 		next;
 		}
 	
-	next unless(exists $diagonal_cross_filler_chars{$ascii_array[$row][$col][-1]}) ;
+	next unless exists $diagonal_cross_filler_chars{$ascii_array[$row][$col]} ;
 	
-	($char_45, $char_135, $char_225, $char_315) = ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
+	my ($char_45,                     $char_135,                    $char_225,                    $char_315) = 
+	   ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
 	
-	$diagonal_key = ((defined $char_45) ? join('o', @{$char_45}) : $undef_char) . '_' 
-		. ((defined $char_135) ? join('o', @{$char_135}) : $undef_char) . '_' 
-		. ((defined $char_225) ? join('o', @{$char_225}) : $undef_char) . '_' 
-		. ((defined $char_315) ? join('o', @{$char_315}) : $undef_char) ;
+	my $diagonal_key = ($char_45 // $undef_char) . ($char_135 // $undef_char) . ($char_225 // $undef_char) . ($char_315 // $undef_char) ;
 	
-	unless(exists($diagonal_char_cache{$diagonal_key}))
+	unless(exists $diagonal_char_cache{$diagonal_key})
 		{
-		$scene_func = first { $_->[1]($char_45, $char_135, $char_225, $char_315) } @diagonal_char_func;
-		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[0] : '';
+		my $scene_func = first { $_->[$FUNCTION]([$char_45//()], [$char_135//()], [$char_225//()], [$char_315//()]) } @diagonal_char_func;
+		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	
-	if($diagonal_char_cache{$diagonal_key} && ($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1]))
-		{
-		push @elements_to_be_add, [$col, $row, $diagonal_char_cache{$diagonal_key}];
-		}
+	push @overlays, [$col, $row, $diagonal_char_cache{$diagonal_key}] if $diagonal_char_cache{$diagonal_key} ;
 	}
 
-return @elements_to_be_add ;
+return @overlays ;
 }
 
 #-----------------------------------------------------------------------------
@@ -295,8 +263,23 @@ return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''
 	&& ((any {$_ eq '|'} @{$down}) || (any {$_ eq '.'} @{$down}) || (any {$_ eq '\''} @{$down}) || (any {$_ eq '+'} @{$down}) || (any {$_ eq 'v'} @{$down}))
 	&& ((any {$_ eq '-'} @{$left}) || (any {$_ eq '.'} @{$left}) || (any {$_ eq '\''} @{$left}) || (any {$_ eq '+'} @{$left}) || (any {$_ eq '<'} @{$left}))
 	&& ((any {$_ eq '-'} @{$right}) || (any {$_ eq '.'} @{$right}) || (any {$_ eq '\''} @{$right}) || (any {$_ eq '+'} @{$right}) || (any {$_ eq '>'} @{$right})) ;
-
 }
+
+# # possible replacement
+# # +
+# sub scene_cross
+# {
+# my ($up, $down, $left, $right, $index) = @_;
+# 
+# # line below could be removed if we pass a valid character or $undef_char (which is defined but won't match)
+# #return 0 unless defined $up && defined $down && defined $left && defined $right ;
+# 
+# # no need to call "any" as we don't use arrays anymore
+# return   ($up eq '|'    || $up eq '.'    || $up eq '\''    || $up eq '+'    || $up eq '^')
+# 	&& ($down  eq '|' || $down eq '.'  || $down eq '\''  || $down eq '+'  || $down eq 'v')
+# 	&& ($left  eq '-' || $left eq '.'  || $left eq '\''  || $left eq '+'  || $left eq '<')
+# 	&& ($right eq '-' || $right eq '.' || $right eq '\'' || $right eq '+' || $right eq '>') ;
+# }
 
 #-----------------------------------------------------------------------------
 # .
