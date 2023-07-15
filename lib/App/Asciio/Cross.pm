@@ -17,18 +17,18 @@ use App::Asciio::String ;
 
 sub transform_elements_to_ascii_array_for_cross_overlay
 {
-my ($self, $asciio, $cross_filler_chars, $start_x, $end_x, $start_y, $end_y)  = @_ ;
+my ($asciio, $cross_filler_chars, $start_x, $end_x, $start_y, $end_y)  = @_ ;
 
 my (@lines, @cross_point_index, %cross_point_index_hash, $cross_point) ;
 
 for my $element (@{$asciio->{ELEMENTS}})
 	{
 	next if(any {$_ eq ref($element)} @{$asciio->{CROSS_MODE_IGNORE}}) ;
-
+	
 	for my $strip (@{$element->get_stripes()})
 		{
 		my $line_index = 0 ;
-
+		
 		for my $sub_strip (split("\n", $strip->{TEXT}))
 			{
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
@@ -37,13 +37,13 @@ for my $element (@{$asciio->{ELEMENTS}})
 				$line_index++ ;
 				next ;
 				}
-
+			
 			if($asciio->{USE_MARKUP_MODE})
 			{
 				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
 				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
 			}
-
+			
 			my $character_index = 0 ;
 			
 			for my $character (split '', $sub_strip)
@@ -58,7 +58,7 @@ for my $element (@{$asciio->{ELEMENTS}})
 				if($x >= 0 && $y >= 0)
 					{
 					$cross_point = $y . '-' . $x ;
-
+					
 					# The characters retained in the array are characters that may be crossing, 
 					# and other characters are discarded
 					if(exists $cross_filler_chars->{$character})
@@ -219,12 +219,12 @@ my @unicode_down_chars  = ({%unicode_down_chars_thin},  {%unicode_down_chars_bol
 
 sub get_cross_mode_overlays
 {
-my ($self, $asciio, $start_x, $end_x, $start_y, $end_y) = @_;
+my ($asciio, $start_x, $end_x, $start_y, $end_y) = @_;
 
 my ($ascii_array_ref, @ascii_array, $index_ref);
 
 #~ this sub is slow
-($ascii_array_ref, $index_ref) = $self->transform_elements_to_ascii_array_for_cross_overlay($asciio, \%all_cross_filler_chars, $start_x, $end_x, $start_y, $end_y);
+($ascii_array_ref, $index_ref) = transform_elements_to_ascii_array_for_cross_overlay($asciio, \%all_cross_filler_chars, $start_x, $end_x, $start_y, $end_y);
 @ascii_array = @{$ascii_array_ref} ;
 
 # use Data::TreeDumper ;
