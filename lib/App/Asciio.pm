@@ -665,8 +665,6 @@ $self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 $self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE}) ;
 
 $self->{TAB_AS_SPACES} = '   ' unless defined $self->{TAB_AS_SPACES} ;
-
-use_markup($self->{USE_MARKUP_MODE}) ;
 }
 
 #-----------------------------------------------------------------------------

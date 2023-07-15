@@ -64,7 +64,7 @@ my $current_half_the_lines = $half_the_lines ;
 my (@lines_width_plus_offset) ;
 for my $line (@lines)
 	{
-	push @lines_width_plus_offset, usc_length($line) + abs($current_half_the_lines) ;
+	push @lines_width_plus_offset, unicode_length($line) + abs($current_half_the_lines) ;
 	$current_half_the_lines-- ;
 	}
 
@@ -97,14 +97,14 @@ $current_half_the_lines = $half_the_lines ;
 for my $line (@top_lines)
 	{
 	my $front_padding = ' ' x $current_half_the_lines ;
-	my $padding = ' ' x ($text_width_plus_offset  - (usc_length($line) + $current_half_the_lines)) ;
+	my $padding = ' ' x ($text_width_plus_offset  - (unicode_length($line) + $current_half_the_lines)) ;
 	my $strip_text = "\\ $front_padding$line$padding \\" ;
 	
 	push @stripes,
 		{
 		'HEIGHT' => 1,
 		'TEXT' => $strip_text,
-		'WIDTH' => usc_length($strip_text),
+		'WIDTH' => unicode_length($strip_text),
 		'X_OFFSET' => $x_offset,
 		'Y_OFFSET' => $y_offset ,
 		} ;
@@ -114,16 +114,16 @@ for my $line (@top_lines)
 	$current_half_the_lines-- ;
 	}
 
-my $padding = ' ' x ($text_width_plus_offset  - usc_length($center_line)) ;
+my $padding = ' ' x ($text_width_plus_offset  - unicode_length($center_line)) ;
 $strip_text = ') ' . $center_line . $padding . ' )' ;
-$element_width =  usc_length($strip_text) + $y_offset - 1 ; # first stripe is two lines high, compensate offset by substracting one
+$element_width =  unicode_length($strip_text) + $y_offset - 1 ; # first stripe is two lines high, compensate offset by substracting one
 my $left_center_x = $y_offset - 2 ; # compensate as above and shft left
 
 push @stripes,
 	{
 	'HEIGHT' => 1,
 	'TEXT' => $strip_text,
-	'WIDTH' => usc_length($strip_text),
+	'WIDTH' => unicode_length($strip_text),
 	'X_OFFSET' => $x_offset,
 	'Y_OFFSET' => $y_offset, 
 	};
@@ -135,7 +135,7 @@ $current_half_the_lines = 1;
 for my $line (@bottom_lines)
 	{
 	my $front_padding = ' ' x $current_half_the_lines ;
-	my $padding = ' ' x ($text_width_plus_offset  - (usc_length($line) + $current_half_the_lines)) ;
+	my $padding = ' ' x ($text_width_plus_offset  - (unicode_length($line) + $current_half_the_lines)) ;
 	
 	my $strip_text = "/ $front_padding$line$padding /" ;
 	
@@ -143,7 +143,7 @@ for my $line (@bottom_lines)
 		{
 		'HEIGHT' => 1,
 		'TEXT' => $strip_text,
-		'WIDTH' => usc_length($strip_text),
+		'WIDTH' => unicode_length($strip_text),
 		'X_OFFSET' => $x_offset,
 		'Y_OFFSET' => $y_offset ,
 		} ;

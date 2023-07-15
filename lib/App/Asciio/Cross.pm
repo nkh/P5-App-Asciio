@@ -51,7 +51,7 @@ for my $element (@{$asciio->{ELEMENTS}})
 				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
 				if((defined $start_x) && ($x < $start_x || $x >= $end_x))
 					{
-					$character_index += usc_length($character);
+					$character_index += unicode_length($character);
 					next ;
 					}
 				
@@ -87,7 +87,7 @@ for my $element (@{$asciio->{ELEMENTS}})
 						delete $cross_point_index_hash{$cross_point} if(defined $cross_point_index_hash{$cross_point}) ;
 						}
 					}
-				$character_index += usc_length($character);
+				$character_index += unicode_length($character);
 				}
 			
 			$line_index++ ;

@@ -205,6 +205,7 @@ $self->response(1) ;
 }
 
 #-----------------------------------------------------------------------------
+
 sub display_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
@@ -281,7 +282,7 @@ else
 	@text_lines = ('') ;
 	}
 
-my $text_width = max(map {usc_length $_} @text_lines);
+my $text_width = max(map {$self->unicode_length($_)} @text_lines);
 my $text_heigh = @text_lines;
 $text_width = max($text_width, 3) ;
 $text_heigh =max($text_heigh, 3) ;

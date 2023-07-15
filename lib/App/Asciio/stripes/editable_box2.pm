@@ -59,7 +59,7 @@ my ($text_width,  @lines) = (0) ;
 
 for my $line (split("\n", $text_only))
 	{
-	$text_width  = max($text_width, usc_length($line)) ;
+	$text_width  = max($text_width, unicode_length($line)) ;
 	push @lines, $line ;
 	}
 
@@ -69,7 +69,7 @@ $title_text = '' unless defined $title_text ;
 
 for my $title_line (split("\n", $title_text))
 	{
-	$title_width  = max($title_width, usc_length($title_line)) ;
+	$title_width  = max($title_width, unicode_length($title_line)) ;
 	push @title_lines, $title_line ;
 	}
 
@@ -92,7 +92,7 @@ my $text = $box_top ;
 
 for my $title_line (@title_lines)
 	{
-	my $pading =  ($end_x - (usc_length($title_left . $title_line . $title_right))) ;
+	my $pading =  ($end_x - (unicode_length($title_left . $title_line . $title_right))) ;
 	my $left_pading =  int($pading / 2) ;
 	my $right_pading = $pading - $left_pading ;
 	
@@ -103,7 +103,7 @@ $text .= $title_separator ;
 
 for my $line (@lines)
 	{
-	$text .= $box_left . $line . ($fill_char x ($end_x - (usc_length($line) + $extra_width))) . $box_right . "\n" ;
+	$text .= $box_left . $line . ($fill_char x ($end_x - (unicode_length($line) + $extra_width))) . $box_right . "\n" ;
 	}
 	
 for (1 .. ($end_y - (@lines + $extra_height + @title_lines)))
@@ -115,7 +115,7 @@ $text .= $box_bottom ;
 
 my ($text_begin_x, $text_begin_y, $title_separator_exist) = (0, 0, 0) ;
 $text_begin_y++ if($box_top) ;
-$text_begin_x = usc_length($box_left);
+$text_begin_x = unicode_length($box_left);
 $title_separator_exist = 1 if($title_separator);
 
 $self->set
@@ -159,8 +159,8 @@ my ($box_type) = @_ ;
 my @displayed_elements = grep { $_->[$DISPLAY] } @{$box_type} ;
 
 my $extra_width = $box_type->[$BODY_SEPARATOR][$DISPLAY] 
-			? max(0, map { usc_length($_) } map {$_->[$LEFT]} @displayed_elements)
-				+ max(0, map { usc_length($_) } map {$_->[$RIGHT]} @displayed_elements)
+			? max(0, map { unicode_length($_) } map {$_->[$LEFT]} @displayed_elements)
+				+ max(0, map { unicode_length($_) } map {$_->[$RIGHT]} @displayed_elements)
 			: 0 ;
 
 my $extra_height = 0 ;
@@ -181,7 +181,7 @@ my ($box_top, $box_left, $box_right, $box_bottom, $title_separator, $title_left,
 
 if($box_type->[$TOP][$DISPLAY])
 	{
-	my $box_left_and_right_length = usc_length($box_type->[$TOP][$LEFT]) + usc_length($box_type->[$TOP][$RIGHT]) ;
+	my $box_left_and_right_length = unicode_length($box_type->[$TOP][$LEFT]) + unicode_length($box_type->[$TOP][$RIGHT]) ;
 	$box_top = $box_type->[$TOP][$LEFT] 
 			. ($box_type->[$TOP][$BODY] x ($width - $box_left_and_right_length))   
 			. $box_type->[$TOP][$RIGHT] 
@@ -193,7 +193,7 @@ $title_right = $box_type->[$TITLE_SEPARATOR][$RIGHT] if($box_type->[$BODY_SEPARA
 
 if($box_type->[$TITLE_SEPARATOR][$DISPLAY])
 	{
-	my $title_left_and_right_length = usc_length($title_left) + usc_length($title_right) ;
+	my $title_left_and_right_length = unicode_length($title_left) + unicode_length($title_right) ;
 	
 	my $title_separator_body = $box_type->[$TITLE_SEPARATOR][$BODY] ;
 	$title_separator_body = ' ' unless defined $title_separator_body ;
@@ -210,7 +210,7 @@ $box_right = $box_type->[$BODY_SEPARATOR][$RIGHT] if($box_type->[$BODY_SEPARATOR
 
 if($box_type->[$BOTTOM][$DISPLAY])
 	{
-	my $box_left_and_right_length = usc_length($box_type->[$BOTTOM][$LEFT]) + usc_length($box_type->[$BOTTOM][$RIGHT]) ;
+	my $box_left_and_right_length = unicode_length($box_type->[$BOTTOM][$LEFT]) + unicode_length($box_type->[$BOTTOM][$RIGHT]) ;
 	$box_bottom = $box_type->[$BOTTOM][$LEFT] 
 			. ($box_type->[$BOTTOM][$BODY] x ($width - $box_left_and_right_length))   
 			. $box_type->[$BOTTOM][$RIGHT] ;

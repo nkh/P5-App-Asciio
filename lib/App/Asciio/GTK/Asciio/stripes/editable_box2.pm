@@ -123,7 +123,7 @@ else
 	@text_lines = ('') ;
 	}
 
-my $text_width = max(map {usc_length $_} @text_lines);
+my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
 $text_width = max($text_width, 3) ;
 $text_heigh =max($text_heigh, 3) ;
@@ -139,7 +139,7 @@ else
 	@title_lines = ('') ;
 	}
 
-my $title_width = max(map {usc_length $_} @title_lines);
+my $title_width = max(map {unicode_length $_} @title_lines);
 my $title_heigh = @title_lines;
 $title_width = max($title_width, 3) ;
 $title_heigh =max($title_heigh, 3) ;

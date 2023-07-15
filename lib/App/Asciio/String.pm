@@ -5,7 +5,7 @@ require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
 	use_markup
-	usc_length
+	unicode_length
 	make_vertical_text
 	) ;
 
@@ -16,26 +16,16 @@ use utf8 ;
 
 #-----------------------------------------------------------------------------
 
-{
-
-my ($use_markup) ;
-
-sub use_markup { my ($use_it) = @_ ; $use_markup = $use_it ; }
-
-#-----------------------------------------------------------------------------
-
-sub usc_length
+sub unicode_length
 {
 my ($string) = @_ ;
 
-$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if $use_markup ;
+# no more reference to MARUP
 
 my $east_asian_double_width_chars_cnt = grep {$_ =~ /\p{EA=W}|\p{EA=F}/} split('', $string) ;
 my $nonspacing_chars_cnt = grep {$_ =~ /\p{gc:Mn}/} split('', $string) ;
 
 return length($string) + $east_asian_double_width_chars_cnt - $nonspacing_chars_cnt ;
-}
-
 }
 
 #-----------------------------------------------------------------------------
@@ -74,6 +64,20 @@ while($found_character)
 	}
 
 return $vertical ;
+}
+
+#-----------------------------------------------------------------------------
+ 
+package App::Asciio ;
+
+sub unicode_length
+{
+my ($self, $string) = @_ ;
+
+# Markup is not part of Unicode, handle it in Asciio
+$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if $self->{USE_MARKUP_MODE} ;
+
+return App::Asciio::String::unicode_length($string) ;
 }
 
 #-----------------------------------------------------------------------------

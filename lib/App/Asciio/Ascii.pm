@@ -9,17 +9,6 @@ use App::Asciio::Cross ;
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_ascii_buffer_keep_empty_lines
-{
-my ($self, @elements)  = @_ ;
-
-my $text = join("\n", $self->transform_elements_to_ascii_array(@elements)) . "\n" ;
-
-return($text) ;
-}
-
-#-----------------------------------------------------------------------------
-
 sub transform_elements_to_ascii_buffer
 {
 my ($self, @elements)  = @_ ;
@@ -43,27 +32,6 @@ return($text) ;
 }
 
 #-----------------------------------------------------------------------------
-
-sub del_black_in_line
-{
-my ($deal_line) = @_ ;
-my ($return_line, $char_len) = ('', 1) ;
-
-for my $character (split '', $deal_line)
-	{
-	if($char_len > 1)
-		{
-		$char_len -= 1;
-		}
-	else
-		{
-		$char_len = usc_length($character) ;
-		$return_line .= $character;
-		}
-	}
-
-return $return_line;
-}
 
 sub transform_elements_to_ascii_two_dimensional_array
 {
@@ -96,7 +64,7 @@ for my $element (@elements)
 					while($origin_strip =~ /(<\/?[bius]>)+|<\/span>|<span link="[^<]+">/g)
 						{
 						my $sub_str = substr($origin_strip, 0, pos($origin_strip));
-						$ori_x = $element->{X} + $strip->{X_OFFSET} + usc_length($sub_str) ;
+						$ori_x = $element->{X} + $strip->{X_OFFSET} + $self->unicode_length($sub_str) ;
 						my $fit_str = $&;
 						$fit_str =~ s/<\/?b>/\*\*/g;
 						$fit_str =~ s/<\/?u>/__/g;
@@ -135,8 +103,8 @@ for my $element (@elements)
 						$lines[$y][$x] = [$character] ;
 						}
 					}
-
-				$character_index += usc_length($character);
+				
+				$character_index += $self->unicode_length($character);
 				}
 			
 			$line_index++ ;
@@ -166,7 +134,7 @@ if($self->{USE_MARKUP_MODE} && $format)
 				for my $single_char (split '', $markup_coordinate{$row . '-' . $col})
 					{
 					$new_lines[$row][$new_col] = [$single_char];
-					$new_col += usc_length($single_char);
+					$new_col += $self->unicode_length($single_char);
 					}
 				}
 			$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
@@ -193,7 +161,21 @@ for my $line (@lines)
 	my $ascii_line = join('', map {defined $_ ? join('', @{$_}) : ' '} @{$line})  ;
 	if(defined $ascii_line)
 		{
-		my $write_line = del_black_in_line($ascii_line) ;
+		my ($write_line, $char_len) = ('', 1) ;
+		
+		for my $character (split '', $ascii_line)
+			{
+			if($char_len > 1)
+				{
+				$char_len -= 1;
+				}
+			else
+				{
+				$char_len = $self->unicode_length($character) ;
+				$write_line .= $character;
+				}
+			}
+		
 		push @ascii, $write_line;
 		}
 	else

@@ -107,7 +107,7 @@ for my $line (@lines)
 			{
 			'HEIGHT' => 1,
 			'TEXT' => $strip_text,
-			'WIDTH' => usc_length($strip_text) ,
+			'WIDTH' => unicode_length($strip_text) ,
 			'X_OFFSET' => $x_offset,
 			'Y_OFFSET' => $y_offset,
 			} ;
