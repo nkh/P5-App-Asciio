@@ -1,11 +1,10 @@
 
-package App::Asciio::Toolfunc ;
+package App::Asciio::String ;
 
 require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
 	use_markup
-	set_double_width_qr
 	usc_length
 	make_vertical_text
 	) ;
@@ -19,10 +18,9 @@ use utf8 ;
 
 {
 
-my ($double_width_qr, $use_markup) ;
+my ($use_markup) ;
 
 sub use_markup { my ($use_it) = @_ ; $use_markup = $use_it ; }
-sub set_double_width_qr { my ($qr) = @_ ; $double_width_qr = $qr ; }
 
 #-----------------------------------------------------------------------------
 
@@ -32,7 +30,10 @@ my ($string) = @_ ;
 
 $string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if $use_markup ;
 
-return length($string) + $string =~ s/$double_width_qr/x/g ;
+my $east_asian_double_width_chars_cnt = grep {$_ =~ /\p{EA=W}|\p{EA=F}/} split('', $string) ;
+my $nonspacing_chars_cnt = grep {$_ =~ /\p{gc:Mn}/} split('', $string) ;
+
+return length($string) + $east_asian_double_width_chars_cnt - $nonspacing_chars_cnt ;
 }
 
 }

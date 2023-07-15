@@ -7,7 +7,7 @@ use utf8 ;
 
 use App::Asciio::Arrows ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #----------------------------------------------------------------------------------------------
 

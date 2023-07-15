@@ -8,13 +8,6 @@ DIALOGS =>
 	#BOX_EDIT => '',
 	},
 
-DOUBLE_WIDTH_QR => qr/
-			[\x{3400}-\x{4db5}] |
-			[\x{4e00}-\x{9fa5}] |
-			[\x{ac00}-\x{d7ff}] |
-			[\x{3008}-\x{3011}] |
-			[\x{2014}\x{2026}\x{3001}\x{3002}\x{3014}\x{3015}\x{FF01}\x{FF08}\x{FF09}\x{FF0C}\x{FF0E}\x{FF1A}\x{FF1B}\x{FF1F}\x{FF0F}\x{FF3C}]
-			/x,
 TAB_AS_SPACES => '    ',
 
 # use ANSI colors

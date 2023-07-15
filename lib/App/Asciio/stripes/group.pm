@@ -10,7 +10,7 @@ use List::MoreUtils qw(minmax) ;
 use Module::Util qw(find_installed) ;
 use File::Basename ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

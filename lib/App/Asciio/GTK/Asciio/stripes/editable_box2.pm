@@ -3,7 +3,7 @@ package App::Asciio::stripes::editable_box2 ;
 use parent qw/App::Asciio::stripes::single_stripe/ ;
 
 use App::Asciio::GTK::Asciio::Boxfuncs ;
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 use strict;
 use warnings;

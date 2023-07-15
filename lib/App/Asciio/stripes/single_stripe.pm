@@ -5,7 +5,7 @@ use parent qw/App::Asciio::stripes::stripes/ ;
 use strict;
 use warnings;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

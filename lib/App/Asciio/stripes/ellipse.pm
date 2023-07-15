@@ -24,7 +24,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 
 ] ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

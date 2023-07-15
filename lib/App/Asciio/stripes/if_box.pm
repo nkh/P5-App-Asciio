@@ -9,7 +9,7 @@ use List::Util qw(min max) ;
 use Readonly ;
 use Clone ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

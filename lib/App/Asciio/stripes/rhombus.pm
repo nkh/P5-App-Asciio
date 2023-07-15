@@ -19,7 +19,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[1, 'fill-character','',     ' ', '',    1, ] ,
 ] ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

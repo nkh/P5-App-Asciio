@@ -23,7 +23,7 @@ use App::Asciio::stripes::ellipse;
 use App::Asciio::Text::Asciio::Dialogs ;
 use App::Asciio::Text::Asciio::Menues ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

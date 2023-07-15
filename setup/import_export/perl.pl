@@ -12,7 +12,7 @@ use List::Util qw(max);
 use File::Basename ;
 
 use App::Asciio ;
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 my $BASE64_HEADER = (' ' x 120)  .  '#asciio' ;
 my $BASE64_HEADER_SIZE = length($BASE64_HEADER) ;

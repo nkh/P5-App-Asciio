@@ -9,7 +9,7 @@ use Data::TreeDumper ;
 use Data::TreeDumper::Renderer::GTK ;
 use List::Util qw(max) ;
 
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 

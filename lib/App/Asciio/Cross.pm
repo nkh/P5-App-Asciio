@@ -11,7 +11,7 @@ use Clone;
 
 use List::Util qw(first) ;
 use List::MoreUtils qw(any) ;
-use App::Asciio::Toolfunc ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 
