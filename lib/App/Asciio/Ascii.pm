@@ -3,9 +3,10 @@ package App::Asciio;
 
 $|++ ;
 
-use strict;
-use warnings;
+use strict; use warnings;
+
 use App::Asciio::Cross ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 
@@ -64,7 +65,7 @@ for my $element (@elements)
 					while($origin_strip =~ /(<\/?[bius]>)+|<\/span>|<span link="[^<]+">/g)
 						{
 						my $sub_str = substr($origin_strip, 0, pos($origin_strip));
-						$ori_x = $element->{X} + $strip->{X_OFFSET} + $self->unicode_length($sub_str) ;
+						$ori_x = $element->{X} + $strip->{X_OFFSET} + $self->get_unicode_length($sub_str) ;
 						my $fit_str = $&;
 						$fit_str =~ s/<\/?b>/\*\*/g;
 						$fit_str =~ s/<\/?u>/__/g;
@@ -104,7 +105,8 @@ for my $element (@elements)
 						}
 					}
 				
-				$character_index += $self->unicode_length($character);
+				my $character_length = $self->get_unicode_length($character) ;
+				$character_index += $character_length ;
 				}
 			
 			$line_index++ ;
@@ -134,7 +136,7 @@ if($self->{USE_MARKUP_MODE} && $format)
 				for my $single_char (split '', $markup_coordinate{$row . '-' . $col})
 					{
 					$new_lines[$row][$new_col] = [$single_char];
-					$new_col += $self->unicode_length($single_char);
+					$new_col += $self->get_unicode_length($single_char);
 					}
 				}
 			$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
@@ -143,6 +145,7 @@ if($self->{USE_MARKUP_MODE} && $format)
 		}
 	return(@new_lines);
 	}
+
 return(@lines) ;
 }
 
@@ -171,7 +174,7 @@ for my $line (@lines)
 				}
 			else
 				{
-				$char_len = $self->unicode_length($character) ;
+				$char_len = $self->get_unicode_length($character) ;
 				$write_line .= $character;
 				}
 			}

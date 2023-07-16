@@ -1,29 +1,27 @@
 
 package App::Asciio ;
 
-use strict;
-use warnings;
+use strict; use warnings;
 
 use utf8;
 use Encode;
 
-use Data::TreeDumper ;
 use Clone;
+use Data::TreeDumper ;
 use List::Util qw(min max first) ;
 use List::MoreUtils qw(any minmax first_value) ;
 
-use App::Asciio::Setup ;
+use App::Asciio::Actions ;
+use App::Asciio::Actions ;
+use App::Asciio::Ascii ;
 use App::Asciio::Dialogs ;
 use App::Asciio::Elements ;
-use App::Asciio::Menues ;
-use App::Asciio::Actions ;
-use App::Asciio::Undo ;
 use App::Asciio::Io ;
-use App::Asciio::Ascii ;
+use App::Asciio::Menues ;
 use App::Asciio::Options ;
-use App::Asciio::Actions ;
-
+use App::Asciio::Setup ;
 use App::Asciio::String ;
+use App::Asciio::Undo ;
 
 #-----------------------------------------------------------------------------
 

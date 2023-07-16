@@ -13,8 +13,6 @@ use List::Util qw(first) ;
 use List::MoreUtils qw(any) ;
 use App::Asciio::String ;
 
-#-----------------------------------------------------------------------------
-
 sub get_ascii_array_and_crossings
 {
 my ($asciio, $cross_filler_chars, $start_x, $end_x, $start_y, $end_y)  = @_ ;
@@ -59,11 +57,17 @@ for my $element (@{$asciio->{ELEMENTS}})
 					# other characters are discarded
 					if(exists $cross_filler_chars->{$character})
 						{
-						# The cross point is the number of array elements greater than 1
-						# push @cross_point_index, [$y, $x] if scalar @{$lines[$y][$x]} ;
-						push @cross_point_index, [$y, $x] if defined $lines[$y][$x] ;
+						if(defined $lines[$y][$x])
+							{
+							push @{$lines[$y][$x]}, $character ;
+							
+							push @cross_point_index, [$y, $x] ;
+							}
+						else
+							{
+							$lines[$y][$x] = [$character] ;
+							}
 						
-						$lines[$y][$x] = $character ;
 						}
 					else
 						{
@@ -218,11 +222,14 @@ for(@{$crossings})
 	my ($up,                        $down,                      $left,                      $right) = 
 	   ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
 	
-	my $normal_key = ($up // $undef_char) . ($down // $undef_char) . ($left // $undef_char) . ($right // $undef_char) ;
+	my $normal_key = ((defined $up) ? join('o', @{$up}) : $undef_char) . '_' 
+			. ((defined $down) ? join('o', @{$down}) : $undef_char) . '_' 
+			. ((defined $left) ? join('o', @{$left}) : $undef_char) . '_' 
+			. ((defined $right) ? join('o', @{$right}) : $undef_char) ;
 	
 	unless(exists $normal_char_cache{$normal_key})
 		{
-		my $scene_func = first { $_->[$FUNCTION]([$up//()], [$down//()], [$left//()], [$right//()], $_->[$INDEX]) } @normal_char_func;
+		my $scene_func = first { $_->[$FUNCTION]($up, $down, $left, $right, $_->[$INDEX]) } @normal_char_func;
 		$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	
@@ -237,11 +244,14 @@ for(@{$crossings})
 	my ($char_45,                     $char_135,                    $char_225,                    $char_315) = 
 	   ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
 	
-	my $diagonal_key = ($char_45 // $undef_char) . ($char_135 // $undef_char) . ($char_225 // $undef_char) . ($char_315 // $undef_char) ;
+	my $diagonal_key = ((defined $char_45) ? join('o', @{$char_45}) : $undef_char) . '_' 
+				. ((defined $char_135) ? join('o', @{$char_135}) : $undef_char) . '_' 
+				. ((defined $char_225) ? join('o', @{$char_225}) : $undef_char) . '_' 
+				. ((defined $char_315) ? join('o', @{$char_315}) : $undef_char) ;
 	
 	unless(exists $diagonal_char_cache{$diagonal_key})
 		{
-		my $scene_func = first { $_->[$FUNCTION]([$char_45//()], [$char_135//()], [$char_225//()], [$char_315//()]) } @diagonal_char_func;
+		my $scene_func = first { $_->[$FUNCTION]($char_45, $char_135, $char_225, $char_315) } @diagonal_char_func;
 		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	

@@ -23,8 +23,6 @@ sub unicode_length
 {
 my ($string) = @_ ;
 
-# no more reference to MARUP
-
 my $east_asian_double_width_chars_cnt = grep {$_ =~ /\p{EA=W}|\p{EA=F}/} split('', $string) ;
 my $nonspacing_chars_cnt = grep {$_ =~ /\p{gc:Mn}/} split('', $string) ;
 
@@ -73,7 +71,7 @@ return $vertical ;
  
 package App::Asciio ;
 
-sub unicode_length
+sub get_unicode_length
 {
 my ($self, $string) = @_ ;
 
