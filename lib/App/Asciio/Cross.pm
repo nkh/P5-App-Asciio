@@ -81,13 +81,14 @@ for my $element (@{$asciio->{ELEMENTS}})
 		}
 	}
 
+@cross_point_index = grep { defined $lines[$_->[0]][$_->[1]][1] } @cross_point_index ;
+
 return(\@lines, \@cross_point_index) ;
 }
 
 #-----------------------------------------------------------------------------
 # ascii: + X . '
 # unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ 
-# todo: 1. performance problem
 
 use Readonly ;
 Readonly my $CHARACTER => 0 ;
@@ -210,9 +211,6 @@ my ($asciio, $start_x, $end_x, $start_y, $end_y) = @_;
 my ($ascii_array, $crossings) = get_ascii_array_and_crossings($asciio, \%crossing_chars, $start_x, $end_x, $start_y, $end_y);
 my @ascii_array = @{$ascii_array} ;
 
-# use Data::TreeDumper ;
-# print DumpTree [$ascii_array, $crossings] ;
-
 my @overlays ;
 
 for(@{$crossings})
@@ -235,11 +233,15 @@ for(@{$crossings})
 	
 	if($normal_char_cache{$normal_key})
 		{
-		push @overlays, [$col, $row, $normal_char_cache{$normal_key}];
+		if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
+			{
+			push @overlays, [$col, $row, $normal_char_cache{$normal_key}];
+			}
+
 		next;
 		}
 	
-	next unless exists $diagonal_cross_filler_chars{$ascii_array[$row][$col]} ;
+	next unless exists $diagonal_cross_filler_chars{$ascii_array[$row][$col][-1]} ;
 	
 	my ($char_45,                     $char_135,                    $char_225,                    $char_315) = 
 	   ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
@@ -255,7 +257,11 @@ for(@{$crossings})
 		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	
-	push @overlays, [$col, $row, $diagonal_char_cache{$diagonal_key}] if $diagonal_char_cache{$diagonal_key} ;
+	if($diagonal_char_cache{$diagonal_key} && ($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1]))
+		{
+		push @overlays, [$col, $row, $diagonal_char_cache{$diagonal_key}];
+		}
+
 	}
 
 return @overlays ;
@@ -274,22 +280,6 @@ return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''
 	&& ((any {$_ eq '-'} @{$left}) || (any {$_ eq '.'} @{$left}) || (any {$_ eq '\''} @{$left}) || (any {$_ eq '+'} @{$left}) || (any {$_ eq '<'} @{$left}))
 	&& ((any {$_ eq '-'} @{$right}) || (any {$_ eq '.'} @{$right}) || (any {$_ eq '\''} @{$right}) || (any {$_ eq '+'} @{$right}) || (any {$_ eq '>'} @{$right})) ;
 }
-
-# # possible replacement
-# # +
-# sub scene_cross
-# {
-# my ($up, $down, $left, $right, $index) = @_;
-# 
-# # line below could be removed if we pass a valid character or $undef_char (which is defined but won't match)
-# #return 0 unless defined $up && defined $down && defined $left && defined $right ;
-# 
-# # no need to call "any" as we don't use arrays anymore
-# return   ($up eq '|'    || $up eq '.'    || $up eq '\''    || $up eq '+'    || $up eq '^')
-# 	&& ($down  eq '|' || $down eq '.'  || $down eq '\''  || $down eq '+'  || $down eq 'v')
-# 	&& ($left  eq '-' || $left eq '.'  || $left eq '\''  || $left eq '+'  || $left eq '<')
-# 	&& ($right eq '-' || $right eq '.' || $right eq '\'' || $right eq '+' || $right eq '>') ;
-# }
 
 #-----------------------------------------------------------------------------
 # .
