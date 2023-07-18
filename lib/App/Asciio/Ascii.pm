@@ -92,7 +92,6 @@ for my $element (@elements)
 				{
 				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
 				
-				$lines[$y][$x] = $character if ($x >= 0 && $y >= 0) ;
 				if($x >= 0 && $y >= 0)
 					{
 					if($character =~ /\p{gc:Mn}/)
