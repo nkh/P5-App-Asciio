@@ -51,6 +51,7 @@ objects
 display
 	GUI/TUI: a faster stencil picker
 		TUI can use fzf
+			with preview
 
 architecture
 	handle multiple binary format versions
