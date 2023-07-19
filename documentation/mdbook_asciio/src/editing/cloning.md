@@ -1,36 +1,33 @@
 # Cloning
 
-You can add elements quickly with the clone mode.
+You can activate the cloning feature to quickly add elements.
 
-***Binding:*** «c»
+***Binding:*** c
 
-## Cloning base elements
+### Cloning Base Elements
 
-When you start cloning, without any elements selected, Asciio will let you clone on of the base elements.
+When you initiate cloning without any elements selected, Asciio allows you to clone one of the base elements.
 
+| Element           | Binding |
+| ----------------- | ------- |
+| Box               |   b     |
+| Text              |   t     |
+| Wirl Arrow        |   a     |
+| Angled Arrow      |   A     |
 
-|  element          |   binding   |
-|  ---------------  |  ---------  |
-|   box             |     «b»     |
-|   text            |     «t»     |
-|   wirl arrow      |     «a»     |
-|   angled arrow    |     «A»     |
+![Clone Base Elements](clone_base_element.gif)
 
+### Cloning the Selection
 
+You can also clone a set of elements that have been selected. The bindings for the base elements are still applicable.
 
+![Clone Selection](clone_selection.gif)
 
-![clone base elements](clone_base_element.gif)
+### Hint Lines
 
-## Cloning the selection
+If hint lines are enabled, additional lines are displayed to indicate the limits of the elements being cloned. You can toggle the hint lines on and off.
 
-you can also a set of elements to clone. The base elements bindings are available.
+***Binding:*** h
 
-![clone selection](clone_selection.gif)
+![Clone Hint Lines](clone_hint_lines.gif)
 
-## Hint lines
-
-If hint lies are on, extra hint lines for the element to clone are shown; you can also switch hint lines on and off.
-
-***Binding: «h»***.
-
-![clone hint lines](clone_hint_lines.gif)
