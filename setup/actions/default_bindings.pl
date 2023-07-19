@@ -333,10 +333,10 @@ register_action_handlers
 	{
 	SHORTCUTS => '00S-S',
 	
-	'Load slides'                         => ['000-l', \&App::Asciio::Actions::Presentation::load_slides   ] ,
-	'previous slide'                      => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
-	'next slide'                          => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
-	'first slide'                         => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
+	'Load slides'                        => ['000-l', \&App::Asciio::Actions::Presentation::load_slides   ] ,
+	'previous slide'                     => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
+	'next slide'                         => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
+	'first slide'                        => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
 	},
 
 'move arrow ends' =>
@@ -344,14 +344,22 @@ register_action_handlers
 	SHORTCUTS => '0A0-a',
 	ESCAPE_KEY => '000-Escape',
 	
-	'arrow start up'                      => [ '000-Up',             \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1] ],
-	'arrow start down'                    => [ '000-Down',           \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1] ],
-	'arrow start right'                   => [ '000-Right',          \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0] ],
-	'arrow start left'                    => [ '000-Left',           \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0] ],
-	'arrow end up'                        => [ '00S-Up',             \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1] ],
-	'arrow end down'                      => [ '00S-Down',           \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1] ],
-	'arrow end right'                     => [ '00S-Right',          \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0] ],
-	'arrow end left'                      => [ '00S-Left',           \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
+	'arrow start up'                     => [ '000-Up',    \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1] ],
+	'arrow start down'                   => [ '000-Down',  \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1] ],
+	'arrow start right'                  => [ '000-Right', \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0] ],
+	'arrow start left'                   => [ '000-Left',  \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0] ],
+	'arrow start up2'                     => [ '000-k',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1] ],
+	'arrow start down2'                   => [ '000-j',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1] ],
+	'arrow start right2'                  => [ '000-l',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0] ],
+	'arrow start left2'                   => [ '000-h',     \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0] ],
+	'arrow end up'                       => [ '00S-Up',    \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1] ],
+	'arrow end down'                     => [ '00S-Down',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1] ],
+	'arrow end right'                    => [ '00S-Right', \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0] ],
+	'arrow end left'                     => [ '00S-Left',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
+	'arrow end up2'                       => [ '00S-K',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1] ],
+	'arrow end down2'                     => [ '00S-J',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1] ],
+	'arrow end right2'                    => [ '00S-L',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0] ],
+	'arrow end left2'                     => [ '00S-H',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
 	},
 ) ;
 
