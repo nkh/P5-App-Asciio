@@ -287,10 +287,10 @@ if(@selected_elements >= 2)
 	{
 	$self->create_undo_snapshot() ;
 	
-	my $group = {'GROUP_COLOR' => $self->get_group_color()} ;
+	my $group = {GROUP_COLOR => $self->get_group_color()} ;
 	for my $element (@selected_elements)
 		{
-		push @{$element->{'GROUP'}}, $group  ;
+		push @{$element->{GROUP}}, $group  ;
 		}
 	}
 

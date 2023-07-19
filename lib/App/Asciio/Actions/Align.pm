@@ -13,7 +13,7 @@ my ($self, $alignment) = @_ ;
 
 $self->create_undo_snapshot() ;
 
-my @elements_to_move =  grep {my @connectors = $_->get_connector_points() ; @connectors == 0 } $self->get_selected_elements(1) ;
+my @elements_to_move =  grep {my @connectors = $_->get_connector_points() ; @connectors == 0 } grep { ! defined $_->{GROUP} } $self->get_selected_elements(1) ;
 
 for ($alignment)
 	{
