@@ -105,6 +105,13 @@ $size = $font_min if $size < $font_min ;
 
 $self->set_font($family, $size);
 
+# resize canvas
+if($self->{UI} eq 'GUI')
+	{
+	my ($character_width, $character_height) = $self->get_character_size() ;
+	$self->{widget}->set_size_request($self->{CANVAS_WIDTH} * $character_width, $self->{CANVAS_HEIGHT} * $character_height);
+	}
+
 $self->invalidate_rendering_cache() ;
 $self->update_display() ;
 }
