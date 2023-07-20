@@ -6,8 +6,8 @@
 
 - create a box is nothing is selected
 - if only a box is selected, create a new box and connect to it
-- if a box is selected amd mouse over a box, connect them
-- if multiple boxes are selectted, create a box and connect to all boxes
+- if a box is selected and mouse over a box, connect them
+- if multiple boxes are selected, create a box and connect to all boxes
 
 ![quick link](quick_link.gif)
 
