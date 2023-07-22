@@ -5,8 +5,8 @@ FONT_SIZE => 12,
 FONT_MIN => 3,
 
 ZOOM_STEP => 3,
-CANVAS_WIDTH => 200,
-CANVAS_HEIGHT => 150,
+CANVAS_X_GRID_NUM => 200,
+CANVAS_Y_GRID_NUM => 150,
 
 USE_MARKUP_MODE => 0,
 
@@ -27,10 +27,10 @@ COLORS => {},
 
 USE_CROSS_MODE => 0,
 CROSS_MODE_IGNORE =>
-    [
-    'App::Asciio::stripes::ellipse',
+	[
+	'App::Asciio::stripes::ellipse',
 	'App::Asciio::stripes::if_box'
-    ],
+	],
 
 COLOR_SCHEMES =>
 	{

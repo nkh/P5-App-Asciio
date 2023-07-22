@@ -896,6 +896,17 @@ $self->run_actions("${modifiers}$key") unless exists $ignored_keys{"${modifiers}
 
 #-----------------------------------------------------------------------------
 
+sub mouse_scroll_event
+{
+my ($self, $event)= @_;
+
+my ($modifiers, $direction) = ($event->{MODIFIERS}, $event->{DIRECTION}) ;
+
+$self->run_actions("${modifiers}$direction") unless exists $ignored_keys{"${modifiers}$direction"} ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub update_quadrants
 {
 my ($self, $element) = @_ ;
