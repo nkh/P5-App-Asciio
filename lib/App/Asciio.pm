@@ -229,44 +229,44 @@ The "goat" project (https://github.com/blampe/goat) must be installed.
 
 =head2 Bindings
 
- «Enter»            Edit selected element
+ <Enter>            Edit selected element
 
- «d»                Delete selected element(s)
+ <d>                Delete selected element(s)
 
- «u»                Undo
+ <u>                Undo
 
- «C»-r              Redo
+ <C>-r              Redo
 
- «.»                Quick link
+ <.>                Quick link
 
- «,»                Quick copy
+ <,>                Quick copy
 
- «r»                Add vertical ruler
+ <r>                Add vertical ruler
 
- «A-r»              Add horizontal ruler
+ <A-r>              Add horizontal ruler
 
- «R»                Remove rulers
+ <R>                Remove rulers
 
  Moving elements:
 
 =over 4
 
- «h»                Move selected elements left
+ <h>                Move selected elements left
 
- «j»                Move selected elements down
+ <j>                Move selected elements down
 
- «k»                Move selected elements up
+ <k>                Move selected elements up
 
- «l»                Move selected elements right
+ <l>                Move selected elements right
 
 
- «Left»             Move selected elements left
+ <Left>             Move selected elements left
 
- «Down»             Move selected elements down
+ <Down>             Move selected elements down
 
- «Up»               Move selected elements up
+ <Up>               Move selected elements up
 
- «Right»            Move selected elements right
+ <Right>            Move selected elements right
 
 =back
 
@@ -274,17 +274,17 @@ The "goat" project (https://github.com/blampe/goat) must be installed.
 
 =over 4
 
- «n»                Select next element
+ <n>                Select next element
 
- «N»                Select previous element
+ <N>                Select previous element
 
- «Tab»              Select next element move mouse
+ <Tab>              Select next element move mouse
 
- «V»                Select all elements
+ <V>                Select all elements
 
- «v»                Select connected elements
+ <v>                Select connected elements
 
- «Escape»           Deselect all elements
+ <Escape>           Deselect all elements
 
 =back
 
@@ -292,15 +292,15 @@ The "goat" project (https://github.com/blampe/goat) must be installed.
 
 =over 4
 
- «1»                Make element narrower
+ <1>                Make element narrower
 
- «2»                Make element taller
+ <2>                Make element taller
 
- «3»                Make element shorter
+ <3>                Make element shorter
 
- «4»                Make element wider
+ <4>                Make element wider
 
- «s»                Shrink box
+ <s>                Shrink box
 
 =back
 
@@ -308,202 +308,202 @@ The "goat" project (https://github.com/blampe/goat) must be installed.
 
 =over 4
 
- «y»                Copy to clipboard
+ <y>                Copy to clipboard
 
- «p»                Insert from clipboard
+ <p>                Insert from clipboard
 
- «Y»                Export to clipboard & primary as ascii
+ <Y>                Export to clipboard & primary as ascii
 
- «P»                Import from primary to box
+ <P>                Import from primary to box
 
- «A-P»              Import from primary to text
-
-=back
-
- «:» command group:
-
-=over 4
-
- «q»                Quit
-
- «Q»                Quit no save
-
- «w»                Save
-
- «W»                SaveAs
-
- «e»                Open
-
- «r»                Insert
-
- «m»                Display manpage
-
- «h»                Help
-
- «c»                Display commands
-
- «f»                Display action files
-
- «k»                Display keyboard mapping
+ <A-P>              Import from primary to text
 
 =back
 
- «i» Insert group:
+ <:> command group:
 
 =over 4
 
- «A»                Add angled arrow
+ <q>                Quit
 
- «a»                Add arrow
+ <Q>                Quit no save
 
- «A-a»              Add unicode arrow
+ <w>                Save
 
- «B»                Add shrink box
+ <W>                SaveAs
 
- «b»                Add box
+ <e>                Open
 
- «A-b»              Add unicode box
+ <r>                Insert
 
- «C-b»              Add multiple boxes
+ <m>                Display manpage
 
- «c»                Add connector
+ <h>                Help
 
- «E»                Add exec-box no border
+ <c>                Display commands
 
- «e»                Add exec-box
+ <f>                Display action files
 
- «f»                Insert from file
-
- «g»                Add group object type 1
-
- «h»                Add help box
-
- «i»                Add if-box
-
- «R»                Add horizontal ruler
-
- «x»                External command output in a box
-
- «X»                External command output in a box no frame
-
- «p»                Add process
-
- «r»                Add vertical ruler
-
- «t»                Add text
-
- «C-t»              Add multiple text
+ <k>                Display keyboard mapping
 
 =back
 
- «a» arrow group:
+ <i> Insert group:
 
 =over 4
 
- «S»                Insert multi-wirl section
+ <A>                Add angled arrow
 
- «f»                Flip arrow start and end
+ <a>                Add arrow
 
- «d»                Change arrow direction
+ <A-a>              Add unicode arrow
 
- «s»                Append multi-wirl sectioni
+ <B>                Add shrink box
 
- «A-s»              Remove last section from multi-wirl
+ <b>                Add box
+
+ <A-b>              Add unicode box
+
+ <C-b>              Add multiple boxes
+
+ <c>                Add connector
+
+ <E>                Add exec-box no border
+
+ <e>                Add exec-box
+
+ <f>                Insert from file
+
+ <g>                Add group object type 1
+
+ <h>                Add help box
+
+ <i>                Add if-box
+
+ <R>                Add horizontal ruler
+
+ <x>                External command output in a box
+
+ <X>                External command output in a box no frame
+
+ <p>                Add process
+
+ <r>                Add vertical ruler
+
+ <t>                Add text
+
+ <C-t>              Add multiple text
+
+=back
+
+ <a> arrow group:
+
+=over 4
+
+ <S>                Insert multi-wirl section
+
+ <f>                Flip arrow start and end
+
+ <d>                Change arrow direction
+
+ <s>                Append multi-wirl sectioni
+
+ <A-s>              Remove last section from multi-wirl
 
 =back
 
 
- «A» align group:
+ <A> align group:
 
 =over 4
 
- «b»                Align bottom
+ <b>                Align bottom
 
- «c»                Align center
+ <c>                Align center
 
- «l»                Align left
+ <l>                Align left
 
- «m»                Align middle
+ <m>                Align middle
 
- «r»                Align right
+ <r>                Align right
 
- «t»                Align top
+ <t>                Align top
 
 =back
 
- «g» grouping group:
+ <g> grouping group:
 
 =over 4
 
- «g»                Group selected elements
+ <g>                Group selected elements
 
- «u»                Ungroup selected elements
+ <u>                Ungroup selected elements
 
- «F»                Temporary move selected element to the front
+ <F>                Temporary move selected element to the front
 
- «f»                Move selected elements to the front
+ <f>                Move selected elements to the front
 
- «b»                Move selected elements to the back
+ <b>                Move selected elements to the back
 
 =back
 
- «A-g» stripes-group group:
+ <A-g> stripes-group group:
 
 =over 4
 
- «1»                Create one stripe group
+ <1>                Create one stripe group
 
- «g»                Create stripes group
+ <g>                Create stripes group
 
- «u»                Ungroup stripes group
+ <u>                Ungroup stripes group
 
 =back
 
- «z» display group:
+ <z> display group:
 
 =over 4
 
- «C»                Change grid color
+ <C>                Change grid color
 
- «c»                Change Asciio background color
+ <c>                Change Asciio background color
 
- «g»                Flip grid display
+ <g>                Flip grid display
 
- «s»                Flip color scheme
+ <s>                Flip color scheme
 
- «t»                Flip transparent element background
+ <t>                Flip transparent element background
 
 =back
 
- «D» debug group:
+ <D> debug group:
 
 =over 4
 
- «E»                Dump selected elements
+ <E>                Dump selected elements
 
- «e»                Dump all elements
+ <e>                Dump all elements
 
- «S»                Display undo stack statistics
+ <S>                Display undo stack statistics
 
- «o»                Test
+ <o>                Test
 
- «s»                Dump self
+ <s>                Dump self
 
- «t»                Display numbered objects
+ <t>                Display numbered objects
 
 =back
 
- «S» slides group:
+ <S> slides group:
 
 =over 4
 
- «N»                Previous slide
+ <N>                Previous slide
 
- «g»                First slide
+ <g>                First slide
 
- «l»                Load slides
+ <l>                Load slides
 
- «n»                Next slide
+ <n>                Next slide
 
 =back
 
@@ -511,75 +511,75 @@ Mouse emulation:
 
 =over 4
 
- «'»                Toggle» mouse
+ <'>                Toggle> mouse
 
- «Ö»                Mouse shift-left-click
+ <Ö>                Mouse shift-left-click
 
- «ö»                Mouse left-click
+ <ö>                Mouse left-click
 
- «ä»                Mouse right-click
+ <ä>                Mouse right-click
 
- «H»                Mouse drag left 3
+ <H>                Mouse drag left 3
 
- «J»                Mouse drag down 3
+ <J>                Mouse drag down 3
 
- «K»                Mouse drag up 3
+ <K>                Mouse drag up 3
 
- «L»                Mouse drag right 3
+ <L>                Mouse drag right 3
 
- «Down»             Mouse drag down
+ <Down>             Mouse drag down
 
- «Left»             Mouse drag left
+ <Left>             Mouse drag left
 
- «Right»            Mouse drag right
+ <Right>            Mouse drag right
 
- «Up»               Mouse drag up
-
-
- «A-Down»           Mouse drag down
-
- «A-Left»           Mouse drag left
-
- «A-Right»          Mouse drag right
-
- «A-Up»             Mouse drag up
+ <Up>               Mouse drag up
 
 
- «ö»                Mouse alt-left-click
+ <A-Down>           Mouse drag down
 
- «ö»                Mouse ctl-left-click
+ <A-Left>           Mouse drag left
+
+ <A-Right>          Mouse drag right
+
+ <A-Up>             Mouse drag up
+
+
+ <ö>                Mouse alt-left-click
+
+ <ö>                Mouse ctl-left-click
 
 =back
 
 =head2 GUI extra bindings
 
- «C00-a»            Select all elements
+ <C00-a>            Select all elements
 
- «C00-c»            Copy to clipboard
+ <C00-c>            Copy to clipboard
 
- «C00-v»            Insert from clipboard
+ <C00-v>            Insert from clipboard
 
- «C00-e»            Export to clipboard & primary as ascii
+ <C00-e>            Export to clipboard & primary as ascii
 
- «C0S-V»            Import from primary to box
+ <C0S-V>            Import from primary to box
 
- «C00-z»            Undo
+ <C00-z>            Undo
 
- «C00-y»            Redo
+ <C00-y>            Redo
 
- «+»                Zoom in
+ <+>                Zoom in
 
- «-»                Zoom out
+ <->                Zoom out
 
- «double-click»     Edit selected element
+ <double-click>     Edit selected element
 
- «C00-button-1»     Add to delection
+ <C00-button-1>     Add to delection
 
- «0A0-button-1»     Quick link
+ <0A0-button-1>     Quick link
 
- «0AS-button-1»     Duplicate elements
+ <0AS-button-1>     Duplicate elements
 
- «CA0-button-1»     Insert flex point
+ <CA0-button-1>     Insert flex point
 
 =head1 Asciio and Vim 
 
