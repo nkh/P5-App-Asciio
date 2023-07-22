@@ -20,6 +20,8 @@
 | Mouse motion                 | 000-motion_notify,  |
 | Mouse motion 2               | 0AS-motion_notify,  |
 | Mouse drag canvas            | C00-motion_notify,  |
+| Zoom in                      | C00-scroll-up,      |
+| Zoom out                     | C00-scroll-down,    |
 
 
 ## Mouse emulation

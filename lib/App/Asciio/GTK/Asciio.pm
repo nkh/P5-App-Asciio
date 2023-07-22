@@ -81,6 +81,8 @@ $window->signal_connect(button_release_event => \&button_release_event, $self);
 $window->signal_connect(configure_event => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
 $sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
 $sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+$sc_window->add_events(['GDK_SCROLL_MASK']) ;
+$sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
 
 my $drawing_area = Gtk3::DrawingArea->new;
 
@@ -732,6 +734,7 @@ sub button_release_event { my (undef, $event, $self) = @_ ; $self->SUPER::button
 sub button_press_event   { my (undef, $event, $self) = @_ ; $self->SUPER::button_press_event($self->create_asciio_event($event)) ; }
 sub motion_notify_event  { my (undef, $event, $self) = @_ ; $self->SUPER::motion_notify_event($self->create_asciio_event($event)) ; }
 sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
+sub mouse_scroll_event   { my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; }
 
 #-----------------------------------------------------------------------------
 
@@ -774,6 +777,20 @@ $asciio_event->{KEY_NAME} = Gtk3::Gdk::keyval_name($event->keyval) if $event_typ
 return $asciio_event ;
 }
 
+#-----------------------------------------------------------------------------
+
+sub create_mouse_scroll_event
+{
+my ($self, $event) = @_ ;
+
+my $asciio_mouse_scroll_event = 
+	{
+	MODIFIERS => get_key_modifiers($event),
+	DIRECTION => 'scroll-' . $event->direction,
+	} ;
+
+return $asciio_mouse_scroll_event ;
+}
 #-----------------------------------------------------------------------------
 
 sub get_key_modifiers
