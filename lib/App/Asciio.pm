@@ -902,7 +902,7 @@ my ($self, $event)= @_;
 
 my ($modifiers, $direction) = ($event->{MODIFIERS}, $event->{DIRECTION}) ;
 
-$self->run_actions("${modifiers}$direction") unless exists $ignored_keys{"${modifiers}$direction"} ;
+$self->run_actions("${modifiers}$direction") ;
 }
 
 #-----------------------------------------------------------------------------

@@ -92,7 +92,7 @@ my ($self, $direction) = @_ ;
 
 my ($family, $size) = $self->get_font() ;
 
-my ($ori_character_width, $ori_character_height) = $self->get_character_size() ;
+my ($character_width, $character_height) = $self->get_character_size() ;
 
 $self->set_font($family, $size + $direction) ;
 
@@ -106,35 +106,34 @@ $size += $zoom_step - $remainder if $remainder ;
 
 $size = $font_min if $size < $font_min ;
 
+# making the character size change
 $self->set_font($family, $size);
 
 # resize canvas
 if($self->{UI} eq 'GUI')
 	{
-	my $ori_h_value = $self->{sc_window}->get_hadjustment()->get_value() ;
-	my $ori_v_value = $self->{sc_window}->get_vadjustment()->get_value() ;
+	my $h_value = $self->{sc_window}->get_hadjustment()->get_value() ;
+	my $v_value = $self->{sc_window}->get_vadjustment()->get_value() ;
 
 	$self->invalidate_rendering_cache() ;
 
-	my ($character_width, $character_height) = $self->get_character_size() ;
-	my ($canvas_width, $canvas_height) = ($self->{CANVAS_X_GRID_NUM} * $character_width, $self->{CANVAS_Y_GRID_NUM} * $character_height) ;
+	my ($new_character_width, $new_character_height) = $self->get_character_size() ;
+	my ($canvas_width, $canvas_height) = ($self->{CANVAS_WIDTH} * $new_character_width, $self->{CANVAS_HEIGHT} * $new_character_height) ;
 
 	$self->{widget}->set_size_request($canvas_width, $canvas_height);
 
 	# The state equation of the scroll bar before and after zooming, 
 	# using the coordinates of the mouse as the zoom point
-	# MOUSE_X * ori_character_width - ori_h_value = MOUSE_X * character_width - h_value
-	# MOUSE_Y * ori_character_height - ori_v_value = MOUSE_Y * character_height - v_value
-	my $h_value = $self->{MOUSE_X} * ($character_width-$ori_character_width) + $ori_h_value ;
-	my $v_value = $self->{MOUSE_Y} * ($character_height-$ori_character_height) + $ori_v_value ;
+	# MOUSE_X * character_width - h_value = MOUSE_X * new_character_width - new_h_value
+	# MOUSE_Y * character_height - v_value = MOUSE_Y * new_character_height - new_v_value
+	my $new_h_value = $self->{MOUSE_X} * ($new_character_width-$character_width) + $h_value ;
+	my $new_v_value = $self->{MOUSE_Y} * ($new_character_height-$character_height) + $v_value ;
 
-	$h_value = min($canvas_width, $h_value) ;
-	$h_value = max(0, $h_value) ;
-	$v_value = min($canvas_height, $v_value) ;
-	$v_value = max(0, $v_value) ;
+	$new_h_value = max(0, min($canvas_width, $new_h_value)) ;
+	$new_v_value = max(0, min($canvas_height, $new_v_value)) ;
 
-	$self->{sc_window}->get_hadjustment()->set_value($h_value) ;
-	$self->{sc_window}->get_vadjustment()->set_value($v_value) ;
+	$self->{sc_window}->get_hadjustment()->set_value($new_h_value) ;
+	$self->{sc_window}->get_vadjustment()->set_value($new_v_value) ;
 
 	}
 

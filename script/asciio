@@ -72,7 +72,7 @@ if(defined $asciio_config->{TARGETS}[0])
 	
 $window->show_all();
 
-$asciio->{widget}->set_size_request($asciio->{CANVAS_X_GRID_NUM} * $character_width, $asciio->{CANVAS_Y_GRID_NUM} * $character_height);
+$asciio->{widget}->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
 $asciio->set_modified_state(0) ;
 $asciio->run_script($asciio_config->{SCRIPT}) ;
 

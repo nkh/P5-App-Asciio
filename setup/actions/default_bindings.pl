@@ -27,8 +27,8 @@ register_action_handlers
 
 'Undo'                                   => [['C00-z', '000-u'],                       \&App::Asciio::Actions::Unsorted::undo                                              ],
 'Redo'                                   => [['C00-y', 'C00-r'],                       \&App::Asciio::Actions::Unsorted::redo                                              ],
-'Zoom in'                                => [['000-plus', 'C00-scroll-up'],            \&App::Asciio::Actions::Unsorted::zoom, 1                                           ],
-'Zoom out'                               => [['000-minus', 'C00-scroll-down'],         \&App::Asciio::Actions::Unsorted::zoom, -1                                          ],
+'Zoom in'                                => [['000-plus', 'C00-j', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                           ],
+'Zoom out'                               => [['000-minus', 'C00-h', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                          ],
 'Copy to clipboard'                      => [['C00-c', 'C00-Insert', 'y'],             \&App::Asciio::Actions::Clipboard::copy_to_clipboard                                ],
 'Insert from clipboard'                  => [['C00-v', '00S-Insert', 'p'],             \&App::Asciio::Actions::Clipboard::insert_from_clipboard                            ],
 'Export to clipboard & primary as ascii' => [['C00-e', '00S-Y', 'Y'],                  \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii                     ],
