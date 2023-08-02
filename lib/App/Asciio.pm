@@ -12,7 +12,6 @@ use List::Util qw(min max first) ;
 use List::MoreUtils qw(any minmax first_value) ;
 
 use App::Asciio::Actions ;
-use App::Asciio::Actions ;
 use App::Asciio::Ascii ;
 use App::Asciio::Dialogs ;
 use App::Asciio::Elements ;
@@ -21,6 +20,7 @@ use App::Asciio::Menues ;
 use App::Asciio::Options ;
 use App::Asciio::Setup ;
 use App::Asciio::String ;
+use App::Asciio::Markup ;
 use App::Asciio::Undo ;
 
 #-----------------------------------------------------------------------------
@@ -663,6 +663,8 @@ $self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 $self->set_font($self->{FONT_FAMILY}, $self->{FONT_SIZE}) ;
 
 $self->{TAB_AS_SPACES} = '   ' unless defined $self->{TAB_AS_SPACES} ;
+
+use_markup($self->{USE_MARKUP_MODE}) ;
 }
 
 #-----------------------------------------------------------------------------

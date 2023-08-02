@@ -35,6 +35,7 @@ lib/App/Asciio/Ascii.pm
 lib/App/Asciio/BindingsHelp.pm
 lib/App/Asciio/Boxes.pm
 lib/App/Asciio/Connections.pm
+lib/App/Asciio/Markup.pm
 lib/App/Asciio/Cross.pm
 lib/App/Asciio/Dialogs.pm
 lib/App/Asciio/Elements.pm

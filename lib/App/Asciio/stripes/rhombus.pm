@@ -20,6 +20,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 ] ;
 
 use App::Asciio::String ;
+use App::Asciio::Markup ;
 
 #-----------------------------------------------------------------------------
 
@@ -107,7 +108,7 @@ else
 	@text_lines = ('') ;
 	}
 
-my $text_width = max(map {unicode_length $_} @text_lines);
+my $text_width = max(map {get_unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
 
 my ($element_width, $height);
@@ -175,7 +176,7 @@ for my $y_offset (0 .. $height - 1)
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
 			
-			$strip_text = $box_type->[1][2] . ($fill_char x $padding) . $text . ($fill_char x ($width - 4 - unicode_length($text) - $padding)) . $box_type->[1][4] ;
+			$strip_text = $box_type->[1][2] . ($fill_char x $padding) . $text . ($fill_char x ($width - 4 - get_unicode_length($text) - $padding)) . $box_type->[1][4] ;
 			}
 		else
 			{
@@ -201,7 +202,7 @@ for my $y_offset (0 .. $height - 1)
 			my $padding = $text_offset - $x_offset - 1;
 			$padding = 0 if $padding < 0;
 			
-			$strip_text = $box_type->[2][2] . ($fill_char x $padding) . $text . ($fill_char x ($element_width - 2 - unicode_length($text) - $padding)) . $box_type->[2][4] ;
+			$strip_text = $box_type->[2][2] . ($fill_char x $padding) . $text . ($fill_char x ($element_width - 2 - get_unicode_length($text) - $padding)) . $box_type->[2][4] ;
 			}
 		else
 			{
@@ -225,7 +226,7 @@ for my $y_offset (0 .. $height - 1)
 			my $padding = $text_offset - $x_offset - 2;
 			$padding = 0 if $padding < 0;
 			
-			$strip_text = $box_type->[3][2] . ($fill_char x $padding) . $text . ($fill_char x ($width - 4 - unicode_length($text) - $padding)) . $box_type->[3][4] ;
+			$strip_text = $box_type->[3][2] . ($fill_char x $padding) . $text . ($fill_char x ($width - 4 - get_unicode_length($text) - $padding)) . $box_type->[3][4] ;
 			}
 		else
 			{
@@ -244,7 +245,7 @@ for my $y_offset (0 .. $height - 1)
 		{
 		'HEIGHT' => 1,
 		'TEXT' => $strip_text,
-		'WIDTH' => unicode_length($strip_text) ,
+		'WIDTH' => get_unicode_length($strip_text) ,
 		'X_OFFSET' => $x_offset,
 		'Y_OFFSET' => $y_offset,
 		} ;

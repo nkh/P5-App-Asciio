@@ -5,7 +5,7 @@ use parent qw/App::Asciio::stripes::stripes/ ;
 use strict;
 use warnings;
 
-use App::Asciio::String ;
+use App::Asciio::Markup ;
 
 #-----------------------------------------------------------------------------
 
@@ -27,7 +27,7 @@ sub setup
 my ($self, $text) = @_ ;
 
 my $width = 0 ;
-map {$width  = $width < unicode_length($_) ? unicode_length($_)  : $width} split("\n", $text) ;
+map {$width  = $width < get_unicode_length($_) ? get_unicode_length($_)  : $width} split("\n", $text) ;
 
 my $height = ($text =~ tr[\n][\n]) + 1 ;
 

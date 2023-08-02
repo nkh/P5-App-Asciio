@@ -7,6 +7,11 @@ use strict; use warnings;
 
 use App::Asciio::Cross ;
 use App::Asciio::String ;
+use App::Asciio::Markup ;
+
+use Readonly ;
+Readonly my $EXPORT_PLAIN_TEXT => 0 ;
+Readonly my $EXPORT_ZIM_WIKI  => 1 ;
 
 #-----------------------------------------------------------------------------
 
@@ -22,11 +27,11 @@ return($text) ;
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_wiki_buffer
+sub transform_elements_to_zim_wiki_buffer
 {
 my ($self, @elements)  = @_ ;
 
-my $text = join("\n", $self->transform_elements_to_wiki_array(@elements)) . "\n" ;
+my $text = join("\n", $self->transform_elements_to_zim_wiki_array(@elements)) . "\n" ;
 $text =~ s/^\n+|\n\K\n+$//g ;
 
 return($text) ;
@@ -34,7 +39,7 @@ return($text) ;
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_ascii_two_dimensional_array
+sub transform_elements_to_characters_array
 {
 my ($self, $format, @elements)  = @_ ;
 
@@ -42,7 +47,7 @@ my ($self, $format, @elements)  = @_ ;
 
 my @lines ;
 my @new_lines ;
-my %markup_coordinate ;
+my (%markup_coordinate, %sub_markup_coordinate) ;
 
 for my $element (@elements)
 	{
@@ -54,37 +59,17 @@ for my $element (@elements)
 			{
 			my $origin_strip = $sub_strip ;
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
+
+			$sub_strip = delete_markup_characters($sub_strip) ;
 			
-			if($self->{USE_MARKUP_MODE})
-			{
-				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
-				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
-				if($format)
+			if($format == $EXPORT_ZIM_WIKI && is_markup_string($origin_strip))
+				{
+				%sub_markup_coordinate = get_markup_coordinates($element->{X}, $origin_strip, $strip->{X_OFFSET}, $y) ;
+				while (my ($key, $value) = each %sub_markup_coordinate)
 					{
-					my $ori_x = 0;
-					while($origin_strip =~ /(<\/?[bius]>)+|<\/span>|<span link="[^<]+">/g)
-						{
-						my $sub_str = substr($origin_strip, 0, pos($origin_strip));
-						$ori_x = $element->{X} + $strip->{X_OFFSET} + $self->get_unicode_length($sub_str) ;
-						my $fit_str = $&;
-						$fit_str =~ s/<\/?b>/\*\*/g;
-						$fit_str =~ s/<\/?u>/__/g;
-						$fit_str =~ s/<\/?i>/\/\//g;
-						$fit_str =~ s/<\/?s>/~~/g;
-						# link [[link|link description]]
-						if($fit_str =~ /<span link="[^<]+">/)
-							{
-							$fit_str =~ s/<span link="([^<]+)">/$1/g;
-							$fit_str = '[[' . $fit_str . '|';
-							}
-						if($fit_str =~ /<\/span>/)
-							{
-							$fit_str = ']]';
-							}
-						$markup_coordinate{$y . '-' . $ori_x} = $fit_str if($ori_x >= 0 && $y >=0);
-						}
+					$markup_coordinate{$key} = ${value} ;
 					}
-			}
+				}
 			
 			my $character_index = 0 ;
 			
@@ -104,7 +89,8 @@ for my $element (@elements)
 						}
 					}
 				
-				my $character_length = $self->get_unicode_length($character) ;
+				# markup chars have been deleted
+				my $character_length = unicode_length($character) ;
 				$character_index += $character_length ;
 				}
 			
@@ -122,7 +108,7 @@ if($self->{USE_CROSS_MODE})
 		}
 	}
 
-if($self->{USE_MARKUP_MODE} && $format)
+if($self->{USE_MARKUP_MODE} && ($format == $EXPORT_ZIM_WIKI))
 	{
 	my $new_col;
 	for my $row (0 .. $#lines)
@@ -135,7 +121,8 @@ if($self->{USE_MARKUP_MODE} && $format)
 				for my $single_char (split '', $markup_coordinate{$row . '-' . $col})
 					{
 					$new_lines[$row][$new_col] = [$single_char];
-					$new_col += $self->get_unicode_length($single_char);
+					# single char
+					$new_col += unicode_length($single_char);
 					}
 				}
 			$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
@@ -154,7 +141,7 @@ sub transform_elements_to_array
 {
 my ($self, $format, @elements)  = @_ ;
 
-my @lines = $self->transform_elements_to_ascii_two_dimensional_array($format, @elements) ;
+my @lines = $self->transform_elements_to_characters_array($format, @elements) ;
 
 my @ascii ;
 
@@ -173,7 +160,8 @@ for my $line (@lines)
 				}
 			else
 				{
-				$char_len = $self->get_unicode_length($character) ;
+				# single char
+				$char_len = unicode_length($character) ;
 				$write_line .= $character;
 				}
 			}
@@ -195,16 +183,16 @@ sub transform_elements_to_ascii_array
 {
 my ($self, @elements)  = @_ ;
 
-return($self->transform_elements_to_array(0, @elements));
+return($self->transform_elements_to_array($EXPORT_PLAIN_TEXT, @elements));
 }
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_wiki_array
+sub transform_elements_to_zim_wiki_array
 {
 my ($self, @elements)  = @_ ;
 
-return($self->transform_elements_to_array(1, @elements));
+return($self->transform_elements_to_array($EXPORT_ZIM_WIKI, @elements));
 }
 #-----------------------------------------------------------------------------
 

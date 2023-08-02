@@ -4,7 +4,6 @@ package App::Asciio::String ;
 require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
-	use_markup
 	unicode_length
 	make_vertical_text
 	) ;
@@ -65,20 +64,6 @@ while($found_character)
 	}
 
 return $vertical ;
-}
-
-#-----------------------------------------------------------------------------
- 
-package App::Asciio ;
-
-sub get_unicode_length
-{
-my ($self, $string) = @_ ;
-
-# Markup is not part of Unicode, handle it in Asciio
-$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g if $self->{USE_MARKUP_MODE} ;
-
-return App::Asciio::String::unicode_length($string) ;
 }
 
 #-----------------------------------------------------------------------------
