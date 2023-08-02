@@ -11,7 +11,10 @@ use Clone;
 
 use List::Util qw(first) ;
 use List::MoreUtils qw(any) ;
+
 use App::Asciio::String ;
+use App::Asciio::Markup ;
+
 
 sub get_ascii_array_and_crossings
 {
@@ -33,13 +36,9 @@ for my $element (@{$asciio->{ELEMENTS}})
 			
 			my $y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 			
-			next if defined $start_y && ($y < $start_y || $y >= $end_y) ; 
-			
-			if($asciio->{USE_MARKUP_MODE})
-				{
-				$sub_strip =~ s/(<[bius]>)+([^<]+)(<\/[bius]>)+/$2/g ;
-				$sub_strip =~ s/<span link="[^<]+">([^<]+)<\/span>/$1/g ;
-				}
+			next if defined $start_y && ($y < $start_y || $y >= $end_y) ;
+
+			$sub_strip = $USE_MARKUP_CLASS->delete_markup_characters($sub_strip) ;
 			
 			my $character_index = 0 ;
 			

@@ -109,7 +109,7 @@ close CLIPBOARD ;
 
 #----------------------------------------------------------------------------------------------
 
-sub export_to_clipboard_as_wiki
+sub export_to_clipboard_as_markup
 {
 my ($self) = @_ ;
 
@@ -117,7 +117,7 @@ use open qw( :std :encoding(UTF-8) ) ;
 open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
 local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
 
-print CLIPBOARD $self->transform_elements_to_wiki_buffer($self->get_selected_elements(1)) ;
+print CLIPBOARD $self->transform_elements_to_zim_wiki_buffer($self->get_selected_elements(1)) ;
 close CLIPBOARD ;
 }
 

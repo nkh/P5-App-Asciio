@@ -213,7 +213,7 @@ for my $element (@{$self->{ELEMENTS}})
 			my $strip_color  = color($foreground_color) . color($background_color) ;
 			   $strip_color .= color($self->get_color('selected_element_background')) if $is_selected ;
 			
-			my $line_length = $self->get_unicode_length $line ;
+			my $line_length = unicode_length $line ;
 			$line = sprintf "%0${line_length}d", $element_index if $self->{NUMBERED_OBJECTS} ;
 			
 			my $character_index = 0 ;
@@ -390,7 +390,7 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 		if($start_y > 0 && $start_y <= $ROWS)
 			{
 			my $character_index = 0 ;
-			for (1 .. $self->get_unicode_length($top_bottom))
+			for (1 .. unicode_length($top_bottom))
 				{
 				$text_array->[$start_y][$start_x + $character_index] = ['-', $color] ;
 				$character_index++ ;
@@ -401,7 +401,7 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 			{
 			my $character_index = 0 ;
 			
-			for (1 .. $self->get_unicode_length($top_bottom))
+			for (1 .. unicode_length($top_bottom))
 				{
 				$text_array->[$end_y][$start_x + $character_index] = ['-', $color] ;
 				$character_index++ ;

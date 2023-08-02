@@ -29,6 +29,7 @@ use App::Asciio::GTK::Asciio::Menues ;
 
 use App::Asciio::Cross ;
 use App::Asciio::String ;
+use App::Asciio::Markup ;
 
 sub hide_pointer
 {
@@ -689,18 +690,9 @@ unless (defined $renderings)
 					my $layout = Pango::Cairo::create_layout($gc) ;
 					
 					$layout->set_font_description($font_description) ;
-					if($self->{USE_MARKUP_MODE} && ($line =~ /<\/?[bius]>/ || $line =~ /<span link="[^<]+">([^<]+)<\/span>/))
-						{
-						#~ link fomart: <span link="">something</span>
-						#~ convert to:  <span underline="double">something</span>
-						$line =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
-						$layout->set_markup($line) ;
-						}
-					else
-						{
-						$layout->set_text($line) ;
-						}
-					
+
+					$USE_MARKUP_CLASS->ui_show_markup_characters($layout, $line) ;
+
 					Pango::Cairo::show_layout($gc, $layout);
 					}
 				
