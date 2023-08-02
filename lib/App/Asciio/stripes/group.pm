@@ -10,7 +10,7 @@ use List::MoreUtils qw(minmax) ;
 use Module::Util qw(find_installed) ;
 use File::Basename ;
 
-use App::Asciio::String ;
+use App::Asciio::Markup ;
 
 #-----------------------------------------------------------------------------
 
@@ -49,7 +49,7 @@ for my $element (@{$elements})
 		{
 		my $text = $stripe->{TEXT} ;
 		
-		my $width = max( map{ unicode_length($_) } split("\n", $text)) ;
+		my $width = max( map{ get_unicode_length($_) } split("\n", $text)) ;
 		
 		my $height = ($text =~ tr[\n][\n]) + 1 ;
 		
