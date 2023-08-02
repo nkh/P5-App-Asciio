@@ -5,6 +5,7 @@ use strict;
 use warnings;
 
 use List::Util qw(max) ;
+use App::Asciio::String ;
 
 #---------------------------------------------------------------------------
 

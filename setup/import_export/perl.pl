@@ -142,7 +142,7 @@ my ($base_name, $path, $extension) = File::Basename::fileparse($file, ('\..*')) 
 my $file_name = $base_name . $extension ;
 
 my @ascii_representation = $self->transform_elements_to_ascii_array() ;
-my $longest_line =  max( map{$self->get_unicode_length($_)} @ascii_representation) ;
+my $longest_line =  max( map{unicode_length($_)} @ascii_representation) ;
 
 my $compressed_self = compress($self->serialize_self() .  '$VAR1 ;') ;
 
@@ -162,7 +162,7 @@ print POD "=for asciio $longest_line $base_name\n\n" ;
 
 for my $diagram_line (@ascii_representation)
 	{
-	my $padding = ' ' x ($longest_line - $self->get_unicode_length($diagram_line)) ;
+	my $padding = ' ' x ($longest_line - unicode_length($diagram_line)) ;
 	my $base64_chunk = substr($base64, 0, $base64_chunk_size, '') || '' ;
 	
 	print POD ' ' ,  $diagram_line, $padding, $BASE64_HEADER, $base64_chunk, "\n"
