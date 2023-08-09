@@ -16,7 +16,7 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	['bottom', '\'', ] ,
 ] ;
 
-use App::Asciio::Markup ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 
@@ -107,7 +107,7 @@ for my $line (@lines)
 			{
 			'HEIGHT' => 1,
 			'TEXT' => $strip_text,
-			'WIDTH' => get_unicode_length($strip_text) ,
+			'WIDTH' => unicode_length($strip_text) ,
 			'X_OFFSET' => $x_offset,
 			'Y_OFFSET' => $y_offset,
 			} ;

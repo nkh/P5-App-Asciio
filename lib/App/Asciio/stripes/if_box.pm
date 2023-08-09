@@ -9,7 +9,7 @@ use List::Util qw(min max) ;
 use Readonly ;
 use Clone ;
 
-use App::Asciio::Markup ;
+use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ my ($text_width,  @lines) = (0) ;
 
 for my $line (split("\n", $text_only))
 	{
-	$text_width  = max($text_width, get_unicode_length($line)) ;
+	$text_width  = max($text_width, unicode_length($line)) ;
 	push @lines, $line ;
 	}
 
@@ -72,7 +72,7 @@ my $inside_indentation = 0 ;
 
 for my $line (@top_lines)
 	{
-	my $padding = ' ' x ($text_width - get_unicode_length($line)) ;
+	my $padding = ' ' x ($text_width - unicode_length($line)) ;
 	
 	$text .= ' ' x $left_indentation . '/ ' . ' ' x $inside_indentation .  $line . $padding . ' ' x $inside_indentation. ' \\' . "\n" ;
 	$left_indentation-- ;
@@ -80,10 +80,10 @@ for my $line (@top_lines)
 	}
 
 my $center_line = shift @lines  || '' ;
-my $padding = ' ' x ($text_width - get_unicode_length($center_line)) ;
+my $padding = ' ' x ($text_width - unicode_length($center_line)) ;
 
 $center_line = '( ' . ' ' x $inside_indentation .  $center_line . $padding . ' ' x $inside_indentation .  ' )' ;
-my $width = get_unicode_length($center_line) ;
+my $width = unicode_length($center_line) ;
 $text .= $center_line . "\n" ;
 
 $left_indentation = 1 ;
@@ -94,7 +94,7 @@ push @bottom_lines, '' for (1 .. scalar(@top_lines) - scalar(@bottom_lines)) ;
 
 for my $line (@bottom_lines)
 	{
-	my $padding = ' ' x ($text_width - get_unicode_length($line)) ;
+	my $padding = ' ' x ($text_width - unicode_length($line)) ;
 	
 	$text .= ' ' x $left_indentation .  '\\ ' .  ' ' x $inside_indentation .  $line . $padding . ' ' x $inside_indentation .  ' /' . "\n" ;
 	$left_indentation++ ;

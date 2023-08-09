@@ -5,34 +5,84 @@ require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
 	use_markup
-	is_markup_string
-	delete_markup_characters
-	convert_markup_string
-	get_unicode_length
-	get_markup_coordinates) ;
+	$USE_MARKUP_CLASS
+	) ;
 
 $|++ ;
 
 use strict;
 use warnings;
 use utf8;
+use Readonly ;
 
 use App::Asciio::String ;
 
-use Memoize ;
-memoize('get_unicode_length') ;
-memoize('convert_markup_string') ;
 
+our ($USE_MARKUP_CLASS) ;
+$USE_MARKUP_CLASS = App::Asciio::Markup->new() ;
 
-my ($use_markup_mode) ;
+Readonly my $EXPORT_PLAIN_TEXT => 0 ;
+Readonly my $EXPORT_MARKUP  => 1 ;
+
+#-----------------------------------------------------------------------------
+
+sub new {
+	my $class = shift ;
+	my $self = {} ;
+	bless $self, $class ;
+	return $self ;
+}
 
 #-----------------------------------------------------------------------------
 
 sub use_markup
 {
 my ($use_it) = @_ ;
-$use_markup_mode = $use_it ; 
+
+if($use_it eq 'zimwiki')
+	{
+	$USE_MARKUP_CLASS = App::Asciio::Zimwiki->new() ;
+	}
+else
+	{
+	$USE_MARKUP_CLASS = App::Asciio::Markup->new() ;
+	}
 }
+
+#-----------------------------------------------------------------------------
+
+sub delete_markup_characters { my ($self, $string) = @_ ; return $string ; }
+
+#-----------------------------------------------------------------------------
+
+sub get_markup_coordinates { ; }
+
+#-----------------------------------------------------------------------------
+
+sub get_markup_characters_array
+{
+my ($self, $markup_coordinate, $format, @lines) = @_ ;
+
+return (@lines) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub ui_show_markup_characters
+{
+my ($self, $layout, $line) = @_ ;
+
+$layout->set_text($line) ;
+}
+
+#-----------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
+
+package App::Asciio::Zimwiki ;
+use base qw/App::Asciio::Markup/ ;
+
+use Memoize ;
+memoize('convert_markup_string') ;
 
 #-----------------------------------------------------------------------------
 
@@ -48,56 +98,27 @@ return (   $string =~ /(<[bius]>)+([^<]+)(<\/[bius]>)+/
 
 sub delete_markup_characters
 {
-my ($string) = @_;
-if($use_markup_mode)
-	{
-	$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g ;
-	}
+my ($self, $string) = @_;
+
+$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g ;
+
 return $string;
-}
-
-#-----------------------------------------------------------------------------
-#~ link fomart: <span link="">something</span>
-#~ convert to:  <span underline="double">something</span>
-sub convert_markup_string
-{
-my ($string) = @_ ;
-
-my $use_markup_formart = 0 ;
-
-if($use_markup_mode && ($string =~ /<span link="[^<]+">([^<]+)<\/span>/ || $string =~ /<\/?[bius]>/))
-	{
-	$use_markup_formart = 1 ;
-	# just for display,not really change
-	$string =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
-	}
-
-return ($use_markup_formart, $string) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub get_unicode_length
-{
-my ($string) = @_ ;
-
-return unicode_length(delete_markup_characters($string)) ;
 }
 
 #-----------------------------------------------------------------------------
 sub get_markup_coordinates
 {
-my ($element_x, $strip_line, $strip_x, $y) = @_ ;
+my ($self, $element_x, $strip_line, $strip_x, $y) = @_ ;
 
 my %markup_coordinate ;
 
-if($use_markup_mode)
+if(is_markup_string($strip_line))
 	{
 	my $ori_x = 0;
 	while($strip_line =~ /(<\/?[bius]>)+|<\/span>|<span link="[^<]+">/g)
 		{
 		my $sub_str = substr($strip_line, 0, pos($strip_line));
-		$ori_x = $element_x + $strip_x + get_unicode_length($sub_str) ;
+		$ori_x = $element_x + $strip_x + App::Asciio::String::unicode_length($sub_str) ;
 		my $fit_str = $&;
 		$fit_str =~ s/<\/?b>/\*\*/g;
 		$fit_str =~ s/<\/?u>/__/g;
@@ -120,6 +141,76 @@ if($use_markup_mode)
 return %markup_coordinate ;
 
 }
+
+#-----------------------------------------------------------------------------
+sub get_markup_characters_array
+{
+my ($self, $markup_coordinate, $format, @lines) = @_ ;
+my @new_lines ;
+
+if($format != $EXPORT_PLAIN_TEXT)
+	{
+	my $new_col;
+	for my $row (0 .. $#lines)
+		{
+		$new_col = 0;
+		for my $col (0 .. ($#{$lines[$row]} + 2))
+			{
+			if(exists($markup_coordinate->{$row . '-' . $col}))
+				{
+				for my $single_char (split '', $markup_coordinate->{$row . '-' . $col})
+					{
+					$new_lines[$row][$new_col] = [$single_char];
+					# single char
+					$new_col += App::Asciio::String::unicode_length($single_char);
+					}
+				}
+			$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
+			$new_col += 1;
+			}
+		}
+	return(@new_lines);
+	}
+return(@lines);
+}
+
+#-----------------------------------------------------------------------------
+#~ link fomart: <span link="">something</span>
+#~ convert to:  <span underline="double">something</span>
+sub convert_markup_string
+{
+my ($string) = @_ ;
+
+my $use_markup_formart = 0 ;
+
+if(is_markup_string($string))
+	{
+	$use_markup_formart = 1 ;
+	# just for display,not really change
+	$string =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
+	}
+
+return ($use_markup_formart, $string) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub ui_show_markup_characters
+{
+my ($self, $layout, $line) = @_ ;
+
+my ($use_mark_up, $markup_line) = convert_markup_string($line) ;
+
+if($use_mark_up)
+	{
+	$layout->set_markup($markup_line) ;
+	}
+else
+	{
+	$layout->set_text($line) ;
+	}
+}
+
 
 #-----------------------------------------------------------------------------
 

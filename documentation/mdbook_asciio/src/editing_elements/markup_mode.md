@@ -4,7 +4,7 @@ We can use color in asciio, But if exported, the color information will be lost.
 The markup mode adds marks in the chart, and these marks can be retained when 
 exporting, so that special effects can be displayed in some specific software.
 
-## Use markup mode
+## 1 Use markup mode
 
 To use marks in the chart, turn on this option in the configuration.The markup 
 enable variable is the basic attribute of the chart and cannot be changed at 
@@ -12,12 +12,21 @@ runtime.
 
 
 ```perl
-USE_MARKUP_MODE => 1,
+USE_MARKUP_MODE => 'zimwiki',
 ```
 
-## Edit marks
+If you do not need to use any markup mode, please keep this variable empty.
 
-markup mode currently supports text editing of box type elements.Just place the text 
+```perl
+USE_MARKUP_MODE => '',
+```
+>Currently, only zimwiki format markup is supported, then markdown format or pure
+html format may be supported in the future.
+
+## 2 zimwiki format description
+### 2.1 Edit marks
+
+zimwiki markup mode currently supports text editing of box type elements.Just place the text 
 in the middle of the marks.
 
 Currently supports 5 types of markers: 
@@ -51,7 +60,7 @@ Marks can only be valid for a single line, not multi lines.
 and it does not make much sense
 
 
-## Export
+### 2.2 Export
 
 Normally, when exporting to ascii, you will get the following text
 

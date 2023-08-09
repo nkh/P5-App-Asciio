@@ -5,7 +5,7 @@ use strict;
 use warnings;
 
 use List::Util qw(max) ;
-use App::Asciio::Markup ;
+use App::Asciio::String ;
 
 #---------------------------------------------------------------------------
 
@@ -22,7 +22,7 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	{
 	my $text = $stripe->{TEXT} ;
 	
-	my $width = max( map{ get_unicode_length($_) } split("\n", $text)) ;
+	my $width = max( map{ unicode_length($_) } split("\n", $text)) ;
 	
 	my $height = ($text =~ tr[\n][\n]) + 1 ;
 	

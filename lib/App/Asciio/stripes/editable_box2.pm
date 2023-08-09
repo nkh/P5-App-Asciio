@@ -10,7 +10,6 @@ use Readonly ;
 use Clone ;
 
 use App::Asciio::String ;
-use App::Asciio::Markup ;
 
 #-----------------------------------------------------------------------------
 
@@ -60,7 +59,7 @@ my ($text_width,  @lines) = (0) ;
 
 for my $line (split("\n", $text_only))
 	{
-	$text_width  = max($text_width, get_unicode_length($line)) ;
+	$text_width  = max($text_width, unicode_length($line)) ;
 	push @lines, $line ;
 	}
 
@@ -70,7 +69,7 @@ $title_text = '' unless defined $title_text ;
 
 for my $title_line (split("\n", $title_text))
 	{
-	$title_width  = max($title_width, get_unicode_length($title_line)) ;
+	$title_width  = max($title_width, unicode_length($title_line)) ;
 	push @title_lines, $title_line ;
 	}
 
@@ -93,7 +92,7 @@ my $text = $box_top ;
 
 for my $title_line (@title_lines)
 	{
-	my $pading =  ($end_x - (get_unicode_length($title_left . $title_line . $title_right))) ;
+	my $pading =  ($end_x - (unicode_length($title_left . $title_line . $title_right))) ;
 	my $left_pading =  int($pading / 2) ;
 	my $right_pading = $pading - $left_pading ;
 	
@@ -104,7 +103,7 @@ $text .= $title_separator ;
 
 for my $line (@lines)
 	{
-	$text .= $box_left . $line . ($fill_char x ($end_x - (get_unicode_length($line) + $extra_width))) . $box_right . "\n" ;
+	$text .= $box_left . $line . ($fill_char x ($end_x - (unicode_length($line) + $extra_width))) . $box_right . "\n" ;
 	}
 	
 for (1 .. ($end_y - (@lines + $extra_height + @title_lines)))
@@ -116,7 +115,7 @@ $text .= $box_bottom ;
 
 my ($text_begin_x, $text_begin_y, $title_separator_exist) = (0, 0, 0) ;
 $text_begin_y++ if($box_top) ;
-$text_begin_x = get_unicode_length($box_left);
+$text_begin_x = unicode_length($box_left);
 $title_separator_exist = 1 if($title_separator);
 
 $self->set

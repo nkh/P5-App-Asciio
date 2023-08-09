@@ -25,7 +25,6 @@ Readonly my $DEFAULT_BOX_TYPE =>
 ] ;
 
 use App::Asciio::String ;
-use App::Asciio::Markup ;
 
 #-----------------------------------------------------------------------------
 
@@ -228,7 +227,7 @@ if($text_only)
 	{
 	@text_lines = split("\n", $text_only) ;
 	}
-my $text_width = max(map {get_unicode_length $_} @text_lines);
+my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_height = @text_lines;
 
 my ($text_begin_y, $text_begin_x);
@@ -374,7 +373,7 @@ push @final_stripes,
 {
     'HEIGHT' => 1,
     'TEXT' => $strip_text,
-    'WIDTH' => get_unicode_length($strip_text),
+    'WIDTH' => unicode_length($strip_text),
     'X_OFFSET' => $strip->[0],
     'Y_OFFSET' => 0,
 };
@@ -396,7 +395,7 @@ for $strip_index(1..$#sigle_strips-1)
             $fill_line = shift @text_lines;
         }
     }
-    $fill_cnt = get_unicode_length($fill_line);
+    $fill_cnt = unicode_length($fill_line);
 
     $now_strip = $sigle_strips[$strip_index][1];
     if($strip_index < $half_y)
@@ -590,7 +589,7 @@ push @final_stripes,
 {
     'HEIGHT' => 1,
     'TEXT' => $strip_text,
-    'WIDTH' => get_unicode_length($strip_text),
+    'WIDTH' => unicode_length($strip_text),
     'X_OFFSET' => $sigle_strips[$strip_index][0],
     'Y_OFFSET' => $strip_index,
 };
@@ -654,7 +653,7 @@ push @final_stripes,
 {
     'HEIGHT' => 1,
     'TEXT' => $strip_text,
-    'WIDTH' => get_unicode_length($strip_text),
+    'WIDTH' => unicode_length($strip_text),
     'X_OFFSET' => $strip->[0],
     'Y_OFFSET' => $#sigle_strips,
 };
