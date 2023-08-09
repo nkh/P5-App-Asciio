@@ -13,6 +13,8 @@ require Exporter ;
 use strict ; use warnings ;
 use utf8 ;
 
+use App::Asciio::Markup ;
+
 #-----------------------------------------------------------------------------
 
 use Memoize ;
@@ -21,6 +23,8 @@ memoize('unicode_length') ;
 sub unicode_length
 {
 my ($string) = @_ ;
+
+$string = $USE_MARKUP_CLASS->delete_markup_characters($string) ;
 
 my $east_asian_double_width_chars_cnt = grep {$_ =~ /\p{EA=W}|\p{EA=F}/} split('', $string) ;
 my $nonspacing_chars_cnt = grep {$_ =~ /\p{gc:Mn}/} split('', $string) ;

@@ -691,17 +691,8 @@ unless (defined $renderings)
 					
 					$layout->set_font_description($font_description) ;
 
-					my ($use_mark_up, $markup_line) = convert_markup_string($line) ;
+					$USE_MARKUP_CLASS->ui_show_markup_characters($layout, $line) ;
 
-					if($use_mark_up)
-						{
-						$layout->set_markup($markup_line) ;
-						}
-					else
-						{
-						$layout->set_text($line) ;
-						}
-					
 					Pango::Cairo::show_layout($gc, $layout);
 					}
 				

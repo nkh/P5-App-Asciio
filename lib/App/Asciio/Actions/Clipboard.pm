@@ -109,7 +109,7 @@ close CLIPBOARD ;
 
 #----------------------------------------------------------------------------------------------
 
-sub export_to_clipboard_as_zim_wiki
+sub export_to_clipboard_as_markup
 {
 my ($self) = @_ ;
 

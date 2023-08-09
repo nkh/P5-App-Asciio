@@ -11,7 +11,7 @@ use App::Asciio::Markup ;
 
 use Readonly ;
 Readonly my $EXPORT_PLAIN_TEXT => 0 ;
-Readonly my $EXPORT_ZIM_WIKI  => 1 ;
+Readonly my $EXPORT_MARKUP  => 1 ;
 
 #-----------------------------------------------------------------------------
 
@@ -31,7 +31,7 @@ sub transform_elements_to_zim_wiki_buffer
 {
 my ($self, @elements)  = @_ ;
 
-my $text = join("\n", $self->transform_elements_to_zim_wiki_array(@elements)) . "\n" ;
+my $text = join("\n", $self->transform_elements_to_markup(@elements)) . "\n" ;
 $text =~ s/^\n+|\n\K\n+$//g ;
 
 return($text) ;
@@ -46,7 +46,6 @@ my ($self, $format, @elements)  = @_ ;
 @elements = @{$self->{ELEMENTS}} unless @elements ;
 
 my @lines ;
-my @new_lines ;
 my (%markup_coordinate, %sub_markup_coordinate) ;
 
 for my $element (@elements)
@@ -60,11 +59,11 @@ for my $element (@elements)
 			my $origin_strip = $sub_strip ;
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 
-			$sub_strip = delete_markup_characters($sub_strip) ;
+			$sub_strip = $USE_MARKUP_CLASS->delete_markup_characters($sub_strip) ;
 			
-			if($format == $EXPORT_ZIM_WIKI && is_markup_string($origin_strip))
+			if($format != $EXPORT_PLAIN_TEXT)
 				{
-				%sub_markup_coordinate = get_markup_coordinates($element->{X}, $origin_strip, $strip->{X_OFFSET}, $y) ;
+				%sub_markup_coordinate = $USE_MARKUP_CLASS->get_markup_coordinates($element->{X}, $origin_strip, $strip->{X_OFFSET}, $y) ;
 				while (my ($key, $value) = each %sub_markup_coordinate)
 					{
 					$markup_coordinate{$key} = ${value} ;
@@ -107,32 +106,12 @@ if($self->{USE_CROSS_MODE})
 		$lines[$_->[1]][$_->[0]] = [$_->[2]] if defined $lines[$_->[1]][$_->[0]] ;
 		}
 	}
-
-if($self->{USE_MARKUP_MODE} && ($format == $EXPORT_ZIM_WIKI))
+if($format != $EXPORT_PLAIN_TEXT)
 	{
-	my $new_col;
-	for my $row (0 .. $#lines)
-		{
-		$new_col = 0;
-		for my $col (0 .. ($#{$lines[$row]} + 2))
-			{
-			if(exists($markup_coordinate{$row . '-' . $col}))
-				{
-				for my $single_char (split '', $markup_coordinate{$row . '-' . $col})
-					{
-					$new_lines[$row][$new_col] = [$single_char];
-					# single char
-					$new_col += unicode_length($single_char);
-					}
-				}
-			$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
-			$new_col += 1;
-			}
-		}
-	return(@new_lines);
+	return $USE_MARKUP_CLASS->get_markup_characters_array(\%markup_coordinate, $format, @lines) ;
 	}
+return @lines ;
 
-return(@lines) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -188,11 +167,11 @@ return($self->transform_elements_to_array($EXPORT_PLAIN_TEXT, @elements));
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_zim_wiki_array
+sub transform_elements_to_markup
 {
 my ($self, @elements)  = @_ ;
 
-return($self->transform_elements_to_array($EXPORT_ZIM_WIKI, @elements));
+return($self->transform_elements_to_array($EXPORT_MARKUP, @elements));
 }
 #-----------------------------------------------------------------------------
 
