@@ -4,7 +4,6 @@ package App::Asciio::Markup ;
 require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
-	use_markup
 	$USE_MARKUP_CLASS
 	) ;
 
@@ -13,16 +12,12 @@ $|++ ;
 use strict;
 use warnings;
 use utf8;
-use Readonly ;
 
 use App::Asciio::String ;
 
 
 our ($USE_MARKUP_CLASS) ;
 $USE_MARKUP_CLASS = App::Asciio::Markup->new() ;
-
-Readonly my $EXPORT_PLAIN_TEXT => 0 ;
-Readonly my $EXPORT_MARKUP  => 1 ;
 
 #-----------------------------------------------------------------------------
 
@@ -61,7 +56,7 @@ sub get_markup_coordinates { ; }
 
 sub get_markup_characters_array
 {
-my ($self, $markup_coordinate, $format, @lines) = @_ ;
+my ($self, $markup_coordinate, @lines) = @_ ;
 
 return (@lines) ;
 }
@@ -83,6 +78,7 @@ use base qw/App::Asciio::Markup/ ;
 
 use Memoize ;
 memoize('convert_markup_string') ;
+memoize('del_markup_characters') ;
 
 #-----------------------------------------------------------------------------
 
@@ -96,13 +92,22 @@ return (   $string =~ /(<[bius]>)+([^<]+)(<\/[bius]>)+/
 
 #-----------------------------------------------------------------------------
 
-sub delete_markup_characters
+sub del_markup_characters
 {
-my ($self, $string) = @_;
+my ($string) = @_;
 
 $string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g ;
 
 return $string;
+}
+
+#-----------------------------------------------------------------------------
+
+sub delete_markup_characters
+{
+my ($self, $string) = @_;
+
+return del_markup_characters($string);
 }
 
 #-----------------------------------------------------------------------------
@@ -145,33 +150,28 @@ return %markup_coordinate ;
 #-----------------------------------------------------------------------------
 sub get_markup_characters_array
 {
-my ($self, $markup_coordinate, $format, @lines) = @_ ;
-my @new_lines ;
+my ($self, $markup_coordinate, @lines) = @_ ;
+my (@new_lines, $new_col) ;
 
-if($format != $EXPORT_PLAIN_TEXT)
+for my $row (0 .. $#lines)
 	{
-	my $new_col;
-	for my $row (0 .. $#lines)
+	$new_col = 0;
+	for my $col (0 .. ($#{$lines[$row]} + 2))
 		{
-		$new_col = 0;
-		for my $col (0 .. ($#{$lines[$row]} + 2))
+		if(exists($markup_coordinate->{$row . '-' . $col}))
 			{
-			if(exists($markup_coordinate->{$row . '-' . $col}))
+			for my $single_char (split '', $markup_coordinate->{$row . '-' . $col})
 				{
-				for my $single_char (split '', $markup_coordinate->{$row . '-' . $col})
-					{
-					$new_lines[$row][$new_col] = [$single_char];
-					# single char
-					$new_col += App::Asciio::String::unicode_length($single_char);
-					}
+				$new_lines[$row][$new_col] = [$single_char];
+				# single char
+				$new_col += App::Asciio::String::unicode_length($single_char);
 				}
-			$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
-			$new_col += 1;
 			}
+		$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
+		$new_col += 1;
 		}
-	return(@new_lines);
 	}
-return(@lines);
+return(@new_lines);
 }
 
 #-----------------------------------------------------------------------------

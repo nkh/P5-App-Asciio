@@ -282,7 +282,6 @@ else
 	@text_lines = ('') ;
 	}
 
-# markup chars need space
 my $text_width = max(map {unicode_length($_)} @text_lines);
 my $text_heigh = @text_lines;
 $text_width = max($text_width, 3) ;

@@ -158,7 +158,6 @@ my ($box_type) = @_ ;
 
 my @displayed_elements = grep { $_->[$DISPLAY] } @{$box_type} ;
 
-# not have markup chars
 my $extra_width = $box_type->[$BODY_SEPARATOR][$DISPLAY] 
 			? max(0, map { unicode_length($_) } map {$_->[$LEFT]} @displayed_elements)
 				+ max(0, map { unicode_length($_) } map {$_->[$RIGHT]} @displayed_elements)

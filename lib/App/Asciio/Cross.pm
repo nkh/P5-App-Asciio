@@ -74,7 +74,6 @@ for my $element (@{$asciio->{ELEMENTS}})
 						}
 					}
 				
-				# markup chars have been deleted
 				$character_index += unicode_length($character);
 				}
 			}

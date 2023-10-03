@@ -123,7 +123,6 @@ else
 	@text_lines = ('') ;
 	}
 
-# markup chars need space
 my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
 $text_width = max($text_width, 3) ;
@@ -140,7 +139,6 @@ else
 	@title_lines = ('') ;
 	}
 
-# markup chars need space
 my $title_width = max(map {unicode_length $_} @title_lines);
 my $title_heigh = @title_lines;
 $title_width = max($title_width, 3) ;

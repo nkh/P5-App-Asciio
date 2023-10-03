@@ -88,7 +88,6 @@ for my $element (@elements)
 						}
 					}
 				
-				# markup chars have been deleted
 				my $character_length = unicode_length($character) ;
 				$character_index += $character_length ;
 				}
@@ -108,7 +107,7 @@ if($self->{USE_CROSS_MODE})
 	}
 if($format != $EXPORT_PLAIN_TEXT)
 	{
-	return $USE_MARKUP_CLASS->get_markup_characters_array(\%markup_coordinate, $format, @lines) ;
+	return $USE_MARKUP_CLASS->get_markup_characters_array(\%markup_coordinate, @lines) ; 
 	}
 return @lines ;
 
