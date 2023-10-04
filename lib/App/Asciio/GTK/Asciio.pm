@@ -691,7 +691,7 @@ unless (defined $renderings)
 					
 					$layout->set_font_description($font_description) ;
 
-					$USE_MARKUP_CLASS->ui_show_markup_characters($layout, $line) ;
+					$USE_MARKUP_CLASS->ui_show_markup_characters($layout, $self->{FONT_SIZE}, $line) ;
 
 					Pango::Cairo::show_layout($gc, $layout);
 					}

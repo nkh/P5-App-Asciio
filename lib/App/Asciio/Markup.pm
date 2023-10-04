@@ -65,7 +65,7 @@ return (@lines) ;
 
 sub ui_show_markup_characters
 {
-my ($self, $layout, $line) = @_ ;
+my ($self, $layout, $font_size, $line) = @_ ;
 
 $layout->set_text($line) ;
 }
@@ -177,17 +177,22 @@ return(@new_lines);
 #-----------------------------------------------------------------------------
 #~ link fomart: <span link="">something</span>
 #~ convert to:  <span underline="double">something</span>
+#~ bold fomart: <b>something</b>
+#~ convert to: <span font_desc="$font_size - 1" weight="bold">something</span>
+#~ the above just for display,not really change
 sub convert_markup_string
 {
-my ($string) = @_ ;
+my ($font_size, $string) = @_ ;
 
 my $use_markup_formart = 0 ;
 
 if(is_markup_string($string))
 	{
 	$use_markup_formart = 1 ;
-	# just for display,not really change
 	$string =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
+	# convert bold fonts to precise size control 
+	$font_size -= 1 ;
+	$string =~ s/(<b>)((<[ius]>)*)([^<]+)((<\/[ius]>)*)(<\/b>)/<span font_desc="$font_size" weight="bold">$2$4$5<\/span>/g ;
 	}
 
 return ($use_markup_formart, $string) ;
@@ -197,9 +202,9 @@ return ($use_markup_formart, $string) ;
 
 sub ui_show_markup_characters
 {
-my ($self, $layout, $line) = @_ ;
+my ($self, $layout, $font_size, $line) = @_ ;
 
-my ($use_mark_up, $markup_line) = convert_markup_string($line) ;
+my ($use_mark_up, $markup_line) = convert_markup_string($font_size, $line) ;
 
 if($use_mark_up)
 	{
