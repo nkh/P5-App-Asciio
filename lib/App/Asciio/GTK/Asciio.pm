@@ -382,7 +382,7 @@ for my $element (
 		$gc->paint;
 		}
 	
-	unless(defined $self->{DRAGGING})
+	unless(defined $self->{DRAGGING} || (exists $element->{GROUP} and defined $element->{GROUP}[-1]))
 	{
 		for my $extra_point ($element->get_extra_points())
 			{
@@ -694,9 +694,9 @@ unless (defined $renderings)
 					my $layout = Pango::Cairo::create_layout($gc) ;
 					
 					$layout->set_font_description($font_description) ;
-
+					
 					$USE_MARKUP_CLASS->ui_show_markup_characters($layout, $self->{FONT_SIZE}, $line) ;
-
+					
 					Pango::Cairo::show_layout($gc, $layout);
 					}
 				
