@@ -3,7 +3,7 @@ name: Asciio Documentation
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   deploy:

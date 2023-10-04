@@ -18,9 +18,11 @@ If the text is changed, the size of the box will change to fit.
 
 Enable or disable the possibility to connect to the box.
 
-### border-connection
+### connect inside element borders
 
-allow connection to be made anywhere on the box , not just the connectors,
+Allow connection to be made anywhere inside the element borders , not just the connectors.
+
+![border_connect](border_connect.png)
 
 ### rotate box/text
 

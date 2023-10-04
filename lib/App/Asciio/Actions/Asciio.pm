@@ -47,8 +47,18 @@ if(@selected_elements == 1)
 			] ;
 		
 		$element->is_border_connection_allowed()
-			? push @context_menu_entries, ["/disable border connection", sub { $element->allow_border_connection(0) ; }]
-			: push @context_menu_entries, ["/enable border connection",  sub { $element->allow_border_connection(1) ; }] ;
+			? push @context_menu_entries, ["/disable connect inside borders", sub { $element->allow_border_connection(0) ; }]
+			: push @context_menu_entries, 
+				[
+				"/connect inside borders",
+				sub 
+					{
+					$self->create_undo_snapshot() ;
+					$element->enable_autoconnect(0) ;
+					$element->allow_border_connection(1) ;
+					$self->update_display() ;
+					}
+				] ;
 		
 		$element->is_auto_shrink()
 			? push @context_menu_entries, ["/disable auto shrink", sub { $element->flip_auto_shrink() ; }]
