@@ -347,10 +347,14 @@ unless (defined $self->{CACHE}{EXTRA_POINT})
 	}
 my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
-for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
+for my $element (
+		$self->{DISPLAY_ALL_CONNECTORS} 
+			? @{$self->{ELEMENTS}}
+			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}}
+		)
 	{
 	for my $connector ($element->get_connector_points())
-		{
+	{
 		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
 		
 		$gc->set_source_surface
