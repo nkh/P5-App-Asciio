@@ -8,6 +8,17 @@ $|++ ;
 
 #------------------------------------------------------------------------------------------------------
 
+sub use_action_group
+{
+my ($self, $action) = @_ ; ;
+
+$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+$self->run_actions($action) ;
+$self->{CROSS_ACTION_GROUP}++ ;
+}
+
+#------------------------------------------------------------------------------------------------------
+
 sub run_actions
 {
 my ($self, @actions) = @_ ;
@@ -81,7 +92,8 @@ for my $action (@actions)
 				] ;
 			}
 		
-		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture ;
+		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture || $self->{CROSS_ACTION_GROUP} ;
+		delete $self->{CROSS_ACTION_GROUP} ;
 		
 		if($is_group && defined $self->{CURRENT_ACTIONS}{ENTER_GROUP})
 			{
