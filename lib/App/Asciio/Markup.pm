@@ -180,6 +180,7 @@ return(@new_lines);
 #~ bold fomart: <b>something</b>
 #~ convert to: <span font_desc="$font_size - 1" weight="bold">something</span>
 #~ the above just for display,not really change
+# :TODO: At present, some font sizes cannot be aligned even if they are reduced by 1. The specific rules have not yet been clarified. Currently, we only solve the problem under certain font sizes.
 sub convert_markup_string
 {
 my ($font_size, $string) = @_ ;

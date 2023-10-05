@@ -87,84 +87,18 @@ return(\@lines, \@cross_point_index) ;
 
 #-----------------------------------------------------------------------------
 # ascii: + X . '
-# unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ 
+# unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ ... ...
 
 use Readonly ;
-Readonly my $CHARACTER => 0 ;
-Readonly my $FUNCTION  => 1 ;
-Readonly my $INDEX     => 2 ;
+Readonly my $CHARACTER            => 0 ;
+Readonly my $FUNCTION             => 1 ;
+Readonly my $CHAR_CATEGORY_INDEXS => 2 ;
 
 {
 
 my ($undef_char, %normal_char_cache, %diagonal_char_cache) = ('w') ;
 
-my @normal_char_func = (
-	['+', \&scene_cross,      0],
-	['.', \&scene_dot,        0],
-	['\'',\&scene_apostrophe, 0],
-	
-	# todo: bold thin mix 45 chars
-	#       such as: ┮ ┪ ┪ ┡ ... ...
-	#       Due to the low degree of recognition, 
-	#       it will not be implemented for the time 
-	#       being, but it is enough for now
-	# double thin mix filler
-	# Naming rules: first horizontal and then vertical
-	['╫', \&scene_unicode_mix_cross_thin_double,            0],
-	['╪', \&scene_unicode_mix_cross_double_thin,            0],
-	['╨', \&scene_unicode_mix_cross_lose_down_thin_double,  0],
-	['╧', \&scene_unicode_mix_cross_lose_down_double_thin,  0],
-	['╥', \&scene_unicode_mix_cross_lose_up_thin_double,    0],
-	['╤', \&scene_unicode_mix_cross_lose_up_double_thin,    0],
-	['╢', \&scene_unicode_mix_cross_lose_right_thin_double, 0],
-	['╡', \&scene_unicode_mix_cross_lose_rigth_double_thin, 0],
-	['╟', \&scene_unicode_mix_cross_lose_left_thin_double,  0],
-	['╞', \&scene_unicode_mix_cross_lose_left_double_thin,  0],
-	['╜', \&scene_unicode_mix_thin_left_double_up,          0],
-	['╛', \&scene_unicode_mix_double_left_thin_up,          0],
-	['╙', \&scene_unicode_mix_thin_right_double_up,         0],
-	['╘', \&scene_unicode_mix_double_right_thin_up,         0],
-	['╖', \&scene_unicode_mix_thin_left_double_down,        0],
-	['╕', \&scene_unicode_mix_double_left_thin_down,        0],
-	['╓', \&scene_unicode_mix_thin_right_double_down,       0],
-	['╒', \&scene_unicode_mix_double_right_thin_down,       0],
-
-	# pure filler
-	['┼', \&scene_unicode_cross,             0],
-	['┤', \&scene_unicode_cross_lose_right,  0],
-	['├', \&scene_unicode_cross_lose_left,   0],
-	['┬', \&scene_unicode_cross_lose_up,     0],
-	['┴', \&scene_unicode_cross_lose_down,   0],
-	['╭', \&scene_unicode_right_down,        0],
-	['╮', \&scene_unicode_left_down,         0],
-	['╯', \&scene_unicode_left_up,           0],
-	['╰', \&scene_unicode_right_up,          0],
-	['╋', \&scene_unicode_cross,             1],
-	['┫', \&scene_unicode_cross_lose_right,  1],
-	['┣', \&scene_unicode_cross_lose_left,   1],
-	['┳', \&scene_unicode_cross_lose_up,     1],
-	['┻', \&scene_unicode_cross_lose_down,   1],
-	['┏', \&scene_unicode_right_down,        1],
-	['┓', \&scene_unicode_left_down,         1],
-	['┛', \&scene_unicode_left_up,           1],
-	['┗', \&scene_unicode_right_up,          1],
-	['╬', \&scene_unicode_cross,             2],
-	['╣', \&scene_unicode_cross_lose_right,  2],
-	['╠', \&scene_unicode_cross_lose_left,   2],
-	['╦', \&scene_unicode_cross_lose_up,     2],
-	['╩', \&scene_unicode_cross_lose_down,   2],
-	['╔', \&scene_unicode_right_down,        2],
-	['╗', \&scene_unicode_left_down,         2],
-	['╝', \&scene_unicode_left_up,           2],
-	['╚', \&scene_unicode_right_up,          2],
-) ;
-
-my @diagonal_char_func = (
-	['X', \&scene_x],
-	['╳', \&scene_unicode_x],
-) ;
-
-my %crossing_chars = map {$_, 1} 
+my %all_cross_chars = map {$_, 1} 
 			( 
 			'-', '|', '.', '\'', '\\', '/', '+', '╱', '╲', '╳',
 			'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
@@ -172,42 +106,178 @@ my %crossing_chars = map {$_, 1}
 			'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
 			'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
 			'╛', '╙', '╘', '╖', '╕', '╓', '╒', '<', '>', '^', 'v',
+			'┍', '┎', '┑', '┒', '┕', '┖', '┙', '┚',
+			'┝', '┞', '┟', '┠', '┡', '┢',
+			'┥', '┦', '┧', '┨', '┩', '┪',
+			'┭', '┮', '┯', '┰', '┱', '┲',
+			'┵', '┶', '┷', '┸', '┹', '┺',
+			'┽', '┾', '┿', '╀', '╁', '╂', '╃',
+			'╄', '╅', '╆', '╇', '╈', '╉', '╊',
 			) ;
 
-my %diagonal_cross_filler_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
+my %diagonal_cross_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
 
-my %unicode_left_chars_thin        = map {$_, 1} ('─',    '┼',    '├',    '┬',    '┴',    '╭',    '╰') ;
-my %unicode_left_chars_bold        = map {$_, 1} ('━',    '╋',    '┣',    '┳',    '┻',    '┏',    '┗') ;
-my %unicode_left_chars_double      = map {$_, 1} ('═',    '╬',    '╠',    '╦',    '╩',    '╔',    '╚') ;
-my %unicode_right_chars_thin       = map {$_, 1} ('─',    '┼', '   ┤',    '┬',    '┴',    '╮',    '╯') ;
-my %unicode_right_chars_bold       = map {$_, 1} ('━',    '╋',    '┫',    '┳',    '┻',    '┓',    '┛') ;
-my %unicode_right_chars_double     = map {$_, 1} ('═',    '╬',    '╣',    '╦',    '╩',    '╗',    '╝') ;
-my %unicode_up_chars_thin          = map {$_, 1} ('│',    '┼',    '┤',    '├',    '┬',    '╭',    '╮') ;
-my %unicode_up_chars_bold          = map {$_, 1} ('┃',    '╋',    '┫',    '┣',    '┳',    '┏',    '┓') ;
-my %unicode_up_chars_double        = map {$_, 1} ('║',    '╬',    '╣',    '╠',    '╦',    '╔',    '╗') ;
-my %unicode_down_chars_thin        = map {$_, 1} ('│',    '┼',    '┤',    '├',    '┴',    '╯',    '╰') ;
-my %unicode_down_chars_bold        = map {$_, 1} ('┃',    '╋',    '┫',    '┣',    '┻',    '┛',    '┗') ;
-my %unicode_down_chars_double      = map {$_, 1} ('║',    '╬',    '╣',    '╠',    '╩',    '╝',    '╚') ;
+my %unicode_left_thin_chars    = map {$_, 1} ('─', '┼', '├', '┬', '┴', '╭', '╰', '╫', '╨', '╥', '╟', '╙', '╓', '┎', '┖', '┞', '┟', '┠', '┭', '┰', '┱', '┵', '┸', '┹', '┽', '╀', '╁', '╂', '╃', '╅', '╉') ;
+my %unicode_right_thin_chars   = map {$_, 1} ('─', '┼', '┤', '┬', '┴', '╮', '╯', '╫', '╨', '╥', '╢', '╜', '╖', '┒', '┚', '┦', '┧', '┨', '┮', '┰', '┲', '┶', '┸', '┺', '┾', '╀', '╁', '╂', '╄', '╆', '╊') ;
+my %unicode_up_thin_chars      = map {$_, 1} ('│', '┼', '┤', '├', '┬', '╭', '╮', '╪', '╤', '╡', '╞', '╕', '╒', '┍', '┑', '┝', '┞', '┡', '┥', '┦', '┩', '┭', '┮', '┯', '┽', '┾', '┿', '╀', '╃', '╄', '╇') ;
+my %unicode_down_thin_chars    = map {$_, 1} ('│', '┼', '┤', '├', '┴', '╯', '╰', '╪', '╧', '╡', '╞', '╛', '╘', '┕', '┙', '┝', '┟', '┢', '┥', '┧', '┪', '┵', '┶', '┷', '┽', '┾', '┿', '╁', '╅', '╆', '╈') ;
 
-my %unicode_mix_left_thin_chars    = map {$_, 1} ('╫',    '╨',    '╥',    '╟',    '╙',    '╓') ;
-my %unicode_mix_right_thin_chars   = map {$_, 1} ('╫',    '╨',    '╥',    '╢',    '╜',    '╖') ;
-my %unicode_mix_up_thin_chars      = map {$_, 1} ('╪',    '╤',    '╡',    '╞',    '╕',    '╒') ;
-my %unicode_mix_down_thin_chars    = map {$_, 1} ('╪',    '╧',    '╡',    '╞',    '╛',    '╘') ;
-my %unicode_mix_left_double_chars  = map {$_, 1} ('╪',    '╧',    '╤',    '╞',    '╘',    '╒') ;
-my %unicode_mix_right_double_chars = map {$_, 1} ('╪',    '╧',    '╤',    '╡',    '╛',    '╕') ;
-my %unicode_mix_up_double_chars    = map {$_, 1} ('╫',    '╥',    '╢',    '╟',    '╖',    '╓') ;
-my %unicode_mix_down_double_chars  = map {$_, 1} ('╫',    '╨',    '╢',    '╟',    '╜',    '╙') ;
+my %unicode_left_double_chars  = map {$_, 1} ('═', '╬', '╠', '╦', '╩', '╔', '╚', '╪', '╧', '╤', '╞', '╘', '╒') ;
+my %unicode_right_double_chars = map {$_, 1} ('═', '╬', '╣', '╦', '╩', '╗', '╝', '╪', '╧', '╤', '╡', '╛', '╕') ;
+my %unicode_up_double_chars    = map {$_, 1} ('║', '╬', '╣', '╠', '╦', '╔', '╗', '╫', '╥', '╢', '╟', '╖', '╓') ;
+my %unicode_down_double_chars  = map {$_, 1} ('║', '╬', '╣', '╠', '╩', '╝', '╚', '╫', '╨', '╢', '╟', '╜', '╙') ;
 
-my @unicode_left_chars  = ({%unicode_left_chars_thin},  {%unicode_left_chars_bold},  {%unicode_left_chars_double})  ;
-my @unicode_right_chars = ({%unicode_right_chars_thin}, {%unicode_right_chars_bold}, {%unicode_right_chars_double}) ;
-my @unicode_up_chars    = ({%unicode_up_chars_thin},    {%unicode_up_chars_bold},    {%unicode_up_chars_double})    ;
-my @unicode_down_chars  = ({%unicode_down_chars_thin},  {%unicode_down_chars_bold},  {%unicode_down_chars_double})  ;
+my %unicode_left_bold_chars    = map {$_, 1} ('━', '╋', '┣', '┳', '┻', '┏', '┗', '┍', '┕', '┝', '┡', '┢', '┮', '┯', '┲', '┶', '┷', '┺', '┾', '┿', '╄', '╆', '╇', '╈', '╊') ;
+my %unicode_right_bold_chars   = map {$_, 1} ('━', '╋', '┫', '┳', '┻', '┓', '┛', '┑', '┙', '┥', '┩', '┪', '┭', '┯', '┱', '┵', '┷', '┹', '┽', '┿', '╃', '╅', '╇', '╈', '╉') ;
+my %unicode_up_bold_chars      = map {$_, 1} ('┃', '╋', '┫', '┣', '┳', '┏', '┓', '┎', '┒', '┟', '┠', '┢', '┧', '┨', '┪', '┰', '┱', '┲', '╁', '╂', '╅', '╆', '╈', '╉', '╊') ;
+my %unicode_down_bold_chars    = map {$_, 1} ('┃', '╋', '┫', '┣', '┻', '┛', '┗', '┖', '┚', '┞', '┠', '┡', '┦', '┨', '┩', '┸', '┹', '┺', '╀', '╂', '╃', '╄', '╇', '╉', '╊') ;
+
+my @unicode_cross_chars = (
+	{%unicode_left_thin_chars}  , {%unicode_left_double_chars}  , {%unicode_left_bold_chars}  ,
+	{%unicode_right_thin_chars} , {%unicode_right_double_chars} , {%unicode_right_bold_chars} ,
+	{%unicode_up_thin_chars}    , {%unicode_up_double_chars}    , {%unicode_up_bold_chars}    ,
+	{%unicode_down_thin_chars}  , {%unicode_down_double_chars}  , {%unicode_down_bold_chars}
+);
+
+# The index here has a one-to-one correspondence with the array unicode_cross_chars.
+my $left_thin_index    = 0;
+my $left_double_index  = 1;
+my $left_bold_index    = 2;
+my $right_thin_index   = 3;
+my $right_double_index = 4;
+my $right_bold_index   = 5;
+my $up_thin_index      = 6;
+my $up_double_index    = 7;
+my $up_bold_index      = 8;
+my $down_thin_index    = 9;
+my $down_double_index  = 10;
+my $down_bold_index    = 11;
+
+my %left_index_map  = map {$_ , 1} ($left_thin_index  , $left_double_index  , $left_bold_index) ;
+my %right_index_map = map {$_ , 1} ($right_thin_index , $right_double_index , $right_bold_index) ;
+my %up_index_map    = map {$_ , 1} ($up_thin_index    , $up_double_index    , $up_bold_index) ;
+my %down_index_map  = map {$_ , 1} ($down_thin_index  , $down_double_index  , $down_bold_index) ;
+
+my @normal_char_func = (
+	['+', \&scene_cross,                                           ],
+	['.', \&scene_dot,                                             ],
+	['\'',\&scene_apostrophe,                                      ],
+	
+	# Arranging them in order can reduce logical judgment. Because calculations are done sequentially
+	# 1. First are cross, 
+	# 2. then are corner missing
+	# 3. and finally are two corners missing.
+	# Therefore, the order of functions in the array cannot be disrupted
+	
+	# cross functios
+	['┽' , \&scene_unicode , [$left_bold_index   , $right_thin_index   , $up_thin_index   , $down_thin_index   ]],
+	['┾' , \&scene_unicode , [$left_thin_index   , $right_bold_index   , $up_thin_index   , $down_thin_index   ]],
+	['┿' , \&scene_unicode , [$left_bold_index   , $right_bold_index   , $up_thin_index   , $down_thin_index   ]],
+	['╀' , \&scene_unicode , [$left_thin_index   , $right_thin_index   , $up_bold_index   , $down_thin_index   ]],
+	['╁' , \&scene_unicode , [$left_thin_index   , $right_thin_index   , $up_thin_index   , $down_bold_index   ]],
+	['╂' , \&scene_unicode , [$left_thin_index   , $right_thin_index   , $up_bold_index   , $down_bold_index   ]],
+	['╃' , \&scene_unicode , [$left_bold_index   , $right_thin_index   , $up_bold_index   , $down_thin_index   ]],
+	['╄' , \&scene_unicode , [$left_thin_index   , $right_bold_index   , $up_bold_index   , $down_thin_index   ]],
+	['╅' , \&scene_unicode , [$left_bold_index   , $right_thin_index   , $up_thin_index   , $down_bold_index   ]],
+	['╆' , \&scene_unicode , [$left_thin_index   , $right_bold_index   , $up_thin_index   , $down_bold_index   ]],
+	['╇' , \&scene_unicode , [$left_bold_index   , $right_bold_index   , $up_bold_index   , $down_thin_index   ]],
+	['╈' , \&scene_unicode , [$left_bold_index   , $right_bold_index   , $up_thin_index   , $down_bold_index   ]],
+	['╉' , \&scene_unicode , [$left_bold_index   , $right_thin_index   , $up_bold_index   , $down_bold_index   ]],
+	['╊' , \&scene_unicode , [$left_thin_index   , $right_bold_index   , $up_bold_index   , $down_bold_index   ]],
+	['╫' , \&scene_unicode , [$left_thin_index   , $right_thin_index   , $up_double_index , $down_double_index ]],
+	['╪' , \&scene_unicode , [$left_double_index , $right_double_index , $up_thin_index   , $down_thin_index   ]],
+	['┼' , \&scene_unicode , [$left_thin_index   , $right_thin_index   , $up_thin_index   , $down_thin_index   ]],
+	['╋' , \&scene_unicode , [$left_bold_index   , $right_bold_index   , $up_bold_index   , $down_bold_index   ]],
+	['╬' , \&scene_unicode , [$left_double_index , $right_double_index , $up_double_index , $down_double_index ]],
+
+	# one corner missing functios
+	['┵' , \&scene_unicode , [$left_bold_index    , $right_thin_index   , $up_thin_index     ]],
+	['┶' , \&scene_unicode , [$left_thin_index    , $right_bold_index   , $up_thin_index     ]],
+	['┷' , \&scene_unicode , [$left_bold_index    , $right_bold_index   , $up_thin_index     ]],
+	['┸' , \&scene_unicode , [$left_thin_index    , $right_thin_index   , $up_bold_index     ]],
+	['┹' , \&scene_unicode , [$left_bold_index    , $right_thin_index   , $up_bold_index     ]],
+	['┺' , \&scene_unicode , [$left_thin_index    , $right_bold_index   , $up_bold_index     ]],
+	['┭' , \&scene_unicode , [$left_bold_index    , $right_thin_index   , $down_thin_index   ]],
+	['┮' , \&scene_unicode , [$left_thin_index    , $right_bold_index   , $down_thin_index   ]],
+	['┯' , \&scene_unicode , [$left_bold_index    , $right_bold_index   , $down_thin_index   ]],
+	['┰' , \&scene_unicode , [$left_thin_index    , $right_thin_index   , $down_bold_index   ]],
+	['┱' , \&scene_unicode , [$left_bold_index    , $right_thin_index   , $down_bold_index   ]],
+	['┲' , \&scene_unicode , [$left_thin_index    , $right_bold_index   , $down_bold_index   ]],
+	['┥' , \&scene_unicode , [$left_bold_index    , $up_thin_index      , $down_thin_index   ]],
+	['┦' , \&scene_unicode , [$left_thin_index    , $up_bold_index      , $down_thin_index   ]],
+	['┧' , \&scene_unicode , [$left_thin_index    , $up_thin_index      , $down_bold_index   ]],
+	['┨' , \&scene_unicode , [$left_thin_index    , $up_bold_index      , $down_bold_index   ]],
+	['┩' , \&scene_unicode , [$left_bold_index    , $up_bold_index      , $down_thin_index   ]],
+	['┪' , \&scene_unicode , [$left_bold_index    , $up_thin_index      , $down_bold_index   ]],
+	['┝' , \&scene_unicode , [$right_bold_index   , $up_thin_index      , $down_thin_index   ]],
+	['┞' , \&scene_unicode , [$right_thin_index   , $up_bold_index      , $down_thin_index   ]],
+	['┟' , \&scene_unicode , [$right_thin_index   , $up_thin_index      , $down_bold_index   ]],
+	['┠' , \&scene_unicode , [$right_thin_index   , $up_bold_index      , $down_bold_index   ]],
+	['┡' , \&scene_unicode , [$right_bold_index   , $up_bold_index      , $down_thin_index   ]],
+	['┢' , \&scene_unicode , [$right_bold_index   , $up_thin_index      , $down_bold_index   ]],
+	['╨' , \&scene_unicode , [$left_thin_index    , $right_thin_index   , $up_double_index   ]],
+	['╧' , \&scene_unicode , [$left_double_index  , $right_double_index , $up_thin_index     ]],
+	['╥' , \&scene_unicode , [$left_thin_index    , $right_thin_index   , $down_double_index ]],
+	['╤' , \&scene_unicode , [$left_double_index  , $right_double_index , $down_thin_index   ]],
+	['╢' , \&scene_unicode , [$left_thin_index    , $up_double_index    , $down_double_index ]],
+	['╡' , \&scene_unicode , [$left_double_index  , $up_thin_index      , $down_thin_index   ]],
+	['╟' , \&scene_unicode , [$right_thin_index   , $up_double_index    , $down_double_index ]],
+	['╞' , \&scene_unicode , [$right_double_index , $up_thin_index      , $down_thin_index   ]],
+	['┤' , \&scene_unicode , [$left_thin_index    , $up_thin_index      , $down_thin_index   ]],
+	['├' , \&scene_unicode , [$right_thin_index   , $up_thin_index      , $down_thin_index   ]],
+	['┬' , \&scene_unicode , [$left_thin_index    , $right_thin_index   , $down_thin_index   ]],
+	['┴' , \&scene_unicode , [$left_thin_index    , $right_thin_index   , $up_thin_index     ]],
+	['┫' , \&scene_unicode , [$left_bold_index    , $up_bold_index      , $down_bold_index   ]],
+	['┣' , \&scene_unicode , [$right_bold_index   , $up_bold_index      , $down_bold_index   ]],
+	['┳' , \&scene_unicode , [$left_bold_index    , $right_bold_index   , $down_bold_index   ]],
+	['┻' , \&scene_unicode , [$left_bold_index    , $right_bold_index   , $up_bold_index     ]],
+	['╣' , \&scene_unicode , [$left_double_index  , $up_double_index    , $down_double_index ]],
+	['╠' , \&scene_unicode , [$right_double_index , $up_double_index    , $down_double_index ]],
+	['╦' , \&scene_unicode , [$left_double_index  , $right_double_index , $down_double_index ]],
+	['╩' , \&scene_unicode , [$left_double_index  , $right_double_index , $up_double_index   ]],
+
+	# two corners missing
+	['╜' , \&scene_unicode , [$left_thin_index    , $up_double_index   ]],
+	['╛' , \&scene_unicode , [$left_double_index  , $up_thin_index     ]],
+	['╙' , \&scene_unicode , [$right_thin_index   , $up_double_index   ]],
+	['╘' , \&scene_unicode , [$right_double_index , $up_thin_index     ]],
+	['╖' , \&scene_unicode , [$left_thin_index    , $down_double_index  ]],
+	['╕' , \&scene_unicode , [$left_double_index  , $down_thin_index   ]],
+	['╓' , \&scene_unicode , [$right_thin_index   , $down_double_index ]],
+	['╒' , \&scene_unicode , [$right_double_index , $down_thin_index   ]],
+	['┍' , \&scene_unicode , [$right_bold_index   , $down_thin_index   ]],
+	['┎' , \&scene_unicode , [$right_thin_index   , $down_bold_index   ]],
+	['┑' , \&scene_unicode , [$left_bold_index    , $down_thin_index   ]],
+	['┒' , \&scene_unicode , [$left_thin_index    , $down_bold_index   ]],
+	['┕' , \&scene_unicode , [$right_bold_index   , $up_thin_index     ]],
+	['┖' , \&scene_unicode , [$right_thin_index   , $up_bold_index     ]],
+	['┙' , \&scene_unicode , [$left_bold_index    , $up_thin_index     ]],
+	['┚' , \&scene_unicode , [$left_thin_index    , $up_bold_index     ]],
+	['╭' , \&scene_unicode , [$right_thin_index   , $down_thin_index   ]],
+	['╮' , \&scene_unicode , [$left_thin_index    , $down_thin_index   ]],
+	['╯' , \&scene_unicode , [$left_thin_index    , $up_thin_index     ]],
+	['╰' , \&scene_unicode , [$right_thin_index   , $up_thin_index     ]],
+	['┏' , \&scene_unicode , [$right_bold_index   , $down_bold_index   ]],
+	['┓' , \&scene_unicode , [$left_bold_index    , $down_bold_index   ]],
+	['┛' , \&scene_unicode , [$left_bold_index    , $up_bold_index     ]],
+	['┗' , \&scene_unicode , [$right_bold_index   , $up_bold_index     ]],
+	['╔' , \&scene_unicode , [$right_double_index , $down_double_index ]],
+	['╗' , \&scene_unicode , [$left_double_index  , $down_double_index ]],
+	['╝' , \&scene_unicode , [$left_double_index  , $up_double_index   ]],
+	['╚' , \&scene_unicode , [$right_double_index , $up_double_index   ]],
+) ;
+
+my @diagonal_char_func = (
+	['X', \&scene_x],
+	['╳', \&scene_unicode_x],
+) ;
+
 
 sub get_cross_mode_overlays
 {
 my ($asciio, $start_x, $end_x, $start_y, $end_y) = @_;
 
-my ($ascii_array, $crossings) = get_ascii_array_and_crossings($asciio, \%crossing_chars, $start_x, $end_x, $start_y, $end_y);
+my ($ascii_array, $crossings) = get_ascii_array_and_crossings($asciio, \%all_cross_chars, $start_x, $end_x, $start_y, $end_y);
 my @ascii_array = @{$ascii_array} ;
 
 my @overlays ;
@@ -226,7 +296,7 @@ for(@{$crossings})
 	
 	unless(exists $normal_char_cache{$normal_key})
 		{
-		my $scene_func = first { $_->[$FUNCTION]($up, $down, $left, $right, $_->[$INDEX]) } @normal_char_func;
+		my $scene_func = first { $_->[$FUNCTION]($up, $down, $left, $right, $_->[$CHAR_CATEGORY_INDEXS]) } @normal_char_func;
 		$normal_char_cache{$normal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	
@@ -240,7 +310,7 @@ for(@{$crossings})
 		next;
 		}
 	
-	next unless exists $diagonal_cross_filler_chars{$ascii_array[$row][$col][-1]} ;
+	next unless exists $diagonal_cross_chars{$ascii_array[$row][$col][-1]} ;
 	
 	my ($char_45,                     $char_135,                    $char_225,                    $char_315) = 
 	   ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
@@ -270,7 +340,7 @@ return @overlays ;
 # +
 sub scene_cross
 {
-my ($up, $down, $left, $right, $index) = @_;
+my ($up, $down, $left, $right, $char_category_indexs) = @_;
 
 return 0 unless defined $up && defined $down && defined $left && defined $right ;
 
@@ -288,7 +358,7 @@ return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''
 #            |  |        |     |   |
 sub scene_dot
 {
-my ($up, $down, $left, $right, $index) = @_;
+my ($up, $down, $left, $right, $char_category_indexs) = @_;
 
 return 0 if defined $up && (any {$_ eq '|'} @{$up})
 		&& defined $down && (any {$_ eq '|'} @{$down})
@@ -306,7 +376,7 @@ return (((defined($left) && (any {$_ eq '-'} @{$left})) && (defined($down) && (a
 #       '---    ---'    ---'---
 sub scene_apostrophe
 {
-my ($up, $down, $left, $right, $index) = @_;
+my ($up, $down, $left, $right, $char_category_indexs) = @_;
 
 return 1 if(((defined($up) && (any {$_ eq '|'} @{$up})) && (defined($right) && (any {$_ eq '-'} @{$right}))) && 
 			!(defined($down) && (any {$_ eq '|'} @{$down}))) ;
@@ -316,422 +386,36 @@ return ((defined($up) && (any {$_ eq '|'} @{$up})) && (defined($left) && (any {$
 
 }
 
-#-----------------------------------------------------------------------------
-# ┼
-sub scene_unicode_cross
+sub scene_unicode
 {
-my ($up, $down, $left, $right, $index) = @_;
+my ($up, $down, $left, $right, $char_category_indexs) = @_;
+
+for my $char_index (@{$char_category_indexs})
+	{
+	if(exists $left_index_map{$char_index})
+		{
+		return 0 unless defined $left;
+		return 0 unless any {exists $unicode_cross_chars[$char_index]{$_}} @{$left};
+		}
+	elsif(exists $right_index_map{$char_index})
+		{
+		return 0 unless defined $right;
+		return 0 unless any {exists $unicode_cross_chars[$char_index]{$_}} @{$right};
+		}
+	elsif(exists $up_index_map{$char_index})
+		{
+		return 0 unless defined $up;
+		return 0 unless any {exists $unicode_cross_chars[$char_index]{$_}} @{$up};
+		}
+	else
+		{
+		return 0 unless defined $down;
+		return 0 unless any {exists $unicode_cross_chars[$char_index]{$_}} @{$down};
+		}
+	}
+
+return 1;
 
-return 0 unless defined $up && defined $down && defined $left && defined $right ;
-
-return (any {exists $unicode_up_chars[$index]{$_}} @{$up})
-	&& (any {exists $unicode_down_chars[$index]{$_}} @{$down})
-	&& (any {exists $unicode_left_chars[$index]{$_}} @{$left})
-	&& (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ┤
-sub scene_unicode_cross_lose_right
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $left ;
-
-return 0 if defined $right && (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-
-return (any {exists $unicode_up_chars[$index]{$_}} @{$up}) 
-	&& (any {exists $unicode_down_chars[$index]{$_}} @{$down}) 
-	&& (any {exists $unicode_left_chars[$index]{$_}} @{$left}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ├
-sub scene_unicode_cross_lose_left
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $right ;
-
-return 0 if defined $left && (any {exists $unicode_left_chars[$index]{$_}} @{$left}) ;
-
-return (any {exists $unicode_up_chars[$index]{$_}} @{$up}) 
-	&& (any {exists $unicode_down_chars[$index]{$_}} @{$down}) 
-	&& (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ┬
-sub scene_unicode_cross_lose_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $left && defined $right ;
-
-return 0 if defined $up && (any {exists $unicode_up_chars[$index]{$_}} @{$up}) ;
-
-return (any {exists $unicode_down_chars[$index]{$_}} @{$down}) 
-	&& (any {exists $unicode_left_chars[$index]{$_}} @{$left}) 
-	&& (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ┴
-sub scene_unicode_cross_lose_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $left && defined $right ;
-
-return 0 if defined $down && (any {exists $unicode_down_chars[$index]{$_}} @{$down}) ;
-
-return (any {exists $unicode_up_chars[$index]{$_}} @{$up}) 
-	&& (any {exists $unicode_left_chars[$index]{$_}} @{$left}) 
-	&& (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╭
-sub scene_unicode_right_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $right ;
-
-return 0 if (defined $up && (any {exists $unicode_up_chars[$index]{$_}} @{$up})) 
-	|| (defined $left && (any {exists $unicode_left_chars[$index]{$_}} @{$left}))  ;
-
-return (any {exists $unicode_down_chars[$index]{$_}} @{$down}) 
-	&& (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╮
-sub scene_unicode_left_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $left ;
-
-return 0 if (defined $up && (any {exists $unicode_up_chars[$index]{$_}} @{$up})) 
-	|| (defined $right && (any {exists $unicode_right_chars[$index]{$_}} @{$right})) ;
-
-return (any {exists $unicode_down_chars[$index]{$_}} @{$down}) 
-	&& (any {exists $unicode_left_chars[$index]{$_}} @{$left}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╯
-sub scene_unicode_left_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $left ;
-
-return 0 if (defined $down && (any {exists $unicode_down_chars[$index]{$_}} @{$down})) 
-	|| (defined $right && (any {exists $unicode_right_chars[$index]{$_}} @{$right}))  ;
-
-return (any {exists $unicode_up_chars[$index]{$_}} @{$up}) 
-	&& (any {exists $unicode_left_chars[$index]{$_}} @{$left}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╰
-sub scene_unicode_right_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $right ;
-
-return 0 if (defined $left && (any {exists $unicode_left_chars[$index]{$_}} @{$left})) 
-	|| (defined $down && (any {exists $unicode_down_chars[$index]{$_}} @{$down})) ;
-
-return (any {exists $unicode_up_chars[$index]{$_}} @{$up}) 
-	&& (any {exists $unicode_right_chars[$index]{$_}} @{$right}) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╫
-sub scene_unicode_mix_cross_thin_double
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $left && defined $right ;
-
-return ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up})) 
-	&& ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) ) 
-	&& ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╪
-sub scene_unicode_mix_cross_double_thin
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $left && defined $right ;
-
-return ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ) 
-	&& ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╨
-sub scene_unicode_mix_cross_lose_down_thin_double
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $left && defined $right ;
-
-return 0 if(defined $down && (any {exists $unicode_down_chars[2]{$_}} @{$down})) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ;
-
-return ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) ) 
-	&& ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╧
-sub scene_unicode_mix_cross_lose_down_double_thin
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $left && defined $right ;
-
-return 0 if(defined $down && (any {exists $unicode_down_chars[0]{$_}} @{$down})) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ;
-
-return ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ) 
-	&& ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╥
-sub scene_unicode_mix_cross_lose_up_thin_double
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $left && defined $right ;
-
-return 0 if(defined $up && (any {exists $unicode_up_chars[2]{$_}} @{$up})) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) ;
-
-return ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left})) 
-	&& ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right})) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╤
-sub scene_unicode_mix_cross_lose_up_double_thin
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $left && defined $right ;
-
-return 0 if(defined $up && (any {exists $unicode_up_chars[0]{$_}} @{$up})) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ;
-
-return ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ) 
-	&& ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╢
-sub scene_unicode_mix_cross_lose_right_thin_double
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $left ;
-
-return 0 if(defined $right && (any {exists $unicode_right_chars[0]{$_}} @{$right})) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ;
-
-return ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left})) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╡
-sub scene_unicode_mix_cross_lose_rigth_double_thin
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $left ;
-
-return 0 if(defined $right && (any {exists $unicode_right_chars[2]{$_}} @{$right})) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ;
-
-return ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╟
-sub scene_unicode_mix_cross_lose_left_thin_double
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $right ;
-
-return 0 if(defined $left && (any {exists $unicode_left_chars[0]{$_}} @{$left})) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) ;
-
-return ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╞
-sub scene_unicode_mix_cross_lose_left_double_thin
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $down && defined $right ;
-
-return 0 if(defined $left && (any {exists $unicode_left_chars[2]{$_}} @{$left})) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ;
-
-return ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╜
-sub scene_unicode_mix_thin_left_double_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $left ;
-
-return 0 if( defined $down && ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) )) 
-	|| (defined $right && ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) )) ;
-
-return ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╛
-sub scene_unicode_mix_double_left_thin_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $left ;
-
-return 0 if( defined $down && ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) )) 
-	|| (defined $right && ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) )) ;
-
-return ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╙
-sub scene_unicode_mix_thin_right_double_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $right ;
-
-return 0 if( defined $left && ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) )) 
-|| (defined $down && ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ));
-
-return ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╘
-sub scene_unicode_mix_double_right_thin_up
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $up && defined $right ;
-
-return 0 if (defined $left && ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) )) 
-	|| (defined $down && ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ));
-
-return ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ) 
-	&& ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╖
-sub scene_unicode_mix_thin_left_double_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $left ;
-
-return 0 if (defined $up && ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) )) 
-	|| (defined $right && ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ));
-
-return ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) ) ;
-
-}
-
-#-----------------------------------------------------------------------------
-# ╕
-sub scene_unicode_mix_double_left_thin_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $left ;
-
-return 0 if (defined $up && ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) )) 
-	|| (defined $right && ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ));
-
-return ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) ) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╓
-sub scene_unicode_mix_thin_right_double_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $right ;
-
-return 0 if (defined $up && ((any {exists $unicode_up_chars[2]{$_}} @{$up}) || (any {exists $unicode_mix_up_double_chars{$_}} @{$up}) )) 
-	|| (defined $left && ((any {exists $unicode_left_chars[0]{$_}} @{$left}) || (any {exists $unicode_mix_left_thin_chars{$_}} @{$left}) )) ;
-
-return ((any {exists $unicode_down_chars[2]{$_}} @{$down}) || (any {exists $unicode_mix_down_double_chars{$_}} @{$down}) ) 
-	&& ((any {exists $unicode_right_chars[0]{$_}} @{$right}) || (any {exists $unicode_mix_right_thin_chars{$_}} @{$right}) ) ;
-}
-
-#-----------------------------------------------------------------------------
-# ╒
-sub scene_unicode_mix_double_right_thin_down
-{
-my ($up, $down, $left, $right, $index) = @_;
-
-return 0 unless defined $down && defined $right ;
-
-return 0 if (defined $up && ((any {exists $unicode_up_chars[0]{$_}} @{$up}) || (any {exists $unicode_mix_up_thin_chars{$_}} @{$up}) ))
-		|| (defined $left && ((any {exists $unicode_left_chars[2]{$_}} @{$left}) || (any {exists $unicode_mix_left_double_chars{$_}} @{$left}) )) ;
-
-return ((any {exists $unicode_down_chars[0]{$_}} @{$down}) || (any {exists $unicode_mix_down_thin_chars{$_}} @{$down}) )
-	&& ((any {exists $unicode_right_chars[2]{$_}} @{$right}) || (any {exists $unicode_mix_right_double_chars{$_}} @{$right}) ) ;
 }
 
 #-----------------------------------------------------------------------------

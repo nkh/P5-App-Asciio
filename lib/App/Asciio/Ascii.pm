@@ -27,7 +27,7 @@ return($text) ;
 
 #-----------------------------------------------------------------------------
 
-sub transform_elements_to_zim_wiki_buffer
+sub transform_elements_to_markup_buffer
 {
 my ($self, @elements)  = @_ ;
 
