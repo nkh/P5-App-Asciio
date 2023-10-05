@@ -36,12 +36,22 @@ if(@selected_elements == 1)
 		push @context_menu_entries,
 			[ '/rotate text', sub { $element->rotate_text() ; $self->update_display() ; } ],
 			[
-			$element->is_autoconnect_enabled() ? '/disable autoconnection' :  '/enable autoconnection', 
+			$element->is_autoconnect_enabled() ? '/disable connectors' :  '/enable connectors', 
 			
 			sub 
 				{
 				$self->create_undo_snapshot() ;
 				$element->enable_autoconnect(! $element->is_autoconnect_enabled()) ;
+				$self->update_display() ;
+				}
+			] ,
+			[
+			$element->is_optimize_enabled() ? '/disable optimize' :  '/enable optimize', 
+			
+			sub 
+				{
+				$self->create_undo_snapshot() ;
+				$element->enable_optimize(! $element->is_optimize_enabled()) ;
 				$self->update_display() ;
 				}
 			] ;

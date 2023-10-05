@@ -240,6 +240,14 @@ register_action_handlers
 	'Add text'                            => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]                     ],
 	
 	'Add arrow'                           => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]               ],
+	# 'Add arrow'                           => ['000-a',
+	# 						sub
+	# 						{
+	# 						App::Asciio::Actions::Elements::add_element($_[0], ['Asciio/wirl_arrow', 0]) ;
+	# 						$_[0]->use_action_group('0A0-a') ;
+	# 						}
+	# 					] ,
+	
 	'Add unicode arrow'                   => ['0A0-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow unicode', 0]       ],
 	
 	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]             ],

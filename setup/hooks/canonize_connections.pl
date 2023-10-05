@@ -66,6 +66,9 @@ my ($start_name, $end_name) = ($connectors[0]{NAME}, $connectors[-1]{NAME}) ;
 if($connection->{CONNECTOR}{NAME} eq $end_name)
 	{
 	# end connector
+	
+	return unless $connectee->is_optimize_enabled() ;
+	
 	my ($connectee_x, $connectee_y, $connectee_width, $connectee_hight) = 
 		($connectee->{X}, $connectee->{Y}, $connectee->get_size()) ;
 	
@@ -144,12 +147,14 @@ if($connection->{CONNECTOR}{NAME} eq $end_name)
 else
 	{
 	# start connector
+	return unless $connectee->is_optimize_enabled() ;
+	
 	my ($connectee_x, $connectee_y, $connectee_width, $connectee_hight) = 
 		($connectee->{X}, $connectee->{Y}, $connectee->get_size()) ;
-
+	
 	my $end_connector_x = $connected->{X} + $connectors[1]{X};
 	my $end_connector_y = $connected->{Y} + $connectors[1]{Y} ;
-
+	
 	if($end_connector_x < $connectee_x)
 		{
 		# arrow ends on left of the box

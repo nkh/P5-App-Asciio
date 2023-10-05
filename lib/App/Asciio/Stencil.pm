@@ -55,6 +55,21 @@ if($element_definition{WITH_SIZE})
 	$element->resize(0, 0, @{$element_definition{WITH_SIZE}}) ;
 	}
 
+if(exists $element_definition{OPTIMIZE_DISABLED})
+	{
+	$element->{OPTIMIZE_DISABLED} = $element_definition{OPTIMIZE_DISABLED} ;
+	}
+
+if(exists $element_definition{DEFAULT_CONNECTORS} && $element_definition{DEFAULT_CONNECTORS} == 0)
+	{
+	$element->{CONNECTORS} = [] ;
+	}
+
+for my $connector_definition (($element_definition{CONNECTORS} // [])->@*)
+	{
+	$element->add_connector($connector_definition) ;
+	}
+
 # add name to be seen in the stencil list
 $element->{NAME} = $element_definition{NAME} ;
 

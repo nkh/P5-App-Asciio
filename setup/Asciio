@@ -6,11 +6,27 @@ use utf8 ;
 use App::Asciio::Stencil qw(create_box create_element) ;
 
 [
-create_box(NAME => 'box',            TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], ),
-create_box(NAME => 'shrink_box',     TEXT_ONLY => 'text', WITH_FRAME => 1, WITH_SIZE => [4, 2], AUTO_SHRINK => 1,),
-create_box(NAME => 'text',           TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
-create_box(NAME => 'connector',      TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
-create_box(NAME => 'connector2',     TEXT_ONLY => '*',    AUTO_SHRINK => 1,),
+create_box(NAME => 'box',              TEXT_ONLY => '',     WITH_FRAME => 1, WITH_SIZE => [4, 2], ),
+create_box(NAME => 'shrink_box',       TEXT_ONLY => 'text', WITH_FRAME => 1, WITH_SIZE => [4, 2], AUTO_SHRINK => 1,),
+create_box(NAME => 'text',             TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
+create_box(NAME => 'connector',        TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
+create_box(NAME => 'connector2',       TEXT_ONLY => '*',    AUTO_SHRINK => 1,),
+
+create_box
+	(
+	NAME               => 'rabbit paw',
+	TEXT_ONLY          => <<'TEXT'
+(\_/)
+(O.o)
+/>
+TEXT
+,
+	WITH_FRAME         => 0,
+	OPTIMIZE_DISABLED  => 1,
+	RESIZABLE          => 0,
+	DEFAULT_CONNECTORS => 0,
+	CONNECTORS         => [[2, -1, -1, 2, -1, -1, 'paw']]
+	),
 
 create_box
 	(

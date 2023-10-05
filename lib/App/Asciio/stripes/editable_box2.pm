@@ -118,23 +118,56 @@ $text_begin_y++ if($box_top) ;
 $text_begin_x = unicode_length($box_left);
 $title_separator_exist = 1 if($title_separator);
 
+unless (defined $self->{CONNECTORS})
+	{
+	for my $connector 
+		(
+		# X   SCALE_X OFFSET_X    Y   SCALE_Y  OFFSET_Y   NAME
+		[ 0,  50,     0 ,         -1, -1,      0 ,        'top_center'    ],
+		[ 0,  50,     0 ,         0,  100,     0 ,        'bottom_center' ],
+		[ -1, -1,     0 ,         0,  50,      0 ,        'left_center'   ],
+		[ 0,  100,    0 ,         0,  50,      0 ,        'right_center'  ],
+		)
+		{
+		$self->add_connector($connector) ;
+		}
+	}
+
+my $connectors = $self->scale_connectors($self->{CONNECTORS}, $end_x, $end_y,) ;
+
 $self->set
 	(
-	TEXT => $text,
-	TITLE => $title_text,
-	WIDTH => $end_x,
-	HEIGHT => $end_y,
-	TEXT_ONLY => $text_only,
-	TEXT_BEGIN_X => $text_begin_x,
-	TEXT_BEGIN_Y => $text_begin_y,
+	TEXT                  => $text,
+	TITLE                 => $title_text,
+	WIDTH                 => $end_x,
+	HEIGHT                => $end_y,
+	TEXT_ONLY             => $text_only,
+	TEXT_BEGIN_X          => $text_begin_x,
+	TEXT_BEGIN_Y          => $text_begin_y,
 	TITLE_SEPARATOR_EXIST => $title_separator_exist,
-	BOX_TYPE => $box_type,
-	RESIZABLE => $resizable,
-	EDITABLE => $editable,
-	AUTO_SHRINK => $auto_shrink,
-	STRIPES => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $end_x, HEIGHT => $end_y, TEXT => $text } ],
-	EXTENTS => [ 0, 0, $end_x, $end_y ],
+	BOX_TYPE              => $box_type,
+	RESIZABLE             => $resizable,
+	EDITABLE              => $editable,
+	AUTO_SHRINK           => $auto_shrink,
+	STRIPES               => [ {X_OFFSET => 0, Y_OFFSET => 0, WIDTH => $end_x, HEIGHT => $end_y, TEXT => $text } ],
+	EXTENTS               => [ 0, 0, $end_x, $end_y ],
+	CONNECTORS            => $connectors,
 	) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub scale_connectors
+{
+my ($self, $connectors, $width, $height) = @_ ;
+
+for my $connector ($connectors->@*)
+	{
+	$connector->{X} = int($width  * $connector->{SCALE_X} / 100) + $connector->{OFFSET_X} if ($connector->{SCALE_X} >= 0) ;
+	$connector->{Y} = int($height * $connector->{SCALE_Y} / 100) + $connector->{OFFSET_Y} if ($connector->{SCALE_Y} >= 0) ;
+	}
+
+return $connectors ;
 }
 
 #-----------------------------------------------------------------------------
@@ -242,41 +275,52 @@ return($action) ;
 
 #-----------------------------------------------------------------------------
 
+sub add_connector
+{
+my ($self, $connector) = @_ ;
+my ($x, $scale_x, $offset_x, $y, $scale_y, $offset_y, $name) = $connector->@* ;
+
+$self->remove_connector($name) ;
+
+push $self->{CONNECTORS}->@*, 
+	{
+	X => $x, SCALE_X => $scale_x, OFFSET_X => $offset_x,
+	Y => $y, SCALE_Y => $scale_y, OFFSET_Y => $offset_y,
+	NAME => $name
+	} ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub remove_connector
+{
+my ($self, $name) = @_ ;
+
+$self->{CONNECTORS} = [ grep { $_->{NAME} ne $name } $self->{CONNECTORS}->@* ] ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub match_connector
 {
 my ($self, $x, $y) = @_ ;
 
-my $middle_width = int($self->{WIDTH} / 2) ;
-my $middle_height = int($self->{HEIGHT} / 2) ;
+for my $connector( @{$self->{CONNECTORS}})
+	{
+	return($connector) if( $x == $connector->{X} && $y == $connector->{Y}) ;
+	}
 
-if($x == $middle_width && $y == -1)
+if($self->is_optimize_enabled() && $x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
 	{
-	return {X =>  $x, Y => $y, NAME => 'top_center'} ;
+	return {X =>  -1, Y => -1, NAME => 'to_be_optimized'} ;
 	}
-elsif($x == $middle_width && $y == $self->{HEIGHT})
-	{
-	return {X =>  $x, Y => $y, NAME => 'bottom_center'} ;
-	}
-if($x == -1 && $y == $middle_height)
-	{
-	return {X =>  $x, Y => $y, NAME => 'left_center'} ;
-	}
-elsif($x == $self->{WIDTH} && $y == $middle_height)
-	{
-	return {X =>  $x, Y => $y, NAME => 'right_center'} ;
-	}
-elsif($x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
-	{
-	return {X =>  $middle_width, Y => -1, NAME => 'to_be_optimized'} ;
-	}
-elsif($self->{ALLOW_BORDER_CONNECTION} && $x >= -1 && $x <= $self->{WIDTH} && $y >= -1 && $y <= $self->{HEIGHT})
+	
+if($self->{ALLOW_BORDER_CONNECTION} && $x >= -1 && $x <= $self->{WIDTH} && $y >= -1 && $y <= $self->{HEIGHT})
 	{
 	return {X =>  $x, Y => $y, NAME => 'border'} ;
 	}
-else
-	{
-	return ;
-	}
+
+return ;
 }
 
 #-----------------------------------------------------------------------------
@@ -284,16 +328,8 @@ else
 sub get_connection_points
 {
 my ($self) = @_ ;
-my $middle_width = int($self->{WIDTH} / 2)  ;
-my $middle_height = int($self->{HEIGHT} / 2) ;
 
-return
-	(
-	{X =>  $middle_width, Y => -1, NAME => 'top_center'},
-	{X =>  $middle_width, Y => $self->{HEIGHT}, NAME => 'bottom_center'},
-	{X =>  -1, Y => $middle_height, NAME => 'left_center'},
-	{X =>  $self->{WIDTH}, Y => $middle_height, NAME => 'right_center'},
-	) ;
+$self->{CONNECTORS}->@*,
 }
 
 #-----------------------------------------------------------------------------
@@ -317,29 +353,13 @@ else
 sub get_named_connection
 {
 my ($self, $name) = @_ ;
-my $middle_width = int($self->{WIDTH} / 2)  ;
-my $middle_height = int($self->{HEIGHT} / 2) ;
 
-if($name eq 'top_center')
+for my $connector( $self->{CONNECTORS}->@*)
 	{
-	return( {X =>  $middle_width, Y => -1, NAME => 'top_center'} ) ;
+	return $connector if $name eq $connector->{NAME} ;
 	}
-elsif($name eq 'bottom_center')
-	{
-	return( {X =>  $middle_width, Y => $self->{HEIGHT}, NAME => 'bottom_center'} ) ;
-	}
-elsif($name eq 'left_center')
-	{
-	return {X =>  -1, Y => $middle_height, NAME => 'left_center'},
-	}
-elsif($name eq 'right_center')
-	{
-	return {X =>  $self->{WIDTH}, Y => $middle_height, NAME => 'right_center'},
-	}
-else
-	{
-	return ;
-	}
+
+return ;
 }
 
 #-----------------------------------------------------------------------------

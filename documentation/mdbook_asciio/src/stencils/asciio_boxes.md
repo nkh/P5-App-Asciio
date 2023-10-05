@@ -4,7 +4,7 @@
 
 ![connector resize-handle](connector_resize_handle.png)
 
-### popup menu
+## popup menu
 
 You can access some functionality via the popup menu.
 
@@ -14,9 +14,15 @@ You can access some functionality via the popup menu.
 
 If the text is changed, the size of the box will change to fit.
 
-### auto-connection
+### disable connectors
 
 Enable or disable the possibility to connect to the box.
+
+### disable optimize
+
+A standard box had four connectors, Asciio optimizes the arrow routes so they don't cross the box. You can disable that optimization.
+
+
 
 ### connect inside element borders
 

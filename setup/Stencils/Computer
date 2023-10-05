@@ -1,11 +1,11 @@
-use strict ;
-use warnings ;
+use strict ; use warnings ;
 
-use  App::Asciio::Stencil qw(create_box create_element) ;
+use App::Asciio::Stencil qw(create_box) ;
 
-my @ascii = 
+[
+map { create_box(TEXT_ONLY => $_->[1], NAME => $_->[0]) }
 	(
-	'3D_box' => <<'EOA',
+	[ '3D_box' => <<'EOA'],
   .---.
  /   /|
 .---. |
@@ -14,7 +14,7 @@ my @ascii =
 '---'  
 EOA
 
-	'console' => <<'EOA',
+	['console' => <<'EOA'],
  ____ 
 |    |
 |____|
@@ -22,13 +22,13 @@ EOA
 
 EOA
 
-	'computer_small' => <<'EOA',
+	['computer_small' => <<'EOA'],
  __  _ 
 [__]|=|
 /::/|_|
 EOA
 
-	'mainframe' => <<'EOA',
+	['mainframe' => <<'EOA'],
  ________ 
 |==|=====|
 |  |     |
@@ -39,7 +39,7 @@ EOA
 |__|_____|
 EOA
 
-	'Mini' => <<'EOA',
+	['Mini' => <<'EOA'],
  ____ 
 |====|
 |    |
@@ -47,7 +47,7 @@ EOA
 |____|
 EOA
 
-	'19_rack' => <<'EOA',
+	['19_rack' => <<'EOA'],
  __________ 
 [_..._....°]
 [_..._....°]
@@ -62,36 +62,36 @@ EOA
 [___....__°]
 EOA
 
-	'rack modem' => <<'EOA',
+	['rack modem' => <<'EOA'],
  __________ 
 |____oooo_°|
 EOA
 
-	'SAN' => <<'EOA',
+	['SAN' => <<'EOA'],
  __________ 
 [_|||||||_°]
 [_|||||||_°]
 [_|||||||_°]
 EOA
 
-	'router' => <<'EOA',
+	['router' => <<'EOA'],
  __________ 
 [_...__...°]
 EOA
 
-	'wireless' => <<'EOA',
+	['wireless' => <<'EOA'],
  |_|_| 
 [____°]
 EOA
 
-	'workstation' => <<'EOA',
+	['workstation' => <<'EOA'],
  ____   __ 
 |    | |==|
 |____| |  |
 /::::/ |__|
 EOA
 
-	'print server' => <<'EOA',
+	['print server' => <<'EOA'],
     _____ 
   _/____/|
  /__/__/||
@@ -99,7 +99,7 @@ EOA
 |___|__|/ 
 EOA
 
-	'small_rack' => <<'EOA',
+	['small_rack' => <<'EOA'],
  ______ 
 [.....°]
 [.....°]
@@ -110,19 +110,19 @@ EOA
 [_____°]
 EOA
 
-	'modem' => <<'EOA',
+	['modem' => <<'EOA'],
  ______ 
 |_ooo_°|
 EOA
 
-	'firewall' => <<'EOA',
+	['firewall' => <<'EOA'],
  _____________________ 
 |___|___|___|___|___|_|
 |_|___|___|___|___|___|
 |___|___|___|___|___|_|
 EOA
 
-	'INTERNET' => <<'EOA',
+	['INTERNET' => <<'EOA'],
               .--.               
           _ -(    )- _           
      .--,(            ),--.      
@@ -133,7 +133,7 @@ EOA
            - ._(__)_. -          
 EOA
 
-	'internet' => <<'EOA',
+	['internet' => <<'EOA'],
     .-,(  ),-.    
  .-(          )-. 
 (    internet    )
@@ -141,17 +141,17 @@ EOA
      '-.( ).-'    
 EOA
 
-	'backbone' => <<'EOA',
+	['backbone' => <<'EOA'],
 ===================================
 EOA
 
-	'BACKBONE' => <<'EOA',
+	['BACKBONE' => <<'EOA'],
 ===================================
 ===================================
 ===================================
 EOA
 
-	'document' => <<'EOA',
+	['document' => <<'EOA'],
  ___   
 |   |\ 
 |   '-|
@@ -159,7 +159,7 @@ EOA
 |_____|
 EOA
 
-	'DB' => <<'EOA',
+	['DB' => <<'EOA'],
   _.-----._  
 .-         -.
 |-_       _-|
@@ -169,20 +169,13 @@ EOA
    "-----"   
 EOA
 
-	'wireless_mast' => <<'EOA',
+	['wireless_mast' => <<'EOA'],
  ((.)) 
    |   
   /_\  
  /___\ 
 /     \
 EOA
-	) ;
-	
-my @boxes ;
+	)
+]
 
-for(my $ascii_index = 0 ; $ascii_index < $#ascii ; $ascii_index+= 2)
-	{
-	push @boxes, create_box(TEXT_ONLY => $ascii[$ascii_index + 1], NAME => $ascii[$ascii_index], ) ;
-	}
-	
-[@boxes] ;

@@ -143,6 +143,12 @@ sub enable_autoconnect { my ($self, $enable) = @_ ; $self->{AUTOCONNECT_DISABLED
 
 #-----------------------------------------------------------------------------
 
+sub is_optimize_enabled { my ($self) = @_ ; return ! $self->{OPTIMIZE_DISABLED} ; }
+
+sub enable_optimize { my ($self, $enable) = @_ ; $self->{OPTIMIZE_DISABLED} = !$enable ; }
+
+#-----------------------------------------------------------------------------
+
 sub set
 {
 # set fields in the hash
