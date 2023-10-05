@@ -37,7 +37,7 @@ for my $element (@{$asciio->{ELEMENTS}})
 			my $y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 			
 			next if defined $start_y && ($y < $start_y || $y >= $end_y) ;
-
+			
 			$sub_strip = $USE_MARKUP_CLASS->delete_markup_characters($sub_strip) ;
 			
 			my $character_index = 0 ;

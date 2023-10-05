@@ -57,6 +57,9 @@ architecture
 	handle multiple binary format versions
 
 optimization 
+	Z buffer
+		https://metacpan.org/pod/Tree::Interval::Fast
+
 	Selecting an object takes long time when there are many objects
 		is stripes coordinates used rather than object to filter out?
 		

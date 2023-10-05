@@ -58,7 +58,7 @@ for my $element (@elements)
 			{
 			my $origin_strip = $sub_strip ;
 			my $y =  $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
-
+			
 			$sub_strip = $USE_MARKUP_CLASS->delete_markup_characters($sub_strip) ;
 			
 			if($format != $EXPORT_PLAIN_TEXT)

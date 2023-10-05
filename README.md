@@ -39,6 +39,8 @@ To list the bindings: $> perldoc App:Asciio.
  
 # DOCUMENTATION
 
+[Online Documentation](https://nkh.github.io/P5-App-Asciio/)
+
 ## Interface
 
           .-------------------------------------------------------------.
