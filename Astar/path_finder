@@ -46,7 +46,6 @@ our $VERSION = '0.10';
 
 use Heap::Binomial;
 
-# use AI::Pathfinding::AStar::AStarNode;
 my $nodes;
 
 sub _init
@@ -273,32 +272,6 @@ sub get_cached_cells { my ($self, $source, $target) = @_; scalar(keys %{$self->{
 
 #-------------------------------------------------------------------------------
 
-sub findPath
-{
-my ($self, $start, $target) = @_;
-
-my $nodes = {};
-my $curr_node = undef;
-
-my $open = Heap::Binomial->new;
-
-#add starting square to the open list
-$curr_node = AI::Pathfinding::AStar::AStarNode->new($start, 0, 0);  # AStarNode(id,g,h)
-$curr_node->{parent} = undef;
-$curr_node->{cost}   = 0;
-$curr_node->{g}      = 0;
-$curr_node->{h}      = 0;
-$curr_node->{inopen} = 1;
-$nodes->{$start}     = $curr_node;
-$open->add($curr_node);
-
-$self->doAStar($target,$open,$nodes,undef);
-
-return $self->fillPath($open,$nodes,$target);
-}
-
-#-------------------------------------------------------------------------------
-
 {
 my $nodes;
 
@@ -331,6 +304,7 @@ return $self->fillPath($open,$nodes,$target);
 }
 
 #-------------------------------------------------------------------------------
+
 my %seen ;
 
 sub getSurrounding
@@ -352,46 +326,61 @@ my @direction_to_surroundings =
 	[($x-1) .'.'. $y,    $x .'.'. ($y+1),    $x .'.'. ($y-1),    ($x+1) .'.'. $y],
 	) ;
 
-my @surrounding ;
+# my ($free_x) = sort { $a->[0] <=> $b->[0] } grep { $_->[1] == $y && $_->[0] > $x && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
+# my @straight_x ;
+# if(defined $free_x)
+# 	{
+# 	my ($xt, $yt) = split(/\./, $target) ;
 
-my ($free_x) = sort { $a->[0] <=> $b->[0] }  grep { $_->[1] == $y && $_->[0] > $x && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
-my @straight_x ;
-if(defined $free_x)
-	{
-	# print "$x, $y -> @{$free_x}, $x + 1 .. $free_x->[0] - 1\n" ;
-	# use Data::TreeDumper;
-	# print DumpTree \%seen, 'seen' ;
-	# $a = <STDIN> ;
-	
-	for my $next_x ( $x + 1 .. $free_x->[0] - 1)
-		{
-		push @straight_x,  [ $next_x.'.'.$free_x->[1] , 1, 1] ;
-		$self->{scanned_cells}{$next_x.'.'.$free_x->[1]}++ ;
-		}
-	}
+# 	for my $next_x ( $x + 1 .. $free_x->[0] - 1)
+# 		{
+# 		next if $next_x > $xt ;
+# 		push @straight_x,  [ $next_x.'.'.$free_x->[1] , 1, 1] ;
+# 		$self->{scanned_cells}{$next_x.'.'.$free_x->[1]}++ ;
+# 		}
+# 	}
+# else
+# 	{
+# 	for my $next_x ( $x + 1 .. $self->{map}{width})
+# 		{
+# 		push @straight_x,  [ $next_x.'.'.$y , 1, 1] ;
+# 		$self->{scanned_cells}{$next_x.'.'.$y}++ ;
+# 		}
+# 	}
  
-my ($free_y) = sort { $a->[1] <=> $b->[1] }  grep { $_->[0] == $x && $_->[1] > $y && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
-my @straight_y ;
-if(defined $free_y)
-	{
-	# print "$x, $y -> @{$free_x}, $x + 1 .. $free_x->[0] - 1\n" ;
-	# use Data::TreeDumper;
-	# print DumpTree \%seen, 'seen' ;
-	# $a = <STDIN> ;
-	
-	for my $next_y ( $y + 1 .. $free_y->[1] - 1)
-		{
-		push @straight_y,  [ $free_y->[0].'.'.$next_y, 1, 1] ;
-		$self->{scanned_cells}{$free_y->[0].'.'.$next_y}++ ;
-		}
-	}
+# my ($free_y) = sort { $a->[1] <=> $b->[1] } grep { $_->[0] == $x && $_->[1] > $y && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
+# my @straight_y ;
+# if(! defined $free_x && defined $free_y)
+# 	{
+# 	my ($xt, $yt) = split(/\./, $target) ;
 
-return [ @straight_x, @straight_y ] if @straight_x + @straight_y ;
+# 	for my $next_y ( $y + 1 .. $free_y->[1] - 1)
+# 		{
+# 		next if $next_y > $yt ;
+# 		push @straight_y,  [ $free_y->[0].'.'.$next_y, 1, 1] ;
+# 		$self->{scanned_cells}{$free_y->[0].'.'.$next_y}++ ;
+# 		}
+# 	}
+# else
+# 	{
+# 	for my $next_y ( $y + 1 .. $self->{map}{height})
+# 		{
+# 		push @straight_y,  [ $x.'.'.$next_y , 1, 1] ;
+# 		$self->{scanned_cells}{$x.'.'.$next_y}++ ;
+# 		}
+# 	}
+# print 'x: ', scalar(@straight_x), "\n" ;
+# print 'y: ', scalar(@straight_y), "\n" ;
+
+# my @straight = ( @straight_x, @straight_y) ;
+# return [ @straight ] if @straight ;
+
+my @surrounding ;
 
 for my $node (@{$direction_to_surroundings[$direction]})
 	{
 	my ($node_x, $node_y) = split(/\./, $node);
-	next if $node_x < 1 || $node_x > $map->{width} || $node_y < 1 || $node_y >= $map->{height} ;
+	next if $node_x < 1 || $node_x > $map->{width} || $node_y < 1 || $node_y > $map->{height} ;
 	
 	if(! $self->{obstruct} && exists $self->{surrounding}{$node})
 		{
@@ -444,14 +433,14 @@ if($self->{step})
 
 $self->{visited_cells}{$source}++ ;
 
-if($self->{do_diagonal})
-	{
+# if($self->{do_diagonal})
+	# {
 	# for my $node ( ($x+1).'.'.($y+1), ($x+1).'.'.($y-1), ($x-1).'.'.($y+1), ($x-1).'.'.($y-1))
 	# 		{
 	# 		push @$surrounding, [$node, $diagonal_cost, calc_heuristic($node, $target)]
 	# 			if exists $map->{map}{$node} && $map->{map}{$node} ;
 	# 		}
-	}
+	# }
 
 return \@surrounding;
 }
@@ -462,18 +451,11 @@ sub calc_heuristic
 {
 my ($self, $source, $node, $target, $direction) = @_;
 
-# my ($xs, $ys) = split(/\./, $source);
-my ($x, $y) = split(/\./, $node);
-my ($xt, $yt) = split(/\./, $target);
-
-my ($XHK, $YHK, $HK) = @{$self}{qw/XHK YHK HK/} ;
-
-# my $heuristic =   (abs($xt - $x) * $XHK)
-# 		+ (abs($yt - $y) * $YHK) ;
-
-my $heuristic = sqrt( (($xt - $x)**2) * $XHK + (($yt - $y)**2) * $YHK ) ;
-
-$heuristic *= $HK ;
+my ($x, $y)           = split(/\./, $node);
+my ($xt, $yt)         = split(/\./, $target);
+my ($XHK, $YHK, $HK)  = @{$self}{qw/XHK YHK HK/} ;
+my $heuristic         = sqrt( (($xt - $x)**2) * $XHK + (($yt - $y)**2) * $YHK ) ;
+   $heuristic        *= $HK ;
 
 $heuristic > 0 ? $heuristic : 0 ;
 }
@@ -500,7 +482,7 @@ my ($map, $map_text, $map_xy, $map_yx) = ({}, '', {}, {}) ;
 
 my $opaque_nodes = 0 ;
 my $max_width = 0 ;
-my $y = 1;
+my $y = 0 ;
 
 while (<$data>)
 	{
@@ -509,8 +491,8 @@ while (<$data>)
 	my @cols = split // ;
 	$max_width = @cols if $max_width < @cols ;
 	
-	my $y_1 = $y + 1;
-	$map_text .= sprintf "\e[$y_1;1H\e[2;30;31m%-2d", $y if $display_map ;
+	my $y_1 = $y + 2 ; # ruler + offeset by one
+	$map_text .= sprintf "\e[$y_1;1H\e[2;30;31m%2d\e[m", ($y + 1) if $display_map ;
 	
 	for my $x ( 0 .. $#cols )
 		{
@@ -522,19 +504,19 @@ while (<$data>)
 				{
 				if($cell eq $character)
 					{
-					$map->{$x.'.'.$y} = $options->{permeable_cost}{$character} ;
+					$map->{($x + 1).'.'.($y + 1)} = $options->{permeable_cost}{$character} ;
 					last ;
 					}
 				}
 			
-			unless(exists $map->{$x.'.'.$y})
+			unless(exists $map->{($x + 1).'.'.($y + 1)})
 				{
-				$map->{$x.'.'.$y} = $OPAQUE ;
+				$map->{($x + 1).'.'.($y + 1)} = $OPAQUE ;
 				$opaque_nodes++ ;
 				}
 			}
 		
-		my $x_3 = $x + 3;
+		my $x_3 = $x + 4;
 		$map_text .= "\e[$y_1;${x_3}H$cell\e[m" if $display_map ;
 		}
 	$y++;
@@ -695,7 +677,7 @@ while (@routes > 1)
 	
 	$a=<STDIN> if $options->{pause} && @routes > 1 ;
 	
-	push @path_info, [scalar(@$path), $cost] ;
+	push @path_info, { length => scalar(@$path), cost => $cost, steps => $path} ;
 	
 	if($display_map)
 		{
@@ -739,7 +721,7 @@ for (@routes_text)
 
 my %stats =
 	(
-	routing_time     => $routing_time,
+	routing_time     => (sprintf "%.4f", $routing_time),
 	visited_cells    => $g->get_visited_cells(),
 	percent_visited  => (($g->get_visited_cells() * 100)/ $self->{accessible_nodes}),
 	total_cells      => $self->{nodes},
@@ -754,14 +736,20 @@ my %stats =
 	XHK              => $options->{XHK}  // 1,
 	YHK              => $options->{YHK}  // 1,
 	HK               => $options->{HK} // 1,
-	map{ (path_length => $_->[0] , path_cost => $_->[1]) } @path_info,
 	) ;
+
+my $path_index=0 ;
+for (@path_info)
+	{
+	$stats{paths}[$path_index] = $_ ;
+	$path_index++ ; 
+	} 
 
 if($options->{info})
 	{
-	my $path_info = join(' ', map { $_->[0] . '/' . $_->[1] } @path_info) ;
+	my $path_info = join(' ', map { $_->{length} . '/' . $_->{cost} } @path_info) ;
 	
-	printf "path lengths: $path_info, visited cells: %d/%d%%, scanned cells: %d/%d%%/%d%%, cells: %d/%d\n",
+	printf "paths length/cost: $path_info, visited cells: %d/%d%%, scanned cells: %d/%d%%/%d%%, cells: %d/%d\n",
 			$g->get_visited_cells(),
 			(($g->get_visited_cells() * 100)/ $self->{accessible_nodes}),
 			$g->get_scanned_cells(),
@@ -776,7 +764,8 @@ if($options->{info})
 
 if($options->{stats})
 	{
-	print "$_: $stats{$_}\n" for sort keys %stats ;
+	use Data::TreeDumper ;
+	print DumpTree \%stats, "stats:", DISPLAY_ADDRESS => 0 ;
 	}
 
 if($options->{json})
@@ -794,7 +783,6 @@ use warnings ;
 
 use IO::File ;
 use Getopt::Long;
-use Term::ReadKey ;
 
 sub help { system("pod2text $0") ; exit ; }
 
@@ -845,13 +833,10 @@ if($options->{interactive} && @ARGV != 2)
 	die $error ;
 	}
 
-for(@ARGV) { die "wrong format for route: '$_'\n" unless /^[0-9]+\.[0-9]+$/ }
+for(@ARGV) { die "wrong format for route: '$_'\n" unless /^[1-9]$/ || /^[0-9]+\.[0-9]+$/ }
 
 my $map_file  = $options->{map} ? (IO::File->new($options->{map}, 'r') or die "$options->{map}: $!\n") : \*DATA ;
-
 my $map = AI::Pathfinding::AStar::Term::Map->new($map_file, $options) ;
-
-$map->display_map() unless $options->{no_map_display} ;
 
 # HK, XHK, YHK
 my $preset_HK = -1 ;
@@ -869,6 +854,8 @@ my @preset_HK =
 
 if($options->{interactive})
 	{
+	use Term::ReadKey ;
+	
 	ReadMode 'cbreak' ;
 	
 	my ($xs, $ys) = split(/\./, shift @ARGV);
@@ -954,7 +941,7 @@ You pass coordinates as x.y, you can pass a multiple route legs.
 =head1 COSTS 
 
 The A* path finding uses costs to determine which path is the best. The "opaque"
-cells have an infinite cost and are not even considered (see 'opaque_class').
+cells have an infinite cost and are not even considered.
 
 Orthogonal cost is 10 by default but can be changed
 
@@ -963,23 +950,25 @@ routing.
 
 "Translucent" cost varies between 0 and 9, see option --translucent_cost.
 
-"Extra_cost" can be assigned to cells around 'opaque' cells, See options
+"Extra_cost" can be assigned to cells aound 'opaque' cells, See options
 --keep_clear and --keep_clear_cost.
 
 =head2 Default costs
 
- orthogonal_cost = 10
+ orthogonal_cost = 40
 
- diagonal_cost = not_used 
+ diagonal_cost = 140
 
- keep_clear_cost = 10
+ keep_clear_cost = 40
+
+ permeable_cost = 0-9
 
 =head2 Starting with costs
 
 I recommend that you use these options to start with and look at the heatmap then
 play with the costs from there.
 
- --orthogonal_cost 1 --keep_clear_cost 2 
+ --orthogonal_cost 1 --keep_clear_cost 5
 
 =head1 OPTIONS
 
@@ -1006,6 +995,7 @@ see option --permeable below)
 
 Display the portion of the map scanned during the A* path finding
 
+--scanning_sleep:i             # pause during leg computation
 
 To allow a better visualization effect, a short pause is used, the default
 is 1000, when multi legs paths are computed, smaller value gives shorter delay.
@@ -1028,8 +1018,6 @@ looking at all the nodes then would be necessary to compute paths.
 --no_map_display                # do not display the map at all
 
 Useful if you want to modify the code and output other type of data
-
---obstruction x.y:value         # add obstruction on the command line
 
 --obstruct                      # multi leg path obstruct each other
 
@@ -1069,6 +1057,20 @@ they will be opaque
              I   .---. '-8-'
              5   |   |
              1   '---'
+
+--obstruction:s
+
+You can add obstructions on the map, they will be displayed in the heatmap, the format is:
+
+	x.y:value
+
+The value is uses in the computation of the path cost and *may* change the path.
+
+Use a positive value superior the orthogonal cost (10 by default) to see some effect.
+
+A value of -1 makes the cell opaque. 
+
+A large negative value will act as a magnet and draw the path towards it.
 
 All options:
 

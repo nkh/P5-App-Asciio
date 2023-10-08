@@ -1,3 +1,39 @@
+direction arrow
+
+            .-----.
+            v     |
+          .-U-.   |
+          |   |   |   .------------.
+          '---'   |   |            |
+    .---.         |   |   .---.    |   .---.      .---.
+    |   R---------'   |   |   R----'   |   R---.  |   R---.
+    '---'             |   '---'        '---'   |  '---'   |
+                      '-----.                  |          |
+                            |                  |          |
+                          .-U-.                |        .-U-.
+                          |   |          .-----'        |   |
+                          '---'          |              '---'
+                                         |
+                                         |
+                                       .-U-.
+                                       |   |
+                                       '---'
+
+	with A*
+		build bulwark around box except for connector
+		tunnel around connector to force direction
+		variable size bulwark
+		on demand  optimization if too slow
+		bulwark other  elements
+		semi permeable bulwark on arrows
+
+	without A*
+		start, go connectors favorite direction
+
+		end
+			one virtual point, 1 character in end's favorite direction
+			next direction, everything except favorite direction opposite
+
 documentation format and structure
 	makdown
 	directory structure reflecting contents
