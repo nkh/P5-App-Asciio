@@ -12,6 +12,29 @@ create_box(NAME => 'text',             TEXT_ONLY => 'Text', AUTO_SHRINK => 1,),
 create_box(NAME => 'connector',        TEXT_ONLY => 'o',    AUTO_SHRINK => 1,),
 create_box(NAME => 'connector2',       TEXT_ONLY => '*',    AUTO_SHRINK => 1,),
 
+do {
+my $resistor = create_box
+	(
+	NAME               => 'resistor',
+	TEXT_ONLY          => <<'TEXT'
+ |
+[ ]
+ |
+TEXT
+,
+	WITH_FRAME         => 0,
+	OPTIMIZE_DISABLED  => 1,
+	RESIZABLE          => 0,
+	DEFAULT_CONNECTORS => 0,
+	CONNECTORS =>   [
+				[1, -1, -1,   0, -1, -1,   'top_center'],
+				[1, -1, -1,   2, -1, -1,   'bottom_center'],
+			],
+	) ;
+
+$resistor
+}, 
+
 create_box
 	(
 	NAME               => 'rabbit paw',
