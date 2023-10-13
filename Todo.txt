@@ -1,3 +1,11 @@
+constraints
+	alignement
+	arrows not over lapping
+
+
+	depth of arrow for overlapping arrow
+		shortest length to turn on top
+
 direction arrow
 
             .-----.

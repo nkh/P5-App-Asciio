@@ -305,8 +305,6 @@ return $self->fillPath($open,$nodes,$target);
 
 #-------------------------------------------------------------------------------
 
-my %seen ;
-
 sub getSurrounding
 {
 my ($self, $source, $target, $direction) = @_;
@@ -318,6 +316,7 @@ return [] if $x < 1 || $x > $map->{width} || $y < 1 || $y > $map->{height} ;
 my ($orthogonal_cost, $diagonal_cost) = @{$self}{qw/orthogonal_cost diagonal_cost/} ;
 
 $direction //= 2 ;
+
 my @direction_to_surroundings =
 	(
 	[$x .'.'. ($y-1),    ($x+1) .'.'. $y,    ($x-1) .'.'. $y,    $x .'.'. ($y+1)],
@@ -325,55 +324,6 @@ my @direction_to_surroundings =
 	[$x .'.'. ($y+1),    ($x+1) .'.'. $y,    ($x-1) .'.'. $y,    $x .'.'. ($y-1)],
 	[($x-1) .'.'. $y,    $x .'.'. ($y+1),    $x .'.'. ($y-1),    ($x+1) .'.'. $y],
 	) ;
-
-# my ($free_x) = sort { $a->[0] <=> $b->[0] } grep { $_->[1] == $y && $_->[0] > $x && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
-# my @straight_x ;
-# if(defined $free_x)
-# 	{
-# 	my ($xt, $yt) = split(/\./, $target) ;
-
-# 	for my $next_x ( $x + 1 .. $free_x->[0] - 1)
-# 		{
-# 		next if $next_x > $xt ;
-# 		push @straight_x,  [ $next_x.'.'.$free_x->[1] , 1, 1] ;
-# 		$self->{scanned_cells}{$next_x.'.'.$free_x->[1]}++ ;
-# 		}
-# 	}
-# else
-# 	{
-# 	for my $next_x ( $x + 1 .. $self->{map}{width})
-# 		{
-# 		push @straight_x,  [ $next_x.'.'.$y , 1, 1] ;
-# 		$self->{scanned_cells}{$next_x.'.'.$y}++ ;
-# 		}
-# 	}
- 
-# my ($free_y) = sort { $a->[1] <=> $b->[1] } grep { $_->[0] == $x && $_->[1] > $y && !$seen{$_->[2]}++ } map{ [ split(/\./, $_), $_ ] } keys %{$map->{map}} ;
-# my @straight_y ;
-# if(! defined $free_x && defined $free_y)
-# 	{
-# 	my ($xt, $yt) = split(/\./, $target) ;
-
-# 	for my $next_y ( $y + 1 .. $free_y->[1] - 1)
-# 		{
-# 		next if $next_y > $yt ;
-# 		push @straight_y,  [ $free_y->[0].'.'.$next_y, 1, 1] ;
-# 		$self->{scanned_cells}{$free_y->[0].'.'.$next_y}++ ;
-# 		}
-# 	}
-# else
-# 	{
-# 	for my $next_y ( $y + 1 .. $self->{map}{height})
-# 		{
-# 		push @straight_y,  [ $x.'.'.$next_y , 1, 1] ;
-# 		$self->{scanned_cells}{$x.'.'.$next_y}++ ;
-# 		}
-# 	}
-# print 'x: ', scalar(@straight_x), "\n" ;
-# print 'y: ', scalar(@straight_y), "\n" ;
-
-# my @straight = ( @straight_x, @straight_y) ;
-# return [ @straight ] if @straight ;
 
 my @surrounding ;
 
@@ -411,15 +361,24 @@ for my $node (@{$direction_to_surroundings[$direction]})
 
 if($self->{step})
 	{
-	# for (@surrounding)
-	# 	{
-	# 	my ($sx, $sy) = split(/\./, @{$_}[0]);
-	# 	# print "\e[" . ($sy + 1) . ";" . ($sx + 3) . "H\e[7;100;31m \e[m" ;
-	# 	print "\e[" . ($sy + 1) . ";" . ($sx + 3) . "H$_->[1]\e[m" ;
-	# 	$a = <STDIN> unless($self->{step} eq 'run') ;
-	# 	}
+	my $heat = "\e[7;049;91m" ; # red
 	
-	print "\e[" . ($y + 1) . ";" . ($x + 3) . "H\e[7;100;33m \e[m" ;
+	for ( exists $self->{surrounding}{$source} ? $self->{surrounding}{$source}[2] : 80)
+		{
+		$_ < 80 and $heat = "\e[7;049;91m" ; # red
+		$_ < 75 and $heat = "\e[7;049;33m" ; # orange
+		$_ < 70 and $heat = "\e[7;109;33m" ; # dim orange
+		$_ < 65 and $heat = "\e[7;049;93m" ; # yellow
+		$_ < 60 and $heat = "\e[7;109;93m" ; # dim yellow
+		$_ < 55 and $heat = "\e[7;049;94m" ; # blue
+		$_ < 50 and $heat = "\e[7;109;94m" ; # dim blue
+		$_ < 45 and $heat = "\e[7;049;95m" ; # cyan
+		$_ < 40 and $heat = "\e[7;109;95m" ; # dim cyan
+		$_ < 30 and $heat = "\e[7;109;96m" ; # dim
+		$_ < 20 and $heat = "\e[7;049;90m" ; # grey
+		}
+	
+	print "\e[" . ($y + 1) . ";" . ($x + 3) . "H$heat \e[m" ;
 	
 	$a = '' ;
 	unless($self->{step} eq 'run')
@@ -751,10 +710,10 @@ if($options->{info})
 	
 	printf "paths length/cost: $path_info, visited cells: %d/%d%%, scanned cells: %d/%d%%/%d%%, cells: %d/%d\n",
 			$g->get_visited_cells(),
-			(($g->get_visited_cells() * 100)/ $self->{accessible_nodes}),
+			(($g->get_visited_cells() * 100) / ($self->{accessible_nodes} || 1)),
 			$g->get_scanned_cells(),
-			(($g->get_scanned_cells() * 100)/ $self->{accessible_nodes}),
-			(($g->get_cached_cells() * 100)/ $g->get_scanned_cells()),
+			(($g->get_scanned_cells() * 100) / ($self->{accessible_nodes} || 1)),
+			(($g->get_cached_cells() * 100)  / ($g->get_scanned_cells() || 1)),
 			$self->{accessible_nodes},
 			$self->{nodes} ;
 	
