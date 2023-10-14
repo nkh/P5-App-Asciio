@@ -72,14 +72,16 @@ else
 	}
 
 $self->set
-	(
-	STRIPES => $stripes,
-	END_X => $real_end_x,
-	END_Y => $real_end_y,
+(
+	STRIPES    => $stripes,
+	END_X      => $real_end_x,
+	END_Y      => $real_end_y,
 	ARROW_TYPE => $arrow_type,
-	CACHE => undef,
-	EXTENTS => [$ex1, $ey1, $ex2, $ey2],
-	) ;
+	CACHE      => undef,
+	EXTENTS    => [$ex1, $ey1, $ex2, $ey2],
+	WIDTH      => $ex2 - $ex1,
+	HEIGHT     => $ey2 - $ey1,
+) ;
 }
 
 #-----------------------------------------------------------------------------
