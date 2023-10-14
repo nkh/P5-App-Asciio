@@ -17,6 +17,7 @@ use App::Asciio::Actions::Presentation ;
 use App::Asciio::Actions::Ruler ;
 use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
+use App::Asciio::Actions::ZBuffer ;
 
 
 #----------------------------------------------------------------------------------------------
@@ -205,6 +206,7 @@ register_action_handlers
 	'Dump selected elements'              => ['000-E', \&App::Asciio::Actions::Debug::dump_selected_elements           ],
 	'Display numbered objects'            => ['000-t', sub { $_[0]->{NUMBERED_OBJECTS} ^= 1 ; $_[0]->update_display() }],
 	'Test'                                => ['000-o', \&App::Asciio::Actions::Debug::test                             ],
+	'ZBuffer Test'                        => ['000-z', \&App::Asciio::Actions::ZBuffer::dump_crossings                 ],
 	},
 
 'commands leader'=> 

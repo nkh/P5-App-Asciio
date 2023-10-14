@@ -27,6 +27,7 @@ lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
 lib/App/Asciio/String.pm
 lib/App/Asciio/Undo.pm
+lib/App/Asciio/ZBuffer.pm
 
 lib/App/Asciio/Actions/Align.pm
 lib/App/Asciio/Actions/Asciio.pm
@@ -46,6 +47,7 @@ lib/App/Asciio/Actions/Presentation.pm
 lib/App/Asciio/Actions/Ruler.pm
 lib/App/Asciio/Actions/Shapes.pm
 lib/App/Asciio/Actions/Unsorted.pm
+lib/App/Asciio/Actions/ZBuffer.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/stripes/center_connect_box.pm

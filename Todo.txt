@@ -44,7 +44,7 @@ direction arrow
 			next direction, everything except favorite direction opposite
 
 documentation format and structure
-	makdown
+	markdown
 	directory structure reflecting contents
 
 	output
