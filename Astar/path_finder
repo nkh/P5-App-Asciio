@@ -754,34 +754,44 @@ my $options =
 
 GetOptions
 	(
-	'help'                    => \$options->{help},
-	'interactive|i'           => \$options->{interactive},
-	'map|m:s'                 => \$options->{map},
-	'heatmap_all|H'           => \$options->{heatmap_all},
-	'no_map_display'          => \$options->{no_map_display},
-	'route_glyph:s'           => \$options->{route_glyph},
-	'route_color:i'           => \$options->{route_color},
-	'stats'                   => \$options->{stats},
-	'json'                    => \$options->{json},
-	'info'                    => \$options->{info},
-	'step'                    => \$options->{step},
-	'pause|p'                 => \$options->{pause},
-	'display_scanning|ds'     => \$options->{display_scanning},
-	'obstruct'                => \$options->{obstruct},
-	'obstruction|o:s'         => $options->{obstruction},
-	'keep_clear|kc'           => \$options->{keep_clear},
-	'orthogonal_cost|oc:f'    => \$options->{orthogonal_cost},
-	'diagonal_cost|dc:f'      => \$options->{diagonal_cost},
-	'keep_clear_cost|kcc:f'   => \$options->{keep_clear_cost},
-	'keep_clear_additive|kca' => \$options->{keep_clear_additive},
-	'permeable_cost|pc:f'     => $options->{permeable_cost},
-	'XHK:f'                   => \$options->{XHK},
-	'YHK:f'                   => \$options->{YHK},
-	'HK:f'                    => \$options->{HK},
-	'HK_INC:f'                => \$options->{HK_INC},
-	'XHK_INC:f'               => \$options->{XHK_INC},
-	'YHK_INC:f'               => \$options->{YHK_INC},
+	'help'                       => \$options->{help},
+	'interactive|i'              => \$options->{interactive},
+	'map|m:s'                    => \$options->{map},
+	'heatmap_all|H'              => \$options->{heatmap_all},
+	'no_map_display'             => \$options->{no_map_display},
+	'route_glyph:s'              => \$options->{route_glyph},
+	'route_color:i'              => \$options->{route_color},
+	'stats'                      => \$options->{stats},
+	'json'                       => \$options->{json},
+	'info'                       => \$options->{info},
+	'step'                       => \$options->{step},
+	'pause|p'                    => \$options->{pause},
+	'display_scanning|ds'        => \$options->{display_scanning},
+	'obstruct'                   => \$options->{obstruct},
+	'obstruction|o:s'            => $options->{obstruction},
+	'keep_clear|kc'              => \$options->{keep_clear},
+	'orthogonal_cost|oc:f'       => \$options->{orthogonal_cost},
+	'diagonal_cost|dc:f'         => \$options->{diagonal_cost},
+	'keep_clear_cost|kcc:f'      => \$options->{keep_clear_cost},
+	'keep_clear_additive|kca'    => \$options->{keep_clear_additive},
+	'permeable_cost|pc:f'        => $options->{permeable_cost},
+	'permeable_cost_default|pcd' => \$options->{permeable_cost_default},
+	'XHK:f'                      => \$options->{XHK},
+	'YHK:f'                      => \$options->{YHK},
+	'HK:f'                       => \$options->{HK},
+	'HK_INC:f'                   => \$options->{HK_INC},
+	'XHK_INC:f'                  => \$options->{XHK_INC},
+	'YHK_INC:f'                  => \$options->{YHK_INC},
+	'directional_cost:f'         => \$options->{directional_cost},
 	) or die("Error in command line arguments\n");
+
+if($options->{permeable_cost_default})
+	{
+	for my $character (0 .. 9)
+		{
+		$options->{permeable_cost}{$character} //= $character ;
+		}
+	}
 
 help() if $options->{help} ;
 if($options->{interactive} && @ARGV != 2)
@@ -920,7 +930,7 @@ routing.
 
  keep_clear_cost = 40
 
- permeable_cost = 0-9
+ permeable_cost = 0-9 (if option --pcd is use otherwise OPAQUE)
 
 =head2 Starting with costs
 
@@ -1006,7 +1016,7 @@ As an example the default map has a vertical line consisting of 'I', you can
 assign a value to 'I' with --pc I=9.
 
 Adding  --pc 5=50 --pc 1=10 would also make those cells permeable, otherwise
-they will be opaque
+they will be opaque.
 
              1               .---.
              5  .---.        |   |
@@ -1016,6 +1026,11 @@ they will be opaque
              I   .---. '-8-'
              5   |   |
              1   '---'
+
+--permeable_cost_default
+
+0-9 are normally OPAQUE, use this option to assign class 0 a zero cost, class 1 a
+cost of 1, ... unless the class is already assigned to with --permeable_cost option.
 
 --obstruction:s
 
@@ -1048,6 +1063,7 @@ All options:
     diagonal_cost|dc:i
     keep_clear_cost|kcc:i
     permeable_cost|pc:i
+    permeable_cost_default|pcd
     XHK:f
     YHK:f
     HK:f
