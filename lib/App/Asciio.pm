@@ -417,17 +417,17 @@ The "goat" project (https://github.com/blampe/goat) must be installed.
 
 =over 4
 
- <b>                Align bottom
-
- <c>                Align center
+ <t>                Align top
 
  <l>                Align left
 
- <m>                Align middle
+ <b>                Align bottom
 
  <r>                Align right
 
- <t>                Align top
+ <v>                Align vertically
+
+ <h>                Align horizontally
 
 =back
 

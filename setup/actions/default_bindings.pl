@@ -156,13 +156,12 @@ register_action_handlers
 	{
 	SHORTCUTS => '00S-A',
 	
-	'Align left'                          => ['000-l', \&App::Asciio::Actions::Align::align, 'left'  ],
-	'Align center'                        => ['000-c', \&App::Asciio::Actions::Align::align, 'center'],
-	'Align right'                         => ['000-r', \&App::Asciio::Actions::Align::align, 'right' ],
-	'Align top'                           => ['000-t', \&App::Asciio::Actions::Align::align, 'top'   ],
-	'Align middle'                        => ['000-m', \&App::Asciio::Actions::Align::align, 'middle'],
-	'Align bottom'                        => ['000-b', \&App::Asciio::Actions::Align::align, 'bottom'],
-	# spread vertically	# spread horizontally # adjacent vert # adjacent hor # stack
+	'Align top'                           => ['000-t', \&App::Asciio::Actions::Align::align, 'top'       ],
+	'Align left'                          => ['000-l', \&App::Asciio::Actions::Align::align, 'left'      ],
+	'Align bottom'                        => ['000-b', \&App::Asciio::Actions::Align::align, 'bottom'    ],
+	'Align right'                         => ['000-r', \&App::Asciio::Actions::Align::align, 'right'     ],
+	'Align vertically'                    => ['000-v', \&App::Asciio::Actions::Align::align, 'vertical'  ],
+	'Align horizontally'                  => ['000-h', \&App::Asciio::Actions::Align::align, 'horizontal'],
 	},
 
 'change color/font leader'=> 

@@ -2,15 +2,15 @@
 
      «A» align group:
 
-         «b»                Align bottom
 
-         «c»                Align center
+	 «t»                Align top
 
          «l»                Align left
 
-         «m»                Align middle
+	 «b»                Align bottom
 
          «r»                Align right
 
-         «t»                Align top
+	 «h»                Align horizontally
 
+	 «v»                Align vertically
