@@ -1,10 +1,10 @@
 # GUI
 
-![GUI](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio.png)
+![GUI](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio.png)
 
 # TUI
 
-![TUI](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/tasciio.png)
+![TUI](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/tasciio.png)
 
 # SYNOPSIS
 
@@ -198,13 +198,13 @@ A set of whirl arrows connected to each other.
 
 ## Unicode example
 
-![Unicode](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_unicode.png)
+![Unicode](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio_unicode.png)
 
 ## Export to SVG example
 
-![SVG source](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg_source.png)
+![SVG source](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio_svg_source.png)
 
-![SVG](https://github.com/nkh/P5-App-Asciio/blob/master/screencasts/asciio_svg.png)
+![SVG](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio_svg.png)
 
 The "goat" project (https://github.com/blampe/goat) must be installed.
 

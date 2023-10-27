@@ -8,10 +8,11 @@ use Test::More 'no_plan';
 #-----------------------------------------------------------------------------
 
 use Readonly ;
+
 Readonly my $QUOTE_GLYPH => "'" ;
-Readonly my $DOT_GLYPH => '.' ;
+Readonly my $DOT_GLYPH   => '.' ;
 Readonly my $MINUS_GLYPH => '-' ;
-Readonly my $PIPE_GLYPH => '|' ;
+Readonly my $PIPE_GLYPH  => '|' ;
 
 for my $multi_wirl
 		(
@@ -90,24 +91,21 @@ for my $multi_wirl
 		
 		)
 		{
-		my ($expected_connection_character, $point_1, $point_2) = @{$multi_wirl} ;
-		my $origin = [10, 10] ; # offset the arrow as character with negative indexes don't ger rendered
+		my ($expected_connection_character, $point_1, $point_2) = $multi_wirl->@* ;
+		my ($origin_x, $origin_y) = (10, 10) ; # offset the arrow as character with negative indexes don't get rendered
 		
-		my $text = get_multi_wirl_connection_text($origin, $point_1, $point_2) ;
-		#~ print $text ;
-		my @buffer ;
-		my $line_index = 0 ;
+		my $text = get_multi_wirl_connection_text([$origin_x, $origin_y], $point_1, $point_2) ;
 		
+		my ($line_index, @buffer) = (0) ;
 		for my $line (split "\n", $text)
 			{
 			$buffer[$line_index++] = [split '', $line] ;
 			}
 		
-		my ($origin_x, $origin_y) = @{$origin} ;
 		my ($point_1_x, $point_1_y) = @{$point_1} ;
 		
 		is($buffer[$point_1_y + $origin_y][$point_1_x + $origin_x], $expected_connection_character)
-			or print "$point_1->[2], $point_2->[2]\n$text" ;
+			or diag "$point_1->[2], $point_2->[2]\n$text" ;
 		}
 
 #-----------------------------------------------------------------------------
@@ -136,7 +134,7 @@ my ($origin_x, $origin_y) = @{$origin} ;
 
 $asciio->add_elements($new_element) ;
 
-return $asciio->transform_elements_to_ascii_buffer() ;
+return join("\n", $asciio->transform_elements_to_ascii_array()) . "\n" ;
 }
 
 #-----------------------------------------------------------------------------

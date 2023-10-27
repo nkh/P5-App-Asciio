@@ -145,7 +145,7 @@ my ($origin_x, $origin_y) = @{$origin} ;
 $asciio->add_elements($new_element) ;
 
 return 
-	$asciio->transform_elements_to_ascii_buffer(),
+	join("\n", $asciio->transform_elements_to_ascii_array()) . "\n",
 	$new_element->{ARROWS}[0]{DIRECTION},
 	$new_element->{ARROWS}[1]{DIRECTION},
 	;

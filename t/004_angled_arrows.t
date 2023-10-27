@@ -706,16 +706,6 @@ EOR
 					DISPLAY_ADDRESS => 0,
 					USE_ASCII => 0 ,
 					) ;
-
-				#~ diag DumpTree 
-					#~ (
-					#~ $asciio,
-					#~ 'asciio:',
-					#~ QUOTE_VALUES => 1,
-					#~ DISPLAY_ADDRESS => 1,
-					#~ USE_ASCII => 0 ,
-					#~ ) ;
-					
 				last ;
 				}
 		}
@@ -759,7 +749,12 @@ my $new_element = new App::Asciio::stripes::angled_arrow
 
 $asciio->add_elements($new_element) ;
 
-return($asciio->transform_elements_to_ascii_buffer(), $asciio, $new_element) ;
+return
+	(
+	join("\n", $asciio->transform_elements_to_ascii_array()) . "\n",
+	$asciio,
+	$new_element
+	) ;
 }
 
 
