@@ -676,6 +676,7 @@ EOR
 		)
 		{
 		my ($text, $asciio, $new_element) = get_angled_arrow_text($angled_arrow_test) ;
+
 		is
 			(
 			"\n$text", "\n$angled_arrow_test->{RENDERING}",
@@ -723,23 +724,23 @@ $asciio->set_character_size(8, 16) ;
 
 my $new_element = new App::Asciio::stripes::angled_arrow
 					({
-					GLYPHS => 
+					ARROW_TYPE => 
 						#name: => [$start, $body, $connection, $body_2, $end]
-						{
-						'origin' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'up'=> ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'down' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'left' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'upleft' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'leftup' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'downleft' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'leftdown' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'right' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'upright' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'rightup' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'downright' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						'rightdown' => ['s', '1', 'c', '2', 'e', '|', 'C'],
-						},
+						[
+							[ 'origin'     => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'up'         => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'down'       => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'left'       => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'up-left'    => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'left-up'    => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'down-left'  => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'left-down'  => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'right'      => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'up-right'   => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'right-up'   => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'down-right' => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+							[ 'right-down' => 's', '1', 'c', '2', 'e', '|', 'C', 1 ],
+						],
 					
 					%{$angled_arrow_definition},
 					RESIZABLE => 1,

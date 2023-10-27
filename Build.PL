@@ -232,32 +232,7 @@ sub ACTION_dist
 {
 my $self = shift;
 
-if($ENV{'App_Asciio_USE_GIT_VERSION_FOR_DIST'})
-	{
-	my $have_git = $self->do_system('git --version');
-	
-	if($have_git)
-		{
-		print `git status -a`;
-		
-		if($self->do_system('git log --decorate > git_Changes'))
-			{
-			use File::Copy;
-			move('git_Changes', 'Changes') ;
-			}
-		else
-			{
-			print "Couldn't get git log, 'Changes' will not be generated from git log!\n" ;
-			}
-		}
-	else
-		{
-		print "git not found, 'Changes' will not be generated from git log!\n" ;
-		}
-	}
-
 $self->SUPER::ACTION_test() ;
-#~ $self->ACTION_author_test() ;
 
 $self->SUPER::ACTION_dist();
 };
