@@ -1,6 +1,6 @@
 constraints
 	alignement
-	arrows not over lapping
+	arrows not overlapping
 
 
 	depth of arrow for overlapping arrow

@@ -30,6 +30,7 @@ lib/App/Asciio/Undo.pm
 
 lib/App/Asciio/Actions/Align.pm
 lib/App/Asciio/Actions/Asciio.pm
+lib/App/Asciio/Actions/Arrow.pm
 lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Clone.pm
@@ -261,30 +262,35 @@ my $build = $class->new
 	
 	requires => 
 		{
-		'Readonly'         => 0,
-		'Data::Compare'    => 0,
-		'Sub::Exporter'     => 0,
-		'Data::TreeDumper' => 0,
-		'version'    => 0.50,
-		
-		'Glib' => 0,
-		'Gtk3' => 0,
-		# 'Gtk3::Gdk::Keysyms' => 0,
-		
-		'Sereal' => 0,
-		'Compress::Bzip2' => 0,
-		'Cwd' => 0,
-		'Eval::Context' => 0,
-		'File::Basename' => 0,
-		'File::Spec' => 0,
-		'List::MoreUtils' => 0,
-		'List::Util' => 0,
-		'MIME::Base64' => 0,
-		'File::Copy' => 0,
-		'File::Slurp' => 0,
-		'Algorithm::Diff' => 0,
-		'Clone' => 0,
-		'Module::Util' =>0,
+		'Clone'                => 0,
+		'Compress::Bzip2'      => 0,
+		'Cwd'                  => 0,
+		'Data::Compare'        => 0,
+		'Data::TreeDumper'     => 0,
+		'Eval::Context'        => 0,
+		'ExtUtils::PkgConfig'  => 0,
+		'File::Basename'       => 0,
+		'File::Copy'           => 0,
+		'File::HomeDir'        => 0,
+		'File::Slurp'          => 0,
+		'File::Spec'           => 0,
+		'Glib'                 => 0,
+		'Gtk3'                 => 0,
+		'IO::Prompter'         => 0,
+		'List::MoreUtils'      => 0,
+		'List::Util'           => 0,
+		'MIME::Base64'         => 0,
+		'Module::Build::Compat' => 0,
+		'Module::Util'         => 0,
+		'Number::Compare'      => 0,
+		'Readonly'             => 0,
+		'Sereal'               => 0,
+		'Sub::Exporter'        => 0,
+		'Term::ReadKey'        => 0,
+		'Term::Size::Any'      => 0,
+		'Term::TermKey'        => 0,
+		'Test::Block'          => 0,
+		'version'              => 0.50,
 		},
 		
 	pm_files     => \%all_modules,

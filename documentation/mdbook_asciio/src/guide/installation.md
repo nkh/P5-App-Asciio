@@ -1,7 +1,9 @@
 # Installation
 
 Asciio is normally packaged for distributions, if you are reading this we are
-working on the  GTK3 port and you'll need to install manually.
+working on the GTK3 port and you'll need to install manually.
+
+## Alternative *1*
 
 ```bash
     sudo apt install libeval-context-perl libdirectory-scratch-structured-perl libfile-homedir-perl libgtk3-perl
@@ -17,6 +19,15 @@ working on the  GTK3 port and you'll need to install manually.
     perl Build.PL
     ./Build installdeps 
     ./Build install
+```
+
+## Alternative *2*
+
+```bash
+    sudo apt install libgtk3-perl package-config litermkey-dev make gcc
+
+    cpan install App::Asciio
+
 ```
 
 In the windows environment, you can use asciio through WSL or cygwin.
