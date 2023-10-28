@@ -330,7 +330,11 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-my $action = 'move' ;
+return '' if ($self->{DISABLE_ARROW_CONNECTOR} and 
+	$x == $self->{POINTS_OFFSETS}[0][0] and
+	$y == $self->{POINTS_OFFSETS}[0][1]) ;
+
+my $action ;
 
 my $arrow_index = 0 ;
 for my $arrow(@{$self->{ARROWS}})
@@ -358,7 +362,13 @@ for my $arrow(@{$self->{ARROWS}})
 	$arrow_index++ ;
 	}
 
-return $action ;
+if ($self->{DISABLE_ARROW_CONNECTOR})
+	{
+	return '' if ($x == $self->{POINTS_OFFSETS}[0][0] and $y == $self->{POINTS_OFFSETS}[0][1]) ;
+	return '' unless defined $action ;
+	}
+
+return $action // 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -415,6 +425,13 @@ for my $arrow(@{$self->{ARROWS}})
 }
 
 #-----------------------------------------------------------------------------
+
+sub disable_arrow_connector
+{
+my ($self) = @_ ;
+
+$self->{DISABLE_ARROW_CONNECTOR} ^= 1 ;
+}
 
 sub get_connector_points
 {

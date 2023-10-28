@@ -1,3 +1,11 @@
+
+test ascioo and tasciio in vm
+
+
+non disconnectable connectors
+
+path using interval tree
+
 constraints
 	alignement
 	arrows not over lapping
