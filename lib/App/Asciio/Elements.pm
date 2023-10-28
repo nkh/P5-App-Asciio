@@ -417,7 +417,7 @@ sub delete_elements
 {
 my($self, @elements) = @_ ;
 
-my %elements_to_delete = map {$_, 1}  @elements ;
+my %elements_to_delete = map {$_, 1} grep { defined $_ } @elements ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{

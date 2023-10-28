@@ -345,6 +345,8 @@ register_action_handlers
 	'previous slide'                     => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
 	'next slide'                         => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
 	'first slide'                        => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
+	'show previous message'              => ['000-m', \&App::Asciio::Actions::Presentation::show_previous_message],
+	'show next message'                  => ['00S-M', \&App::Asciio::Actions::Presentation::show_next_message],
 	},
 
 'move arrow ends' =>
