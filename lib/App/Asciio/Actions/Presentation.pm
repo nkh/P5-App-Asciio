@@ -1,6 +1,9 @@
 
 package App::Asciio::Actions::Presentation ;
 
+use strict ; use warnings ;
+use File::Slurp ;
+
 #----------------------------------------------------------------------------------------------
 
 my ($slides, $current_slide) ;
@@ -73,6 +76,51 @@ if($slides && $current_slide != 0)
 	$self->deselect_all_elements() ;
 	$self->update_display() ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+my $message_element ;
+my $counter = 0 ;
+
+#----------------------------------------------------------------------------------------------
+
+sub show_previous_message
+{
+my ($self) = @_ ;
+
+$counter-- ;
+show_message($self, $counter) ;
+}
+
+sub show_next_message
+{
+my ($self) = @_ ;
+
+$counter++ ;
+show_message($self, $counter) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub show_message
+{
+my ($asciio, $counter) = @_ ;
+
+$asciio->delete_elements($message_element) ;
+
+if(defined $ENV{ASCIIO_MESSAGES} && -d $ENV{ASCIIO_MESSAGES} && -f "$ENV{ASCIIO_MESSAGES}/$counter")
+	{
+	my @lines = read_file "$ENV{ASCIIO_MESSAGES}/$counter" ;
+	
+	chomp(my $title = $lines[0]) ;
+	my $text = join '', grep { defined $_ } @lines[1 .. @lines] ;
+	
+	$message_element = $asciio->add_new_element_named('Asciio/box', 0, 0) ;
+	$message_element->set_text($title, $text) ;
+	}
+
+$asciio->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
