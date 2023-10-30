@@ -252,12 +252,12 @@ my $build = $class->new
 	license => 'perl',
 	build_requires => 
 		{
-		'Text::Diff' => 0,
-		'Test::Exception' => 0,
-		'Test::NoWarnings' => 0,
-		'Test::Warn' => 0,
 		'Directory::Scratch::Structured' => 0,
-		'Hash::Slice' => 0,
+		'Hash::Slice'                    => 0,
+		'Test::Exception'                => 0,
+		'Test::NoWarnings'               => 0,
+		'Test::Warn'                     => 0,
+		'Text::Diff'                     => 0,
 		},
 	
 	requires => 
@@ -294,10 +294,9 @@ my $build = $class->new
 		},
 		
 	pm_files     => \%all_modules,
-	#~ autosplit    => \@split_modules,
 	
 	script_files => ['script/asciio', 'script/tasciio', 'script/asciio_to_text', 'script/A', 'script/T',],
-	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@khemir.net>',
+	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@gmail.com>',
 	dist_abstract => 'App::Asciio - ASCII diagramming',
 	);
 	

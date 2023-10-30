@@ -34,12 +34,12 @@ register_action_handlers_remove_old_shortcuts
 	'Switch cross mode'                                      => ['A-x'],
 	'Select next element'                                    => [ 'n' ],
 	'Select previous element'                                => [ 'N' ],
-	'Select next element move mouse'                         => [ 'Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1] ],
-	'Select previous element move mouse'                     => [ 'S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1] ],
+	'Select next element move mouse'                         => [ 'Tab',   \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 1, 0] ],
+	'Select previous element move mouse'                     => [ 'S-Tab', \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 1, 0] ],
 	'Select element by id'                                   => [ 'not_set-Select element by id' ],
 	'Select next non arrow'                                  => [ 'C-n' ],
 	'Select previous non arrow'                              => [ '~Select previous non arrow' ],
-	'Select next arrow'                                      => [ 'C-m' ],
+	'Select next arrow'                                      => [ '~Select next non arrow' ],
 	'Select previous arrow'                                  => [ '~Select previous arrow' ],
 	
 	# sizing
