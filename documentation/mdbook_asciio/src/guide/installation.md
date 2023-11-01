@@ -6,9 +6,19 @@ working on the GTK3 port and you'll need to install manually.
 ## Alternative *1*
 
 ```bash
-    sudo apt install libeval-context-perl libdirectory-scratch-structured-perl libfile-homedir-perl libgtk3-perl
-    sudo apt install libterm-size-any-perl libio-prompter-perl libterm-termkey-perl
-    
+    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+
+    cpan install Data::TreeDumper Data::TreeDumper::Renderer::GTK App::Asciio
+
+```
+
+## Alternative *2*
+
+```bash
+    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+
+    sudo sudo apt install make gcc
+
     git clone https://github.com/nkh/P5-Data-TreeDumper-Renderer-GTK
     cd P5-Data-TreeDumper-Renderer-GTK
     perl Makefile.pl
@@ -19,14 +29,6 @@ working on the GTK3 port and you'll need to install manually.
     perl Build.PL
     ./Build installdeps 
     ./Build install
-```
-
-## Alternative *2*
-
-```bash
-    sudo apt install libgtk3-perl package-config litermkey-dev make gcc
-
-    cpan install App::Asciio
 
 ```
 

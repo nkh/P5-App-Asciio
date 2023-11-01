@@ -1,3 +1,7 @@
+buildah run $c -- apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+
+latest Data::TreeDumper
+
 constraints
 	alignement
 	arrows not overlapping
