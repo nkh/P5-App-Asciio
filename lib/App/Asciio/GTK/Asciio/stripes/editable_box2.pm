@@ -11,6 +11,7 @@ use warnings;
 use Pango ;
 use Glib qw(TRUE FALSE);
 use List::Util qw(max) ;
+use File::Slurp ;
 
 #-----------------------------------------------------------------------------
 
@@ -26,19 +27,32 @@ sub display_box_edit_dialog
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) = @_ ;
 
+my ($new_text, $new_title) ;
+
 if($asciio->{EDIT_TEXT_INLINE} && defined $X && defined $Y)
 	{
-	return $self->display_box_edit_dialog_for_mini_mode_with_title($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) ;
+	($new_text, $new_title) = $self->display_box_edit_dialog_inline_mode($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) ;
 	}
 else
 	{
-	return $self->display_box_edit_dialog_for_normal_mode($title, $text, $asciio) ;
+	($new_text, $new_title) = $self->display_box_edit_dialog_normal_mode($title, $text, $asciio) ;
 	}
+
+$self->save_on_edit($new_text, $new_title) ;
+
+return($new_text, $new_title) ;
+}
+
+sub save_on_edit
+{
+my ($self, $new_text, $new_title) = @_ ;
+
+write_file($self->{SAVE_ON_EDIT}, {binmode => ':utf8'}, "$new_title$new_text") if exists $self->{SAVE_ON_EDIT} ;
 }
 
 #-----------------------------------------------------------------------------
 
-sub display_box_edit_dialog_for_normal_mode
+sub display_box_edit_dialog_normal_mode
 {
 my ($self, $title, $text, $asciio) = @_ ;
 
@@ -108,7 +122,7 @@ return($new_text, $new_title) ;
 
 #-----------------------------------------------------------------------------
 
-sub display_box_edit_dialog_for_mini_mode_with_title
+sub display_box_edit_dialog_inline_mode
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) = @_ ;
 

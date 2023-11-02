@@ -59,9 +59,11 @@ if(-e $help_path)
 						({
 						TEXT_ONLY => $help_text,
 						TITLE => '',
-						EDITABLE => 0,
+						EDITABLE => 1,
 						RESIZABLE => 0,
 						}) ;
+	
+	$new_element->{SAVE_ON_EDIT} = $help_path ;
 	
 	@$new_element{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 0) ;
 	$self->add_elements($new_element) ;
