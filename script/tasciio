@@ -54,10 +54,10 @@ $asciio->run_script($asciio_config->{SCRIPT}) ;
 
 #--------------------------------------------------------------------------
 
-use Term::ReadKey;
-use Term::TermKey qw(FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD);
- 
-my $tk = Term::TermKey->new(\*STDIN);
+use Term::ReadKey ;
+use Term::TermKey qw(FLAG_UTF8 RES_EOF FORMAT_VIM FORMAT_LONGMOD MOUSE_PRESS MOUSE_DRAG MOUSE_RELEASE) ;
+
+my $tk = Term::TermKey->new(\*STDIN) ;
 $asciio->{CACHE}{TK} = $tk ;
  
 # ensure perl and libtermkey agree on Unicode handling
@@ -75,21 +75,28 @@ while (1)
 		{
 		my ($ev, $button, $line, $col) = $tk->interpret_mouse( $key );
 		
-		if ($ev == 1 && $button == 1)
-			{
-			$asciio->run_actions_by_name("Mouse left-click") ;
-			}
+		my $modifiers = '' ;
 		
-		if ($ev == 3)
-			{
-			@$asciio{'MOUSE_X', 'MOUSE_Y'} = ($col - 1, $line - 1) ;
-			$asciio->update_display() if $asciio->{MOUSE_TOGGLE} ;
-			}
+		$modifiers .= $key->modifier_ctrl ? 'C' : '0' ;
+		$modifiers .= $key->modifier_alt ? 'A' : '0' ;
+		$modifiers .= '0' ; # shift blocks mouse events
+		
+		$asciio->motion_notify_event($modifiers, $button, $col - 1, $line - 1) if ($ev == 3) ; # 3 ?
+		$asciio->motion_dragging_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_DRAG) ;
+		$asciio->button_press_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_PRESS) ;
+		$asciio->button_release_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_RELEASE) ;
+		# $asciio->button_scroll_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_???) ;
+		
 		}
 	else
 		{
+		# my $modifier = '' ;
+
+		# $modifier .= $key->modifier_ctrl ? 'C' : '0' ;
+		# $modifier .= '0' ; # shift blocks mouse events
+		# $modifier .= $key->modifier_alt ? 'A' : '0' ;
+
 		my $key_name = $tk->format_key($key, 0) ;
-		
 		$asciio->key_press_event($key_name, '') ;
 		}
 	}

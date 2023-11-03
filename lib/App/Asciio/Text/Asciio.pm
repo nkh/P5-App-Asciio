@@ -248,91 +248,88 @@ my $connection_point_rendering = "o" ;
 my $extra_point_color = color($self->get_color('extra_point'));
 my $extra_point_rendering = "#" ;
 
-if ($self->{MOUSE_TOGGLE})
+for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
 	{
-	for my $element (grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}})
+	for my $connector ($element->get_connector_points())
 		{
-		for my $connector ($element->get_connector_points())
-			{
-			next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
-			
-			my $column = $element->{X} + $connector->{X} + 1 ;
-			my $line = $connector->{Y} + $element->{Y} + 1 ;
-			
-			unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
-				{
-				$text_array->[$line][$column] = [$connector_point_rendering, $connector_point_color] ;
-				}
-			}
-			
-		for my $extra_point ($element->get_extra_points())
-			{
-			my $column = $extra_point->{X}  + $element->{X} + 1 ;
-			my $line = $extra_point->{Y} + $element->{Y} + 1 ;
-			
-			unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
-				{
-				$text_array->[$line][$column] = [$extra_point_rendering, $extra_point_color] ;
-				}
-			}
+		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
 		
-		if($self->{DRAW_CONNECTION_POINTS})
+		my $column = $element->{X} + $connector->{X} + 1 ;
+		my $line = $connector->{Y} + $element->{Y} + 1 ;
+		
+		unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
 			{
-			for my $connection_point ($element->get_connection_points())
-				{
-				next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
-				
-				my $column = $connection_point->{X} + $element->{X} + 1 ;
-				my $line = $connection_point->{Y} + $element->{Y} + 1 ;
-				
-				unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
-					{
-					$text_array->[$line][$column] = [$connection_point_rendering, $connection_point_color] ;
-					}
-				}
+			$text_array->[$line][$column] = [$connector_point_rendering, $connector_point_color] ;
+			}
+		}
+		
+	for my $extra_point ($element->get_extra_points())
+		{
+		my $column = $extra_point->{X}  + $element->{X} + 1 ;
+		my $line = $extra_point->{Y} + $element->{Y} + 1 ;
+		
+		unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+			{
+			$text_array->[$line][$column] = [$extra_point_rendering, $extra_point_color] ;
 			}
 		}
 	
-	for my $connection (@{$self->{CONNECTIONS}})
+	if($self->{DRAW_CONNECTION_POINTS})
 		{
-		my $draw_connection ;
-		my $connector  ;
-		
-		if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
+		for my $connection_point ($element->get_connection_points())
 			{
-			$draw_connection++ ;
+			next if exists $connected_connections{$element}{$connection_point->{X}}{$connection_point->{Y}} ;
 			
-			$connector = $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
-			$connected_connectors{$connection->{CONNECTED}}{$connector->{X}}{$connector->{Y}}++ ;
-			}
-			
-		if($self->is_over_element($connection->{CONNECTEE}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
-			{
-			$draw_connection++ ;
-			
-			my $connectee_connection = $connection->{CONNECTEE}->get_named_connection($connection->{CONNECTION}{NAME}) ;
-			
-			if($connectee_connection)
-				{
-				$connected_connectors{$connection->{CONNECTEE}}{$connectee_connection->{X}}{$connectee_connection->{Y}}++ ;
-				}
-			}
-			
-		if($draw_connection)
-			{
-			$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
-			
-			my $connection_color = color($self->get_color('connection'));
-			my $connection_char = $connector->{CHAR} // 'c' ;
-			my $connection_rendering = "$connection_char" ;
-			
-			my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
-			my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
+			my $column = $connection_point->{X} + $element->{X} + 1 ;
+			my $line = $connection_point->{Y} + $element->{Y} + 1 ;
 			
 			unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
 				{
-				$text_array->[$line][$column] = [$connection_rendering, $connection_color] ;
+				$text_array->[$line][$column] = [$connection_point_rendering, $connection_point_color] ;
 				}
+			}
+		}
+	}
+
+for my $connection (@{$self->{CONNECTIONS}})
+	{
+	my $draw_connection ;
+	my $connector  ;
+	
+	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
+		{
+		$draw_connection++ ;
+		
+		$connector = $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
+		$connected_connectors{$connection->{CONNECTED}}{$connector->{X}}{$connector->{Y}}++ ;
+		}
+		
+	if($self->is_over_element($connection->{CONNECTEE}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
+		{
+		$draw_connection++ ;
+		
+		my $connectee_connection = $connection->{CONNECTEE}->get_named_connection($connection->{CONNECTION}{NAME}) ;
+		
+		if($connectee_connection)
+			{
+			$connected_connectors{$connection->{CONNECTEE}}{$connectee_connection->{X}}{$connectee_connection->{Y}}++ ;
+			}
+		}
+		
+	if($draw_connection)
+		{
+		$connector ||= $connection->{CONNECTED}->get_named_connection($connection->{CONNECTOR}{NAME}) ;
+		
+		my $connection_color = color($self->get_color('connection'));
+		my $connection_char = $connector->{CHAR} // 'c' ;
+		my $connection_rendering = "$connection_char" ;
+		
+		my $column = $connector->{X} + $connection->{CONNECTED}{X} + 1 ;
+		my $line = $connector->{Y}  + $connection->{CONNECTED}{Y} + 1 ;
+		
+		unless($column < 1 || $column > $COLS || $line < 1 || $line > $ROWS)
+			{
+			$text_array->[$line][$column] = [$connection_rendering, $connection_color] ;
 			}
 		}
 	}
@@ -446,24 +443,74 @@ $self->SUPER::key_press_event
 
 #-----------------------------------------------------------------------------
 
-sub create_asciio_event
+sub button_press_event
 {
-my ($self, $event) = @_ ;
+my ($self, $modifiers, $button, $x, $y)= @_;
 
-my $event_type ;
-
-my $asciio_event =
-	{
+$self->SUPER::button_press_event
+	({
 	TIME        => 0,
-	TYPE        => "event_type",
+	TYPE        => "button-press",
 	STATE       => '',
-	MODIFIERS   => get_key_modifiers($event),
-	BUTTON      => -1,
+	MODIFIERS   => "$modifiers-",
+	BUTTON      => $button,
 	KEY_NAME    => -1,
-	COORDINATES => [-1, -1],
-	} ;
+	COORDINATES => [$x, $y],
+	}) ;
+}
 
-return $asciio_event ;
+#-----------------------------------------------------------------------------
+
+sub button_release_event
+{
+my ($self, $modifiers, $button, $x, $y)= @_;
+
+$self->SUPER::button_release_event
+	({
+	TIME        => 0,
+	TYPE        => "button-release",
+	STATE       => '',
+	MODIFIERS   => "$modifiers-",
+	BUTTON      => $button,
+	KEY_NAME    => -1,
+	COORDINATES => [$x, $y],
+	}) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub motion_notify_event 
+{
+my ($self, $modifiers, $button, $x, $y)= @_;
+
+$self->SUPER::motion_notify_event
+	({
+	TIME        => 0,
+	TYPE        => "motion-notify",
+	STATE       => '',
+	MODIFIERS   => "$modifiers-",
+	BUTTON      => $button,
+	KEY_NAME    => -1,
+	COORDINATES => [$x, $y],
+	}) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub motion_dragging_event 
+{
+my ($self, $modifiers, $button, $x, $y)= @_;
+
+$self->SUPER::motion_notify_event
+	({
+	TIME        => 0,
+	TYPE        => "motion-notify",
+	STATE       => "dragging-button$button",
+	MODIFIERS   => "$modifiers-",
+	BUTTON      => $button,
+	KEY_NAME    => -1,
+	COORDINATES => [$x, $y],
+	}) ;
 }
 
 #-----------------------------------------------------------------------------

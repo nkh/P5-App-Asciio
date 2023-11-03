@@ -794,7 +794,7 @@ if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
    return ;
    }
 
-my $button = $event->{BUTTON} ;
+# my $button = $event->{BUTTON} ;
 my($x, $y) = @{$event->{COORDINATES}} ;
 my $modifiers = $event->{MODIFIERS} ; 
 
@@ -810,7 +810,6 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 		($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
 		}
 	}
-
 }
 
 #-----------------------------------------------------------------------------

@@ -67,14 +67,14 @@ register_action_handlers_remove_old_shortcuts
 	
 	'Mouse emulation selection flip'                         => [ '~Mouse emulation selection flip' ], # C-ö doesn't work 
 	'Mouse emulation expand selection'                       => [ '~Mouse emulation exapand selection' ],
-	'Mouse left-click'                                       => [ '~Mouse left-click' ],
-	'Mouse motion'                                           => [ '~Mouse motion' ],
-	'Mouse motion 2'                                         => [ '~Mouse motion 2' ],
-	'Mouse right-click'                                      => [ '~Mouse right-click' ],
-	'Mouse expand selection'                                 => [ '~Mouse expand selection' ],
-	'Mouse selection flip'                                   => [ '~Mouse selection flip' ],
+	# 'Mouse left-click'                                       => [ '~Mouse left-click' ],
+	# 'Mouse motion'                                           => [ '~Mouse motion' ],
+	# 'Mouse motion 2'                                         => [ '~Mouse motion 2' ],
+	# 'Mouse right-click'                                      => [ '~Mouse right-click' ],
+	# 'Mouse expand selection'                                 => [ '~Mouse expand selection' ],
+	# 'Mouse selection flip'                                   => [ '~Mouse selection flip' ],
 
-	'Mouse quick link'                                       => [ ['A-ö', '.'] ],
+	# 'Mouse quick link'                                       => [ ['A-ö', '.'] ],
 	'Mouse quick link git'                                   => [ ['A-ä', ';'] ],
 	'Mouse duplicate elements'                               => [ ['A-Ö', ','] ],
 
