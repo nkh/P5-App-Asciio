@@ -36,7 +36,9 @@ In the windows environment, you can use asciio through WSL or cygwin.
 
 ## WSL
 
-The use of WSL is not much different from the Linux environment.
+The use of WSL is not much different from the Linux environment.However, there are some things that need attention. This link talks about how to connect to the WSL environment and execute GUI programs through remote connections under Windows.
+
+[remote_wsl_use_gui_app](https://github.com/qindapao/linux_app_use_in_windows/blob/main/remote_wsl_use_gui_app.md)
 
 ## Cygwin
 

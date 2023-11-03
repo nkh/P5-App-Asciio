@@ -780,10 +780,15 @@ sub create_mouse_scroll_event
 {
 my ($self, $event) = @_ ;
 
+# windows => GDK_SCROLL_UP GDK_SCROLL_DOWN
+# linux   => GDK_SCROLL_SMOOTH
+
 my $asciio_mouse_scroll_event = 
 	{
 	MODIFIERS => get_key_modifiers($event),
-	DIRECTION => 'scroll-' . $event->direction,
+	DIRECTION => 'scroll-' . ($event->direction ne 'smooth'
+									? $event->direction
+									: ($event->get_scroll_deltas())[1] < 0 ? 'up' : 'down'),
 	} ;
 
 return $asciio_mouse_scroll_event ;
