@@ -1,46 +1,37 @@
 # Installation
 
-Asciio is normally packaged for distributions, if you are reading this we are
-working on the GTK3 port and you'll need to install manually.
+We're working on having packages pre-build for different distributions
 
-## Alternative *1*
+## Ubuntu (probably other bian derived too)
 
 ```bash
-    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+    apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl 
 
-    cpan install Data::TreeDumper Data::TreeDumper::Renderer::GTK App::Asciio
+    cpan install Data::TreeDumper::Renderer::GTK App::Asciio
 
 ```
 
-## Alternative *2*
+## container
 
-```bash
-    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+Using the instructions above build an asciio image ; the image will be large (~700 MB) as it contains gtk and co.
 
-    sudo sudo apt install make gcc
-
-    git clone https://github.com/nkh/P5-Data-TreeDumper-Renderer-GTK
-    cd P5-Data-TreeDumper-Renderer-GTK
-    perl Makefile.pl
-    make
-    
-    git clone https://github.com/nkh/P5-App-Asciio
-    cd P5-App-Asciio
-    perl Build.PL
-    ./Build installdeps 
-    ./Build install
+You can then run the asciio or tasciio like this:
 
 ```
+podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/xxx" asciio [asciio|tasciio]
+```
+
+## Windows
 
 In the windows environment, you can use asciio through WSL or cygwin.
 
-## WSL
+### WSL
 
 The use of WSL is not much different from the Linux environment.However, there are some things that need attention. This link talks about how to connect to the WSL environment and execute GUI programs through remote connections under Windows.
 
 [remote_wsl_use_gui_app](https://github.com/qindapao/linux_app_use_in_windows/blob/main/remote_wsl_use_gui_app.md)
 
-## Cygwin
+### Cygwin
 
 - First install [Cygwin](https://www.cygwin.com/).
 - Make sure the following components are installed correctly
@@ -67,9 +58,6 @@ export DISPLAY=:0.0
 asciio
 ```
 
-
-
-
 # Running asciio
 
     $> asciio [file.asciio] # GUI application using Gtk3
@@ -78,18 +66,6 @@ asciio
 
     $> asciio_to_text file.asciio # converts asciio files to ASCII
 
-# Previous version docker image
-
-    There are docker images made by third parties, use a search engine for
-    the latest.
-
-    https://hub.docker.com/r/rodolfoap/asciio
-
-    example images:
-
-    https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb
-
-    https://github.com/rodolfoap
 
 # Platforms
 

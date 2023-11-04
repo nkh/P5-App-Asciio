@@ -254,22 +254,16 @@ An old video that shows basic usage:
 
 # INSTALL
 
-Normally Asciio is packaged in distribution but during the GTK3 port you'll
-need to install manually.
+## Ubuntu / Debian
 
-    sudo apt install libeval-context-perl libdirectory-scratch-structured-perl libfile-homedir-perl libgtk3-perl
-    sudo apt install libterm-size-any-perl libio-prompter-perl libterm-termkey-perl
-    
-    git clone https://github.com/nkh/P5-Data-TreeDumper-Renderer-GTK
-    cd P5-Data-TreeDumper-Renderer-GTK
-    perl Makefile.pl
-    make
-    
-    git clone https://github.com/nkh/P5-App-Asciio
-    cd P5-App-Asciio
-    perl Build.PL
-    ./Build installdeps 
-    ./Build install
+```bash
+    apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl 
+
+    cpan install Data::TreeDumper::Renderer::GTK App::Asciio
+
+```
+
+Read *documentation/mdbook_asciio/src/guide/installation.md* for more information.
 
 # AUTHORS
 
