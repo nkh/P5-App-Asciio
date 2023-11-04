@@ -1,0 +1,2 @@
+#!/bin/bash
+fd -t f | rg -v swp | sed 's/^\.\///' | grep -v -x -f <(git ls-files)

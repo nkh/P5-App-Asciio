@@ -1,0 +1,74 @@
+<svg xmlns='http://www.w3.org/2000/svg' version='1.1' height='217' width='544' font-family='Menlo,Lucida Console,monospace'>
+<style type="text/css">
+svg {
+   color: #000000;
+}
+@media (prefers-color-scheme: dark) {
+   svg {
+      color: #FFFFFF;
+   }
+}
+</style>
+<g transform='translate(8,16)'>
+<path d='M 96,0 L 152,0' fill='none' stroke='currentColor'></path>
+<path d='M 152,0 L 208,0' fill='none' stroke='currentColor'></path>
+<path d='M 208,0 L 264,0' fill='none' stroke='currentColor'></path>
+<path d='M 264,0 L 400,0' fill='none' stroke='currentColor'></path>
+<path d='M 16,48 L 72,48' fill='none' stroke='currentColor'></path>
+<path d='M 72,48 L 152,48' fill='none' stroke='currentColor'></path>
+<path d='M 152,48 L 208,48' fill='none' stroke='currentColor'></path>
+<path d='M 208,48 L 264,48' fill='none' stroke='currentColor'></path>
+<path d='M 264,48 L 304,48' fill='none' stroke='currentColor'></path>
+<path d='M 96,96 L 152,96' fill='none' stroke='currentColor'></path>
+<path d='M 152,96 L 208,96' fill='none' stroke='currentColor'></path>
+<path d='M 208,96 L 264,96' fill='none' stroke='currentColor'></path>
+<path d='M 264,96 L 328,96' fill='none' stroke='currentColor'></path>
+<path d='M 328,96 L 400,96' fill='none' stroke='currentColor'></path>
+<path d='M 400,96 L 448,96' fill='none' stroke='currentColor'></path>
+<path d='M 448,96 L 528,96' fill='none' stroke='currentColor'></path>
+<path d='M 232,144 L 264,144' fill='none' stroke='currentColor'></path>
+<path d='M 264,144 L 328,144' fill='none' stroke='currentColor'></path>
+<path d='M 328,144 L 448,144' fill='none' stroke='currentColor'></path>
+<path d='M 448,144 L 504,144' fill='none' stroke='currentColor'></path>
+<path d='M 288,192 L 328,192' fill='none' stroke='currentColor'></path>
+<path d='M 328,192 L 352,192' fill='none' stroke='currentColor'></path>
+<path d='M 72,48 L 96,0' fill='none' stroke='currentColor'></path>
+<path d='M 352,192 L 368,160' fill='none' stroke='currentColor'></path>
+<path d='M 384,128 L 400,96' fill='none' stroke='currentColor'></path>
+<path d='M 504,144 L 528,96' fill='none' stroke='currentColor'></path>
+<path d='M 72,48 L 96,96' fill='none' stroke='currentColor'></path>
+<path d='M 208,96 L 232,144' fill='none' stroke='currentColor'></path>
+<path d='M 264,144 L 288,192' fill='none' stroke='currentColor'></path>
+<path d='M 304,48 L 328,96' fill='none' stroke='currentColor'></path>
+<path d='M 400,0 L 448,96' fill='none' stroke='currentColor'></path>
+<circle cx='16' cy='48' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='72' cy='48' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='152' cy='0' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='152' cy='48' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='152' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='208' cy='0' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='208' cy='48' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='208' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='232' cy='144' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='264' cy='0' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='264' cy='48' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='264' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='264' cy='144' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='328' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='328' cy='144' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='328' cy='192' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='400' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='448' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='448' cy='144' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='504' cy='144' r='6' stroke='currentColor' fill='currentColor'></circle>
+<circle cx='528' cy='96' r='6' stroke='currentColor' fill='currentColor'></circle>
+<style>
+  text {
+       text-anchor: middle;
+       font-family: "Menlo","Lucida Console","monospace";
+       fill: currentColor;
+       font-size: 1em;
+  }
+</style>
+</g>
+</svg>

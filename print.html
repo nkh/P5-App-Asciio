@@ -1,0 +1,2817 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Asciio</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon.svg">
+        <link rel="shortcut icon" href="favicon.png">
+        <link rel="stylesheet" href="css/variables.css">
+        <link rel="stylesheet" href="css/general.css">
+        <link rel="stylesheet" href="css/chrome.css">
+        <link rel="stylesheet" href="css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="highlight.css">
+        <link rel="stylesheet" href="tomorrow-night.css">
+        <link rel="stylesheet" href="ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="guide/installation.html"><strong aria-hidden="true">1.</strong> Installation and running</a></li><li class="chapter-item expanded "><a href="Interface.html"><strong aria-hidden="true">2.</strong> Asciio's interface</a></li><li class="chapter-item expanded "><a href="unicode_support.html"><strong aria-hidden="true">3.</strong> Unicode support</a></li><li class="chapter-item expanded "><a href="accessing_documentation.html"><strong aria-hidden="true">4.</strong> Accessing documentation</a></li><li class="chapter-item expanded "><a href="UIs.html"><strong aria-hidden="true">5.</strong> UIs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="UI/GUI.html"><strong aria-hidden="true">5.1.</strong> GUI</a></li><li class="chapter-item expanded "><a href="UI/TUI.html"><strong aria-hidden="true">5.2.</strong> TUI</a></li></ol></li><li class="chapter-item expanded "><a href="stencils.html"><strong aria-hidden="true">6.</strong> Stencils</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stencils/asciio_boxes.html"><strong aria-hidden="true">6.1.</strong> Asciio boxes and text</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="stencils/asciio_if_and_process.html"><strong aria-hidden="true">6.1.1.</strong> Asciio if and process</a></li><li class="chapter-item expanded "><a href="stencils/asciio_exec_box.html"><strong aria-hidden="true">6.1.2.</strong> Asciio exec-box</a></li></ol></li><li class="chapter-item expanded "><a href="stencils/asciio_arrows.html"><strong aria-hidden="true">6.2.</strong> Asciio arrows</a></li><li class="chapter-item expanded "><a href="stencils/pseudo_connectors.html"><strong aria-hidden="true">6.3.</strong> Pseudo connectors</a></li><li class="chapter-item expanded "><a href="stencils/box_connectors.html"><strong aria-hidden="true">6.4.</strong> Box connectors</a></li><li class="chapter-item expanded "><a href="stencils/asciio_shapes.html"><strong aria-hidden="true">6.5.</strong> Asciio shapes</a></li><li class="chapter-item expanded "><a href="stencils/verbatim.html"><strong aria-hidden="true">6.6.</strong> verbatim objects</a></li><li class="chapter-item expanded "><a href="stencils/user.html"><strong aria-hidden="true">6.7.</strong> user stencils</a></li></ol></li><li class="chapter-item expanded "><a href="editing_elements.html"><strong aria-hidden="true">7.</strong> Editing elements text and attributes</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editing_elements/markup_mode.html"><strong aria-hidden="true">7.1.</strong> Markup mode</a></li></ol></li><li class="chapter-item expanded "><a href="working_efficiently.html"><strong aria-hidden="true">8.</strong> Working efficiently</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="editing/keyboard.html"><strong aria-hidden="true">8.1.</strong> Keyboard</a></li><li class="chapter-item expanded "><a href="editing/mouse.html"><strong aria-hidden="true">8.2.</strong> Mouse</a></li><li class="chapter-item expanded "><a href="editing/cloning.html"><strong aria-hidden="true">8.3.</strong> Cloning</a></li><li class="chapter-item expanded "><a href="editing/grouping.html"><strong aria-hidden="true">8.4.</strong> Grouping</a></li><li class="chapter-item expanded "><a href="editing/strip-groups.html"><strong aria-hidden="true">8.5.</strong> Strip groups</a></li></ol></li><li class="chapter-item expanded "><a href="exporting.html"><strong aria-hidden="true">9.</strong> Export/Save</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="export/asciio.html"><strong aria-hidden="true">9.1.</strong> Asciio format</a></li><li class="chapter-item expanded "><a href="export/text.html"><strong aria-hidden="true">9.2.</strong> text</a></li><li class="chapter-item expanded "><a href="export/svg.html"><strong aria-hidden="true">9.3.</strong> SVG</a></li><li class="chapter-item expanded "><a href="export/clipboard.html"><strong aria-hidden="true">9.4.</strong> Clipboard</a></li></ol></li><li class="chapter-item expanded "><a href="modes.html"><strong aria-hidden="true">10.</strong> Modes</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="modes/git.html"><strong aria-hidden="true">10.1.</strong> Git</a></li><li class="chapter-item expanded "><a href="modes/cross.html"><strong aria-hidden="true">10.2.</strong> Cross</a></li><li class="chapter-item expanded "><a href="modes/slides.html"><strong aria-hidden="true">10.3.</strong> Slides</a></li></ol></li><li class="chapter-item expanded "><a href="examples.html"><strong aria-hidden="true">11.</strong> Examples</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="examples/example1.html"><strong aria-hidden="true">11.1.</strong> Class hierarchy</a></li><li class="chapter-item expanded "><a href="examples/example2.html"><strong aria-hidden="true">11.2.</strong> German railway</a></li><li class="chapter-item expanded "><a href="examples/unicode_example.html"><strong aria-hidden="true">11.3.</strong> Unicode Example</a></li><li class="chapter-item expanded "><a href="videos/videos.html"><strong aria-hidden="true">11.4.</strong> Videos</a></li></ol></li><li class="chapter-item expanded "><a href="Bindings.html"><strong aria-hidden="true">12.</strong> Bindings</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bindings/mouse.html"><strong aria-hidden="true">12.1.</strong> Mouse</a></li><li class="chapter-item expanded "><a href="bindings/vim-like.html"><strong aria-hidden="true">12.2.</strong> Why vim-like bindings</a></li><li class="chapter-item expanded "><a href="bindings/single_key.html"><strong aria-hidden="true">12.3.</strong> Single key</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bindings/gui.html"><strong aria-hidden="true">12.3.1.</strong> GUI bindings</a></li><li class="chapter-item expanded "><a href="bindings/moving.html"><strong aria-hidden="true">12.3.2.</strong> Moving elements</a></li><li class="chapter-item expanded "><a href="bindings/selecting.html"><strong aria-hidden="true">12.3.3.</strong> Selecting elements</a></li><li class="chapter-item expanded "><a href="bindings/resizing.html"><strong aria-hidden="true">12.3.4.</strong> Resizing elements</a></li><li class="chapter-item expanded "><a href="bindings/clipboard.html"><strong aria-hidden="true">12.3.5.</strong> Clipboard</a></li></ol></li><li class="chapter-item expanded "><a href="bindings/multiple_keys.html"><strong aria-hidden="true">12.4.</strong> Multiple key</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="bindings/commands.html"><strong aria-hidden="true">12.4.1.</strong> «:» Command group:</a></li><li class="chapter-item expanded "><a href="bindings/inserting.html"><strong aria-hidden="true">12.4.2.</strong> «i» Insert group</a></li><li class="chapter-item expanded "><a href="bindings/arrows.html"><strong aria-hidden="true">12.4.3.</strong> «a» Arrow group</a></li><li class="chapter-item expanded "><a href="bindings/aligning.html"><strong aria-hidden="true">12.4.4.</strong> «A» Align group</a></li><li class="chapter-item expanded "><a href="bindings/grouping.html"><strong aria-hidden="true">12.4.5.</strong> «g» Grouping group</a></li><li class="chapter-item expanded "><a href="bindings/grouping_stripes.html"><strong aria-hidden="true">12.4.6.</strong> «A-g» Stripes-group group</a></li><li class="chapter-item expanded "><a href="bindings/display.html"><strong aria-hidden="true">12.4.7.</strong> «z» Display group</a></li><li class="chapter-item expanded "><a href="bindings/slides.html"><strong aria-hidden="true">12.4.8.</strong> «S» Slides group</a></li><li class="chapter-item expanded "><a href="bindings/debug.html"><strong aria-hidden="true">12.4.9.</strong> «D» Debug group</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="part-title">Configuration</li><li class="chapter-item expanded "><a href="configuration.html"><strong aria-hidden="true">13.</strong> Configuration</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="config/user_bindings.html"><strong aria-hidden="true">13.1.</strong> user bindings</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="config/user_bindings/binding_format.html"><strong aria-hidden="true">13.1.1.</strong> Binding format</a></li><li class="chapter-item expanded "><a href="config/user_bindings/group_bindings.html"><strong aria-hidden="true">13.1.2.</strong> Group bindings</a></li><li class="chapter-item expanded "><a href="config/user_bindings/capturing_groups.html"><strong aria-hidden="true">13.1.3.</strong> Capturing groups</a></li><li class="chapter-item expanded "><a href="config/user_bindings/binding_override.html"><strong aria-hidden="true">13.1.4.</strong> Binding override</a></li><li class="chapter-item expanded "><a href="config/user_bindings/capturing_groups_overlay.html"><strong aria-hidden="true">13.1.5.</strong> Capturing groups with overalay</a></li></ol></li><li class="chapter-item expanded "><a href="config/user_stencils.html"><strong aria-hidden="true">13.2.</strong> user stencils</a></li><li class="spacer"></li></ol></li><li class="chapter-item expanded "><li class="part-title">Developer Guide</li><li class="chapter-item expanded "><a href="for_developers/index.html"><strong aria-hidden="true">14.</strong> For Developers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="for_developers/scripting.html"><strong aria-hidden="true">14.1.</strong> Scripting</a></li><li class="chapter-item expanded "><a href="for_developers/modify_Asciio.html"><strong aria-hidden="true">14.2.</strong> Modifying Asciio</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="for_developers/bindings.html"><strong aria-hidden="true">14.2.1.</strong> Bindings</a></li></ol></li><li class="chapter-item expanded "><a href="for_developers/debugging.html"><strong aria-hidden="true">14.3.</strong> Debugging</a></li><li class="chapter-item expanded "><a href="for_developers/cross_algorithm.html"><strong aria-hidden="true">14.4.</strong> Cross algorithm</a></li><li class="chapter-item expanded "><a href="for_developers/unicode_support.html"><strong aria-hidden="true">14.5.</strong> Unicode support</a></li><li class="chapter-item expanded "><a href="for_developers/overlay.html"><strong aria-hidden="true">14.6.</strong> Overlay</a></li><li class="spacer"></li></ol></li><li class="chapter-item expanded "><a href="misc/contributors.html">Contributors and License</a></li><li class="chapter-item expanded affix "><a href="misc/see_also.html">See Also</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Asciio</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <pre><code>         ___                               .-------.
+        /   |  __________________          | Tokyo |
+       / /| | / ___/ ___/ / / __ \         '-------'   .-----------.
+      / ___ |(__  ) /__/ / / /_/ /             ^       | Tuju-Tuju |
+     /_/  |_/____/\___/_/_/\____/              |       '-----------'
+                                               |             ^
+                                           .-------.         |
+                                .------.---| Malmö |---------'  .-------.
+                                |      |   '-------'            | Korba |
+                                v      |       ^                '-------'
+                           .--------.  |       |     .-------.      |
+                           | Dallas |  |       '-----| Paris |&lt;-----'
+                           '--------'  |             '-------'
+                                       v
+                                  .--------.
+                                  | Moscow |
+                                  '--------'
+</code></pre>
+<p>Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams can be saved as ASCII text or in a format that allows you to modify them later.</p>
+<p>Diagrams consist of boxes and text elements connected by arrows. The elements stay connected when you move them around.</p>
+<p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.</p>
+<p>ASCII format is easy and universal, many tools exist to manipulate it and even transform it to other formats.</p>
+<p>I've used it a lot to draw trees and graphs when my hand drawn pictures were good enough for presentations. Having the possibility to copy and modify the graphs/diagrams makes it possible to present changes in an attractive way.</p>
+<h2 id="history"><a class="header" href="#history">History</a></h2>
+<p>Asciio was born ... as a dare; someone coined a cool name at a conference in Oslo it's been under development for 20 years. It proved to very useful for embedding graphs in code, documentation, requirements, ... </p>
+<pre><code>                          .------.
+              .-----------| root |---------.
+              |           '------'         |       other process
+              |               .------------|-------------.
+              v               |            v             |
+            .--.              |          .--.            |
+        .---'--'              |      .---'--'---.        |
+        |     |               |      |          |        |
+        v     |               |      v          v        |
+      .--.    |      link     |    .--.       .--.       |
+   .--'--'    .--------------------'--'       '--'       |
+   |          |               |      |                   |
+   v          |               |      v                   |
+ .--.         v               |    .--.                  |
+ '--'       .--.              |    '--'                  |
+            '--'              |                          |
+                              '--------------------------'
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+<p>Asciio is normally packaged for distributions, if you are reading this we are
+working on the GTK3 port and you'll need to install manually.</p>
+<h2 id="alternative-1"><a class="header" href="#alternative-1">Alternative <em>1</em></a></h2>
+<pre><code class="language-bash">    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+
+    cpan install Data::TreeDumper Data::TreeDumper::Renderer::GTK App::Asciio
+
+</code></pre>
+<h2 id="alternative-2"><a class="header" href="#alternative-2">Alternative <em>2</em></a></h2>
+<pre><code class="language-bash">    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+
+    sudo sudo apt install make gcc
+
+    git clone https://github.com/nkh/P5-Data-TreeDumper-Renderer-GTK
+    cd P5-Data-TreeDumper-Renderer-GTK
+    perl Makefile.pl
+    make
+    
+    git clone https://github.com/nkh/P5-App-Asciio
+    cd P5-App-Asciio
+    perl Build.PL
+    ./Build installdeps 
+    ./Build install
+
+</code></pre>
+<p>In the windows environment, you can use asciio through WSL or cygwin.</p>
+<h2 id="wsl"><a class="header" href="#wsl">WSL</a></h2>
+<p>The use of WSL is not much different from the Linux environment.However, there are some things that need attention. This link talks about how to connect to the WSL environment and execute GUI programs through remote connections under Windows.</p>
+<p><a href="https://github.com/qindapao/linux_app_use_in_windows/blob/main/remote_wsl_use_gui_app.md">remote_wsl_use_gui_app</a></p>
+<h2 id="cygwin"><a class="header" href="#cygwin">Cygwin</a></h2>
+<ul>
+<li>First install <a href="https://www.cygwin.com/">Cygwin</a>.</li>
+<li>Make sure the following components are installed correctly
+<ul>
+<li>x11</li>
+<li>perl</li>
+<li>Gnome</li>
+<li>gun-make</li>
+<li>gcc-g++</li>
+</ul>
+</li>
+<li>Search for &quot;gcrypt&quot; in all the packages to be installed, and install all 
+the packages that appear.</li>
+<li>Install all dependent modules of asciio</li>
+</ul>
+<p>Pay attention when installing perl modules, some may be installed through 
+cpan, but some cannot, and can only be installed manually.</p>
+<blockquote>
+<p>When compiling, the Makefile of several modules has an unrecognized option 
+<code>-lnsl</code>. removed it when install it manually.</p>
+</blockquote>
+<p>Start asciio by the following method:</p>
+<pre><code class="language-bash">startxwin &gt;/dev/null 2&gt;&amp;1 &amp;
+export DISPLAY=:0.0
+asciio
+</code></pre>
+<h1 id="running-asciio"><a class="header" href="#running-asciio">Running asciio</a></h1>
+<pre><code>$&gt; asciio [file.asciio] # GUI application using Gtk3
+
+$&gt; tasciio [file.asciio] # TUI application
+
+$&gt; asciio_to_text file.asciio # converts asciio files to ASCII
+</code></pre>
+<h1 id="previous-version-docker-image"><a class="header" href="#previous-version-docker-image">Previous version docker image</a></h1>
+<pre><code>There are docker images made by third parties, use a search engine for
+the latest.
+
+https://hub.docker.com/r/rodolfoap/asciio
+
+example images:
+
+https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb
+
+https://github.com/rodolfoap
+</code></pre>
+<h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
+<p>Asciio is developed on both Linux and Windows (cygwin).</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="interface"><a class="header" href="#interface">Interface</a></h1>
+<p>Asciio input is from mouse and keyboard bindings, they are defined in a configuration files that you can change. </p>
+<p>Asciio's interface is minimal by design.</p>
+<h2 id="keyboard-bindings"><a class="header" href="#keyboard-bindings">keyboard bindings</a></h2>
+<p>This is the preferred method, and the fastest. The bindings are vim-like and which make the many bindings much easier to remember. See the <em>Bindings</em> section</p>
+<h2 id="mouse-binidings"><a class="header" href="#mouse-binidings">mouse binidings</a></h2>
+<p>Although work can mostly be done  using the keyboard, the mouse is still useful in some ccases (selecting in a TUI is difficult) and it even shines when creating new diagrams. See <em>Working efficiently</em></p>
+<h2 id="popup-menus"><a class="header" href="#popup-menus">popup menus</a></h2>
+<p>My least favorite way of using Asciio, it's slow and cumbersome for most actions. I try to reduce the amount of menu and sub menus.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unicode-support"><a class="header" href="#unicode-support">Unicode support</a></h1>
+<p>Asciio supports Unicode is a work under progress; including support for Asian languages, thanks to the co-developer who writes in these languages, but you may need a font that supports them.</p>
+<p>https://github.com/be5invis/Sarasa-Gothic/</p>
+<p><img src="asciio_unicode.png" alt="unicode in Asciio" /></p>
+<p><img src="asciio_unicode_cat.png" alt="unicode exported" /></p>
+<p>In the examples above the box is drawn with unicode characters, the box is oversized by design, it shrinks and expands properly.</p>
+<p><img src="asciio_unicode_shrunk.png" alt="unicode in Asciioshrunk box" /></p>
+<p>If you want to align Thai, or Arabic, or Hebrew, under normal circumstances, 
+the default monospaced font of the system is fine. If you find that it cannot 
+be aligned, you can download a font that can align them.</p>
+<p><img src="unicode_thai_alabo_hebrew.png" alt="unicode_thai_alabo_hebrew" /></p>
+<p>When displayed in exported software, you also need a font that aligns them.</p>
+<pre><code class="language-txt">      .-----.      .----------------.
+      | abc |-----&gt;| สวัสดีเราเคยพบกัน |
+      '-----'      '----------------'
+                            |
+                            |
+                            |
+                            |   .---------------.
+                            '--&gt;| שלום, נפגשנו  |
+                                '---------------'
+                                        |
+                                        |
+      .------------------.              |
+      | مرحبا هل التقينا |&lt;-------------'
+      '------------------'
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="accessing-documentation"><a class="header" href="#accessing-documentation">Accessing documentation</a></h1>
+<p>Asciio's documentation is available in multiple formats</p>
+<ul>
+<li>
+<p>this HTML documentation, generated by mdbook</p>
+</li>
+<li>
+<p>a manpage, available from within Asciio.</p>
+</li>
+<li>
+<p>info pages</p>
+</li>
+</ul>
+<p>There's also:</p>
+<ul>
+<li>
+<p>a bindings list</p>
+</li>
+<li>
+<p>a short help</p>
+</li>
+<li>
+<p>a &quot;user&quot; defined documentation.
+«h»                Add help box</p>
+</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="uis"><a class="header" href="#uis">UIs</a></h1>
+<p>Asciio offers multiple UIs</p>
+<ul>
+<li>a GUI</li>
+<li>a TUI (under construction)</li>
+<li>a command line interface</li>
+</ul>
+<p>There's even a ticket about a web interface, if you're a websocket, rpc, minimal interface geek who like Web technology ... join us!</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gui"><a class="header" href="#gui">GUI</a></h1>
+<p><img src="UI/asciio.png" alt="Ascii0" /></p>
+<pre><code>          .-------------------------------------------------------------.
+          | ........................................................... |
+          | ..........-------------..------------..--------------...... |
+          | .........| stencils  &gt; || asciio   &gt; || box          |..... |
+          | .........| Rulers    &gt; || computer &gt; || text         |..... |
+          | .........| File      &gt; || people   &gt; || wirl_arrow   |..... |
+     grid-----&gt;......'-------------'| divers   &gt; || axis         |..... |
+          | ..................^.....'------------'| ...          |..... |
+          | ..................|...................'--------------'..... |
+          | ..................|........................................ |
+          '-------------------|-----------------------------------------'
+                              |
+               context menu access some commands
+               most are accessed through the keyboard
+
+</code></pre>
+<h2 id="grid"><a class="header" href="#grid">Grid</a></h2>
+<h3 id="grid-lines"><a class="header" href="#grid-lines">Grid lines</a></h3>
+<h3 id="grid-color"><a class="header" href="#grid-color">Grid color</a></h3>
+<h3 id="grid-background-color"><a class="header" href="#grid-background-color">Grid background color</a></h3>
+<h2 id="hint-lines"><a class="header" href="#hint-lines">Hint lines</a></h2>
+<p><img src="UI/hint_lines.png" alt="hint lines" /></p>
+<h2 id="rulers"><a class="header" href="#rulers">Rulers</a></h2>
+<h2 id="night-colors"><a class="header" href="#night-colors">Night Colors</a></h2>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="tui"><a class="header" href="#tui">TUI</a></h1>
+<p><img src="UI/tasciio.png" alt="TUI" /></p>
+<p>The TUI interface is a work in progress. Drawing graphs in a terminal (without mouse) is more difficult than it seem, I'm actively working on creating better bindings to make as s smooth as when using a mouse.</p>
+<ul>
+<li>mouse emulation</li>
+<li>differences
+<ul>
+<li>dialogs</li>
+<li>manpage</li>
+</ul>
+</li>
+</ul>
+<p><img src="UI/tui_demo.gif" alt="TUI demo" /></p>
+<h2 id="asciio-tui-and-vim"><a class="header" href="#asciio-tui-and-vim">Asciio TUI and Vim</a></h2>
+<p>You can call Asciio from vim and insert your diagram.</p>
+<pre><code>    map  &lt;leader&gt;&lt;leader&gt;a :call TAsciio()&lt;cr&gt;
+
+    function! TAsciio()
+        let line = getline('.')
+
+        let tempn = tempname()
+        let tempnt = tempn . '.txt'
+        let temp = shellescape(tempn)
+        let tempt = shellescape(tempnt)
+
+        exec &quot;normal i Asciio_file:&quot; . tempn . &quot;\&lt;Esc&gt;&quot;
+
+        if ! has(&quot;gui_running&quot;)
+        exec &quot;silent !mkdir -p $(dirname &quot; . temp . &quot;)&quot; 
+        exec &quot;silent !cp ~/.config/Asciio/templates/empty.asciio &quot;. temp . &quot;; tasciio &quot; . temp . &quot;; asciio_to_text &quot; . temp . &quot; &gt;&quot; . tempt 
+        exec &quot;read &quot; . tempnt
+        endif
+
+        redraw!
+    endfunction
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="stencils"><a class="header" href="#stencils">Stencils</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-boxes"><a class="header" href="#asciio-boxes">Asciio boxes</a></h1>
+<h2 id="elements"><a class="header" href="#elements">Elements</a></h2>
+<p><img src="stencils/connector_resize_handle.png" alt="connector resize-handle" /></p>
+<h2 id="popup-menu"><a class="header" href="#popup-menu">popup menu</a></h2>
+<p>You can access some functionality via the popup menu.</p>
+<p><img src="stencils/box_popup_menu.png" alt="popup menu" /></p>
+<h3 id="auto-shrink"><a class="header" href="#auto-shrink">auto-shrink</a></h3>
+<p>If the text is changed, the size of the box will change to fit.</p>
+<h3 id="disable-connectors"><a class="header" href="#disable-connectors">disable connectors</a></h3>
+<p>Enable or disable the possibility to connect to the box.</p>
+<h3 id="disable-optimize"><a class="header" href="#disable-optimize">disable optimize</a></h3>
+<p>A standard box had four connectors, Asciio optimizes the arrow routes so they don't cross the box. You can disable that optimization.</p>
+<h3 id="connect-inside-element-borders"><a class="header" href="#connect-inside-element-borders">connect inside element borders</a></h3>
+<p>Allow connection to be made anywhere inside the element borders , not just the connectors.</p>
+<p><img src="stencils/border_connect.png" alt="border_connect" /></p>
+<h3 id="rotate-boxtext"><a class="header" href="#rotate-boxtext">rotate box/text</a></h3>
+<p><img src="stencils/box_rotated.png" alt="rotated" /></p>
+<h2 id="types"><a class="header" href="#types">Types</a></h2>
+<h3 id="a-box"><a class="header" href="#a-box">A box</a></h3>
+<p>Binding: «b»                Add box</p>
+<h3 id="a-box-with-the-frame-drawn-with-unicode-characters"><a class="header" href="#a-box-with-the-frame-drawn-with-unicode-characters">A box with the frame drawn with Unicode characters</a></h3>
+<p><em><strong>Binding:</strong></em> «A-b»              Add unicode box</p>
+<h3 id="a-text"><a class="header" href="#a-text">A text</a></h3>
+<p>Texts are just boxes without frames.</p>
+<p>Binding: «t»                Add text</p>
+<h3 id="a-shrink-box"><a class="header" href="#a-shrink-box">A shrink-box</a></h3>
+<p>A box which is already has auto-shrink set</p>
+<p>Binding: «B»                Add shrink box</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-if-and-process-boxes"><a class="header" href="#asciio-if-and-process-boxes">Asciio if and process boxes</a></h1>
+<div class="table-wrapper"><table><thead><tr><th>element</th><th>binding</th></tr></thead><tbody>
+<tr><td>Add if box</td><td>«ib»</td></tr>
+<tr><td>Add process box</td><td>«ib»</td></tr>
+</tbody></table>
+</div>
+<h2 id="if-box-and-process-box"><a class="header" href="#if-box-and-process-box">if-box and process-box</a></h2>
+<p><img src="stencils/if_and_process.gif" alt="if_and_process.gif" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-exec-boxes"><a class="header" href="#asciio-exec-boxes">Asciio exec-boxes</a></h1>
+<p>An &quot;exec-box&quot; is and object that lets you run an external command and put its output in a box. There are different types of exec-boxes explained below.</p>
+<h2 id="multi-command"><a class="header" href="#multi-command">Multi command</a></h2>
+<p>Binding: «ie» Add exec box</p>
+<p>The simplest exec-box accepts multiple commands, one per line. It will redirect stderr for each command.</p>
+<p>Editing the box will let you edit the command.</p>
+<p><img src="stencils/ie.gif" alt="ie" /></p>
+<h2 id="verbatim"><a class="header" href="#verbatim">Verbatim</a></h2>
+<p>Binding: «iv» Add exec box verbatim</p>
+<p>This exec-box doesn't redirect stderr, you can use it for commands that span multiple line or commands that take a multi line input</p>
+<p>Editing the box will let you edit the command.</p>
+<p><img src="stencils/iv.gif" alt="iv" /></p>
+<h2 id="once"><a class="header" href="#once">Once</a></h2>
+<p>Binding: «io» Add exec box verbatim once</p>
+<p>This exec-box will run your commands once, editing the box will let you edit the command's output.</p>
+<p><img src="stencils/io.gif" alt="io" /></p>
+<h2 id="add-line-numbers"><a class="header" href="#add-line-numbers">Add line numbers</a></h2>
+<p>Binding: «i + c-l» Add line numbered box</p>
+<p>This is an example of a custom stencil which will add line numbers to your input.</p>
+<p><img src="stencils/il.gif" alt="il" /></p>
+<h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
+<h3 id="using-previously-generated-output"><a class="header" href="#using-previously-generated-output">Using previously generated output</a></h3>
+<p>If you already have text in a file you can use 'cat your_file' as the command.</p>
+<h3 id="tables"><a class="header" href="#tables">Tables</a></h3>
+<p>tbd: Command: ...</p>
+<pre><code>  +------------+------------+------------+------------+
+  | input_size ‖ algorithmA | algorithmB | algorithmC |
+  +============+============+============+============+
+  |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |
+  +------------+------------+------------+------------+
+  |    250     ‖     -      |  80 min.   | 2.27 sec.  |
+  +------------+------------+------------+------------+
+</code></pre>
+<h3 id="figlet"><a class="header" href="#figlet">FIGlet</a></h3>
+<p><a href="http://www.figlet.org/">Figlet</a>  generates large letters out of ordinary text.</p>
+<p><img src="stencils/FIGlet_asciio.gif" alt="FIGlet_asciio" /></p>
+<p>You can specify a font with the <em>-f</em> option. </p>
+<pre><code class="language-bash">
+$ ls /usr/share/figlet/
+646-ca.flc   646-hu.flc   646-se2.flc  big.flf       lean.flf      smslant.flf
+646-ca2.flc  646-irv.flc  646-yu.flc   block.flf     mini.flf      standard.flf
+646-cn.flc   646-it.flc   8859-2.flc   bubble.flf    mnemonic.flf  term.flf
+646-cu.flc   646-jp.flc   8859-3.flc   digital.flf   moscow.flc    upper.flc
+646-de.flc   646-kr.flc   8859-4.flc   frango.flc    script.flf    ushebrew.flc
+646-dk.flc   646-no.flc   8859-5.flc   hz.flc        shadow.flf    uskata.flc
+646-es.flc   646-no2.flc  8859-7.flc   ilhebrew.flc  slant.flf     utf8.flc
+646-es2.flc  646-pt.flc   8859-8.flc   ivrit.flf     small.flf
+646-fr.flc   646-pt2.flc  8859-9.flc   jis0201.flc   smscript.flf
+646-gb.flc   646-se.flc   banner.flf   koi8r.flc     smshadow.flf
+
+</code></pre>
+<p>For example, we want to specify this font: <code>slant</code></p>
+<p><img src="stencils/FLGlet_asciio_slant_font.gif" alt="FLGlet_asciio_slant_font" /></p>
+<p>This is the exported effect:</p>
+<pre><code>            .-----------------------------------.
+            |     _                _  _         |
+            |    / \    ___   ___ (_)(_)  ___   |
+            |   / _ \  / __| / __|| || | / _ \  |
+            |  / ___ \ \__ \| (__ | || || (_) | |
+            | /_/   \_\|___/ \___||_||_| \___/  |
+            |                                   |
+            '-----------------------------------'
+
+            .------------------------------------.
+            |     ___                 _  _       |
+            |    /   |   _____ _____ (_)(_)____  |
+            |   / /| |  / ___// ___// // // __ \ |
+            |  / ___ | (__  )/ /__ / // // /_/ / |
+            | /_/  |_|/____/ \___//_//_/ \____/  |
+            |                                    |
+            '------------------------------------'
+
+</code></pre>
+<h3 id="diagon"><a class="header" href="#diagon">Diagon</a></h3>
+<p><a href="https://github.com/ArthurSonzogni/Diagon">Diagon</a> transforms markdown expressions into an ascii-art representation.</p>
+<p><img src="stencils/diagon_help.gif" alt="diagon_help.gif" /></p>
+<h4 id="mathematical-expressions"><a class="header" href="#mathematical-expressions">Mathematical Expressions</a></h4>
+<p><img src="stencils/diagon_math.gif" alt="diagon_math" /></p>
+<h4 id="file-tree"><a class="header" href="#file-tree">File Tree</a></h4>
+<p>Use <em><strong>exec verbatim box</strong></em> to input multiple lines.</p>
+<p><img src="stencils/diagon_ascii_tree.gif" alt="diagon_ascii_tree" /></p>
+<p><img src="stencils/diagon_unicode_tree.gif" alt="diagon_unicode_tree" /></p>
+<h3 id="plantuml"><a class="header" href="#plantuml">plantuml</a></h3>
+<p><a href="https://plantuml.com/zh/ascii-art">PlantUML</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-arrows"><a class="header" href="#asciio-arrows">Asciio arrows</a></h1>
+<div class="table-wrapper"><table><thead><tr><th>element</th><th>binding</th></tr></thead><tbody>
+<tr><td>Add arrow</td><td>«ia»</td></tr>
+<tr><td>Add Unicode arrow</td><td>«i+Alt-a»</td></tr>
+<tr><td>Add angled arrow</td><td>«iA»</td></tr>
+</tbody></table>
+</div>
+<p><img src="stencils/insert_arrows.gif" alt="insert arrows" /></p>
+<h2 id="wirl-arrow"><a class="header" href="#wirl-arrow">wirl-arrow</a></h2>
+<p>Rotating the end clockwise or counter-clockwise changes its direction.</p>
+<p><img src="stencils/wirl_arrow.gif" alt="wirl arrows" /></p>
+<h2 id="multi-section-wirl-arrow"><a class="header" href="#multi-section-wirl-arrow">multi section wirl-arrow</a></h2>
+<p>A set of whirl arrows connected to each other.</p>
+<p><img src="stencils/arrow_section.gif" alt="insert arrows sections" /></p>
+<h2 id="angled-arrow-and-axis"><a class="header" href="#angled-arrow-and-axis">angled-arrow and axis</a></h2>
+<p><img src="stencils/angled_arrow_and_axis.gif" alt="angled arrow and axis" /></p>
+<p>Note that an axis doesn't connect.</p>
+<h3 id="connecting-lines"><a class="header" href="#connecting-lines">Connecting lines</a></h3>
+<p>A specialized <strong>wirl-arrow</strong> with no head nor tail.</p>
+<div class="table-wrapper"><table><thead><tr><th>element</th><th>binding</th></tr></thead><tbody>
+<tr><td>Add ASCII line</td><td>«il»</td></tr>
+<tr><td>Add Unicode line</td><td>«iL»</td></tr>
+<tr><td>Add Unicode bold line</td><td>«i+Alt-l»</td></tr>
+<tr><td>Add Unicode double line</td><td>«i+Shift+Alt-l»</td></tr>
+</tbody></table>
+</div>
+<p><img src="stencils/connecting_lines.gif" alt="connecting lines" /></p>
+<h3 id="non-connecting-lines"><a class="header" href="#non-connecting-lines">Non connecting lines</a></h3>
+<p>A specialized <strong>wirl-arrow</strong> with no head nor tail and auto-connection turned off, it's often used to draw the table in the crossing mode.</p>
+<div class="table-wrapper"><table><thead><tr><th>element</th><th>binding</th></tr></thead><tbody>
+<tr><td>Add ASCII non-connecting line</td><td>«ik»</td></tr>
+<tr><td>Add Unicode non-connecting line</td><td>«iK»</td></tr>
+<tr><td>Add Unicode non-connecting bold line</td><td>«i+Alt-k»</td></tr>
+<tr><td>Add Unicode non-connecting double line</td><td>«i+Shift+Alt-K»</td></tr>
+</tbody></table>
+</div>
+<h2 id="ascii-line"><a class="header" href="#ascii-line">ascii line</a></h2>
+<pre><code>                    ----------------------.
+                                          |
+                                          |
+                                          |
+                                          |
+                                          |
+</code></pre>
+<h2 id="unicode-line"><a class="header" href="#unicode-line">unicode line</a></h2>
+<pre><code>                      ─────────────────────────╮
+                                               │
+                                               │
+                                               │
+                                               │
+                                               │
+
+</code></pre>
+<h2 id="unicode-bold-line"><a class="header" href="#unicode-bold-line">unicode bold line</a></h2>
+<pre><code>                        ━━━━━━━━━━━━━━━━━━━━━━━┓
+                                               ┃
+                                               ┃
+                                               ┃
+                                               ┃
+
+</code></pre>
+<h2 id="unicode-double-line"><a class="header" href="#unicode-double-line">unicode double line</a></h2>
+<pre><code>                  ═══════════════════════════╗
+                                             ║
+                                             ║
+                                             ║
+                                             ║
+                                             ║
+
+</code></pre>
+<h2 id="example-of-non-connecting-lines-in-crossing-mode"><a class="header" href="#example-of-non-connecting-lines-in-crossing-mode">Example of non-connecting lines in crossing mode</a></h2>
+<pre><code>                     ╔═════╦═════╦══════╦═════╦════╦═════╗
+                     ║     ║     ║      ║     ║    ║     ║
+                     ╠═════╬═════╬══════╬═════╬════╬═════╣
+                     ║     ║  A  ║      ║  B  ║    ║     ║
+                     ╠═════╬═════╬══════╬═════╬════╬═════╣
+                     ║     ║  C  ║      ║     ║    ║     ║
+                     ╠═════╬═════╬══════╬═════╬════╬═════╣
+                     ║     ║     ║      ║     ║  D ║     ║
+                     ╠═════╬═════╬══════╬═════╬════╬═════╣
+                     ╚═════╩═════╩══════╩═════╩════╩═════╝
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="pseudo-connectors"><a class="header" href="#pseudo-connectors">Pseudo-connectors</a></h1>
+<p>Pseudo-connectors are a one-glyph-text boxes, used by <em>git mode</em> for example, which can also be used to add connectors to user-created groups.</p>
+<ul>
+<li>create a pseudo-connector</li>
+<li>change its glyph if necessary</li>
+<li>place it</li>
+<li>group all your elements</li>
+</ul>
+<h2 id="pseudo-connector-with-4-optimized-connectors"><a class="header" href="#pseudo-connector-with-4-optimized-connectors">pseudo-connector with 4 &quot;optimized&quot; connectors</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>Binding</th><th>Connector</th></tr></thead><tbody>
+<tr><td>o</td><td>«ic»</td></tr>
+<tr><td>*</td><td>«iC»</td></tr>
+</tbody></table>
+</div>
+<h2 id="pseudo-connector-with-one-connector"><a class="header" href="#pseudo-connector-with-one-connector">pseudo-connector with one connector</a></h2>
+<p>Use a &quot;center connect box&quot;</p>
+<p><img src="stencils/center_box.png" alt="Center_Box" /></p>
+<h1 id="example"><a class="header" href="#example">Example</a></h1>
+<p><img src="stencils/add_connector.gif" alt="Add Connector" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="box-connectors"><a class="header" href="#box-connectors">Box connectors</a></h1>
+<p>It is possible to add custom connectors when creating a box stencil, see <em>setup/Asciio</em> for the default stencils.</p>
+<pre><code class="language-perl">create_box
+	(
+	NAME               =&gt; 'rabbit paw',
+	TEXT_ONLY          =&gt; &lt;&lt;'TEXT'
+(\_/)
+(O.o)
+/&gt;
+TEXT
+,
+	RESIZABLE          =&gt; 0,
+	WITH_FRAME         =&gt; 0,
+	DEFAULT_CONNECTORS =&gt; 0,
+	CONNECTORS         =&gt; [[2, -1, -1, 2, -1, -1, 'paw']]
+	),
+</code></pre>
+<h2 id="connectors"><a class="header" href="#connectors">CONNECTORS</a></h2>
+<pre><code class="language-perl">[ # An array of connector
+	[
+	2,      # X coordinate
+	-1,     # percentage of width, -1 to disabe
+	-1,     # offset added to position if perventage is used
+	2,      # Y coordinate
+	-1,     # same as above for Y
+	-1,     # same as above for Y
+	'paw'   # connector name
+	],
+	[
+	# next connector
+	...
+	],
+]
+</code></pre>
+<p>The box element class also has these functions:</p>
+<ul>
+<li>add_connector, dynamically add connector</li>
+<li>remove_connector, by name</li>
+</ul>
+<h2 id="example-1"><a class="header" href="#example-1">Example</a></h2>
+<p><img src="stencils/box_connector.png" alt="box_connector" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-shapes"><a class="header" href="#asciio-shapes">Asciio shapes</a></h1>
+<p>You can add triangles, rombus, and elipses via the popup menu or use the bindings below:</p>
+<div class="table-wrapper"><table><thead><tr><th>element</th><th>binding</th></tr></thead><tbody>
+<tr><td>Add rhombus</td><td>«ir»</td></tr>
+<tr><td>Add ellipse</td><td>«ie»</td></tr>
+</tbody></table>
+</div>
+<p><img src="stencils/asciio_shapes.gif" alt="asciio shapes" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="verbatim-objects"><a class="header" href="#verbatim-objects">verbatim objects</a></h1>
+<p>Text elements with ASCII art or normal text. <em>Asciio</em> has as set of verbatim elements in its stencils which can be accessed via the popup menu, or you can add a binding if you use them often. The element's text can be edited. You can also use any Ascii-art/Text you have in a file via an exec-box.</p>
+<p><img src="stencils/verbatim_objects.gif" alt="verbatim_objects" /></p>
+<pre><code>                   ___________  
+1                 //////|\\\\\\ 
+2                '.-----------.'
+3                 |    ___    | 
+4      (\_/) Zzz  | [] | | [] |  (\_/)
+5      (-.-)      |____|_|____|  (o.o)
+6      (&gt; &lt;)                     (&gt; &lt;)
+7
+8
+9
+0
+</code></pre>
+<h2 id="scales"><a class="header" href="#scales">scales</a></h2>
+<p>Simple text elements representing scales/rulers that you can use to scale or align, see <em>hints</em>, your elements.</p>
+<pre><code>1    1234567890
+2
+3    1___5____0____5____0____5____0____5____0____5____0
+4
+5
+6
+7
+8
+9
+0
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="user-stencils"><a class="header" href="#user-stencils">User stencils</a></h1>
+<p>You can create stencils that you are going to reuse, details of how to do it in the best way can be found in the <em>Configuration</em> section.</p>
+<p>Here are three examples:</p>
+<p><a href="https://github.com/oguma/asciio-ditaa"><img src="https://github-readme-stats.vercel.app/api/pin/?username=oguma&amp;repo=asciio-ditaa" alt="asciio-ditaa" /></a></p>
+<p><a href="https://github.com/fbagagli/asciio_contrib"><img src="https://github-readme-stats.vercel.app/api/pin/?username=fbagagli&amp;repo=asciio_contrib" alt="asciio_contrib" /></a></p>
+<h2 id="integrating-asciio-and-ditaa-third-party-example"><a class="header" href="#integrating-asciio-and-ditaa-third-party-example">integrating Asciio and ditaa (third party example)</a></h2>
+<pre><code>
+There was a page (Corn Empire) where a user detailed how to make an integration.
+
+That page is not online anymore, I modified a copy for this documentation.
+
+If you are the original author please contact me so I can give you credit.
+
+</code></pre>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>You found this page because you are looking for more information on installing asciio and ditaa, and then modifying asciio to better interact with ditaa. Well you came to the right place. This guide will take you step-by-step through installing both tools, and modifying asciio to output diagrams to ditaa.</p>
+<h2 id="modifying-asciio"><a class="header" href="#modifying-asciio">Modifying asciio</a></h2>
+<p>Make yourself familiar with ditaa and asciio, you may see the benefit of outputting asciio text files that are compatible with ditaa without modification. Or better yet, generate your diagrams for you when you save :) . This section will explain how to do all of that and more!</p>
+<h2 id="adding-in-a-ditaa-stencil"><a class="header" href="#adding-in-a-ditaa-stencil">Adding in a Ditaa Stencil</a></h2>
+<p>You will need to create a new stencils file to create boxes and arrows that are compatible with ditaa (you could optionally modify the standard files if you will only use asciio for ditaa purposes). I got the idea for the modifications from here: http://strawp.net/archive/geeking-out-with-diagrams-in-ascii/</p>
+<h2 id="a-standard-box"><a class="header" href="#a-standard-box">A Standard Box</a></h2>
+<p>Go to the App/Asciio/setup/stencils (in the /usr/share/perl5/ or /usr/share/perl/5.10.0/) directory, and find the asciio file. Using for favourite editor, copy and paste the standard box code into a new file called ditaa. Then make the following changes to the standard box code in this new file:</p>
+<p>To change the corners, modify line 14/33 and change . to + and modify line 17/36 and change ' to +.</p>
+<p>Then modify lines 5 and 7 in the same way. Replace the . with + and the ' with +.</p>
+<p>Or you could optionally just copy and paste the completed code below (the $VAR1 = [ is only needed once, and just starts off the file, the ]; at the end of the block, ends the file. All bless calls should be between these lines) :</p>
+<pre><code class="language-perl">$VAR1 = [
+ 
+          bless( {
+                   'HEIGHT' =&gt; 3,
+                   'TEXT' =&gt; '+---+
+|   |
++---+',
+                   'NAME' =&gt; 'ditaabox',
+                   'WIDTH' =&gt; 5,
+		   'TEXT_ONLY' =&gt; '',
+		   'TITLE' =&gt; '',
+		   'BOX_TYPE' =&gt; 
+				[
+				[TRUE, 'top', '+', '-', '+', TRUE, ],
+				[FALSE, 'title separator', '|', '-', '|', TRUE, ],
+				[TRUE, 'body separator', '| ', '|', ' |', TRUE, ], 
+				[TRUE, 'bottom', '+', '-', '+', TRUE, ],
+				] ,
+		   'EDITABLE' =&gt; 1,
+		   RESIZABLE =&gt; 1,
+		   X_OFFSET =&gt; 0, Y_OFFSET =&gt; 0,
+                 }, 'App::Asciio::stripes::editable_box2' ),
+ 
+                ];
+</code></pre>
+<h2 id="add-rounded-box"><a class="header" href="#add-rounded-box">Add Rounded Box</a></h2>
+<p>But why stop there? How about we add in a nice ditaa rounded box. Add this code to the ditaa stencil file just below our modified box code:</p>
+<pre><code class="language-perl">          bless( {
+                   'HEIGHT' =&gt; 3,
+                   'TEXT' =&gt; '/---\\
+|   |
+\\---/',
+                   'NAME' =&gt; 'roundedbox',
+                   'WIDTH' =&gt; 5,
+                   'TEXT_ONLY' =&gt; '',
+                   'TITLE' =&gt; '',
+                   'BOX_TYPE' =&gt;
+                                [
+                                [TRUE, 'top', '/', '-', '\\', TRUE, ],
+                                [FALSE, 'title separator', '|', '-', '|', TRUE, ],
+                                [TRUE, 'body separator', '| ', '|', ' |', TRUE, ],
+                                [TRUE, 'bottom', '\\', '-', '/', TRUE, ],
+                                ] ,
+                   'EDITABLE' =&gt; 1,
+                   RESIZABLE =&gt; 1,
+                   X_OFFSET =&gt; 0, Y_OFFSET =&gt; 0,
+                 }, 'App::Asciio::stripes::editable_box2' ),
+</code></pre>
+<h2 id="add-ditaa-arrows"><a class="header" href="#add-ditaa-arrows">Add ditaa Arrows</a></h2>
+<p>The asciio arrows don't jive well with ditaa. You can add this in the ditaa stencil file, it is based on the whirl arrow:</p>
+<pre><code class="language-perl">bless({
+        'NAME' =&gt; 'ditaa_arrow',
+        'HEIGHT' =&gt; 6,
+        'WIDTH' =&gt; 17,
+        'POINTS' =&gt; [[16,5]],
+        'SELECTED' =&gt; 0,
+        'EDITABLE' =&gt; 1,
+        'ALLOW_DIAGONAL_LINES' =&gt; 0,
+        'POINTS_OFFSETS' =&gt; [[0,0]],
+        'DIRECTION' =&gt; 'down-right' ,
+        'ARROW_TYPE' =&gt;
+                [
+                ['origin', '', '*', '', '', '', TRUE],
+                ['up', '|', '|', '', '', '^', TRUE],
+                ['down', '|', '|', '', '', 'v', TRUE],
+                ['left', '-', '-', '', '', '&lt;', TRUE],
+                ['upleft', '|', '|', '\\', '-', '&lt;', TRUE],
+                ['leftup', '-', '-', '\\', '|', '^', TRUE],
+                ['downleft', '|', '|', '/', '-', '&lt;', TRUE],
+                ['leftdown', '-', '-', '/', '|', 'v', TRUE],
+                ['right', '-', '-','', '', '&gt;', TRUE],
+                ['upright', '|', '|', '/', '-', '&gt;', TRUE],
+                ['rightup', '-', '-', '/', '|', '^', TRUE],
+                ['downright', '|', '|', '\\', '-', '&gt;', TRUE],
+                ['rightdown', '-', '-', '\\', '|', 'v', TRUE],
+                ['45', '/', '/', '', '', '^', TRUE, ],
+                ['135', '\\', '\\', '', '', 'v', TRUE, ],
+                ['225', '/', '/', '', '', 'v', TRUE, ],
+                ['315', '\\', '\\', '', '', '^', TRUE, ],
+                ],
+ 
+        'ARROWS' =&gt;
+                [
+                bless(
+                        {
+                        'HEIGHT' =&gt; 6,
+                        'STRIPES' =&gt;
+                                [
+                                {'TEXT' =&gt; '|
+|
+|
+|
+|
+\'',
+ 
+                                'HEIGHT' =&gt; 6,
+                                'Y_OFFSET' =&gt; 0,
+                                'WIDTH' =&gt; 1,
+                                'X_OFFSET' =&gt; 0}
+                                ,
+                                {
+                                'TEXT' =&gt; '---------------&gt;',
+                                'HEIGHT' =&gt; 1,
+                                'Y_OFFSET' =&gt; 5,
+                                'WIDTH' =&gt; 16,
+                                'X_OFFSET' =&gt; 1
+                                }
+                                ],
+                        'WIDTH' =&gt; 17,
+                        'END_X' =&gt; 16,
+                        'ARROW_TYPE' =&gt;
+                                [
+                                #name: $start, $body, $connection, $body_2, $end
+ 
+                                ['origin', '', '*', '', '', '', TRUE],
+                                ['up', '|', '|', '', '', '^', TRUE],
+                                ['down', '|', '|', '', '', 'v', TRUE],
+                                ['left', '-', '-', '', '', '&lt;', TRUE],
+                                ['upleft', '|', '|', '\\', '-', '&lt;', TRUE],
+                                ['leftup', '-', '-', '\\', '|', '^', TRUE],
+                                ['downleft', '|', '|', '/', '-', '&lt;', TRUE],
+                                ['leftdown', '-', '-', '/', '|', 'v', TRUE],
+                                ['right', '-', '-','', '', '&gt;', TRUE],
+                                ['upright', '|', '|', '/', '-', '&gt;', TRUE],
+                                ['rightup', '-', '-', '/', '|', '^', TRUE],
+                                ['downright', '|', '|', '\\', '-', '&gt;', TRUE],
+                                ['rightdown', '-', '-', '\\', '|', 'v', TRUE],
+                                ['45', '/', '/', '', '', '^', TRUE, ],
+                                ['135', '\\', '\\', '', '', 'v', TRUE, ],
+                                ['225', '/', '/', '', '', 'v', TRUE, ],
+                                ['315', '\\', '\\', '', '', '^', TRUE, ],
+                                ],
+                        'END_Y' =&gt; 5,
+                        'DIRECTION' =&gt; 'down-right'
+                        }, 'App::Asciio::stripes::wirl_arrow' ),
+ 
+                ],
+        }, 'App::Asciio::stripes::section_wirl_arrow' ) ,
+</code></pre>
+<h2 id="add-colours-and-special-shape-codes"><a class="header" href="#add-colours-and-special-shape-codes">Add Colours and Special Shape Codes</a></h2>
+<p>All of the above will give you the core functionality of ditaa into asciio. But what about some basic colour tags, and shape codes. I've created a special stencil file for those. You can copy this below, and place it in a file called ditaatags next to the asciio stencil file.</p>
+<pre><code class="language-perl">my @ascii =
+        (
+        'shapes/document' =&gt; &lt;&lt;'EOA',
+{d}
+EOA
+        'shapes/storage' =&gt; &lt;&lt;'EOA',
+{s}
+EOA
+	'shapes/input_output' =&gt; &lt;&lt;'EOA',
+{io}
+EOA
+        'shapes/tr' =&gt; &lt;&lt;'EOA',
+{tr}
+EOA
+        'shapes/o' =&gt; &lt;&lt;'EOA',
+{o}
+EOA
+        'shapes/mo' =&gt; &lt;&lt;'EOA',
+{mo}
+EOA
+        'shapes/c' =&gt; &lt;&lt;'EOA',
+{c}
+EOA
+        'colours/Red' =&gt; &lt;&lt;'EOA',
+cRED
+EOA
+        'colours/Blue' =&gt; &lt;&lt;'EOA',
+cBLU
+EOA
+        'colours/Pink' =&gt; &lt;&lt;'EOA',
+cPNK
+EOA
+        'colours/Black' =&gt; &lt;&lt;'EOA',
+cBLK
+EOA
+        'colours/Green' =&gt; &lt;&lt;'EOA',
+cGRE
+EOA
+        'colours/Yellow' =&gt; &lt;&lt;'EOA',
+cYEL
+EOA
+ 
+        ) ;
+ 
+my @boxes ;
+ 
+use App::Asciio::stripes::editable_box2 ;
+ 
+for(my $ascii_index = 0 ; $ascii_index &lt; $#ascii ; $ascii_index+= 2)
+        {
+        my $box = new App::Asciio::stripes::editable_box2
+                                ({
+                                TEXT_ONLY =&gt; $ascii[$ascii_index + 1],
+                                EDITABLE =&gt; 1,
+                                RESIZABLE =&gt; 1,
+                                }) ;
+ 
+        $box-&gt;set_box_type([map{$_-&gt;[0] = 0; $_} @{$box-&gt;get_box_type()}]) ;
+        $box-&gt;shrink() ;
+        $box-&gt;{'NAME'} = $ascii[$ascii_index] ;
+        push @boxes, $box ;
+        }
+ 
+[@boxes] ;
+</code></pre>
+<p>Once these have been added, you need to modify the setup.ini file to point to the new stencils. To do that, run the following commands:</p>
+<p>cd ..
+sudo vim setup.ini
+Where it says 'stencils/divers', add on the next line, 'stencils/ditaa', and then 'stencils/ditaatags',. Your new file should look like this:</p>
+<pre><code class="language-perl">{
+STENCILS =&gt;
+        [
+        'stencils/asciio',
+        'stencils/computer',
+        'stencils/people',
+        'stencils/divers',
+        'stencils/ditaa',
+        'stencils/ditaatags',
+        ],
+
+ACTION_FILES =&gt;
+        [
+        'actions/align.pl',
+        'actions/clipboard.pl',
+        'actions/debug.pl',
+        'actions/new_elements.pl',
+        'actions/elements_manipulation.pl',
+        'actions/file.pl',
+        'actions/mouse.pl',
+        'actions/colors.pl',
+        'actions/unsorted.pl',
+        'actions/presentation.pl',
+
+        'actions/context_menu_multi_wirl.pl',
+        'actions/context_menu_box.pl',
+        'actions/context_menu_rulers.pl',
+        ],
+
+HOOK_FILES =&gt;
+        [
+        'hooks/canonize_connections.pl',
+        ],
+
+ASCIIO_OBJECT_SETUP =&gt;
+        [
+        'asciio_object/basic.pl',
+        ],
+
+IMPORT_EXPORT =&gt;
+        [
+        'import_export/ascii.pl',
+        'import_export/perl.pl',
+        'import_export/asciioe.pl',
+        'import_export/png.pl',
+        ],
+}
+</code></pre>
+<h2 id="modifying-saving"><a class="header" href="#modifying-saving">Modifying Saving</a></h2>
+<p>It is nice to generate a text file of the data in case you need to make further tweaks before running it through ditaa. It is also required if you want to generate .pngs on the fly of your diagrams.</p>
+<p>Go to App/Asciio/setup/actions and load up the file.pl file.</p>
+<p>On line 65, replace the original saving code with the following:</p>
+<pre><code class="language-perl">		#$new_title = $self-&gt;save_with_type($elements_to_save, $type, $file_name) ;
+		## Regardless of previous stuff, save one asciio file and one asciio.&lt;ext&gt;.txt ascii file
+		## Courtesy of Strawp of http://strawp.net/archive/geeking-out-with-diagrams-in-ascii/
+		$new_title = $self-&gt;save_with_type($elements_to_save, &quot;asciio&quot;, $file_name) ;
+		$new_title = $self-&gt;save_with_type($elements_to_save, &quot;txt&quot;, $file_name.&quot;.txt&quot;) ;
+ 
+		## Run ditaa to convert text version into nice copy
+		## Use this if you have Proc::Background available.  Otherwise, use the system call below.
+		#use Proc::Background;
+		#my $proc1 = Proc::Background-&gt;new(&quot;c:\\bin\\ditaa.bat \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+		#my $proc1 = Proc::Background-&gt;new(&quot;java -jar /home/thomas/programs/ditaa/ditaa0_9.jar \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+		## This call converts while saving.  Slows down save time.  Replace the path below with your path to ditaa.jar
+                ## You can add any special parameters here that you commonly use as well.
+                ## Use this command if you unzipped the .jar file
+		system(&quot;java -jar /home/thomas/programs/asciio-ditaa/ditaa0_9.jar \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+		## Use this command if you installed the .deb.
+		#system(&quot;ditaa \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+</code></pre>
+<h2 id="using-the-new-setup"><a class="header" href="#using-the-new-setup">Using the New Setup</a></h2>
+<p>Now that you have made all of your tweaks, you are ready to start using your asciio/ditaa combo! Start by making a simple diagram. Here is one below:</p>
+<p>Notice when you save this file for the first time:</p>
+<p>Several files are created at first. As well as our rendered image.</p>
+<p>Now, lets spice it up with some colour and some shapes. Use the right click menu to add the document tag to each of the items labelled document. To do this you will need to:</p>
+<p>Right click and select stencils → ditaatags → shapes → document
+Drag the {d} over the first document. I suggest you group any shapes, and shape modifiers by using CTRL+G once you set them up. If you do this, all of your pieces will move around if you have to tweak your image. Grouping involves selecting each item (hold shift while clicking each item), then press CTRL+G on your keyboard. This will cause this group of items to change background colour, and if you move one item, they will all move together. (You can ungroup by pressing CTRL+U)
+Add another {d} to the other document.
+If your item is falling behind the item you want, you can press CTRL+F to bring it to the foreground. Or CTRL+B to push the item on top into the background.
+Now lets add some colour. Right click, and add some colour tags to the documents. As you save, you will notice the .png updates automatically.</p>
+<p>Here is your final work of art:</p>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<p>asciio Won't Load File
+I've noticed that if you modify the stock asciio shapes (either through the gui itself, or in the stencils file) often times if you launch asciio, and then try to load a file with altered shapes, it will fail to load. It generates this output in the terminal:</p>
+<p>thomas@thomas-desktop:~/programs/asciio-ditaa$ asciio
+Using setup directory:'/usr/share/perl5/App/Asciio/setup/'
+running action 'Open'.
+load_file: can't load file '/home/thomas/programs/asciio-ditaa/saves/test':  Unrecognized character \x8E in column 23827 at (eval 105) line 372.
+You can still get asciio to open, you just need to launch it with the file you want to load. So either launch it by typing something like:</p>
+<p>thomas@thomas-desktop:~/programs/asciio-ditaa$ asciio /home/thomas/programs/asciio-ditaa/saves/test
+Using setup directory:'/usr/share/perl5/App/Asciio/setup/'
+running action 'Open'.
+Or launch from your file manager. In my case, Nautilus:</p>
+<h2 id="asciio-forgets-where-i-saved"><a class="header" href="#asciio-forgets-where-i-saved">asciio Forgets Where I Saved</a></h2>
+<p>When loading asciio for the first time, and saving, I find that asciio forgets where I saved the document. It always returns to the original launching location.</p>
+<p>To avoid this, I'd recommend that after your first save, you reopen asciio by using one of the two procedures mentioned above. This will allow it to remember where you are working, and the Save function will work correctly.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="editing-elements-text-and-attributes"><a class="header" href="#editing-elements-text-and-attributes">Editing elements text and attributes</a></h1>
+<p>Asciio  has two editing mode, <em>Dialog</em> and <em>Inline</em>, the default mode is <em>Dialog</em>.</p>
+<h2 id="dialog-editing"><a class="header" href="#dialog-editing">Dialog editing</a></h2>
+<p>Binding: Return, double-click</p>
+<p>Asciio opens a dialog which lets you set:</p>
+<ul>
+<li>boxing options</li>
+<li>title</li>
+<li>text</li>
+</ul>
+<p><img src="edit_dialog.png" alt="edit in dialog" /></p>
+<h2 id="inline-editing"><a class="header" href="#inline-editing">Inline editing</a></h2>
+<p>Binding: Return, double-click</p>
+<p>In this mode you can only edit the text.</p>
+<p><img src="edit_inline.png" alt="edit inline" /></p>
+<h2 id="alternate-editing"><a class="header" href="#alternate-editing">Alternate editing</a></h2>
+<p>You can edit in the other mode with these bindings:</p>
+<ul>
+<li>ctl + Return</li>
+<li>ctl + double-click</li>
+</ul>
+<h2 id="changing-mode"><a class="header" href="#changing-mode">Changing mode</a></h2>
+<p>To change the mode during the session use:</p>
+<p>Binding: «zi»</p>
+<h2 id="setting-the-editing-mode-in-the-user-configuration"><a class="header" href="#setting-the-editing-mode-in-the-user-configuration">Setting the editing mode in the user configuration</a></h2>
+<pre><code class="language-perl">EDIT_TEXT_INLINE =&gt; 0,
+</code></pre>
+<ul>
+<li><code>EDIT_TEXT_INLINE =&gt; 0</code> Indicates that the default editing mode is <code>Dialog editing</code></li>
+<li><code>EDIT_TEXT_INLINE =&gt; 1</code> Indicates that the default editing mode is <code>Inline editing</code></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="markup-mode"><a class="header" href="#markup-mode">Markup mode</a></h1>
+<p>We can use color in asciio, But if exported, the color information will be lost.
+The markup mode adds marks in the chart, and these marks can be retained when 
+exporting, so that special effects can be displayed in some specific software.</p>
+<h2 id="1-use-markup-mode"><a class="header" href="#1-use-markup-mode">1 Use markup mode</a></h2>
+<p>To use marks in the chart, turn on this option in the configuration.The markup 
+enable variable is the basic attribute of the chart and cannot be changed at 
+runtime.</p>
+<pre><code class="language-perl">USE_MARKUP_MODE =&gt; 'zimwiki',
+</code></pre>
+<p>If you do not need to use any markup mode, please keep this variable empty.</p>
+<pre><code class="language-perl">USE_MARKUP_MODE =&gt; '',
+</code></pre>
+<blockquote>
+<p>Currently, only zimwiki format markup is supported, then markdown format or pure
+html format may be supported in the future.</p>
+</blockquote>
+<h2 id="2-zimwiki-format-description"><a class="header" href="#2-zimwiki-format-description">2 zimwiki format description</a></h2>
+<h3 id="21-edit-marks"><a class="header" href="#21-edit-marks">2.1 Edit marks</a></h3>
+<p>zimwiki markup mode currently supports text editing of box type elements.Just place the text 
+in the middle of the marks.</p>
+<p>Currently supports 5 types of markers: </p>
+<ul>
+<li>bold
+<ul>
+<li><code>&lt;b&gt;</code>something<code>&lt;/b&gt;</code></li>
+</ul>
+</li>
+<li>underline
+<ul>
+<li><code>&lt;u&gt;</code>something<code>&lt;/u&gt;</code></li>
+</ul>
+</li>
+<li>double underline
+<ul>
+<li><code>&lt;span link=&quot;https://github.com/nkh/P5-App-Asciio&quot;&gt;</code>link name<code>&lt;/span&gt;</code></li>
+</ul>
+</li>
+<li>strikethrough
+<ul>
+<li><code>&lt;s&gt;</code>something<code>&lt;/s&gt;</code></li>
+</ul>
+</li>
+<li>italics
+<ul>
+<li><code>&lt;i&gt;</code>something<code>&lt;/i&gt;</code></li>
+</ul>
+</li>
+</ul>
+<p><em><strong>This is what it looks like in Asciio:</strong></em></p>
+<p><img src="editing_elements/markup_effect.png" alt="markup_effect" /></p>
+<p><em><strong>This is the effect in inline editing mode:</strong></em></p>
+<p><img src="editing_elements/markup_mode_modify.png" alt="markup_mode_modify" /></p>
+<p>Marks can only be valid for a single line, not multi lines.</p>
+<p><em><strong>Marks support nesting:</strong></em></p>
+<p><img src="editing_elements/markup_nesting.png" alt="markup_nesting" /></p>
+<blockquote>
+<p>Although this function is supported, it is not recommended to use it in this way, 
+and it does not make much sense</p>
+</blockquote>
+<h3 id="22-export"><a class="header" href="#22-export">2.2 Export</a></h3>
+<p>Normally, when exporting to ascii, you will get the following text</p>
+<p><em><strong>Binding:</strong></em> «ctl-e» «shift-Y» «Y»</p>
+<pre><code>                          .----------.  .---------------.  .-----------. .---------------.
+                          | italics  |  | strikethrough |  | underline | | asciio github |
+                          '----------'  '---------------'  '-----------' '---------------'
+</code></pre>
+<p>Currently, an export format is also supported, and the mark up character is added, which 
+can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
+<p><em><strong>Binding:</strong></em> «ctl-shift-E»</p>
+<pre><code>                          .----------.  .---------------.  .-----------.
+                          | //italics//  |  | ~~strikethrough~~ |  | __underline__ |
+                          '----------'  '---------------'  '-----------'
+</code></pre>
+<p>In the zim environment, they will be rendered like this:</p>
+<p><img src="editing_elements/markup_mode_zim.png" alt="markup_mode_zim" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="working-efficiently"><a class="header" href="#working-efficiently">Working efficiently</a></h1>
+<p>You can do a lot of thing with just the mouse and the popup menus but that would be a mistake, keyboard bindings are much faster and more efficient, including moving elements around.</p>
+<p>The mouse shines when quick-linking elements, they allow you to create a base diagram fast but editing and fine tuning goes faster with the keyboard or keyboard + mouse.</p>
+<p>Learn the keyboard bindings, they are a very good way to use Asciio.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="keyboard"><a class="header" href="#keyboard">Keyboard</a></h1>
+<p>Asciio has many bindings which let you work effectively, a list of all the bindings can be found in the <em><strong>Bindings</strong></em> section.</p>
+<div class="table-wrapper"><table><thead><tr><th>Example</th></tr></thead><tbody>
+<tr><td></td></tr>
+</tbody></table>
+</div><div class="table-wrapper"><table><thead><tr><th>action</th><th>binding</th></tr></thead><tbody>
+<tr><td>insert a box</td><td>ib</td></tr>
+<tr><td>resize it</td><td>2, 4</td></tr>
+<tr><td>move it</td><td>hjkl/Arrows</td></tr>
+<tr><td>insert a new box</td><td>ib</td></tr>
+<tr><td>insert an arrow</td><td>ia</td></tr>
+<tr><td>connect other box</td><td>Alt+A, hjkl/Arrows</td></tr>
+<tr><td>escape arrow end mode</td><td>Escape</td></tr>
+<tr><td>select both boxes</td><td>V</td></tr>
+<tr><td>align them</td><td>A, t</td></tr>
+</tbody></table>
+</div>
+<p><img src="editing/only_keyboard.gif" alt="only keyboard" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mouse"><a class="header" href="#mouse">Mouse</a></h1>
+<h2 id="quick-link"><a class="header" href="#quick-link">Quick link</a></h2>
+<p><em><strong>Binding:</strong></em> «alt-left-mouse-click»</p>
+<ul>
+<li>create a box is nothing is selected</li>
+<li>if only a box is selected, create a new box and connect to it</li>
+<li>if a box is selected and mouse over a box, connect them</li>
+<li>if multiple boxes are selected, create a box and connect to all boxes</li>
+</ul>
+<p><img src="editing/quick_link.gif" alt="quick link" /></p>
+<h2 id="quick-copy"><a class="header" href="#quick-copy">Quick copy</a></h2>
+<p><em><strong>Binding:</strong></em> «alt-shift-left-mouse-click»</p>
+<p>Copy the current selection and move it to another position, see <em><strong>cloning</strong></em></p>
+<p><img src="editing/quick_copy.gif" alt="quick copy" /></p>
+<h2 id="quick-arrow"><a class="header" href="#quick-arrow">Quick arrow</a></h2>
+<p><em><strong>Binding:</strong></em> «ctl-alt-mouse-motion»</p>
+<p>If an arrow is selected, move its end point with the mouse.</p>
+<p><img src="editing/quick_arrow.gif" alt="quick arrow" /></p>
+<h2 id="quick-section"><a class="header" href="#quick-section">Quick section</a></h2>
+<p><em><strong>Binding:</strong></em> «ctl-alt-left-mouse-click»</p>
+<ul>
+<li>If a wirl arrow is selected, add section.</li>
+<li>if another element is selected, add new arror</li>
+</ul>
+<p>You can then move the its end point with the mouse. releasing «ctl» lets you move the mouse to another position for a new section.</p>
+<p><img src="editing/quick_section.gif" alt="quick section" /></p>
+<h2 id="quick-box-and-section"><a class="header" href="#quick-box-and-section">Quick box and section</a></h2>
+<p>You can quickly create boxes and section by combining <em><strong>quick link</strong></em> and <em><strong>quick section</strong></em>.</p>
+<ul>
+<li>«alt-left-mouse-click», create a box</li>
+<li>«ctl-alt-left-mouse-click», link the box to a new arrow</li>
+<li>move mouse</li>
+<li>«ctl-alt-left-mouse-click», add a section</li>
+<li>move mouse</li>
+<li>«ctl-alt-left-mouse-click», add a section</li>
+<li>move mouse</li>
+<li>«alt-left-mouse-click», connect last section to new box</li>
+</ul>
+<p><img src="editing/quick_box_and_section.gif" alt="quick box and section" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cloning"><a class="header" href="#cloning">Cloning</a></h1>
+<p>You can activate the cloning feature to quickly add elements.</p>
+<p><em><strong>Binding:</strong></em> c</p>
+<h3 id="cloning-base-elements"><a class="header" href="#cloning-base-elements">Cloning Base Elements</a></h3>
+<p>When you initiate cloning without any elements selected, Asciio allows you to clone one of the base elements.</p>
+<div class="table-wrapper"><table><thead><tr><th>Element</th><th>Binding</th></tr></thead><tbody>
+<tr><td>Box</td><td>b</td></tr>
+<tr><td>Text</td><td>t</td></tr>
+<tr><td>Wirl Arrow</td><td>a</td></tr>
+<tr><td>Angled Arrow</td><td>A</td></tr>
+</tbody></table>
+</div>
+<p><img src="editing/clone_base_element.gif" alt="Clone Base Elements" /></p>
+<h3 id="cloning-the-selection"><a class="header" href="#cloning-the-selection">Cloning the Selection</a></h3>
+<p>You can also clone a set of elements that have been selected. The bindings for the base elements are still applicable.</p>
+<p><img src="editing/clone_selection.gif" alt="Clone Selection" /></p>
+<h3 id="hint-lines-1"><a class="header" href="#hint-lines-1">Hint Lines</a></h3>
+<p>If hint lines are enabled, additional lines are displayed to indicate the limits of the elements being cloned. You can toggle the hint lines on and off.</p>
+<p><em><strong>Binding:</strong></em> h</p>
+<p><img src="editing/clone_hint_lines.gif" alt="Clone Hint Lines" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="grouping-elements"><a class="header" href="#grouping-elements">Grouping elements</a></h1>
+<p>Grouping elements allows you to organize and manipulate multiple objects as a single unit.</p>
+<p><img src="editing/grouping_elements.gif" alt="groupin elements" /></p>
+<p>Grouping helps you manage complex diagrams by treating grouped elements as a cohesive entity. You can visually distinguish between different element or categories by grouping related elements together.</p>
+<p>Manipulating a group as a single unit saves time and effort compared to modifying each element individually. You can quickly move entire sections of your diagram without having to select each element separately.</p>
+<p>Grouping ensures that all elements within a group maintain their relative positions and alignments.</p>
+<h2 id="selecting-elements"><a class="header" href="#selecting-elements">Selecting Elements</a></h2>
+<p>To create a group, you first need to select multiple elements in your diagram. You can do this by clicking and dragging a selection box around the desired elements or by individually selecting each element while holding down a modifier key.</p>
+<h2 id="group-creation"><a class="header" href="#group-creation">Group Creation</a></h2>
+<p><em><strong>Binding:</strong></em> gg</p>
+<p>Please note that the grouped elements in the diagram program are visually differentiated from other elements by having a slightly distinct background. This distinction aids in easily identifying and distinguishing the elements that have been grouped together.</p>
+<h2 id="group-manipulation"><a class="header" href="#group-manipulation">Group Manipulation</a></h2>
+<p>After creating a group, you can manipulate it as a single entity. For example, you can move, copy, or align the entire group as if it were a single object. Any modifications you make to the group, such as changing its color or style, will apply to all the elements within it.</p>
+<h2 id="ungrouping"><a class="header" href="#ungrouping">Ungrouping</a></h2>
+<p><em><strong>Binding:</strong></em> gu</p>
+<p>When you want to edit individual elements within a group or remove them from the group, you can ungroup them. This action separates the grouped elements back into their original individual objects.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="strip-groups"><a class="header" href="#strip-groups">Strip groups</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="exportsave"><a class="header" href="#exportsave">Export/Save</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-format"><a class="header" href="#asciio-format">Asciio format</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="exporting-to-ascii"><a class="header" href="#exporting-to-ascii">Exporting to ASCII</a></h1>
+<p>You can export to a file in ASCII by using a '.txt' file extension.</p>
+<p>You can also export the selection, in ASCII, to the Primary clipboard.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="svg"><a class="header" href="#svg">SVG</a></h1>
+<p>Asciio doesn't export directly to SVG but uses a text to SVG application like Goat or SvgBob.</p>
+<p><a href="https://github.com/blampe/goat"><img src="https://github-readme-stats.vercel.app/api/pin/?username=blampe&amp;repo=goat" alt="Goat" /></a>
+<a href="https://github.com/ivanceras/svgbob"><img src="https://github-readme-stats.vercel.app/api/pin/?username=ivanceras&amp;repo=svgbob" alt="svgbob" /></a></p>
+<h2 id="create-a-diagram-in-asciio"><a class="header" href="#create-a-diagram-in-asciio">Create a diagram in Asciio</a></h2>
+<p><img src="export/asciio_svg_graph.png" alt="SVG source" /></p>
+<h2 id="export-it-to-svg"><a class="header" href="#export-it-to-svg">Export it to SVG</a></h2>
+<p><img src="export/svg_graph.svg" alt="SVG" /></p>
+<h2 id="further-process-the-svg"><a class="header" href="#further-process-the-svg">Further process the SVG</a></h2>
+<p>I used <a href="https://fskpf.github.io/">fskpf</a> web site to generate a pseudo hand-drawn graph out of it</p>
+<p><img src="export/hand_drawn.png" alt="hand drawn" /></p>
+<p>The <em>svg2roughj</em> sproject is here</p>
+<p><a href="https://github.com/fskpf/svg2roughjs"><img src="https://github-readme-stats.vercel.app/api/pin/?username=fskpf&amp;repo=svg2roughjs" alt="svg2roughjs" /></a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="clipboard"><a class="header" href="#clipboard">Clipboard</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="git"><a class="header" href="#git">git</a></h1>
+<pre><code>
+                     .*-----*------------------------------*
+                    /                                       \
+                   /                                         \
+           *------*---------*-----BETA---.                    \
+                   \                      \                    \
+                    \    .-----.           '                    \
+ .-------------.     *---| fix |---*-----RELEASE 1.3------&gt;*-----*---------*
+ | Release 2.0 |         '-----'    \                     /               /
+ |-------------|                     \                   /               /
+ | changes     |-------------------&gt;  '---*-------*--------------*------*
+ | tag: ...    |                           \           /
+ | eta: ...    |                            \         /
+ '-------------'                             *-------'
+
+</code></pre>
+<p>The <em>git mode</em> allows you to draw git graph quickly.</p>
+<p>The <em>git mode</em> redefines some bindings to allow you to work faster. Only the bindings listed below are available when editing.</p>
+<div class="table-wrapper"><table><thead><tr><th>action</th><th>binding</th></tr></thead><tbody>
+<tr><td>Exit git mode</td><td>«Escape»</td></tr>
+<tr><td>Undo</td><td>«u»</td></tr>
+<tr><td><em><strong>Insert and link node</strong></em></td><td>«g» «right-click»</td></tr>
+<tr><td>Change arrow direction</td><td>«d»</td></tr>
+<tr><td>Add box</td><td>«b»</td></tr>
+<tr><td>Add text</td><td>«t»</td></tr>
+<tr><td>Add arrow</td><td>«a»</td></tr>
+<tr><td>Select objects</td><td>«left-click»</td></tr>
+<tr><td>Edit Selected element</td><td>«Return» «double-click»</td></tr>
+<tr><td>Delete elements</td><td>«Delete» «x»</td></tr>
+<tr><td>Flip hint lines</td><td>«h»</td></tr>
+<tr><td>Display popup menu</td><td>«alt+right-click»</td></tr>
+</tbody></table>
+</div>
+<p>When you <em><strong>insert and link a node</strong></em>:</p>
+<ul>
+<li>if nothing is under the pointer or selected, it will insert a commit node</li>
+<li>if a node is selected and nothing under the pointer, it will insert a new node and connect with the previously selected node</li>
+<li>if a node is selected and the pointer is over a node, it will link the nodes</li>
+</ul>
+<p>Let's create a git graph.</p>
+<p><img src="modes/git_graph_feature_branch.gif" alt="git graph" /></p>
+<p>You can export the text and use it in our documentation</p>
+<pre><code>                 .----------------------------------.
+                 |          feature branch          |
+                 |                                  |
+                 |       *-------------------*      |
+                 |      /                     \     |
+                 |     /                       \    |
+                 '----/-------------------------\---'
+                     /                           \
+          *---------*---------*---------*---------*---------*
+                    ^                             ^
+                    |                             |
+                    |                             |
+                    |                             |
+             we need a new              we want to merge here
+             feature branch
+
+</code></pre>
+<p>or you can generate some fancy SVGs for a presentation.</p>
+<p><img src="modes/git_graph_feature_branch.svg" alt="git graph" /></p>
+<p><img src="modes/git_graph.svg" alt="git graph" /></p>
+<p>The connector and arrow type of the git mode can be changed.</p>
+<p>In the user configuration for the connector,</p>
+<pre><code class="language-perl">GIT_MODE_CONNECTOR_CHAR_LIST =&gt; ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
+</code></pre>
+<p>or in the popup menu for both.</p>
+<p><img src="modes/git_popup_menu.png" alt="git_popup menu" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
+<h2 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h2>
+<p>In normal mode, elements boundaries are independent of each.</p>
+<p><img src="modes/normal_elements.png" alt="normal_elements" /></p>
+<p>In cross mode intersections are merged:</p>
+<p><img src="modes/cross_elements.png" alt="cross_elements" /></p>
+<h2 id="complex-graphics"><a class="header" href="#complex-graphics">Complex graphics</a></h2>
+<p>The cross-mode lets you create graphics like this table</p>
+<pre><code>
+        ╔═══════╤══════════════════════════════════════════════════════════════╗
+        ║       │   test scores                                                ║
+        ║       ├──────┬───────┬───────┬────────┬───────┬──────┬────────┬──────╢
+        ║  Name │  Math│Physics│       │        │       │      │        │      ║
+        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
+        ║ Jim   │  A+  │  B    │       │        │       │      │        │      ║
+        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
+        ║Stephen│  B   │  A    │       │        │       │      │        │      ║
+        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
+        ║ Kate  │  A   │  C    │       │        │       │      │        │      ║
+        ╚═══════╧══════╧═══════╧═══════╧════════╧═══════╧══════╧════════╧══════╝
+
+</code></pre>
+<h2 id="enabling-cross-mode"><a class="header" href="#enabling-cross-mode">Enabling cross-mode</a></h2>
+<h3 id="globally"><a class="header" href="#globally">Globally</a></h3>
+<p>Add this line in your user configuration.</p>
+<pre><code class="language-perl">USE_CROSS_MODE =&gt; 1,
+</code></pre>
+<h3 id="dynamically"><a class="header" href="#dynamically">Dynamically</a></h3>
+<p>Binding: «x» 'Switch cross mode'</p>
+<h2 id="line-and-box"><a class="header" href="#line-and-box">Line and Box</a></h2>
+<p><img src="modes/cross_lines.gif" alt="cross_lines" /></p>
+<p><img src="modes/cross_boxs.gif" alt="cross_boxs" /></p>
+<h2 id="lines-and-boxes"><a class="header" href="#lines-and-boxes">Lines and boxes</a></h2>
+<p><img src="modes/cross_box_line.gif" alt="cross_box_line" /></p>
+<h2 id="exported-to-text"><a class="header" href="#exported-to-text">Exported to text</a></h2>
+<pre><code>        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
+        |        |      │        │    ┃        ┃    ║        ║
+        |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
+        |        |      │        │    ┃  ┃        ┃ ║        ║
+        '--------'      ╰────────╯    ┗━━┫        ┃ ╚════════╝
+                                         ┃        ┃
+                                         ┗━━━━━━━━┛
+
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │       ━━━━━╋━━━━━━     ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+
+
+
+
+
+                .--------.
+                |        |          ╭─┬────────┬─────╮
+                |  .-----'--.       │ │        │     │
+                |  |        |       │ │        │     │
+                '--.        |       │ │        │     │    ╔══════════════╗
+                   |        |       │ ╰────────╯     │    ║              ║
+                   '--------'       │                │    ║              ║
+                                    │                │    ║              ║
+                                    │        ╔═══════╧╗   ║              ║
+                                    │        ║        ║   ║              ║
+                                    ╰────────╢        ║   ║              ║
+                                             ║        ║   ║              ║
+                                             ╚════════╝   ╚══════════════╝
+
+</code></pre>
+<h2 id="excluded-elements"><a class="header" href="#excluded-elements">Excluded elements</a></h2>
+<p>Some elements do not need to cross, such as ellipse, so they can 
+be excluded in the configuration file.</p>
+<pre><code class="language-perl">CROSS_MODE_IGNORE =&gt;
+    [
+    'App::Asciio::stripes::ellipse',
+	'App::Asciio::stripes::if_box'
+    ],
+</code></pre>
+<p>Just write the full path of the element to be excluded.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="slides"><a class="header" href="#slides">slides</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="examples-1"><a class="header" href="#examples-1">Examples</a></h1>
+<h1 id="unix-structure"><a class="header" href="#unix-structure">Unix structure</a></h1>
+<pre><code>              .---.  .---. .---.  .---.    .---.  .---.
+     OS API   '---'  '---' '---'  '---'    '---'  '---'
+                |      |     |      |        |      |
+                v      v     |      v        |      v
+              .------------. | .-----------. |  .-----.
+              | Filesystem | | | Scheduler | |  | MMU |
+              '------------' | '-----------' |  '-----'
+                     |       |      |        |
+                     v       |      |        v
+                  .----.     |      |    .---------.
+                  | IO |&lt;----'      |    | Network |
+                  '----'            |    '---------'
+                     |              |         |
+                     v              v         v
+              .---------------------------------------.
+              |                  HAL                  |
+              '---------------------------------------'
+
+
+</code></pre>
+<h2 id="documenting-hardware-instrumentation"><a class="header" href="#documenting-hardware-instrumentation">Documenting hardware instrumentation</a></h2>
+<pre><code>      _____ 
+     | ___ |
+     ||___|| load
+     | ooo |--.------------------.------------------------.
+     '_____'  |                  |                        |
+              v                  v                        v
+      .----------.  .--------------------------.  .----------------.
+      | module C |  |         module A         |  |    module B    |
+      '----------'  |--------------------------|  | (instrumented) |
+           |        |        .-----.           |  '----------------'
+           '----------------&gt;| A.o |           |          |
+                    |        '-----'           |          |
+                    |   .------------------.   |          |
+                    |   | A.instrumented.o |&lt;-------------'
+                    |   '------------------'   |
+                    '--------------------------'
+</code></pre>
+<h2 id="decorating-forth-code"><a class="header" href="#decorating-forth-code">Decorating Forth code</a></h2>
+<pre><code>       index? dup dup dup dup dup average @ + average ! .&quot; data = &quot; .
+    .--------------.
+    |  Data Stack  |
+    |--------------|
+    | next element |-----&gt; average @ + average !
+    | dup          |-----&gt; .&quot; data = &quot; .
+    | dup          |-----&gt; minv @ &lt; if--.
+    | dup          |                    '------&gt; minv ! .&quot; (new minv) &quot; or DROP after ELSE
+    | dup          |-----&gt; maxv @ &gt; if---.
+    | dup          |                     '----&gt;  maxv ! .&quot; (new maxv) &quot; or DROP after ELSE
+    '--------------'
+       minv @ &lt; if
+       minv ! .&quot; (new minv) &quot;
+       else    drop                                                                        \ data &gt; minv so it's ignored
+           maxv @ &gt; if
+           maxv ! .&quot; (new maxv) &quot;
+           else drop                                                                       \ data &lt; maxv so it's ignored
+           then
+       then
+       counter @ 1 - counter !                                                             \ Decrement counter
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="example-1"><a class="header" href="#example-1">example 1</a></h1>
+<h2 id="describing-a-class-hierarchy"><a class="header" href="#describing-a-class-hierarchy">describing a class hierarchy</a></h2>
+<pre><code>
+                                 .-Base::Class::Derived_B
+                                /
+     Something::Else           /
+             \                .----Base::Class::Derived_C 
+              \              /
+               '----Base::Class
+                     '       \
+                    /         '----Latest::Greatest
+      Some::Thing--'                                           
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="german-railroad"><a class="header" href="#german-railroad">German railroad</a></h1>
+<p><em>Graph-Easy</em> is an application that generates graphs in ASCII, a bit like GraphViz.</p>
+<p><a href="https://github.com/ironcamel/Graph-Easy"><img src="https://github-readme-stats.vercel.app/api/pin/?username=ironcamel&amp;repo=Graph-Easy" alt="Graph-Easy" /></a></p>
+<pre><code>               ..................................
+               :                                v
++------+     +--------+     .............     +---------+     +---------+
+| Bonn | --&gt; | Berlin | --&gt; :           : --&gt; | Potsdam | ==&gt; | Cottbus |
++------+     +--------+     :           :     +---------+     +---------+
+               ^            :           :                       ^
+               |            : Frankfurt :                       |
+               |            :           :                       |
+             +--------+     :           :     +---------+       |
+             |   x    | --&gt; :           : &lt;-- |    y    | ------+
+             +--------+     :...........:     +---------+
+                              |
+                              |
+                              v
+                            +-----------+
+                            |  Dresden  |
+                            +-----------+
+</code></pre>
+<p>I re-drew the example above in Asciio.</p>
+<pre><code>
+                 .------------------------------.
+                 |                              |
+                 |                              v
+.------.    .--------.    .-----------.    .---------.  .---------.
+| Bonn |-.-&gt;| Berlin |-.-&gt;| Frankfurt |-.-&gt;| Potsdam |-&gt;| Cottbus |
+'------' |  '--------' |  '-----------' |  '---------'  '---------'
+         |             |                |                    ^
+       .---.           |                |  .---------.       |
+       | x |-----------'                '-&gt;| Dresden |       |
+       '---'           |                   '---------'       |
+       .---.           |                                     |
+       | y |-----------'-------------------------------------'
+       '---'
+
+</code></pre>
+<p>There are few interesting things to notice:</p>
+<ul>
+<li>Graph-Easy smartly changes the size of the boxes to accommodate more connections</li>
+<li>Asciio doesn't have a routing functionality for graph, it would be a nice addition</li>
+<li>Asciio has 4 connectors per box (but you can get around it)</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unicode-example"><a class="header" href="#unicode-example">Unicode Example</a></h1>
+<p><em>Asciio</em> does't generate SVG but, in the spirit of unix tools, rely on another tool
+to convert text files to SVG.</p>
+<p>The &quot;goat&quot; project (https://github.com/blampe/goat) has been chosen to make the conversion, it must be installed, but you can use any converter you want; I recommend having a look athe ecexelent SVGBob too.</p>
+<p>See the &quot;Exporter&quot; section to learn how to write your own.</p>
+<p><img src="examples/asciio_unicode.png" alt="Unicode" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="videos"><a class="header" href="#videos">videos</a></h1>
+<ul>
+<li>
+<p>presentation</p>
+</li>
+<li>
+<p>efficient session</p>
+</li>
+<li>
+<p>grouping</p>
+</li>
+<li>
+<p>working with external commands</p>
+<ul>
+<li>
+<p>input to asciio</p>
+</li>
+<li>
+<p>using Asciio's output</p>
+</li>
+</ul>
+</li>
+<li>
+<p>doing a presentation with Asciio</p>
+</li>
+<li>
+<p>writing requirements with Asciio and markdown</p>
+</li>
+</ul>
+<p>Some older videos (15 years!) that show some basic usage:</p>
+<p><a href="https://www.youtube.com/watch?v=0l9W84PhOyI"><img src="videos/old_video.jpg" alt="old video" /></a></p>
+<p><a href="https://www.youtube.com/watch?v=d5Fq17Bxurs">asciio 1.0</a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings"><a class="header" href="#bindings">Bindings</a></h1>
+<p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.</p>
+<p>It's faster and easier to work with keyboard shortcuts than the mouse and the number of combination of mouse buttons * control-keys is very limited.</p>
+<p><em>Asciio</em> bindings are vim-like, they initially take more time to get used to, and often take multiple key presses but they are much more logical as families of commands are
+accessed with shortcuts that start with the same letter.</p>
+<p>The bindings can be changed in your user configuration, See configuration/user_bindings </p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="mouse-1"><a class="header" href="#mouse-1">Mouse</a></h1>
+<div class="table-wrapper"><table><thead><tr><th>action</th><th>binding</th></tr></thead><tbody>
+<tr><td>Edit selected element</td><td>000-2button-press-1</td></tr>
+<tr><td>Edit selected element inline</td><td>C00-2button-press-1</td></tr>
+<tr><td>Mouse right-click</td><td>000-button-press-3,</td></tr>
+<tr><td>Mouse left-click</td><td>000-button-press-1,</td></tr>
+<tr><td>Mouse expand selection</td><td>00S-button-press-1,</td></tr>
+<tr><td>Mouse selection flip</td><td>C00-button-press-1,</td></tr>
+<tr><td>Mouse quick link</td><td>0A0-button-press-1</td></tr>
+<tr><td>Mouse duplicate elements</td><td>0AS-button-press-1</td></tr>
+<tr><td>Mouse quick box</td><td>C0S-button-press-1</td></tr>
+<tr><td>Arrow to mouse</td><td>CA0-motion_notify,</td></tr>
+<tr><td>Arrow mouse change direction</td><td>CA0-2button-press-1</td></tr>
+<tr><td>Arrow change direction</td><td>CA0-d,</td></tr>
+<tr><td>Wirl arrow add section</td><td>CA0-button-press-1,</td></tr>
+<tr><td>Wirl arrow insert flex point</td><td>CA0-button-press-2,</td></tr>
+<tr><td>Mouse motion</td><td>000-motion_notify,</td></tr>
+<tr><td>Mouse motion 2</td><td>0AS-motion_notify,</td></tr>
+<tr><td>Mouse drag canvas</td><td>C00-motion_notify,</td></tr>
+<tr><td>Zoom in</td><td>C00-scroll-up,</td></tr>
+<tr><td>Zoom out</td><td>C00-scroll-down,</td></tr>
+</tbody></table>
+</div>
+<h2 id="mouse-emulation"><a class="header" href="#mouse-emulation">Mouse emulation</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>action</th><th>binding</th></tr></thead><tbody>
+<tr><td>Toggle mouse</td><td>«'»</td></tr>
+<tr><td>Mouse shift-left-click</td><td>«Ö»</td></tr>
+<tr><td>Mouse left-click</td><td>«ö»</td></tr>
+<tr><td>Mouse right-click</td><td>«ä»</td></tr>
+<tr><td>Mouse drag left 3</td><td>«H»</td></tr>
+<tr><td>Mouse drag down 3</td><td>«J»</td></tr>
+<tr><td>Mouse drag up 3</td><td>«K»</td></tr>
+<tr><td>Mouse drag right 3</td><td>«L»</td></tr>
+<tr><td>Mouse drag down</td><td>«Down»</td></tr>
+<tr><td>Mouse drag left</td><td>«Left»</td></tr>
+<tr><td>Mouse drag right</td><td>«Right»</td></tr>
+<tr><td>Mouse drag up</td><td>«Up»</td></tr>
+<tr><td>Mouse drag down</td><td>«A-Down»</td></tr>
+<tr><td>Mouse drag left</td><td>«A-Left»</td></tr>
+<tr><td>Mouse drag right</td><td>«A-Right»</td></tr>
+<tr><td>Mouse drag up</td><td>«A-Up»</td></tr>
+<tr><td>Mouse alt-left-click</td><td>«ö»</td></tr>
+<tr><td>Mouse ctl-left-click</td><td>«ö»</td></tr>
+</tbody></table>
+</div><div style="break-before: page; page-break-before: always;"></div><h1 id="why-vim-like-bindings"><a class="header" href="#why-vim-like-bindings">Why vim-like bindings</a></h1>
+<h2 id="combinations"><a class="header" href="#combinations">Combinations</a></h2>
+<p>To simplify, let's start with having 26 letters accessible on the keyboard, no uppercase.</p>
+<ul>
+<li>using ctl + alt + key  gives us around 100 combinations</li>
+<li>letter + leter gives use around 650 combinations</li>
+<li>letter + letter + letter gives use around 18 000 combinations</li>
+</ul>
+<p>If we had uppercase, ie, 52 letters</p>
+<ul>
+<li>using ctl + alt + key  gives us around 200 combinations</li>
+<li>letter + letter + letter gives use around 140 000 combinations</li>
+</ul>
+<h2 id="speed"><a class="header" href="#speed">Speed</a></h2>
+<p>typing ctl + alt + key is not faster than key + key + key, and even less key + key</p>
+<h2 id="structure-and-mnemonics"><a class="header" href="#structure-and-mnemonics">Structure and mnemonics</a></h2>
+<p>Of course we don't need tens of thousands of combinations</p>
+<p>But do you know what CA0-a does? C0S-A? 0AS-a? CAS-A? C00-A? 0A0-a? 00S-a? ... without looking at the docs?</p>
+<p>The whole point vim-like binding is to remember them, it's not a perfect system but it's expandable and easier to remember</p>
+<p>Let me give you and example, we have multiple types of boxes, let's say</p>
+<ul>
+<li>normal</li>
+<li>unicode</li>
+<li>shrink</li>
+<li>with hash tag as a border</li>
+</ul>
+<p>Let' start with a generic binder «i» for insert and «b» for box</p>
+<ul>
+<li>«ibb» normal, we cound have used «ibn» too but the most used keys are usually double for speed</li>
+<li>«ibu» unicode</li>
+<li>«ibs» shrink</li>
+<li>«ibh» with hash tag as a border</li>
+</ul>
+<p>The good thing here is that we can use the same thing for arrows but with «ia» as a prefix.</p>
+<p>But let's imagine that you come up with 4 new types of unicode borders (well you have), I don't want to imagine how to do that with the mouse, and with ctl + .... we've run out of shortcuts that are easy to remember. on the other hand ...</p>
+<ul>
+<li>«ibb» normal, we cound have used «ibn» too but the most used keys are usually double for speed</li>
+<li>«ibuu» unicode</li>
+<li>«ibu1» unicode</li>
+<li>«ibu2» unicode</li>
+<li>«ibu3» unicode</li>
+<li>«ibs» shrink</li>
+<li>«ibh» with hash tag as a border</li>
+</ul>
+<p>I used 1, 2, and 3 because I was lacking imagination but</p>
+<ul>
+<li>double</li>
+<li>thick</li>
+<li>whatnot </li>
+</ul>
+<p>would have given us keys to remember.</p>
+<h2 id="quizz"><a class="header" href="#quizz">Quizz</a></h2>
+<p>Do you remember (although you've just seen it) ...</p>
+<ul>
+<li>insert a box</li>
+<li>insert a box using unicode type 2</li>
+<li>insert a box that shrinks</li>
+<li>inserta box with the default unicode</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="single-key-bindings"><a class="header" href="#single-key-bindings">single key bindings</a></h1>
+<pre><code> «Enter»            Edit selected element
+
+ «d»                Delete selected element(s)
+
+ «u»                Undo
+
+ «C»-r              Redo
+
+ «.»                Quick link
+
+ «,»                Quick copy
+
+ «R»                Remove rulers
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="gui-bindings"><a class="header" href="#gui-bindings">GUI bindings</a></h1>
+<h2 id="keyboard-1"><a class="header" href="#keyboard-1">keyboard</a></h2>
+<pre><code> «C00-a»            Select all elements
+
+ «C00-c»            Copy to clipboard
+
+ «C00-e»            Export to clipboard &amp; primary as ascii
+
+ «C00-v»            Insert from clipboard
+
+ «C0S-V»            Import from primary to box
+
+ «C00-z»            Undo
+
+ «C00-y»            Redo
+
+ «+»                Zoom in
+
+ «-»                Zoom out
+</code></pre>
+<h2 id="mouse-2"><a class="header" href="#mouse-2">mouse</a></h2>
+<pre><code> «double-click»     Edit selected element
+
+ «C00-button-1»     Add to selection
+
+ «0A0-button-1»     Quick link
+
+ «0AS-button-1»     Duplicate elements
+
+ «CA0-button-1»     Insert flex point (in arrow)
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="moving-elements"><a class="header" href="#moving-elements">Moving elements</a></h1>
+<pre><code>     «h»                Move selected elements left
+
+     «j»                Move selected elements down
+
+     «k»                Move selected elements up
+
+     «l»                Move selected elements right
+
+
+     «Left»             Move selected elements left
+
+     «Down»             Move selected elements down
+
+     «Up»               Move selected elements up
+
+     «Right»            Move selected elements right
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="selecting-elements-1"><a class="header" href="#selecting-elements-1">Selecting elements</a></h1>
+<pre><code>     «n»                Select next element
+
+     «N»                Select previous element
+
+     «Tab»              Select next element move mouse
+
+     «V»                Select all elements
+
+     «v»                Select connected elements
+
+     «Escape»           Deselect all elements
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="resizing-elements"><a class="header" href="#resizing-elements">Resizing elements</a></h1>
+<p>Bindings:</p>
+<ul>
+<li>
+<p>«1»                Make element narrower</p>
+</li>
+<li>
+<p>«2»                Make element taller</p>
+</li>
+<li>
+<p>«3»                Make element shorter</p>
+</li>
+<li>
+<p>«4»                Make element wider</p>
+</li>
+</ul>
+<p><img src="bindings/asciio_resize.png" alt="resize" /></p>
+<ul>
+<li>«s»                Shrink box</li>
+</ul>
+<p><img src="bindings/asciio_shrink.png" alt="shrink" /></p>
+<p>There an auto-shrink attribute so you don't have to shrink boxes manually each time you change their size.</p>
+<p><img src="bindings/asciio_enable_auto_shrink.png" alt="auto shrink" /></p>
+<p>There's also a box you can add which already has auto-shrink set; you can insert it with a shortcut or via the popup menu.</p>
+<p>Binding: <em>«iB»</em> Add auto-shrink box:</p>
+<p><img src="bindings/asciio_auto_shrink_box.png" alt="auto shrink_box" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="clipboard-1"><a class="header" href="#clipboard-1">Clipboard</a></h1>
+<pre><code>     «y»                Copy to clipboard
+
+     «p»                Insert from clipboard
+
+     «Y»                Export to clipboard &amp; primary as ascii
+
+     «P»                Import from primary to box
+
+     «A-P»              Import from primary to text
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="multiple-key-bindings"><a class="header" href="#multiple-key-bindings">multiple key bindings</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="-command-group"><a class="header" href="#-command-group">«:» command group:</a></h1>
+<pre><code> «:» command group:
+
+     «q»                Quit
+
+     «Q»                Quit no save
+
+     «w»                Save
+
+     «W»                SaveAs
+
+     «e»                Open
+
+     «r»                Insert
+
+     «m»                Display manpage
+
+     «h»                Help
+
+     «c»                Display commands
+
+     «f»                Display action files
+
+     «k»                Display keyboard mapping
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="i-insert-group"><a class="header" href="#i-insert-group">«i» Insert group</a></h1>
+<pre><code> «i» Insert group:
+
+     «A»                Add angled arrow
+
+     «a»                Add arrow
+
+     «A-a»              Add unicode arrow
+
+     «B»                Add shrink box
+
+     «b»                Add box
+
+     «A-b»              Add unicode box
+
+     «c»                Add connector
+
+     «E»                Add exec-box no border
+
+     «e»                Add exec-box
+
+     «f»                Insert from file
+
+     «g»                Add group object type 1
+
+     «h»                Add help box
+
+     «i»                Add if-box
+
+     «R»                Add horizontal ruler
+
+     «x»                External command output in a box
+
+     «X»                External command output in a box no frame
+
+     «p»                Add process
+
+     «r»                Add vertical ruler
+
+     «t»                Add text
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="a-arrow-group"><a class="header" href="#a-arrow-group">«a» arrow group</a></h1>
+<pre><code> «a» arrow group:
+
+     «S»                Insert multi-wirl section
+
+     «f»                Flip arrow start and end
+
+     «d»                Change arrow direction
+
+     «s»                Append multi-wirl sectioni
+
+     «A-s»              Remove last section from multi-wirl
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="a-align-group"><a class="header" href="#a-align-group">«A» align group</a></h1>
+<pre><code> «A» align group:
+
+
+ «t»                Align top
+
+     «l»                Align left
+
+ «b»                Align bottom
+
+     «r»                Align right
+
+ «h»                Align horizontally
+
+ «v»                Align vertically
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="g-grouping-group"><a class="header" href="#g-grouping-group">«g» grouping group</a></h1>
+<pre><code> «g» grouping group:
+
+     «g»                Group selected elements
+
+     «u»                Ungroup selected elements
+
+     «F»                Temporary move selected element to the front
+
+     «f»                Move selected elements to the front
+
+     «b»                Move selected elements to the back
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="a-g-stripes-group-group"><a class="header" href="#a-g-stripes-group-group">«A-g» stripes-group group</a></h1>
+<pre><code> «A-g» stripes-group group:
+
+     «1»                Create one stripe group
+
+     «g»                Create stripes group
+
+     «u»                Ungroup stripes group
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="z-display-group"><a class="header" href="#z-display-group">«z» display group</a></h1>
+<pre><code> «z» display group:
+
+     «C»                Change grid color
+
+     «c»                Change Asciio background color
+
+     «g»                Flip grid display
+
+     «s»                Flip color scheme
+
+     «t»                Flip transparent element background
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="s-slides-group"><a class="header" href="#s-slides-group">«S» slides group</a></h1>
+<pre><code> «S» slides group:
+
+     «N»                Previous slide
+
+     «g»                First slide
+
+     «l»                Load slides
+
+     «n»                Next slide
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="d-debug-group"><a class="header" href="#d-debug-group">«D» Debug group</a></h1>
+<pre><code> «D» debug group:
+
+     «E»                Dump selected elements
+
+     «e»                Dump all elements
+
+     «S»                Display undo stack statistics
+
+     «o»                Test
+
+     «s»                Dump self
+
+     «t»                Display numbered objects
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
+<p>Your user configuration is '$HOME/.config/Asciio/Asciio.ini'</p>
+<p>Your configuration file has this format:</p>
+<pre><code class="language-perl">{
+STENCILS =&gt;
+	[
+	#'stencils/asciio',
+	],
+	
+ACTION_FILES =&gt;
+	[
+	#'actions/xxx.pl',
+	],
+	
+HOOK_FILES =&gt;
+	[
+	],
+
+ASCIIO_OBJECT_SETUP =&gt;
+	[
+	#$ASCIIO_UI eq 'TUI' ? 'asciio_object/tui.pl' : 'asciio_object/gui.pl' ,
+	],
+	
+IMPORT_EXPORT =&gt;
+	[
+	#'import_export/ascii.pl',
+	],
+}
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="user-bindings"><a class="header" href="#user-bindings">user bindings</a></h1>
+<p>The bindings can be changed in your user configuration. File '$HOME/.config/Asciio/Asciio.ini' points at the </p>
+<p>Here's and example of binding:</p>
+<pre><code class="language-perl">'Change elements foreground color' =&gt; ['000-c',  \&amp;App::Asciio::Actions::Colors::change_elements_colors, 0 ],
+</code></pre>
+<p>Bindings are composed of:</p>
+<ul>
+<li>a command name</li>
+<li>a set of keyboard shortcuts</li>
+</ul>
+<p>To change a binding:</p>
+<ul>
+<li>Find the command name for the binding you want to change</li>
+<li>decide a new keyboard shortcuts</li>
+<li>add your binding to your configuration file</li>
+</ul>
+<p>Your configuration file has this format:</p>
+<pre><code class="language-perl">{
+...
+ACTION_FILES =&gt;
+	[
+	'actions/colors.pl', # new configuration file where you want to put your color bindings
+	],
+...
+}
+
+</code></pre>
+<p>Create '$HOME/.config/Asciio/actions/colors.pl' and add:</p>
+<pre><code class="language-perl">register_action_handlers
+	(
+	'Change elements foreground color' =&gt; ['000-Z'],
+	) ;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="binding-format"><a class="header" href="#binding-format">Binding format</a></h1>
+<p>A binding contains:</p>
+<ul>
+<li>unique name for your binding</li>
+<li>shortcut, multiple shortcuts are passed as ['shortcut_1', 'shortcut_2', ...]</li>
+<li>action sub reference</li>
+<li>arguments to the action sub reference, optional</li>
+<li>popup-menu sub reference, optional</li>
+</ul>
+<p>Example:</p>
+<pre><code class="language-perl">
+'Edit selected element inline'  =&gt; 
+    [
+    ['C00-2button-press-1','C00-Return'],
+    \&amp;App::Asciio::Actions::ElementsManipulation::edit_selected_element,
+    1
+    ],
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="group-bindings"><a class="header" href="#group-bindings">Group bindings</a></h1>
+<p>Bindings can be grouped so you can use multiple key presses (vim-like) to reach an action.</p>
+<pre><code class="language-perl">
+'group name' =&gt;
+	{
+	SHORTCUTS =&gt; 'C00-x',
+	
+	'sub group name' =&gt; 
+		{
+		SHORTCUTS =&gt; 'C00-x',
+		
+		'binding in sub group' =&gt; ['C00-x', sub { print &quot;you're in x/x/x\n&quot; ; } ],  
+		} ,
+	
+	'binding 1' =&gt; ['000-1', sub { print &quot;you're in x/1\n&quot; ; } ],  
+	'binding 2' =&gt; ['000-2', sub { print &quot;you're in x/2\n&quot; ; } ],  
+	},
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="capturing-groups"><a class="header" href="#capturing-groups">Capturing groups</a></h1>
+<p>If a group has an ESCAPE_KEY, the group is a capturing group. The group's bindings will be used repeatedly till the ESCAPE_KEY is pressed.</p>
+<pre><code class="language-perl">
+'capture group' =&gt;
+	{
+	SHORTCUTS =&gt; '0A0-c',
+	ESCAPE_KEY =&gt; '000-Escape',
+	
+	'capture x'     =&gt; [ '000-x', sub { print &quot;captured x\n&quot;; } ],
+	'capture y'     =&gt; [ '000-y', sub { print &quot;captured y\n&quot;; } ],
+	},
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="binding-override"><a class="header" href="#binding-override">Binding override</a></h1>
+<p>You can re-bind an existing shortcut to another command, Asciio will generate a warning in the console.</p>
+<pre><code>Overriding shortcut 'C00-y'
+        new is 'Redo 2' defined in file '.../actions/override_bindings.pl'
+        old was 'Redo' defined in file 'actions/default_bindings.pl'
+</code></pre>
+<p><img src="config/user_bindings/warning.svg" alt="warning" /> Don't use the same shortcut multiple times in the <em>same</em> file, the order of registration in the <em>same</em> file not guaranteed.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="capturing-groups-with-overlay"><a class="header" href="#capturing-groups-with-overlay">Capturing groups with overlay</a></h1>
+<p><img src="config/user_bindings/capture_overlay.gif" alt="capture with overlay" /></p>
+<h2 id="define--overlays"><a class="header" href="#define--overlays">Define  overlays</a></h2>
+<pre><code class="language-perl">my $click_choice_element = ['Asciio/box', 0] ;
+my $box_overlay =
+	[
+	[0, 0, '.'],
+	[1, 0, '-'],
+	[2, 0, '-'],
+	[3, 0, '-'],
+	[4, 0, '.'],
+	
+	[0, 1, '|'],
+	[4, 1, '|'],
+	
+	[0, 2, &quot;'&quot;],
+	[1, 2, '-'],
+	[2, 2, '-'],
+	[3, 2, '-'],
+	[4, 2, &quot;'&quot;],
+	] ;
+
+my $text_overlay =
+	[
+	[0, 0, 'T.'],
+	[1, 0, 'e'],
+	[2, 0, 'x'],
+	[3, 0, 't'],
+	] ;
+
+my $arrow_overlay =
+	[
+	[2, -2, '.'],
+	[3, -2, '-'],
+	[1, -1, '/'],
+	[0, 0,  &quot;'&quot;],
+	] ;
+
+</code></pre>
+<h2 id="declare-callbacks"><a class="header" href="#declare-callbacks">Declare callbacks</a></h2>
+<pre><code class="language-perl">my $click_element_overlay = $box_overlay ;
+
+sub click_choice_add_element { App::Asciio::Actions::Elements::add_element($_[0], $click_choice_element) ; }
+
+sub click_element_choice
+{
+my ($asciio, $args) = @_ ;
+($click_element_overlay, $click_choice_element) = $args-&gt;@* ;
+$asciio-&gt;update_display ;
+}
+
+sub click_element_enter { print &quot;enter!!\n&quot; ; my ($asciio) = @_ ; $asciio-&gt;set_overlays_sub(\&amp;click_element_overlay) ; $asciio-&gt;update_display ; }
+sub click_element_escape { my ($asciio) = @_ ; $asciio-&gt;set_overlays_sub(undef) ; $asciio-&gt;update_display ; }
+
+sub click_element_mouse_motion 
+{
+my ($asciio, $event) = @_ ;
+
+App::Asciio::Actions::Mouse::mouse_motion($asciio, $event) ;
+$asciio-&gt;update_display() ; 
+}
+
+sub click_element_overlay
+{
+my ($asciio) = @_ ;
+my @overlays = map { [ $asciio-&gt;{MOUSE_X} + $_-&gt;[0], $asciio-&gt;{MOUSE_Y} + $_-&gt;[1], $_-&gt;[2] ] } @$click_element_overlay ;
+
+@overlays
+}
+</code></pre>
+<h2 id="declare-bindings"><a class="header" href="#declare-bindings">Declare bindings</a></h2>
+<pre><code class="language-perl">
+register_action_handlers
+(
+'insert on click' =&gt;
+	{
+	SHORTCUTS =&gt; '0A0-i',
+	ENTER_GROUP =&gt; \&amp;click_element_enter,
+	ESCAPE_KEY =&gt; '000-Escape',
+	
+	'click element escape'  =&gt; [ '000-Escape',          \&amp;click_element_escape                                               ],
+	'click element motion'  =&gt; [ '000-motion_notify',   \&amp;click_element_mouse_motion                                         ], 
+	
+	'click element insert'  =&gt; [ '000-button-press-1',  \&amp;click_choice_add_element                                           ],
+	'click element arrow'   =&gt; [ '000-a',               \&amp;click_element_choice, [$arrow_overlay, ['Asciio/angled_arrow', 0]] ],
+	'click element box'     =&gt; [ '000-b',               \&amp;click_element_choice, [$box_overlay,   ['Asciio/box', 0]]          ],
+	'click element text'    =&gt; [ '000-t',               \&amp;click_element_choice, [$text_overlay,  ['Asciio/text', 0]]         ],
+	
+	},
+) ;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="user-stencils-1"><a class="header" href="#user-stencils-1">user stencils</a></h1>
+<ul>
+<li>create a repo in your config directory</li>
+<li>verbatim stencils
+<ul>
+<li>generate automatically</li>
+</ul>
+</li>
+<li>stencils requiring perl code</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="for-developers"><a class="header" href="#for-developers">For Developers</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="scripting"><a class="header" href="#scripting">Scripting</a></h1>
+<pre><code># Generated by documentation/scripting/multi_wirl.pl
+
+.------.
+| box1 |&lt;-----------------------------------.
+'------'                                    |
+    |                                   .------.
+    |                                   | box3 |
+    |                                   '------'
+    |                                       ^
+    |                                       |
+    |               .------.                |
+    '--------------&gt;| box2 |----------------'
+                    '------'
+
+
+     __________
+     \         \
+      \  line 1 \
+       ) line 2  )
+      /  line 3 /
+     /_________/
+
+</code></pre>
+<h2 id="asciio-simplified-interface"><a class="header" href="#asciio-simplified-interface">Asciio simplified interface</a></h2>
+<p>These examples show you the simplified scripting interface which hides some of the details for you. The full source code is at the bottom of this page and in the scripting directory in the documentation of the project.</p>
+<h2 id="create-a-new-perl-script"><a class="header" href="#create-a-new-perl-script">Create a new Perl script</a></h2>
+<p>Crate a file and add these lines</p>
+<pre><code class="language-perl">use strict; use warnings;
+
+use App::Asciio::Scripting ;
+</code></pre>
+<p>This will set some sanity checks on your code and load the simplified scripting interface.</p>
+<h2 id="adding-boxes"><a class="header" href="#adding-boxes">Adding boxes</a></h2>
+<pre><code class="language-perl">
+add 'box1', new_box(TEXT_ONLY =&gt;'box1'),  0,  2 ;
+add 'box2', new_box(TEXT_ONLY =&gt;'box2'), 20, 10 ;
+add 'box3', new_box(TEXT_ONLY =&gt;'box3'), 40,  5 ;
+</code></pre>
+<p>The simplified scripting interface lets you name your object so you can later connect them together.</p>
+<h2 id="adding-connections"><a class="header" href="#adding-connections">Adding connections</a></h2>
+<pre><code class="language-perl">connect_elements 'box1', 'box2', 'down' ;
+connect_elements 'box2', 'box3' ;
+connect_elements 'box3', 'box1', 'up' ;
+</code></pre>
+<p>You can hint Asciio about the direction of your arrows.</p>
+<h3 id="canonizing-connections"><a class="header" href="#canonizing-connections">Canonizing connections</a></h3>
+<p>Asciio tries to route the arrows properly, this is done automatically in the UIs but you need to do it manually in scripts.</p>
+<pre><code class="language-perl">
+optimize ;
+
+</code></pre>
+<h2 id="printing-and-saving-the-result"><a class="header" href="#printing-and-saving-the-result">Printing and saving the result</a></h2>
+<pre><code class="language-perl">save_to &quot;from_script.asciio&quot; ;
+
+ascii_out ;
+</code></pre>
+<p>You can save your work to an asciio file or print it out</p>
+<h2 id="adding-multi-wirl-arrows"><a class="header" href="#adding-multi-wirl-arrows">Adding multi-wirl arrows</a></h2>
+<p>You can write more advanced script where you route multi sections arrows around your elements.</p>
+<pre><code>     |
+     |
+     |
+     |
+     |
+     '----.
+          |
+          '----.
+               |
+               |
+               |
+               |
+               |
+               |
+            &lt;--'
+</code></pre>
+<p>You'll also need to use the right module; in fact you have access to everything that's in Asciio from your scrips, it's just a little bit more work than using the simplified interface.</p>
+<pre><code class="language-perl"># documentation/scripting/multi_wirl.pl
+
+use strict; use warnings;
+
+use App::Asciio::Scripting ;
+use App::Asciio::stripes::section_wirl_arrow;
+
+#-----------------------------------------------------------------------------
+
+add 'multi_wirl',
+	new App::Asciio::stripes::section_wirl_arrow
+		({
+		POINTS =&gt; [[5, 5, 'downright'], [10, 7, 'downright'], [7, 14, 'downleft'], ],
+		DIRECTION =&gt; '',
+		}),
+	5, 5 ;
+
+ascii_out ;
+</code></pre>
+<h2 id="full-example"><a class="header" href="#full-example">Full example</a></h2>
+<p>You can find more examples in the <em>documentation/scripting/</em> library of the project.</p>
+<pre><code class="language-perl">#  documentation/scripting/multi_wirl.pl
+
+use strict; use warnings;
+
+use App::Asciio::Scripting ;
+use App::Asciio::stripes::process_box ;
+
+#-----------------------------------------------------------------------------
+
+add 'box1', new_box(TEXT_ONLY =&gt;'box1'),  0,  2 ;
+add 'box2', new_box(TEXT_ONLY =&gt;'box2'), 20, 10 ;
+add 'box3', new_box(TEXT_ONLY =&gt;'box3'), 40,  5 ;
+
+connect_elements 'box1', 'box2', 'down' ;
+connect_elements 'box2', 'box3' ;
+connect_elements 'box3', 'box1', 'up' ;
+
+my $process = add_type 'process', 'Asciio/Boxes/process', 5, 15 ;
+$process-&gt;set_text(&quot;line 1\nline 2\nline 3&quot;) ;
+
+optimize ;
+
+save_to &quot;from_script.asciio&quot; ;
+
+ascii_out ;
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-asciio-1"><a class="header" href="#modifying-asciio-1">Modifying Asciio</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h1>
+<p>Bindings consists of </p>
+<ul>
+<li>
+<p>a descriptive but short name</p>
+</li>
+<li>
+<p>one or more key to assign the binding</p>
+</li>
+<li>
+<p>a reference to a handler</p>
+</li>
+<li>
+<p>possible arguments for the handler</p>
+</li>
+</ul>
+<pre><code class="language-perl">'Mouse quick link git' =&gt; [['0A0-button-press-3', '00S-semicolon'],  \&amp;App::Asciio::Actions::Git::quick_link]
+</code></pre>
+<p>Goals when adding bindings:</p>
+<ul>
+<li>
+<p>keep code separate from other bindings code if the new bindings are not very general, ie: code them in their own module</p>
+</li>
+<li>
+<p>align the structures</p>
+</li>
+<li>
+<p>avoid long or generic or numbered name</p>
+</li>
+<li>
+<p>if possible the bindings should be the same as the vim-bindings</p>
+<ul>
+<li>some GUI standards may require different bindings, IE: C00-A to select everything</li>
+</ul>
+</li>
+<li>
+<p>create an equivalent binding set in the vim bindings file</p>
+</li>
+<li>
+<p>documents the bindings</p>
+<ul>
+<li>name, keep them logical, start with an uppercase</li>
+<li>key</li>
+<li>what they do, preferably with some screenshot</li>
+</ul>
+</li>
+<li>
+<p>don't use control, shift and alt if possible (logical)</p>
+</li>
+<li>
+<p>split groups if they become too large</p>
+</li>
+<li>
+<p>sort by name or key if possible</p>
+</li>
+</ul>
+<pre><code class="language-perl">
+'Cross element Insert leader' =&gt; 
+	{
+	SHORTCUTS =&gt; '000-x',
+	
+	'Add cross angled arrow'              =&gt; ['A'],
+	'Add cross arrow'                     =&gt; ['a'],
+	'Add cross box'                       =&gt; ['b'],
+	'Add cross exec box'                  =&gt; ['e'],
+
+	'Select cross elements'               =&gt; ['c'],
+	'Select cross filler elements'        =&gt; ['f'],
+	'Select normal elements'              =&gt; ['C'],
+	'Select normal filler elements'       =&gt; ['F'],
+
+	'Add cross unicode line 2'            =&gt; ['i'],
+	'Add cross unicode line 3'            =&gt; ['I'],
+	'Change to cross elements'            =&gt; ['s'],
+	'Change to normal elements'           =&gt; ['S'],
+	},
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="debugging"><a class="header" href="#debugging">Debugging</a></h1>
+<p>See the Debugging bindings.</p>
+<p>Asiio can output to the console, any call to print will be displayed in it.</p>
+<p>You can use <em>Data::TreeDumper</em> to display structured debug output.</p>
+<p>You can of course run Asciio in the perl debugger.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="basic-introduction"><a class="header" href="#basic-introduction">Basic introduction</a></h1>
+<p>When the borders of two text elements intersect, we generate some 
+compensating characters to cover the borders, resulting in nicer graphics</p>
+<pre><code>          |            ││    │  │
+          |            ││    │  │
+     -----|---&gt;      ──││────│──│─
+          |            ││    │  │
+          |            ││    │  │
+          v
+</code></pre>
+<p>Look at the text above, their borders are overlapping each other.
+The text we need to generate is as follows:</p>
+<pre><code>          |            ││    │  │
+          |            ││    │  │
+     -----+---&gt;      ──┼┼────┼──┼─
+          |            ││    │  │
+          |            ││    │  │
+          v
+
+</code></pre>
+<p>We need to generate padding characters at their boundaries, 
+then the steps are as follows:</p>
+<ol>
+<li>find the cross point.</li>
+<li>Determine the characters to be filled at the current cross 
+point according to the characters around the cross point.</li>
+<li>Determine whether the current cross point has the 
+expected fill character, if so, keep it, if not, add it, 
+and delete the old fill character.</li>
+<li>remove all filling characters that are not at cross points.</li>
+<li>update drawing.</li>
+</ol>
+<h1 id="detailed-steps"><a class="header" href="#detailed-steps">Detailed steps</a></h1>
+<h2 id="find-the-cross-point"><a class="header" href="#find-the-cross-point">Find the cross point</a></h2>
+<p>The cross point must be the coverage of characters, 
+and the characters that cover each other are the characters we care about.
+&gt;The characters we care about refer to commonly used tab characters, 
+or ascii plus dots, etc.</p>
+<p>Commonly used symbols include these, of course not only these</p>
+<pre><code>'-', '|', '.', '\'', '\\', '/', '+', 
+'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
+'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
+'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
+'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
+'╛', '╙', '╘', '╖', '╕', '╓', '╒'
+</code></pre>
+<p><strong>condition of cross points:</strong></p>
+<ol>
+<li>text elements crossed</li>
+<li>The two characters that intersect each other 
+are the characters we care about</li>
+</ol>
+<p>When the condition is found to be met, both characters need to be logged.
+At the same time, we need to record the characters around the cross point, 
+because they absolutely determine what kind of cross point is generated.
+&gt;Record the upper, lower, left, and right characters. If you want to achieve 
+diagonal crossing, you also need to record characters at 45 degrees, 
+135 degrees, 225 degrees, and 315 degrees.</p>
+<h2 id="judgment-scene"><a class="header" href="#judgment-scene">Judgment scene</a></h2>
+<h3 id="general-situation"><a class="header" href="#general-situation">General situation</a></h3>
+<p>First of all, all cross characters are directional, we need to group 
+them by direction and type.</p>
+<p>Let me give you an example, if the center has generated a character<code>┼</code>,
+Then we can use the method of proof by contradiction, its left side 
+must be these characters, otherwise it is unreasonable.</p>
+<pre><code>'─',    '┼',    '├',    '┬',    '┴',    '╭',    '╰'
+</code></pre>
+<p>These characters all can appear to the left of it(Because their right sides 
+can be extended to become a line), But if these characters do not appear on 
+the left side of <code>┼</code>, then we think it is unreasonable to use this <code>┼</code>, and 
+the disproof condition is false.</p>
+<blockquote>
+</blockquote>
+<pre><code>'-', '|', '.', '\'', '\\', '/', '+', 
+'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
+'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
+'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
+'╫', '╪', '╨', '╧', '╥', '╤', '╢', '╡', '╟', '╞', '╜', 
+'╛', '╙', '╘', '╖', '╕', '╓', '╒'
+</code></pre>
+<p>Make assumptions about the occurrence of each possible padding crossing 
+character above, untilSupposed to be true.</p>
+<pre><code>                             │
+                           ──│──
+                             │
+
+</code></pre>
+<p>For the plus sign, the condition for its appearance is that:</p>
+<ol>
+<li>A character in the upper character set appears in the upper direction</li>
+<li>A character in the down direction character set appears in the down direction</li>
+<li>A character in the left-direction character set appears in the left direction</li>
+<li>A character in the right-direction character set appears in the right direction</li>
+</ol>
+<p>If these conditions are met, the intermediate characters can be corrected as <code>┼</code>:</p>
+<pre><code>                             │
+                           ──┼──
+                             │
+
+</code></pre>
+<p>Let's look at a more complex situation, The intersection below, we know, needs 
+one <code>╤</code> to fill.</p>
+<pre><code>  ═══│════
+     │
+     │
+</code></pre>
+<p>For the <code>╤</code> sign, the condition for its appearance is that:</p>
+<ol>
+<li>Left is one of the left characters of the double-line character set</li>
+<li>Right is one of the right characters of the double-line character set</li>
+<li>Down is one of the down characters in the single-line character set</li>
+<li>Up <strong>cannot be</strong> one of the up characters in the single-line character set</li>
+</ol>
+<p>Pay attention to the bold part above, because if this condition is true, 
+then the filling character should be <code>╪</code>, not <code>╤</code>.</p>
+<h3 id="improve-efficiency"><a class="header" href="#improve-efficiency">Improve efficiency</a></h3>
+<p>There is no need to perform calculations every time to determine the characters 
+filled in the middle. Whenever a new scene calculation occurs, we can save the 
+calculation result in a cache and read it directly next time without performing 
+logical calculations again.</p>
+<p>A hash table is most suitable for this, and the hash key can use a combination 
+of upper, lower, left, and right characters(The oblique lines are the four diagonal 
+directions.).</p>
+<h3 id="an-additional-case-needs-to-be-considered-separately"><a class="header" href="#an-additional-case-needs-to-be-considered-separately">An additional case needs to be considered separately</a></h3>
+<pre><code>   ││
+ ──││─────
+   ││
+   ││
+
+</code></pre>
+<p>please see this text, It is expected that we are going to get the following text:</p>
+<pre><code>   ││
+ ──┼┼─────
+   ││
+   ││
+
+</code></pre>
+<p>As you noticed, there are two plus signs filled.</p>
+<p>Let's take the point that needs to be filled on the left as an example:
+<img src="for_developers/cross_condition.png" alt="cross_condition" /></p>
+<p>We can see that characters in three directions meet the requirements, 
+but characters in one direction <strong>do not meet the requirements</strong>.
+But the point on the right is actually also an cross point, it has two 
+characters, one in the foreground and one in the background. The character 
+in the background is ok, so we think it ok!</p>
+<p><strong>In summary:</strong> If the character next to it is also an cross point, then 
+either the foreground character or the background character of the 
+intersection can meet the requirements.So I said earlier that the foreground 
+and background characters of the cross point all need to be recorded.</p>
+<h3 id="the-case-of-character-coverage"><a class="header" href="#the-case-of-character-coverage">The case of character coverage</a></h3>
+<p>There is another situation that needs to be explained separately,Similar to 
+above but slightly different</p>
+<pre><code> ╭─────╮
+ │ ╭─────╮
+ │ │     │
+ │ │     │
+ ╰─│     │
+   ╰─────╯
+
+</code></pre>
+<p>The text we need to get is this:</p>
+<pre><code> ╭─────╮
+ │ ╭───┴─╮
+ │ │     │
+ │ │     │
+ ╰─┤     │
+   ╰─────╯
+
+</code></pre>
+<p>This looks like two boxes stacked,According to the above statement, 
+the overlapping parts, both foreground characters and background characters 
+must be considered.**But not like this!**The overlapping foreground characters 
+are spaces, and spaces are not characters in the character set, so they are 
+not considered.</p>
+<p><strong>To put it simply:</strong> as long as it is not an cross point, only foreground 
+characters are considered.</p>
+<blockquote>
+<p>The definition of the cross point has already been mentioned in the 
+previous chapter</p>
+</blockquote>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="unicode-character-classification"><a class="header" href="#unicode-character-classification">Unicode character classification</a></h1>
+<ul>
+<li>characters of length 1</li>
+<li>characters of length 2</li>
+<li>characters of length 0</li>
+</ul>
+<blockquote>
+<p>The length mentioned here refers to the printed 
+length of the characters, that is, the length seen by the eyes</p>
+</blockquote>
+<h2 id="characters-of-length-1"><a class="header" href="#characters-of-length-1">Characters of length 1</a></h2>
+<p>Most unicode characters are characters with a length of 1, such 
+as the commonly used tab character, ascii characters.</p>
+<pre><code>a b c d , . ┼ ┬ │
+</code></pre>
+<h2 id="characters-of-length-2"><a class="header" href="#characters-of-length-2">Characters of length 2</a></h2>
+<p>Characters with a typographical width of 2 refer primarily to East 
+Asian pictographs and related special punctuation, as well as full-width 
+characters.</p>
+<pre><code>你好啊！《》
+안녕하세요
+こんにちは
+</code></pre>
+<p>They need to occupy two grids in the UI interface. Then aligning them 
+requires special fonts that <em><strong>align 2:1 with width 1 characters</strong></em>.Here is 
+a commonly used font.</p>
+<p>https://github.com/be5invis/Sarasa-Gothic/</p>
+<p>These characters have a special property called <em><strong>East Asian Width</strong></em>.
+They are included in the unicode standard, so they can be used as a 
+programming basis.</p>
+<p>Links to the unicode standard:
+https://www.unicode.org/reports/tr11/tr11-40.html</p>
+<p>In perl's unicode documentation, corresponding properties are also 
+provided to use.</p>
+<p>This represents a wide character, occupying two spaces:</p>
+<pre><code class="language-perl">\p{EA=W}
+</code></pre>
+<p>This represents a full-width character, which also occupies two spaces:</p>
+<pre><code class="language-perl">\p{EA=F}
+</code></pre>
+<p>The above information can be found here:</p>
+<p>https://perldoc.perl.org/perlunicook</p>
+<p>https://perldoc.perl.org/perlunicode</p>
+<h2 id="characters-of-length-0"><a class="header" href="#characters-of-length-0">Characters of length 0</a></h2>
+<p>In some languages, there are special characters whose string length is 1, 
+but they do not occupy physical space on the interface, they will be attached 
+to the previous characters.they are called nonspacing characters.Occurs in 
+Thai and Arabic, as well as Hebrew</p>
+<pre><code>◌ั ◌ึ ◌ุ
+</code></pre>
+<p>Please look at the above characters, they cannot appear alone, they must be 
+used in combination with the previous entity characters, and then they will 
+appear above or below the previous characters.</p>
+<p>These characters are called Nonspacing characters in the unicode standard, 
+and then they have the following properties that can be used for programming</p>
+<pre><code class="language-perl">\p{gc:Mn}
+</code></pre>
+<p>To support Thai, or Arabic, or Hebrew, like East Asian languages, we also need 
+a special font that can be aligned.In general, the system's default monospaced 
+font can align them</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="overlay"><a class="header" href="#overlay">Overlay</a></h1>
+<p>After Asciio draws the elements, a user defined call back is called.</p>
+<h2 id="user-defined-callback"><a class="header" href="#user-defined-callback">User defined callback</a></h2>
+<p>The callback receives an instance of Asciio as the first argument, you can use that instance to get elements, ...</p>
+<p>The callback return a list of <strong>1</strong>character overlay in array references:</p>
+<ul>
+<li>x coordinate</li>
+<li>y coordinate</li>
+<li>character</li>
+<li>optional background color</li>
+<li>optional foreground color</li>
+</ul>
+<p>Example list:</p>
+<pre><code class="language-perl">[ 0, 0, 'T'],
+[ 1, 0, 'e'],
+[ 2, 0, 's'],
+[ 3, 0, 't'],
+</code></pre>
+<h2 id="setting-and-resetting-the-callback"><a class="header" href="#setting-and-resetting-the-callback">Setting and resetting the callback</a></h2>
+<p>The callback is set by calling $asciio-&gt;<em>set_overlays_sub</em>. The simplest is to do it via a key binding.</p>
+<pre><code class="language-perl">'set overlays' =&gt;
+	[
+	'0A0-o',
+	sub 
+		{
+		my ($asciio) = @_ ;
+		
+		$asciio-&gt;set_overlays_sub
+			(
+			sub { [0, 0, 'O'], [1, 0, 'K'] }
+			) ;
+		
+		$asciio-&gt;update_display ;
+		}
+	],
+</code></pre>
+<p>Reset the callback</p>
+<pre><code class="language-perl">'reset overlays' =&gt; [ '000-o', sub { $_[0]-&gt;set_overlays_sub(undef) ; $_[0]-&gt;update_display ; } ],
+</code></pre>
+<h2 id="callback-access-to-canvas"><a class="header" href="#callback-access-to-canvas">Callback access to canvas</a></h2>
+<p>The callback can also have access to the canvas, but don't</p>
+<p>Arguments:</p>
+<ul>
+<li>$asciio</li>
+<li>$UI_type, set to GUI/TUI</li>
+<li>$gc</li>
+<li>$widget_width</li>
+<li>$widget_height</li>
+<li>$character_width</li>
+<li>$character_height</li>
+</ul>
+<p>Example: draw and overlay and a filled rectangle above the mouse pointer</p>
+<pre><code class="language-perl">sub click_element_overlay
+{
+my ($asciio, $UI_type, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+
+# draw directly
+if($UI_type eq 'GUI')
+	{
+	my $surface = Cairo::ImageSurface-&gt;create('argb32', 50, 50) ;
+	my $gco = Cairo::Context-&gt;create($surface) ;
+	
+	my $background_color = $asciio-&gt;get_color('cross_filler_background') ;
+	$gco-&gt;set_source_rgb(@$background_color) ;
+	
+	$gco-&gt;rectangle(0, 0, $character_width, $character_height) ;
+	$gco-&gt;fill() ;
+	
+	$gc-&gt;set_source_surface($surface, ($asciio-&gt;{MOUSE_X} - 1 ) * $character_width, ($asciio-&gt;{MOUSE_Y} - 1) * $character_height);
+	$gc-&gt;paint() ; 
+	}
+
+# send a list of characters to draw
+my @overlays = map { [ $asciio-&gt;{MOUSE_X} + $_-&gt;[0], $asciio-&gt;{MOUSE_Y} + $_-&gt;[1], $_-&gt;[2] ] } @$click_element_overlay ;
+
+@overlays
+}
+</code></pre>
+<h2 id="callback--hideshow-mouse"><a class="header" href="#callback--hideshow-mouse">Callback  hide/show mouse</a></h2>
+<p>Hide and show the mouse pointer, useful if you draw objects that are moved around.</p>
+<pre><code class="language-perl">
+sub callback_enter { my ($asciio) = @_ ; $asciio-&gt;hide_pointer ; ... }
+
+sub callback_escape { my ($asciio) = @_ ; $asciio-&gt;show_pointer ; ... }
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="contributors"><a class="header" href="#contributors">Contributors</a></h1>
+<pre><code>    Khemir Nadim ibn Hamouda
+    https://github.com/nkh
+    CPAN ID: NKH
+</code></pre>
+<pre><code>    Qin Qing
+    northisland2017@gmail.com
+    Unicode support, scroll bar, and rhombus object
+</code></pre>
+<h1 id="license-and-copyright"><a class="header" href="#license-and-copyright">License and copyright</a></h1>
+<pre><code>This program is free software; you can redistribute it and/or modify it
+under the same terms as Perl itself or GPL3.
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="see-also"><a class="header" href="#see-also">See Also</a></h1>
+<p>SVG conversion:
+<a href="https://github.com/blampe/goat">goat</a></p>
+<p>Tree generation:
+<a href="https://github.com/yzhong52/ascii_tree">ascii_tree</a></p>
+<p>ASCII Math and other:
+<a href="https://github.com/ArthurSonzogni/Diagon">Diagon</a></p>
+<p>Fun! <a href="https://github.com/Blokkendoos/AACircuit">AACircuit</a></p>
+<p><a href="https://github.com/dragoncoder047/schemascii">schemascii</a></p>
+<p><a href="https://github.com/Twinside/asciidiagram">asciidiagram</a></p>
+<p>Impressive <a href="https://github.com/christiangoltz/shaape">shaape</a></p>
+<p><a href="https://github.com/stathissideris/ditaa">ditaa</a></p>
+<p>Stencils <a href="https://github.com/oguma/asciio-ditaa">Asciio ditaa</a></p>
+<p><a href="http://search.cpan.org/~jpierce/Text-FIGlet-1.06/FIGlet.pm">Figlet</a></p>
+<p>Source for some of the network stencil <a href="http://www.ascii-art.de">Ascii art</a></p>
+<p><a href="http://www.textfiles.com/art/">Ascii art</a></p>
+<pre><code>     *\o_               _o/*
+      /  *             *  \
+     &lt;\       *\o/*       /&gt;
+                )
+         o/*   / &gt;    *\o
+         &lt;\            /&gt;
+ __o     */\          /\*     o__
+ * /&gt;                        &lt;\ *
+  /\*    __o_       _o__     */\
+        * /  *     *  \ *
+         &lt;\           /&gt;
+              *\o/*
+ ejm97        __)__
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr.min.js"></script>
+        <script src="mark.min.js"></script>
+        <script src="searcher.js"></script>
+
+        <script src="clipboard.min.js"></script>
+        <script src="highlight.js"></script>
+        <script src="book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+    </div>
+    </body>
+</html>

@@ -1,0 +1,556 @@
+<!DOCTYPE HTML>
+<html lang="en" class="light" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>user stencils - Asciio</title>
+
+
+        <!-- Custom HTML head -->
+        
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="../favicon.svg">
+        <link rel="shortcut icon" href="../favicon.png">
+        <link rel="stylesheet" href="../css/variables.css">
+        <link rel="stylesheet" href="../css/general.css">
+        <link rel="stylesheet" href="../css/chrome.css">
+        <link rel="stylesheet" href="../css/print.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="../FontAwesome/css/font-awesome.css">
+        <link rel="stylesheet" href="../fonts/fonts.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" href="../highlight.css">
+        <link rel="stylesheet" href="../tomorrow-night.css">
+        <link rel="stylesheet" href="../ayu-highlight.css">
+
+        <!-- Custom theme stylesheets -->
+
+    </head>
+    <body class="sidebar-visible no-js">
+    <div id="body-container">
+        <!-- Provide site root to javascript -->
+        <script>
+            var path_to_root = "../";
+            var default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "navy" : "light";
+        </script>
+
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                var theme = localStorage.getItem('mdbook-theme');
+                var sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            var theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            var html = document.querySelector('html');
+            html.classList.remove('light')
+            html.classList.add(theme);
+            var body = document.querySelector('body');
+            body.classList.remove('no-js')
+            body.classList.add('js');
+        </script>
+
+        <input type="checkbox" id="sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            var body = document.querySelector('body');
+            var sidebar = null;
+            var sidebar_toggle = document.getElementById("sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+            }
+            sidebar_toggle.checked = sidebar === 'visible';
+            body.classList.remove('sidebar-visible');
+            body.classList.add("sidebar-" + sidebar);
+        </script>
+
+        <nav id="sidebar" class="sidebar" aria-label="Table of contents">
+            <div class="sidebar-scrollbox">
+                <ol class="chapter"><li class="chapter-item expanded affix "><a href="../index.html">Introduction</a></li><li class="chapter-item expanded affix "><li class="part-title">User Guide</li><li class="chapter-item expanded "><a href="../guide/installation.html"><strong aria-hidden="true">1.</strong> Installation and running</a></li><li class="chapter-item expanded "><a href="../Interface.html"><strong aria-hidden="true">2.</strong> Asciio's interface</a></li><li class="chapter-item expanded "><a href="../unicode_support.html"><strong aria-hidden="true">3.</strong> Unicode support</a></li><li class="chapter-item expanded "><a href="../accessing_documentation.html"><strong aria-hidden="true">4.</strong> Accessing documentation</a></li><li class="chapter-item expanded "><a href="../UIs.html"><strong aria-hidden="true">5.</strong> UIs</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../UI/GUI.html"><strong aria-hidden="true">5.1.</strong> GUI</a></li><li class="chapter-item expanded "><a href="../UI/TUI.html"><strong aria-hidden="true">5.2.</strong> TUI</a></li></ol></li><li class="chapter-item expanded "><a href="../stencils.html"><strong aria-hidden="true">6.</strong> Stencils</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stencils/asciio_boxes.html"><strong aria-hidden="true">6.1.</strong> Asciio boxes and text</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../stencils/asciio_if_and_process.html"><strong aria-hidden="true">6.1.1.</strong> Asciio if and process</a></li><li class="chapter-item expanded "><a href="../stencils/asciio_exec_box.html"><strong aria-hidden="true">6.1.2.</strong> Asciio exec-box</a></li></ol></li><li class="chapter-item expanded "><a href="../stencils/asciio_arrows.html"><strong aria-hidden="true">6.2.</strong> Asciio arrows</a></li><li class="chapter-item expanded "><a href="../stencils/pseudo_connectors.html"><strong aria-hidden="true">6.3.</strong> Pseudo connectors</a></li><li class="chapter-item expanded "><a href="../stencils/box_connectors.html"><strong aria-hidden="true">6.4.</strong> Box connectors</a></li><li class="chapter-item expanded "><a href="../stencils/asciio_shapes.html"><strong aria-hidden="true">6.5.</strong> Asciio shapes</a></li><li class="chapter-item expanded "><a href="../stencils/verbatim.html"><strong aria-hidden="true">6.6.</strong> verbatim objects</a></li><li class="chapter-item expanded "><a href="../stencils/user.html" class="active"><strong aria-hidden="true">6.7.</strong> user stencils</a></li></ol></li><li class="chapter-item expanded "><a href="../editing_elements.html"><strong aria-hidden="true">7.</strong> Editing elements text and attributes</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../editing_elements/markup_mode.html"><strong aria-hidden="true">7.1.</strong> Markup mode</a></li></ol></li><li class="chapter-item expanded "><a href="../working_efficiently.html"><strong aria-hidden="true">8.</strong> Working efficiently</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../editing/keyboard.html"><strong aria-hidden="true">8.1.</strong> Keyboard</a></li><li class="chapter-item expanded "><a href="../editing/mouse.html"><strong aria-hidden="true">8.2.</strong> Mouse</a></li><li class="chapter-item expanded "><a href="../editing/cloning.html"><strong aria-hidden="true">8.3.</strong> Cloning</a></li><li class="chapter-item expanded "><a href="../editing/grouping.html"><strong aria-hidden="true">8.4.</strong> Grouping</a></li><li class="chapter-item expanded "><a href="../editing/strip-groups.html"><strong aria-hidden="true">8.5.</strong> Strip groups</a></li></ol></li><li class="chapter-item expanded "><a href="../exporting.html"><strong aria-hidden="true">9.</strong> Export/Save</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../export/asciio.html"><strong aria-hidden="true">9.1.</strong> Asciio format</a></li><li class="chapter-item expanded "><a href="../export/text.html"><strong aria-hidden="true">9.2.</strong> text</a></li><li class="chapter-item expanded "><a href="../export/svg.html"><strong aria-hidden="true">9.3.</strong> SVG</a></li><li class="chapter-item expanded "><a href="../export/clipboard.html"><strong aria-hidden="true">9.4.</strong> Clipboard</a></li></ol></li><li class="chapter-item expanded "><a href="../modes.html"><strong aria-hidden="true">10.</strong> Modes</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../modes/git.html"><strong aria-hidden="true">10.1.</strong> Git</a></li><li class="chapter-item expanded "><a href="../modes/cross.html"><strong aria-hidden="true">10.2.</strong> Cross</a></li><li class="chapter-item expanded "><a href="../modes/slides.html"><strong aria-hidden="true">10.3.</strong> Slides</a></li></ol></li><li class="chapter-item expanded "><a href="../examples.html"><strong aria-hidden="true">11.</strong> Examples</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../examples/example1.html"><strong aria-hidden="true">11.1.</strong> Class hierarchy</a></li><li class="chapter-item expanded "><a href="../examples/example2.html"><strong aria-hidden="true">11.2.</strong> German railway</a></li><li class="chapter-item expanded "><a href="../examples/unicode_example.html"><strong aria-hidden="true">11.3.</strong> Unicode Example</a></li><li class="chapter-item expanded "><a href="../videos/videos.html"><strong aria-hidden="true">11.4.</strong> Videos</a></li></ol></li><li class="chapter-item expanded "><a href="../Bindings.html"><strong aria-hidden="true">12.</strong> Bindings</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../bindings/mouse.html"><strong aria-hidden="true">12.1.</strong> Mouse</a></li><li class="chapter-item expanded "><a href="../bindings/vim-like.html"><strong aria-hidden="true">12.2.</strong> Why vim-like bindings</a></li><li class="chapter-item expanded "><a href="../bindings/single_key.html"><strong aria-hidden="true">12.3.</strong> Single key</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../bindings/gui.html"><strong aria-hidden="true">12.3.1.</strong> GUI bindings</a></li><li class="chapter-item expanded "><a href="../bindings/moving.html"><strong aria-hidden="true">12.3.2.</strong> Moving elements</a></li><li class="chapter-item expanded "><a href="../bindings/selecting.html"><strong aria-hidden="true">12.3.3.</strong> Selecting elements</a></li><li class="chapter-item expanded "><a href="../bindings/resizing.html"><strong aria-hidden="true">12.3.4.</strong> Resizing elements</a></li><li class="chapter-item expanded "><a href="../bindings/clipboard.html"><strong aria-hidden="true">12.3.5.</strong> Clipboard</a></li></ol></li><li class="chapter-item expanded "><a href="../bindings/multiple_keys.html"><strong aria-hidden="true">12.4.</strong> Multiple key</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../bindings/commands.html"><strong aria-hidden="true">12.4.1.</strong> «:» Command group:</a></li><li class="chapter-item expanded "><a href="../bindings/inserting.html"><strong aria-hidden="true">12.4.2.</strong> «i» Insert group</a></li><li class="chapter-item expanded "><a href="../bindings/arrows.html"><strong aria-hidden="true">12.4.3.</strong> «a» Arrow group</a></li><li class="chapter-item expanded "><a href="../bindings/aligning.html"><strong aria-hidden="true">12.4.4.</strong> «A» Align group</a></li><li class="chapter-item expanded "><a href="../bindings/grouping.html"><strong aria-hidden="true">12.4.5.</strong> «g» Grouping group</a></li><li class="chapter-item expanded "><a href="../bindings/grouping_stripes.html"><strong aria-hidden="true">12.4.6.</strong> «A-g» Stripes-group group</a></li><li class="chapter-item expanded "><a href="../bindings/display.html"><strong aria-hidden="true">12.4.7.</strong> «z» Display group</a></li><li class="chapter-item expanded "><a href="../bindings/slides.html"><strong aria-hidden="true">12.4.8.</strong> «S» Slides group</a></li><li class="chapter-item expanded "><a href="../bindings/debug.html"><strong aria-hidden="true">12.4.9.</strong> «D» Debug group</a></li></ol></li></ol></li><li class="chapter-item expanded "><li class="part-title">Configuration</li><li class="chapter-item expanded "><a href="../configuration.html"><strong aria-hidden="true">13.</strong> Configuration</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../config/user_bindings.html"><strong aria-hidden="true">13.1.</strong> user bindings</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../config/user_bindings/binding_format.html"><strong aria-hidden="true">13.1.1.</strong> Binding format</a></li><li class="chapter-item expanded "><a href="../config/user_bindings/group_bindings.html"><strong aria-hidden="true">13.1.2.</strong> Group bindings</a></li><li class="chapter-item expanded "><a href="../config/user_bindings/capturing_groups.html"><strong aria-hidden="true">13.1.3.</strong> Capturing groups</a></li><li class="chapter-item expanded "><a href="../config/user_bindings/binding_override.html"><strong aria-hidden="true">13.1.4.</strong> Binding override</a></li><li class="chapter-item expanded "><a href="../config/user_bindings/capturing_groups_overlay.html"><strong aria-hidden="true">13.1.5.</strong> Capturing groups with overalay</a></li></ol></li><li class="chapter-item expanded "><a href="../config/user_stencils.html"><strong aria-hidden="true">13.2.</strong> user stencils</a></li><li class="spacer"></li></ol></li><li class="chapter-item expanded "><li class="part-title">Developer Guide</li><li class="chapter-item expanded "><a href="../for_developers/index.html"><strong aria-hidden="true">14.</strong> For Developers</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../for_developers/scripting.html"><strong aria-hidden="true">14.1.</strong> Scripting</a></li><li class="chapter-item expanded "><a href="../for_developers/modify_Asciio.html"><strong aria-hidden="true">14.2.</strong> Modifying Asciio</a></li><li><ol class="section"><li class="chapter-item expanded "><a href="../for_developers/bindings.html"><strong aria-hidden="true">14.2.1.</strong> Bindings</a></li></ol></li><li class="chapter-item expanded "><a href="../for_developers/debugging.html"><strong aria-hidden="true">14.3.</strong> Debugging</a></li><li class="chapter-item expanded "><a href="../for_developers/cross_algorithm.html"><strong aria-hidden="true">14.4.</strong> Cross algorithm</a></li><li class="chapter-item expanded "><a href="../for_developers/unicode_support.html"><strong aria-hidden="true">14.5.</strong> Unicode support</a></li><li class="chapter-item expanded "><a href="../for_developers/overlay.html"><strong aria-hidden="true">14.6.</strong> Overlay</a></li><li class="spacer"></li></ol></li><li class="chapter-item expanded "><a href="../misc/contributors.html">Contributors and License</a></li><li class="chapter-item expanded affix "><a href="../misc/see_also.html">See Also</a></li></ol>
+            </div>
+            <div id="sidebar-resize-handle" class="sidebar-resize-handle"></div>
+        </nav>
+
+        <!-- Track and set sidebar scroll position -->
+        <script>
+            var sidebarScrollbox = document.querySelector('#sidebar .sidebar-scrollbox');
+            sidebarScrollbox.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A') {
+                    sessionStorage.setItem('sidebar-scroll', sidebarScrollbox.scrollTop);
+                }
+            }, { passive: true });
+            var sidebarScrollTop = sessionStorage.getItem('sidebar-scroll');
+            sessionStorage.removeItem('sidebar-scroll');
+            if (sidebarScrollTop) {
+                // preserve sidebar scroll position when navigating via links within sidebar
+                sidebarScrollbox.scrollTop = sidebarScrollTop;
+            } else {
+                // scroll sidebar to current active section when navigating via "next/previous chapter" buttons
+                var activeSection = document.querySelector('#sidebar .active');
+                if (activeSection) {
+                    activeSection.scrollIntoView({ block: 'center' });
+                }
+            }
+        </script>
+
+        <div id="page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                                <div id="menu-bar-hover-placeholder"></div>
+                <div id="menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="sidebar-toggle" class="icon-button" for="sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="sidebar">
+                            <i class="fa fa-bars"></i>
+                        </label>
+                        <button id="theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="theme-list">
+                            <i class="fa fa-paint-brush"></i>
+                        </button>
+                        <ul id="theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="ayu">Ayu</button></li>
+                        </ul>
+                        <button id="search-toggle" class="icon-button" type="button" title="Search. (Shortkey: s)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="S" aria-controls="searchbar">
+                            <i class="fa fa-search"></i>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Asciio</h1>
+
+                    <div class="right-buttons">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                            <i id="print-button" class="fa fa-print"></i>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="search-wrapper" class="hidden">
+                    <form id="searchbar-outer" class="searchbar-outer">
+                        <input type="search" id="searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="searchresults-outer" aria-describedby="searchresults-header">
+                    </form>
+                    <div id="searchresults-outer" class="searchresults-outer hidden">
+                        <div id="searchresults-header" class="searchresults-header"></div>
+                        <ul id="searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="content" class="content">
+                    <main>
+                        <h1 id="user-stencils"><a class="header" href="#user-stencils">User stencils</a></h1>
+<p>You can create stencils that you are going to reuse, details of how to do it in the best way can be found in the <em>Configuration</em> section.</p>
+<p>Here are three examples:</p>
+<p><a href="https://github.com/oguma/asciio-ditaa"><img src="https://github-readme-stats.vercel.app/api/pin/?username=oguma&amp;repo=asciio-ditaa" alt="asciio-ditaa" /></a></p>
+<p><a href="https://github.com/fbagagli/asciio_contrib"><img src="https://github-readme-stats.vercel.app/api/pin/?username=fbagagli&amp;repo=asciio_contrib" alt="asciio_contrib" /></a></p>
+<h2 id="integrating-asciio-and-ditaa-third-party-example"><a class="header" href="#integrating-asciio-and-ditaa-third-party-example">integrating Asciio and ditaa (third party example)</a></h2>
+<pre><code>
+There was a page (Corn Empire) where a user detailed how to make an integration.
+
+That page is not online anymore, I modified a copy for this documentation.
+
+If you are the original author please contact me so I can give you credit.
+
+</code></pre>
+<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<p>You found this page because you are looking for more information on installing asciio and ditaa, and then modifying asciio to better interact with ditaa. Well you came to the right place. This guide will take you step-by-step through installing both tools, and modifying asciio to output diagrams to ditaa.</p>
+<h2 id="modifying-asciio"><a class="header" href="#modifying-asciio">Modifying asciio</a></h2>
+<p>Make yourself familiar with ditaa and asciio, you may see the benefit of outputting asciio text files that are compatible with ditaa without modification. Or better yet, generate your diagrams for you when you save :) . This section will explain how to do all of that and more!</p>
+<h2 id="adding-in-a-ditaa-stencil"><a class="header" href="#adding-in-a-ditaa-stencil">Adding in a Ditaa Stencil</a></h2>
+<p>You will need to create a new stencils file to create boxes and arrows that are compatible with ditaa (you could optionally modify the standard files if you will only use asciio for ditaa purposes). I got the idea for the modifications from here: http://strawp.net/archive/geeking-out-with-diagrams-in-ascii/</p>
+<h2 id="a-standard-box"><a class="header" href="#a-standard-box">A Standard Box</a></h2>
+<p>Go to the App/Asciio/setup/stencils (in the /usr/share/perl5/ or /usr/share/perl/5.10.0/) directory, and find the asciio file. Using for favourite editor, copy and paste the standard box code into a new file called ditaa. Then make the following changes to the standard box code in this new file:</p>
+<p>To change the corners, modify line 14/33 and change . to + and modify line 17/36 and change ' to +.</p>
+<p>Then modify lines 5 and 7 in the same way. Replace the . with + and the ' with +.</p>
+<p>Or you could optionally just copy and paste the completed code below (the $VAR1 = [ is only needed once, and just starts off the file, the ]; at the end of the block, ends the file. All bless calls should be between these lines) :</p>
+<pre><code class="language-perl">$VAR1 = [
+ 
+          bless( {
+                   'HEIGHT' =&gt; 3,
+                   'TEXT' =&gt; '+---+
+|   |
++---+',
+                   'NAME' =&gt; 'ditaabox',
+                   'WIDTH' =&gt; 5,
+		   'TEXT_ONLY' =&gt; '',
+		   'TITLE' =&gt; '',
+		   'BOX_TYPE' =&gt; 
+				[
+				[TRUE, 'top', '+', '-', '+', TRUE, ],
+				[FALSE, 'title separator', '|', '-', '|', TRUE, ],
+				[TRUE, 'body separator', '| ', '|', ' |', TRUE, ], 
+				[TRUE, 'bottom', '+', '-', '+', TRUE, ],
+				] ,
+		   'EDITABLE' =&gt; 1,
+		   RESIZABLE =&gt; 1,
+		   X_OFFSET =&gt; 0, Y_OFFSET =&gt; 0,
+                 }, 'App::Asciio::stripes::editable_box2' ),
+ 
+                ];
+</code></pre>
+<h2 id="add-rounded-box"><a class="header" href="#add-rounded-box">Add Rounded Box</a></h2>
+<p>But why stop there? How about we add in a nice ditaa rounded box. Add this code to the ditaa stencil file just below our modified box code:</p>
+<pre><code class="language-perl">          bless( {
+                   'HEIGHT' =&gt; 3,
+                   'TEXT' =&gt; '/---\\
+|   |
+\\---/',
+                   'NAME' =&gt; 'roundedbox',
+                   'WIDTH' =&gt; 5,
+                   'TEXT_ONLY' =&gt; '',
+                   'TITLE' =&gt; '',
+                   'BOX_TYPE' =&gt;
+                                [
+                                [TRUE, 'top', '/', '-', '\\', TRUE, ],
+                                [FALSE, 'title separator', '|', '-', '|', TRUE, ],
+                                [TRUE, 'body separator', '| ', '|', ' |', TRUE, ],
+                                [TRUE, 'bottom', '\\', '-', '/', TRUE, ],
+                                ] ,
+                   'EDITABLE' =&gt; 1,
+                   RESIZABLE =&gt; 1,
+                   X_OFFSET =&gt; 0, Y_OFFSET =&gt; 0,
+                 }, 'App::Asciio::stripes::editable_box2' ),
+</code></pre>
+<h2 id="add-ditaa-arrows"><a class="header" href="#add-ditaa-arrows">Add ditaa Arrows</a></h2>
+<p>The asciio arrows don't jive well with ditaa. You can add this in the ditaa stencil file, it is based on the whirl arrow:</p>
+<pre><code class="language-perl">bless({
+        'NAME' =&gt; 'ditaa_arrow',
+        'HEIGHT' =&gt; 6,
+        'WIDTH' =&gt; 17,
+        'POINTS' =&gt; [[16,5]],
+        'SELECTED' =&gt; 0,
+        'EDITABLE' =&gt; 1,
+        'ALLOW_DIAGONAL_LINES' =&gt; 0,
+        'POINTS_OFFSETS' =&gt; [[0,0]],
+        'DIRECTION' =&gt; 'down-right' ,
+        'ARROW_TYPE' =&gt;
+                [
+                ['origin', '', '*', '', '', '', TRUE],
+                ['up', '|', '|', '', '', '^', TRUE],
+                ['down', '|', '|', '', '', 'v', TRUE],
+                ['left', '-', '-', '', '', '&lt;', TRUE],
+                ['upleft', '|', '|', '\\', '-', '&lt;', TRUE],
+                ['leftup', '-', '-', '\\', '|', '^', TRUE],
+                ['downleft', '|', '|', '/', '-', '&lt;', TRUE],
+                ['leftdown', '-', '-', '/', '|', 'v', TRUE],
+                ['right', '-', '-','', '', '&gt;', TRUE],
+                ['upright', '|', '|', '/', '-', '&gt;', TRUE],
+                ['rightup', '-', '-', '/', '|', '^', TRUE],
+                ['downright', '|', '|', '\\', '-', '&gt;', TRUE],
+                ['rightdown', '-', '-', '\\', '|', 'v', TRUE],
+                ['45', '/', '/', '', '', '^', TRUE, ],
+                ['135', '\\', '\\', '', '', 'v', TRUE, ],
+                ['225', '/', '/', '', '', 'v', TRUE, ],
+                ['315', '\\', '\\', '', '', '^', TRUE, ],
+                ],
+ 
+        'ARROWS' =&gt;
+                [
+                bless(
+                        {
+                        'HEIGHT' =&gt; 6,
+                        'STRIPES' =&gt;
+                                [
+                                {'TEXT' =&gt; '|
+|
+|
+|
+|
+\'',
+ 
+                                'HEIGHT' =&gt; 6,
+                                'Y_OFFSET' =&gt; 0,
+                                'WIDTH' =&gt; 1,
+                                'X_OFFSET' =&gt; 0}
+                                ,
+                                {
+                                'TEXT' =&gt; '---------------&gt;',
+                                'HEIGHT' =&gt; 1,
+                                'Y_OFFSET' =&gt; 5,
+                                'WIDTH' =&gt; 16,
+                                'X_OFFSET' =&gt; 1
+                                }
+                                ],
+                        'WIDTH' =&gt; 17,
+                        'END_X' =&gt; 16,
+                        'ARROW_TYPE' =&gt;
+                                [
+                                #name: $start, $body, $connection, $body_2, $end
+ 
+                                ['origin', '', '*', '', '', '', TRUE],
+                                ['up', '|', '|', '', '', '^', TRUE],
+                                ['down', '|', '|', '', '', 'v', TRUE],
+                                ['left', '-', '-', '', '', '&lt;', TRUE],
+                                ['upleft', '|', '|', '\\', '-', '&lt;', TRUE],
+                                ['leftup', '-', '-', '\\', '|', '^', TRUE],
+                                ['downleft', '|', '|', '/', '-', '&lt;', TRUE],
+                                ['leftdown', '-', '-', '/', '|', 'v', TRUE],
+                                ['right', '-', '-','', '', '&gt;', TRUE],
+                                ['upright', '|', '|', '/', '-', '&gt;', TRUE],
+                                ['rightup', '-', '-', '/', '|', '^', TRUE],
+                                ['downright', '|', '|', '\\', '-', '&gt;', TRUE],
+                                ['rightdown', '-', '-', '\\', '|', 'v', TRUE],
+                                ['45', '/', '/', '', '', '^', TRUE, ],
+                                ['135', '\\', '\\', '', '', 'v', TRUE, ],
+                                ['225', '/', '/', '', '', 'v', TRUE, ],
+                                ['315', '\\', '\\', '', '', '^', TRUE, ],
+                                ],
+                        'END_Y' =&gt; 5,
+                        'DIRECTION' =&gt; 'down-right'
+                        }, 'App::Asciio::stripes::wirl_arrow' ),
+ 
+                ],
+        }, 'App::Asciio::stripes::section_wirl_arrow' ) ,
+</code></pre>
+<h2 id="add-colours-and-special-shape-codes"><a class="header" href="#add-colours-and-special-shape-codes">Add Colours and Special Shape Codes</a></h2>
+<p>All of the above will give you the core functionality of ditaa into asciio. But what about some basic colour tags, and shape codes. I've created a special stencil file for those. You can copy this below, and place it in a file called ditaatags next to the asciio stencil file.</p>
+<pre><code class="language-perl">my @ascii =
+        (
+        'shapes/document' =&gt; &lt;&lt;'EOA',
+{d}
+EOA
+        'shapes/storage' =&gt; &lt;&lt;'EOA',
+{s}
+EOA
+	'shapes/input_output' =&gt; &lt;&lt;'EOA',
+{io}
+EOA
+        'shapes/tr' =&gt; &lt;&lt;'EOA',
+{tr}
+EOA
+        'shapes/o' =&gt; &lt;&lt;'EOA',
+{o}
+EOA
+        'shapes/mo' =&gt; &lt;&lt;'EOA',
+{mo}
+EOA
+        'shapes/c' =&gt; &lt;&lt;'EOA',
+{c}
+EOA
+        'colours/Red' =&gt; &lt;&lt;'EOA',
+cRED
+EOA
+        'colours/Blue' =&gt; &lt;&lt;'EOA',
+cBLU
+EOA
+        'colours/Pink' =&gt; &lt;&lt;'EOA',
+cPNK
+EOA
+        'colours/Black' =&gt; &lt;&lt;'EOA',
+cBLK
+EOA
+        'colours/Green' =&gt; &lt;&lt;'EOA',
+cGRE
+EOA
+        'colours/Yellow' =&gt; &lt;&lt;'EOA',
+cYEL
+EOA
+ 
+        ) ;
+ 
+my @boxes ;
+ 
+use App::Asciio::stripes::editable_box2 ;
+ 
+for(my $ascii_index = 0 ; $ascii_index &lt; $#ascii ; $ascii_index+= 2)
+        {
+        my $box = new App::Asciio::stripes::editable_box2
+                                ({
+                                TEXT_ONLY =&gt; $ascii[$ascii_index + 1],
+                                EDITABLE =&gt; 1,
+                                RESIZABLE =&gt; 1,
+                                }) ;
+ 
+        $box-&gt;set_box_type([map{$_-&gt;[0] = 0; $_} @{$box-&gt;get_box_type()}]) ;
+        $box-&gt;shrink() ;
+        $box-&gt;{'NAME'} = $ascii[$ascii_index] ;
+        push @boxes, $box ;
+        }
+ 
+[@boxes] ;
+</code></pre>
+<p>Once these have been added, you need to modify the setup.ini file to point to the new stencils. To do that, run the following commands:</p>
+<p>cd ..
+sudo vim setup.ini
+Where it says 'stencils/divers', add on the next line, 'stencils/ditaa', and then 'stencils/ditaatags',. Your new file should look like this:</p>
+<pre><code class="language-perl">{
+STENCILS =&gt;
+        [
+        'stencils/asciio',
+        'stencils/computer',
+        'stencils/people',
+        'stencils/divers',
+        'stencils/ditaa',
+        'stencils/ditaatags',
+        ],
+
+ACTION_FILES =&gt;
+        [
+        'actions/align.pl',
+        'actions/clipboard.pl',
+        'actions/debug.pl',
+        'actions/new_elements.pl',
+        'actions/elements_manipulation.pl',
+        'actions/file.pl',
+        'actions/mouse.pl',
+        'actions/colors.pl',
+        'actions/unsorted.pl',
+        'actions/presentation.pl',
+
+        'actions/context_menu_multi_wirl.pl',
+        'actions/context_menu_box.pl',
+        'actions/context_menu_rulers.pl',
+        ],
+
+HOOK_FILES =&gt;
+        [
+        'hooks/canonize_connections.pl',
+        ],
+
+ASCIIO_OBJECT_SETUP =&gt;
+        [
+        'asciio_object/basic.pl',
+        ],
+
+IMPORT_EXPORT =&gt;
+        [
+        'import_export/ascii.pl',
+        'import_export/perl.pl',
+        'import_export/asciioe.pl',
+        'import_export/png.pl',
+        ],
+}
+</code></pre>
+<h2 id="modifying-saving"><a class="header" href="#modifying-saving">Modifying Saving</a></h2>
+<p>It is nice to generate a text file of the data in case you need to make further tweaks before running it through ditaa. It is also required if you want to generate .pngs on the fly of your diagrams.</p>
+<p>Go to App/Asciio/setup/actions and load up the file.pl file.</p>
+<p>On line 65, replace the original saving code with the following:</p>
+<pre><code class="language-perl">		#$new_title = $self-&gt;save_with_type($elements_to_save, $type, $file_name) ;
+		## Regardless of previous stuff, save one asciio file and one asciio.&lt;ext&gt;.txt ascii file
+		## Courtesy of Strawp of http://strawp.net/archive/geeking-out-with-diagrams-in-ascii/
+		$new_title = $self-&gt;save_with_type($elements_to_save, &quot;asciio&quot;, $file_name) ;
+		$new_title = $self-&gt;save_with_type($elements_to_save, &quot;txt&quot;, $file_name.&quot;.txt&quot;) ;
+ 
+		## Run ditaa to convert text version into nice copy
+		## Use this if you have Proc::Background available.  Otherwise, use the system call below.
+		#use Proc::Background;
+		#my $proc1 = Proc::Background-&gt;new(&quot;c:\\bin\\ditaa.bat \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+		#my $proc1 = Proc::Background-&gt;new(&quot;java -jar /home/thomas/programs/ditaa/ditaa0_9.jar \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+		## This call converts while saving.  Slows down save time.  Replace the path below with your path to ditaa.jar
+                ## You can add any special parameters here that you commonly use as well.
+                ## Use this command if you unzipped the .jar file
+		system(&quot;java -jar /home/thomas/programs/asciio-ditaa/ditaa0_9.jar \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+		## Use this command if you installed the .deb.
+		#system(&quot;ditaa \&quot;&quot;.$file_name.&quot;.txt\&quot; \&quot;&quot;.$file_name.&quot;.png\&quot;&quot;);
+</code></pre>
+<h2 id="using-the-new-setup"><a class="header" href="#using-the-new-setup">Using the New Setup</a></h2>
+<p>Now that you have made all of your tweaks, you are ready to start using your asciio/ditaa combo! Start by making a simple diagram. Here is one below:</p>
+<p>Notice when you save this file for the first time:</p>
+<p>Several files are created at first. As well as our rendered image.</p>
+<p>Now, lets spice it up with some colour and some shapes. Use the right click menu to add the document tag to each of the items labelled document. To do this you will need to:</p>
+<p>Right click and select stencils → ditaatags → shapes → document
+Drag the {d} over the first document. I suggest you group any shapes, and shape modifiers by using CTRL+G once you set them up. If you do this, all of your pieces will move around if you have to tweak your image. Grouping involves selecting each item (hold shift while clicking each item), then press CTRL+G on your keyboard. This will cause this group of items to change background colour, and if you move one item, they will all move together. (You can ungroup by pressing CTRL+U)
+Add another {d} to the other document.
+If your item is falling behind the item you want, you can press CTRL+F to bring it to the foreground. Or CTRL+B to push the item on top into the background.
+Now lets add some colour. Right click, and add some colour tags to the documents. As you save, you will notice the .png updates automatically.</p>
+<p>Here is your final work of art:</p>
+<h2 id="troubleshooting"><a class="header" href="#troubleshooting">Troubleshooting</a></h2>
+<p>asciio Won't Load File
+I've noticed that if you modify the stock asciio shapes (either through the gui itself, or in the stencils file) often times if you launch asciio, and then try to load a file with altered shapes, it will fail to load. It generates this output in the terminal:</p>
+<p>thomas@thomas-desktop:~/programs/asciio-ditaa$ asciio
+Using setup directory:'/usr/share/perl5/App/Asciio/setup/'
+running action 'Open'.
+load_file: can't load file '/home/thomas/programs/asciio-ditaa/saves/test':  Unrecognized character \x8E in column 23827 at (eval 105) line 372.
+You can still get asciio to open, you just need to launch it with the file you want to load. So either launch it by typing something like:</p>
+<p>thomas@thomas-desktop:~/programs/asciio-ditaa$ asciio /home/thomas/programs/asciio-ditaa/saves/test
+Using setup directory:'/usr/share/perl5/App/Asciio/setup/'
+running action 'Open'.
+Or launch from your file manager. In my case, Nautilus:</p>
+<h2 id="asciio-forgets-where-i-saved"><a class="header" href="#asciio-forgets-where-i-saved">asciio Forgets Where I Saved</a></h2>
+<p>When loading asciio for the first time, and saving, I find that asciio forgets where I saved the document. It always returns to the original launching location.</p>
+<p>To avoid this, I'd recommend that after your first save, you reopen asciio by using one of the two procedures mentioned above. This will allow it to remember where you are working, and the Save function will work correctly.</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../stencils/verbatim.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <i class="fa fa-angle-left"></i>
+                            </a>
+
+                            <a rel="next prefetch" href="../editing_elements.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <i class="fa fa-angle-right"></i>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../stencils/verbatim.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <i class="fa fa-angle-left"></i>
+                    </a>
+
+                    <a rel="next prefetch" href="../editing_elements.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <i class="fa fa-angle-right"></i>
+                    </a>
+            </nav>
+
+        </div>
+
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="../elasticlunr.min.js"></script>
+        <script src="../mark.min.js"></script>
+        <script src="../searcher.js"></script>
+
+        <script src="../clipboard.min.js"></script>
+        <script src="../highlight.js"></script>
+        <script src="../book.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+    </div>
+    </body>
+</html>
