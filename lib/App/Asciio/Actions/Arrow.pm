@@ -37,21 +37,30 @@ $self->update_display() if $changes_made ;
 sub change_arrow_direction
 {
 my ($self) = @_ ;
-my $changes_made = 0 ;
 
-for (grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1))
+my @selection = $self->get_selected_elements(1) ;
+my @arrows ;
+
+if (1 == @selection && ref $selection[0] eq 'App::Asciio::stripes::editable_box2')
 	{
-	$self->create_undo_snapshot() unless $changes_made++ ;
-	$_->change_section_direction($self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y}) ;
+	my @connections = $self->get_connections_containing(@selection) ;
+	@arrows = $connections[0]{CONNECTED} if 1 == @connections ;
 	}
 
-for (grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} $self->get_selected_elements(1))
+push @arrows, grep {ref $_ eq 'App::Asciio::stripes::angled_arrow'} @selection ;
+push @arrows, grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} @selection  ;
+
+for (@arrows)
 	{
-	$self->create_undo_snapshot() unless $changes_made++ ;
-	$_->change_direction() ;
+	$self->create_undo_snapshot() ;
+	
+	$_->change_direction() if ref $_ eq 'App::Asciio::stripes::angled_arrow' ;
+	
+	$_->change_section_direction($self->{MOUSE_X} - $_->{X}, $self->{MOUSE_Y} - $_->{Y})
+		if ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'  ;
 	}
 
-$self->update_display() if $changes_made ;
+$self->update_display() if @arrows ;
 }
 
 #----------------------------------------------------------------------------------------------
