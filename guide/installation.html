@@ -172,36 +172,24 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<p>Asciio is normally packaged for distributions, if you are reading this we are
-working on the GTK3 port and you'll need to install manually.</p>
-<h2 id="alternative-1"><a class="header" href="#alternative-1">Alternative <em>1</em></a></h2>
-<pre><code class="language-bash">    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
+<p>We're working on having packages pre-build for different distributions</p>
+<h2 id="ubuntu-probably-other-bian-derived-too"><a class="header" href="#ubuntu-probably-other-bian-derived-too">Ubuntu (probably other bian derived too)</a></h2>
+<pre><code class="language-bash">    apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl 
 
-    cpan install Data::TreeDumper Data::TreeDumper::Renderer::GTK App::Asciio
-
-</code></pre>
-<h2 id="alternative-2"><a class="header" href="#alternative-2">Alternative <em>2</em></a></h2>
-<pre><code class="language-bash">    sudo apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl
-
-    sudo sudo apt install make gcc
-
-    git clone https://github.com/nkh/P5-Data-TreeDumper-Renderer-GTK
-    cd P5-Data-TreeDumper-Renderer-GTK
-    perl Makefile.pl
-    make
-    
-    git clone https://github.com/nkh/P5-App-Asciio
-    cd P5-App-Asciio
-    perl Build.PL
-    ./Build installdeps 
-    ./Build install
+    cpan install Data::TreeDumper::Renderer::GTK App::Asciio
 
 </code></pre>
+<h2 id="container"><a class="header" href="#container">container</a></h2>
+<p>Using the instructions above build an asciio image ; the image will be large (~700 MB) as it contains gtk and co.</p>
+<p>You can then run the asciio or tasciio like this:</p>
+<pre><code>podman run -it --net=host --env=&quot;DISPLAY&quot; --volume=&quot;$HOME/.Xauthority:/root/.Xauthority:rw&quot; --volume=&quot;$HOME:/home/xxx&quot; asciio [asciio|tasciio]
+</code></pre>
+<h2 id="windows"><a class="header" href="#windows">Windows</a></h2>
 <p>In the windows environment, you can use asciio through WSL or cygwin.</p>
-<h2 id="wsl"><a class="header" href="#wsl">WSL</a></h2>
+<h3 id="wsl"><a class="header" href="#wsl">WSL</a></h3>
 <p>The use of WSL is not much different from the Linux environment.However, there are some things that need attention. This link talks about how to connect to the WSL environment and execute GUI programs through remote connections under Windows.</p>
 <p><a href="https://github.com/qindapao/linux_app_use_in_windows/blob/main/remote_wsl_use_gui_app.md">remote_wsl_use_gui_app</a></p>
-<h2 id="cygwin"><a class="header" href="#cygwin">Cygwin</a></h2>
+<h3 id="cygwin"><a class="header" href="#cygwin">Cygwin</a></h3>
 <ul>
 <li>First install <a href="https://www.cygwin.com/">Cygwin</a>.</li>
 <li>Make sure the following components are installed correctly
@@ -234,18 +222,6 @@ asciio
 $&gt; tasciio [file.asciio] # TUI application
 
 $&gt; asciio_to_text file.asciio # converts asciio files to ASCII
-</code></pre>
-<h1 id="previous-version-docker-image"><a class="header" href="#previous-version-docker-image">Previous version docker image</a></h1>
-<pre><code>There are docker images made by third parties, use a search engine for
-the latest.
-
-https://hub.docker.com/r/rodolfoap/asciio
-
-example images:
-
-https://gist.github.com/BruceWind/32920cf74ba5b7172b31b06fec38aabb
-
-https://github.com/rodolfoap
 </code></pre>
 <h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
 <p>Asciio is developed on both Linux and Windows (cygwin).</p>
