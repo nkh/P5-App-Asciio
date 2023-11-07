@@ -191,9 +191,11 @@ register_action_handlers
 	'Change arrow direction'              => ['000-d', \&App::Asciio::Actions::Arrow::change_arrow_direction                          ],
 	'Flip arrow start and end'            => ['000-f', \&App::Asciio::Actions::Arrow::flip_arrow_ends                                 ],
 	'Append multi_wirl section'           => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section,                             ],
-	'Insert multi_wirl section'           => ['000-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
+	'Insert multi_wirl section'           => ['00S-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
 	'Prepend multi_wirl section'          => ['0A0-s', \&App::Asciio::Actions::Multiwirl::prepend_section                             ],
 	'Remove last section from multi_wirl' => ['C00-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow ],
+	'start no disconnect'                 => ['C00-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0                  ],
+	'end no disconnect'                   => ['C0S-D', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1                  ],
 	},
 
 'debug leader' => 

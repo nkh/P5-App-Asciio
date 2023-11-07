@@ -11,6 +11,18 @@ use App::Asciio::String ;
 
 #----------------------------------------------------------------------------------------------
 
+sub disable_arrow_connector
+{
+my ($self, $end) = @_ ;
+
+my $element = ($self->get_selected_elements(1))[0] ;
+
+if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $element)
+	{
+	$element->disable_arrow_connector($end) ;
+	}
+}
+
 sub insert_wirl_arrow_section
 {
 my ($self) = @_ ;

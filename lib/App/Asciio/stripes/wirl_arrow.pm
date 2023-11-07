@@ -701,12 +701,13 @@ sub get_connector_points
 {
 my ($self) = @_ ;
 
-return
-	(
-	{X => 0, Y => 0, NAME => 'start'},
-	{X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end'},
-	) ;
+my @connectors ;
+push @connectors, {X => 0,              Y => 0,              NAME => 'start'} ;
+push @connectors, {X => $self->{END_X}, Y => $self->{END_Y}, NAME => 'end'} ;
+
+@connectors
 }
+
 #-----------------------------------------------------------------------------
 
 sub get_named_connection

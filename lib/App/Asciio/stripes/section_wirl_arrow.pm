@@ -330,7 +330,20 @@ sub get_selection_action
 {
 my ($self, $x, $y) = @_ ;
 
-my $action = 'move' ;
+return '' if $self->{DISABLE_ARROW_CONNECTOR}[0] and 
+		$x == $self->{POINTS_OFFSETS}[0][0] and
+		$y == $self->{POINTS_OFFSETS}[0][1] ;
+
+my $end_arrow = $self->{ARROWS}[-1] ;
+my ($start_connector, $end_connector) = $end_arrow->get_connector_points() ;
+$end_connector->{X} += $self->{POINTS_OFFSETS}[-1][0] ;
+$end_connector->{Y} += $self->{POINTS_OFFSETS}[-1][1] ;
+
+return '' if $self->{DISABLE_ARROW_CONNECTOR}[1] and 
+		$x == $end_connector->{X} and
+		$y == $end_connector->{Y} ;
+
+my $action ;
 
 my $arrow_index = 0 ;
 for my $arrow(@{$self->{ARROWS}})
@@ -358,7 +371,13 @@ for my $arrow(@{$self->{ARROWS}})
 	$arrow_index++ ;
 	}
 
-return $action ;
+if ($self->{DISABLE_ARROW_CONNECTOR}[0] || $self->{DISABLE_ARROW_CONNECTOR}[1])
+	{
+	# can move arrow by moving a point on the arrow that's not a connector
+	return '' unless defined $action ; 
+	}
+
+return $action // 'move' ;
 }
 
 #-----------------------------------------------------------------------------
@@ -415,6 +434,13 @@ for my $arrow(@{$self->{ARROWS}})
 }
 
 #-----------------------------------------------------------------------------
+
+sub disable_arrow_connector
+{
+my ($self, $end) = @_ ;
+
+$self->{DISABLE_ARROW_CONNECTOR}[$end] ^= 1 ;
+}
 
 sub get_connector_points
 {
