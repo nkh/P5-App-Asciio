@@ -1,6 +1,10 @@
 
 package App::Asciio ;
+
+use strict ; use warnings ;
+
 use Encode ;
+use List::Util qw(max) ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -15,6 +19,65 @@ my ($self, $action) = @_ ; ;
 $self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 $self->run_actions($action) ;
 $self->{CROSS_ACTION_GROUP}++ ;
+}
+
+sub create_binding_completions
+{
+my ($self, $keep_visible) = @_ ;
+
+if($self->{USE_BINDINGS_COMPLETION})
+	{
+	my $binding_max_length = 
+		max map { length } 
+			grep {
+				$_ ne 'IS_GROUP'
+				&& $_ ne 'ENTER_GROUP'
+				&& $_ ne 'ESCAPE_KEY'
+				&& $_ ne 'NAME'
+				&& $_ ne 'SHORTCUTS'
+				&& $_ ne 'ORIGIN'
+				&& $_ ne 'CODE'
+				}
+				keys $self->{CURRENT_ACTIONS}->%* ;
+				
+	my $max_length = 0 ;
+	
+	$self->{BINDINGS_COMPLETION} = 
+			[
+			map
+				{
+				my $completion = sprintf("%-${binding_max_length}s - %s", $_, $self->{CURRENT_ACTIONS}{$_}{NAME}) ;
+				my $length = length $completion ;
+				
+				$max_length = $length if $length > $max_length ;
+				$completion ;
+				}
+				sort grep {
+					$_ ne 'IS_GROUP'
+					&& $_ ne 'ENTER_GROUP'
+					&& $_ ne 'ESCAPE_KEY'
+					&& $_ ne 'NAME'
+					&& $_ ne 'SHORTCUTS'
+					&& $_ ne 'ORIGIN'
+					&& $_ ne 'CODE'
+					}
+					keys $self->{CURRENT_ACTIONS}->%*
+			] ;
+	
+	$self->{BINDINGS_COMPLETION_LENGTH} = $max_length ;
+	
+	$self->update_display() ;
+	}
+else
+	{
+	if(exists $self->{BINDINGS_COMPLETION})
+		{
+		delete $self->{BINDINGS_COMPLETION} ;
+		$self->update_display() ;
+		}
+	}
+
+$_[0]->{KEEP_BINDINGS_COMPLETION}++ if $keep_visible ; 
 }
 
 #------------------------------------------------------------------------------------------------------
@@ -92,8 +155,25 @@ for my $action (@actions)
 				] ;
 			}
 		
-		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture || $self->{CROSS_ACTION_GROUP} ;
+		$is_group += $self->{CROSS_ACTION_GROUP} // 0 ;
 		delete $self->{CROSS_ACTION_GROUP} ;
+		
+		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture ;
+		
+		if ($is_group)
+			{
+			$self->create_binding_completions() ;
+			}
+		else
+			{
+			unless ($self->{KEEP_BINDINGS_COMPLETION})
+				{
+				delete $self->{BINDINGS_COMPLETION} ;
+				$self->update_display() ;
+				}
+			
+			delete $self->{KEEP_BINDINGS_COMPLETION} ;
+			}
 		
 		if($is_group && defined $self->{CURRENT_ACTIONS}{ENTER_GROUP})
 			{
@@ -131,9 +211,11 @@ for my $action (@actions)
 			{
 			$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-30s\e[m", "$action") if $self->{ACTION_VERBOSE} ; 
 			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+			
 			}
 		
 		$self->update_display() ;
+		delete $self->{BINDINGS_COMPLETION} ;
 		}
 	}
 	

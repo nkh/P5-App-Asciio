@@ -14,6 +14,7 @@ EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 
 TAB_AS_SPACES => '    ',
+USE_BINDINGS_COMPLETION => 0,
 
 DISPLAY_GRID => 1,
 DISPLAY_GRID2 => 1,
@@ -63,6 +64,7 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
+		hint_background => [0.20, 0.20, 0.20],
 		}, 
 	'system' =>
 		{
@@ -94,6 +96,7 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
+		hint_background => [0.20, 0.20, 0.20],
 		} 
 	},
 

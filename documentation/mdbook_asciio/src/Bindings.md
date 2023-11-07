@@ -9,5 +9,21 @@ accessed with shortcuts that start with the same letter.
 
 The bindings can be changed in your user configuration, See configuration/user_bindings 
 
+# Bindings help
+
+***Binding:*** zb
+
+![bindings_help](bindings_help.gif)
+
+You can get a pop up showing the bindings (*?* in the top level) Or you can configure it:
+
+```
+USE_BINDINGS_COMPLETION => 1,
+```
+
+## Bindings map
+
+*bindings change truth is in the config not this snapshot*
+
 ![bindings](asciio_bindings.png)
 

@@ -132,6 +132,8 @@ my $installed = find_installed('App::Asciio') ;
 my ($basename, $path, $ext) = File::Basename::fileparse($installed, ('\..*')) ;
 my $asciio_setup_path = $path . $basename . '/setup/' ;
 
+my %first_level_group ;
+
 for my $action_file (@{ $action_files })
 	{
 	my $context = new Eval::Context() ;
@@ -152,6 +154,7 @@ for my $action_file (@{ $action_files })
 		INSTALL_SUBS => {
 				register_action_handlers => sub { %action_handlers = @_ ; },
 				register_action_handlers_remove_old_shortcuts => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
+				register_first_level_group => sub { %first_level_group = (%first_level_group, @_) ; },
 				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		CODE_FROM_FILE => $location,
@@ -265,6 +268,14 @@ for my $action_file (@{ $action_files })
 			}
 		}
 	}
+
+my $action_handler = $self->setup_first_level_group(\%first_level_group) ;
+my $name = $action_handler->{SHORTCUTS}[0] ;
+
+if (defined $name)
+	{
+	$self->{ACTIONS}{$name} = $action_handler ;
+	}
 }
 
 #------------------------------------------------------------------------------------------------------
@@ -276,6 +287,7 @@ my $name = $action_handler->{NAME} ;
 
 if(exists $self->{ACTIONS_BY_NAME}{$name})
 	{
+	my $reused = '' ;
 	print "\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown') ;
 	
 	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
@@ -285,7 +297,6 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 		die "\tno shortcuts in definition\n" ;
 		}
 	
-	my $reused = '' ;
 	if(! defined $action_handler->{CODE} && defined $old_handler->{CODE}) 
 		{
 		$reused .= ", reused code" ;
@@ -315,6 +326,37 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 }
 
 #------------------------------------------------------------------------------------------------------
+
+sub setup_first_level_group
+{
+my ($self, $group_definition) = @_ ;
+
+my %handler ;
+
+for my $name ( grep { $_ ne 'SHORTCUT' } keys %{$group_definition} )
+	{
+	die "Asciio: Group 'first_level' entry '$name' not defined\n" unless exists $self->{ACTIONS_BY_NAME}{$name} ;
+	my $handler = $self->{ACTIONS_BY_NAME}{$name} ;
+
+	for my $shortcut ('ARRAY' eq ref $handler->{SHORTCUTS} ? $handler->{SHORTCUTS}->@* : $handler->{SHORTCUTS}) 
+		{
+		$handler{$shortcut} = $handler
+		}
+	}
+
+@handler{'IS_GROUP', 'ENTER_GROUP', 'ESCAPE_KEY', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
+	(
+	1,
+	$group_definition->{ENTER_GROUP},
+	$group_definition->{ESCAPE_KEY},
+	[ $group_definition->{SHORTCUT} ],
+	sub { $_[0]->{CURRENT_ACTIONS} = \%handler },
+	'first_level_group',
+	'action_file'
+	) ;
+
+return \%handler ;
+}
 
 sub get_group_action_handler
 {

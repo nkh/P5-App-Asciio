@@ -12,7 +12,7 @@ use Glib ':constants';
 use Gtk3 -init;
 use Pango ;
 
-use List::MoreUtils qw(all) ;
+use List::Util qw(min) ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
@@ -477,7 +477,55 @@ if($self->{DRAW_HINT_LINES})
 	$gc->stroke() ;
 	}
 
+$self->display_bindings_completion($gc, $character_width, $character_height) ;
+
 return TRUE;
+}
+
+#-----------------------------------------------------------------------------
+
+sub display_bindings_completion
+{
+my ($self, $gc, $character_width, $character_height) = @_ ;
+
+if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
+	{
+	$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
+	
+	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $character_width, $character_height * $self->{BINDINGS_COMPLETION}->@*) ;
+	
+	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
+	
+	my $start_x ;
+	if ($window_width < (($self->{MOUSE_X} + 3) * $character_width) + $width)
+		{
+		$start_x = (($self->{MOUSE_X} - 3) * $character_width) - $width ;
+		}
+	else
+		{
+		$start_x = ($self->{MOUSE_X} + 3) * $character_width ;
+		}
+	
+	my $start_y = min($window_height - $height , ($self->{MOUSE_Y} + 1) * $character_height) ;
+	
+	$gc->rectangle($start_x, $start_y, $width, $height) ;
+	$gc->fill() ;
+	
+	my $surface = Cairo::ImageSurface->create('argb32', $width, $height) ;
+	my $gco = Cairo::Context->create($surface) ;
+	
+	my $layout = Pango::Cairo::create_layout($gco) ;
+	my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+	$layout->set_font_description($font_description) ;
+	
+	$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
+	Pango::Cairo::show_layout($gco, $layout) ;
+	
+	$gc->set_source_surface($surface, $start_x, $start_y) ;
+	$gc->paint;
+	
+	$gc->stroke() ;
+	}
 }
 
 #-----------------------------------------------------------------------------

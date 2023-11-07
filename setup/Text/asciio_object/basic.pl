@@ -9,6 +9,7 @@ DIALOGS =>
 	},
 
 TAB_AS_SPACES => '    ',
+USE_BINDINGS_COMPLETION => 0,
 
 # use ANSI colors
 COLOR_SCHEMES =>

@@ -1,6 +1,9 @@
 
-run script from asciio
-	insert boxes, ...
+bindings overlay
+	on off
+	for top level
+		except movements
+		with movements
 
 constraints
 	alignement

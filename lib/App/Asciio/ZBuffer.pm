@@ -150,6 +150,34 @@ return
 		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
 	}
 }
+# ------------------------------------------------------------------------------
+
+# sub get_cardinal_neighbors
+# {
+# my ($self, $coordinate) = @_ ;
+# my ($x, $y)             = split ';', $coordinate ;
+
+# return 
+# 	{
+# 	map 
+# 		{
+# 		exists $self->{coordinates}{$_} 
+# 			? ( $self->{coordinates}{$_} ne ' ' ? ($_ => $self->{coordinates}{$_}) : undef) 
+# 			: undef
+# 		}
+# 		$x .';'. ($y-1), 
+# 		$x .';'. ($y+1),
+# 		($x+1) .';'. $y,
+# 		($x-1) .';'. $y,
+# 		($x+1) .';'. ($y-1), 
+# 		($x+1) .';'. ($y+1),
+# 		($x-1) .';'. ($y+1),
+# 		($x-1) .';'. ($y-1) ;
+# 	}
+# }
+
+
+# my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315) =  $zbuffer->get_cardinal_neighbors() ;
 
 # ------------------------------------------------------------------------------
 
