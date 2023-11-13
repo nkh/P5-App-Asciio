@@ -8,3 +8,6 @@ It's faster and easier to work with keyboard shortcuts than the mouse and the nu
 accessed with shortcuts that start with the same letter.
 
 The bindings can be changed in your user configuration, See configuration/user_bindings 
+
+![bindings](asciio_bindings.png)
+

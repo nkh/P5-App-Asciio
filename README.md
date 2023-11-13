@@ -265,6 +265,22 @@ An old video that shows basic usage:
 
 Read *documentation/mdbook_asciio/src/guide/installation.md* for more information.
 
+## Container image
+
+```
+docker pull nadimkhemir/asciio
+```
+
+Running the image
+
+```
+podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/nadim" asciio
+
+tasciio # TUI asciio
+
+asciio # GUI asciio
+```
+
 # AUTHORS
 
     Khemir Nadim ibn Hamouda
