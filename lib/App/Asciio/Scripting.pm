@@ -14,12 +14,15 @@ require Exporter ;
 	to_ascii
 	ascii_out
 	new_box
+	new_text
 	new_wirl_arrow
 	add_connection
 	move_named_connector
 	optimize_connections
 	get_canonizer
 	run_external_script
+	select_all_elements
+	deselect_all_elements
 	) ;
 
 use strict ; use warnings ;
@@ -132,6 +135,43 @@ sub set_connection { $script_asciio->add_connections(@_) ; }
 }
 
 #--------------------------------------------------------------------------------------------
+
+sub new_text
+{
+my (@arguments_to_constructor) = @_ ;
+
+use App::Asciio::stripes::editable_box2 ;
+
+my $element = new App::Asciio::stripes::editable_box2
+			({
+			TEXT_ONLY => 'box',
+			TITLE => '',
+			EDITABLE => 1,
+			RESIZABLE => 1,
+			@arguments_to_constructor,
+			}) ;
+
+my $box_type = $element->get_box_type() ;
+my ($title, $text) = $element->get_text() ;
+
+use Readonly ;
+
+Readonly my $TITLE_SEPARATOR => 1 ;
+Readonly my $DISPLAY => 0 ;
+
+for (0 .. $#$box_type)
+	{
+	next if $_ == $TITLE_SEPARATOR && $title eq '' ;
+	
+	$box_type->[$_][$DISPLAY] = 0 ;
+	}
+
+$element->set_box_type($box_type) ;
+
+return $element ;
+}
+
+#-----------------------------------------------------------------------------------------------------------
 
 sub new_box
 {
