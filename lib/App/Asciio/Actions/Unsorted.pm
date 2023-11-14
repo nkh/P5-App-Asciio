@@ -380,7 +380,7 @@ sub insert_multiple_boxes_from_text_description
 {
 my ($self, $boxed) = @_ ;
 
-my $text = $self->display_edit_dialog('multiple objects from input', "\ntext\ntext\ntext\ntext", $self) ;
+my $text = $self->display_edit_dialog('multiple objects from input', "\ntext", $self) ;
 
 if(defined $text && $text ne '')
 	{
@@ -419,8 +419,8 @@ if(defined $text && $text ne '')
 			}
 			
 		@$new_element{'X', 'Y'} = ($current_x, $current_y) ;
-		$current_x += $self->{COPY_OFFSET_X} ; 
-		$current_y += $self->{COPY_OFFSET_Y} ;
+		$current_x += $new_element->{WIDTH} + $self->{COPY_OFFSET_X} ; 
+		$current_y += $new_element->{HEIGHT} + $self->{COPY_OFFSET_Y} ;
 		
 		push @new_elements , $new_element ;
 		}

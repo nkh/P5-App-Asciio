@@ -634,8 +634,8 @@ my $self =
 		
 		ACTIONS => {},
 		
-		COPY_OFFSET_X => 3,
-		COPY_OFFSET_Y => 3,
+		COPY_OFFSET_X => 1,
+		COPY_OFFSET_Y => 1,
 		COLORS => {},
 		
 		NEXT_GROUP_COLOR => 0, 
