@@ -167,6 +167,7 @@ for (0 .. $#$box_type)
 	}
 
 $element->set_box_type($box_type) ;
+$element->shrink() ;
 
 return $element ;
 }
