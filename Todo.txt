@@ -1,4 +1,7 @@
 
+run script from asciio
+	insert boxes, ...
+
 constraints
 	alignement
 	arrows not overlapping

@@ -23,3 +23,4 @@ save_to "from_script.asciio" ;
 
 ascii_out ;
 
+select_all_elements ;

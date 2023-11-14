@@ -15,10 +15,10 @@ use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::Actions::Presentation ;
 use App::Asciio::Actions::Ruler ;
+use App::Asciio::Scripting ;
 use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
 use App::Asciio::Actions::ZBuffer ;
-
 
 #----------------------------------------------------------------------------------------------
 
@@ -220,14 +220,15 @@ register_action_handlers
 	'Display commands'                    => ['000-c', \&App::Asciio::Actions::Unsorted::display_commands                   ],
 	'Display action files'                => ['000-f', \&App::Asciio::Actions::Unsorted::display_action_files               ],
 	'Display manpage'                     => ['000-m', \&App::Asciio::Actions::Unsorted::manpage_in_browser                 ],
-
 	
-	'Open'                                => ['000-e', \&App::Asciio::Actions::File::open        ],
-	'Save'                                => ['000-w', \&App::Asciio::Actions::File::save, undef ],
-	'SaveAs'                              => ['00S-W', \&App::Asciio::Actions::File::save, 'as'  ],
-	'Insert'                              => ['000-r', \&App::Asciio::Actions::File::insert      ],
-	'Quit'                                => ['000-q', \&App::Asciio::Actions::File::quit        ],
-	'Quit no save'                        => ['00S-Q', \&App::Asciio::Actions::File::quit_no_save],
+	'Run external script'                 => ['00S-exclam', \&App::Asciio::Scripting::run_external_script                   ],
+	
+	'Open'                                => ['000-e', \&App::Asciio::Actions::File::open                                   ],
+	'Save'                                => ['000-w', \&App::Asciio::Actions::File::save, undef                            ],
+	'SaveAs'                              => ['00S-W', \&App::Asciio::Actions::File::save, 'as'                             ],
+	'Insert'                              => ['000-r', \&App::Asciio::Actions::File::insert                                 ],
+	'Quit'                                => ['000-q', \&App::Asciio::Actions::File::quit                                   ],
+	'Quit no save'                        => ['00S-Q', \&App::Asciio::Actions::File::quit_no_save                           ],
 	},
 
 'Insert leader' => 

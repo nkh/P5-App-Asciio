@@ -159,4 +159,20 @@ save_to "from_script.asciio" ;
 ascii_out ;
 ```
 
+## Executing your script
+
+### From the command line
+
+The script is a normal perl script.
+
+```
+perl my_asciio_script.pl
+```
+
+### From within Asciio
+
+***Binding:*** «:!»
+
+Pick the file you want to execute.
+
 

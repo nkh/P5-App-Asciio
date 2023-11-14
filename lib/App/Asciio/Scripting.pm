@@ -19,6 +19,7 @@ require Exporter ;
 	move_named_connector
 	optimize_connections
 	get_canonizer
+	run_external_script
 	) ;
 
 use strict ; use warnings ;
@@ -49,6 +50,22 @@ use App::Asciio::stripes::wirl_arrow ;
 
 my $script_asciio ; # make script non OO
 my %name_to_element ;
+
+sub run_external_script
+{
+my ($asciio) = @_ ;
+
+my $script = $asciio->get_file_name() ;
+
+if(defined $script)
+	{
+	$script_asciio = $asciio ;
+	
+	do $script ;
+	
+	$asciio->update_display() ;
+	}
+}
 
 sub new_script_asciio
 {
@@ -96,6 +113,15 @@ my ($element1_name, $element2_name, @args) = @_ ;
 
 add_connection($script_asciio, @name_to_element{$element1_name, $element2_name}, @args) ;
 }
+
+sub select_elements
+{
+my ($state, @elements) = @_ ;
+$script_asciio->select_elements($state, @name_to_element{@elements}) ;
+}
+
+sub select_all_elements { $script_asciio->select_all_elements() ; }
+sub deselect_all_elements { $script_asciio->select_all_elements() ; }
 
 sub save_to        { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
 sub to_ascii       { $script_asciio->transform_elements_to_ascii_buffer() ; }
