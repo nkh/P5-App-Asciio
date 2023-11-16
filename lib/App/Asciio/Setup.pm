@@ -507,19 +507,9 @@ my($self, $script) = @_ ;
 
 if(defined $script)
 	{
-	my $context = new Eval::Context() ;
+	require App::Asciio::Scripting ;
 	
-	$context->eval
-		(
-		PRE_CODE => "use strict;\nuse warnings;\n",
-		CODE_FROM_FILE => $script,
-		INSTALL_VARIABLES =>
-			[ 
-			[ '$self' => $self => $Eval::Context::SHARED ],
-			] ,
-		) ;
-	
-	die "Asciio: can't load setup file '$script': $! $@\n" if $@ ;
+	App::Asciio::Scripting::run_external_script($self, $script) ;
 	}
 }
 

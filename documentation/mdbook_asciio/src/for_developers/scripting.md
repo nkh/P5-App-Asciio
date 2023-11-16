@@ -112,17 +112,10 @@ You'll also need to use the right module; in fact you have access to everything 
 use strict; use warnings;
 
 use App::Asciio::Scripting ;
-use App::Asciio::stripes::section_wirl_arrow;
 
 #-----------------------------------------------------------------------------
 
-add 'multi_wirl',
-	new App::Asciio::stripes::section_wirl_arrow
-		({
-		POINTS => [[5, 5, 'downright'], [10, 7, 'downright'], [7, 14, 'downleft'], ],
-		DIRECTION => '',
-		}),
-	5, 5 ;
+add 'multi_wirl', new_wirl_arrow([5, 5, 'downright'], [10, 7, 'downright'], [7, 14, 'downleft']), 5, 5 ;
 
 ascii_out ;
 ```
@@ -137,9 +130,10 @@ You can find more examples in the *documentation/scripting/* library of the proj
 use strict; use warnings;
 
 use App::Asciio::Scripting ;
-use App::Asciio::stripes::process_box ;
 
 #-----------------------------------------------------------------------------
+
+add 'text1', new_text(TEXT_ONLY =>'text'),  22,  20 ;
 
 add 'box1', new_box(TEXT_ONLY =>'box1'),  0,  2 ;
 add 'box2', new_box(TEXT_ONLY =>'box2'), 20, 10 ;
@@ -148,6 +142,7 @@ add 'box3', new_box(TEXT_ONLY =>'box3'), 40,  5 ;
 connect_elements 'box1', 'box2', 'down' ;
 connect_elements 'box2', 'box3' ;
 connect_elements 'box3', 'box1', 'up' ;
+connect_elements 'box2', 'text1' ;
 
 my $process = add_type 'process', 'Asciio/Boxes/process', 5, 15 ;
 $process->set_text("line 1\nline 2\nline 3") ;
@@ -175,4 +170,9 @@ perl my_asciio_script.pl
 
 Pick the file you want to execute.
 
+Or pass it on the command line 
+
+```
+asciio -s full_path_to_script
+```
 

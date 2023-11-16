@@ -86,11 +86,7 @@ my @flags_and_help =
 		'',
 		
 	's|script=s'                          => \$asciio_config->{SCRIPT},
-		'script to be run at AsciiO start.',
-		'',
-		
-	'h|help'                          => \$asciio_config->{HELP},
-		'Displays some help.',
+		'script to be run at Asciio start.',
 		'',
 	) ;
 	

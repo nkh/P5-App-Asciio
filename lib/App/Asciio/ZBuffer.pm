@@ -45,8 +45,8 @@ for my $element (@elements)
 		}
 	}
 
-my $t1 = Time::HiRes::gettimeofday();
-printf "add time: %0.4f sec.\n", $t1 - $t0 ;
+# my $t1 = Time::HiRes::gettimeofday();
+# printf "add time: %0.4f sec.\n", $t1 - $t0 ;
 }
 
 # ------------------------------------------------------------------------------
@@ -134,6 +134,8 @@ sub get_neighbors
 my ($self, $coordinate) = @_ ;
 my ($x, $y)             = split ';', $coordinate ;
 
+# order: 315, up, 45, right, 135, down, 225, left
+
 return 
 	{
 	map 
@@ -141,7 +143,7 @@ return
 		exists $self->{coordinates}{$_} 
 			? (
 				$self->{coordinates}{$_} ne ' ' 
-					? ($_ => $self->{coordinates}{$_})
+					? ( $self->{coordinates}{$_} ne ' ' ? ($_ => $self->{coordinates}{$_}) : ()) 
 					: ()
 					) 
 			: () }
@@ -150,34 +152,84 @@ return
 		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
 	}
 }
+
 # ------------------------------------------------------------------------------
 
-# sub get_cardinal_neighbors
-# {
-# my ($self, $coordinate) = @_ ;
-# my ($x, $y)             = split ';', $coordinate ;
+sub get_neighbors_stack
+{
+my ($self, $coordinate) = @_ ;
+my ($x, $y)             = split ';', $coordinate ;
 
-# return 
-# 	{
-# 	map 
-# 		{
-# 		exists $self->{coordinates}{$_} 
-# 			? ( $self->{coordinates}{$_} ne ' ' ? ($_ => $self->{coordinates}{$_}) : undef) 
-# 			: undef
-# 		}
-# 		$x .';'. ($y-1), 
-# 		$x .';'. ($y+1),
-# 		($x+1) .';'. $y,
-# 		($x-1) .';'. $y,
-# 		($x+1) .';'. ($y-1), 
-# 		($x+1) .';'. ($y+1),
-# 		($x-1) .';'. ($y+1),
-# 		($x-1) .';'. ($y-1) ;
-# 	}
-# }
+# order: 315, up, 45, right, 135, down, 225, left
 
+return 
+	{
+	map 
+		{
+		exists $self->{coordinates}{$_} 
+			? (
+				$self->{coordinates}{$_} ne ' ' 
+					? (exists $self->{intersecting_elements}{$_} ? ($_ => $self->{intersecting_elements}{$_}) : ($_ => [$self->{coordinates}{$_}]))
+					: ()
+					) 
+			: () }
+		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
+		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
+		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
+	}
+}
 
-# my ($up, $down, $left, $right, $char_45, $char_135, $char_225, $char_315) =  $zbuffer->get_cardinal_neighbors() ;
+# ------------------------------------------------------------------------------
+
+sub get_cardinal_neighbors
+{
+# returns undef for non existing neighbors
+
+my ($self, $coordinate) = @_ ;
+my ($x, $y)             = split ';', $coordinate ;
+
+# order: 315, up, 45, right, 135, down, 225, left
+
+return 
+	{
+	map 
+		{
+		$_ => $self->{coordinates}{$_} 
+		# exists $self->{coordinates}{$_} 
+			# ? ( $self->{coordinates}{$_} ne ' ' ? ($_ => $self->{coordinates}{$_}) : ($_ => undef) )
+			# : undef
+		}
+		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
+		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
+		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
+	}
+
+}
+
+# ------------------------------------------------------------------------------
+
+sub get_cardinal_neighbors_stack
+{
+# returns undef for non existing neighbors
+
+my ($self, $coordinate) = @_ ;
+my ($x, $y)             = split ';', $coordinate ;
+
+# order: 315, up, 45, right, 135, down, 225, left
+
+return 
+	{
+	map 
+		{
+		exists $self->{coordinates}{$_} 
+			? (exists $self->{intersecting_elements}{$_} ? ($_ => $self->{intersecting_elements}{$_}) : ($_ => [$self->{coordinates}{$_}]))
+			: ($_ => undef )
+		}
+		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
+		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
+		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
+	}
+}
 
 # ------------------------------------------------------------------------------
 

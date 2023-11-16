@@ -5,24 +5,30 @@ require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
 	new_script
+
 	add
 	add_type
-	connect_elements
-	set_connection
-	optimize
-	save_to
-	to_ascii
-	ascii_out
 	new_box
 	new_text
 	new_wirl_arrow
-	add_connection
-	move_named_connector
-	optimize_connections
-	get_canonizer
-	run_external_script
+
 	select_all_elements
 	deselect_all_elements
+
+	connect_elements
+	set_connection
+	add_connection
+	move_named_connector
+
+	optimize_connections
+	get_canonizer
+	optimize
+
+	save_to
+	to_ascii
+	ascii_out
+
+	run_external_script
 	) ;
 
 use strict ; use warnings ;
@@ -44,8 +50,8 @@ use App::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::stripes::stripes ;
 use App::Asciio::stripes::wirl_arrow ;
 
-# use Data::TreeDumper ;
-# sub ddt { print DumpTree @_ ; }
+use Data::TreeDumper ;
+sub ddt { print DumpTree @_ ; }
 
 #--------------------------------------------------------------------------------------------
 
@@ -56,9 +62,9 @@ my %name_to_element ;
 
 sub run_external_script
 {
-my ($asciio) = @_ ;
+my ($asciio, $script) = @_ ;
 
-my $script = $asciio->get_file_name() ;
+$script //= $asciio->get_file_name() ;
 
 if(defined $script)
 	{
@@ -72,7 +78,7 @@ if(defined $script)
 
 sub new_script_asciio
 {
-$script_asciio = new App::Asciio() ;
+$script_asciio = App::Asciio->new() ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $script_asciio->ParseSwitches([@ARGV], 0) ;
@@ -194,14 +200,17 @@ new App::Asciio::stripes::editable_box2
 
 sub new_wirl_arrow 
 {
+my @points = @_ ;
+
+@points = ([5, 5, 'downright']) unless @points ;
+
 new App::Asciio::stripes::section_wirl_arrow
 	({
-	POINTS => [[5, 5, 'downright']],
+	POINTS => [@points],
 	DIRECTION => '',
 	ALLOW_DIAGONAL_LINES => 0,
 	EDITABLE => 1,
 	RESIZABLE => 1,
-	@_,
 	}) ;
 }
 
