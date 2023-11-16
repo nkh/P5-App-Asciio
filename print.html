@@ -2261,17 +2261,10 @@ ascii_out ;
 use strict; use warnings;
 
 use App::Asciio::Scripting ;
-use App::Asciio::stripes::section_wirl_arrow;
 
 #-----------------------------------------------------------------------------
 
-add 'multi_wirl',
-	new App::Asciio::stripes::section_wirl_arrow
-		({
-		POINTS =&gt; [[5, 5, 'downright'], [10, 7, 'downright'], [7, 14, 'downleft'], ],
-		DIRECTION =&gt; '',
-		}),
-	5, 5 ;
+add 'multi_wirl', new_wirl_arrow([5, 5, 'downright'], [10, 7, 'downright'], [7, 14, 'downleft']), 5, 5 ;
 
 ascii_out ;
 </code></pre>
@@ -2282,9 +2275,10 @@ ascii_out ;
 use strict; use warnings;
 
 use App::Asciio::Scripting ;
-use App::Asciio::stripes::process_box ;
 
 #-----------------------------------------------------------------------------
+
+add 'text1', new_text(TEXT_ONLY =&gt;'text'),  22,  20 ;
 
 add 'box1', new_box(TEXT_ONLY =&gt;'box1'),  0,  2 ;
 add 'box2', new_box(TEXT_ONLY =&gt;'box2'), 20, 10 ;
@@ -2293,6 +2287,7 @@ add 'box3', new_box(TEXT_ONLY =&gt;'box3'), 40,  5 ;
 connect_elements 'box1', 'box2', 'down' ;
 connect_elements 'box2', 'box3' ;
 connect_elements 'box3', 'box1', 'up' ;
+connect_elements 'box2', 'text1' ;
 
 my $process = add_type 'process', 'Asciio/Boxes/process', 5, 15 ;
 $process-&gt;set_text(&quot;line 1\nline 2\nline 3&quot;) ;
@@ -2311,6 +2306,9 @@ ascii_out ;
 <h3 id="from-within-asciio"><a class="header" href="#from-within-asciio">From within Asciio</a></h3>
 <p><em><strong>Binding:</strong></em> «:!»</p>
 <p>Pick the file you want to execute.</p>
+<p>Or pass it on the command line </p>
+<pre><code>asciio -s full_path_to_script
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-asciio-1"><a class="header" href="#modifying-asciio-1">Modifying Asciio</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h1>
 <p>Bindings consists of </p>
