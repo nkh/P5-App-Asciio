@@ -416,12 +416,6 @@ if ($self->{MOUSE_TOGGLE})
 	}
 
 render_text($text_array, $COLS, $ROWS) ;
-
-if(defined $self->{ACTION_VERBOSE})
-	{
-	print "\e[2;81H\e[32m$self->{LAST_ACTION} " ;
-	print "\e[3;81H$selection_rectangle" ;
-	}
 }
 
 #-----------------------------------------------------------------------------
@@ -578,5 +572,5 @@ it and/or modify it under the same terms as Perl itself.
 
 #------------------------------------------------------------------------------------------------------
 
-"Terinal world domination!"  ;
+"Terminal world domination!"  ;
 

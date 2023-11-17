@@ -33,7 +33,7 @@ $self->{MOUSE_X} += $x_offset ;
 $self->{MOUSE_Y} += $y_offset ;
 
 ($self->{SELECTION_RECTANGLE}{START_X}, $self->{SELECTION_RECTANGLE}{START_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-($self->{SELECTION_RECTANGLE}{END_X}, $self->{SELECTION_RECTANGLE}{END_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+($self->{SELECTION_RECTANGLE}{END_X},   $self->{SELECTION_RECTANGLE}{END_Y})   = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
 
 $self->update_display() ;
 }
