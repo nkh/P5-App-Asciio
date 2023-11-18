@@ -107,6 +107,8 @@ register_action_handlers
 
 'Copy to clipboard'                  => [['C00-c', 'C00-Insert'],                  \&App::Asciio::Actions::Clipboard::copy_to_clipboard                                ],
 'Insert from clipboard'              => [['C00-v', '00S-Insert'],                  \&App::Asciio::Actions::Clipboard::insert_from_clipboard                            ],
+'Copy to outside clipboard'          => [['C0S-C'],                                \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard              ],
+'Insert from outside clipboard'      => [['C0S-V'],                                \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard            ],
 
 '<< yank leader >>' =>
 	{

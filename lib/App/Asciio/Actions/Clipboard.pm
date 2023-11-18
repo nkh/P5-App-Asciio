@@ -7,6 +7,17 @@ use warnings ;
 use utf8;
 use Encode;
 use List::Util qw(min max) ;
+use MIME::Base64 ;
+use Clone ;
+
+
+use Sereal qw(
+    get_sereal_decoder
+    get_sereal_encoder
+ 
+) ;
+use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+
 
 sub copy_to_clipboard
 {
@@ -92,6 +103,48 @@ if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 	$self->update_display() ;
 	}
 }
+
+#----------------------------------------------------------------------------------------------
+
+sub import_elements_from_system_clipboard
+{
+my ($self) = @_ ;
+
+my $elements_base64 = qx~xsel -p -o~ ;
+
+my $elements_serail = MIME::Base64::decode_base64($elements_base64) ;
+my $decoder = get_sereal_decoder() ;
+my $other_elements = $decoder->decode($elements_serail) ;
+
+$self->{CLIPBOARD} = Clone::clone($other_elements) ;
+
+insert_from_clipboard($self) ;
+
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub export_elements_to_system_clipboard
+{
+my ($self) = @_ ;
+
+copy_to_clipboard($self) ;
+
+my $export_elements = Clone::clone($self->{CLIPBOARD}) ;
+
+my $encoder = get_sereal_encoder({compress => SRL_ZLIB}) ;
+my $serialized = $encoder->encode($export_elements) ;
+my $base64 = MIME::Base64::encode_base64($serialized, '') ;
+
+use open qw( :std :encoding(UTF-8) ) ;
+open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
+local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
+
+print CLIPBOARD $base64 ;
+close CLIPBOARD ;
+
+}
+
 
 #----------------------------------------------------------------------------------------------
 
