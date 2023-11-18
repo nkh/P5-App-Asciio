@@ -170,23 +170,14 @@ $gc->set_line_width(1);
 my ($character_width, $character_height) = $self->get_character_size() ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
-# my $zbuffer = App::Asciio::ZBuffer->new($self->{ELEMENTS}->@*) ;
+# my $zbuffer = App::Asciio::ZBuffer->new(1, $self->{ELEMENTS}->@*) ;
 
 # while( my($coordinate, $elements) = each $zbuffer->{intersecting_elements}->%*) 
 # 	{ 
 # 	use App::Asciio::ZBuffer ;
 # 	use Data::TreeDumper ; 
 
-# 	my $neighbors = $zbuffer->get_neighbors($coordinate) ; 
-# 	print DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
-
 # 	my $neighbors = $zbuffer->get_neighbors_stack($coordinate) ; 
-# 	print DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
-
-# 	my $neighbors = $zbuffer->get_cardinal_neighbors($coordinate) ; 
-# 	print DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
-
-# 	my $neighbors = $zbuffer->get_cardinal_neighbors_stack($coordinate) ; 
 # 	print DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
 # 	} 
 

@@ -98,6 +98,7 @@ for my $action (@actions)
 		}
 	
 	my ($modifiers, $action_key) = $action =~ /(...-)?(.*)/ ;
+	$modifiers //= '000-' ;
 	
 	next if $action_key eq 'Shift_R' || $action_key eq 'Shift_L' ||  $action_key eq 'Alt_R' ||  $action_key eq 'Alt_L' ;
 	# C00-Shift_R

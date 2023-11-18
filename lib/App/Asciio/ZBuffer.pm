@@ -7,11 +7,11 @@ use utf8;
 
 sub new
 {
-my ($invocant, @elements) = @_;
+my ($invocant, $keep_intersections, @elements) = @_;
 
 my $class = ref($invocant) || $invocant;
 
-my $self = bless { }, $class ;
+my $self = bless { KEEP_INTERSECTIONS => $keep_intersections }, $class ;
 
 $self->add_elements(@elements) ;
 
@@ -30,15 +30,14 @@ for my $element (@elements)
 	{
 	my $coordinates = $self->get_coordinates($element) ;
 	
-	while ( my ($coordinate, $char) = each $coordinates->%* )
+	while (my ($coordinate, $char) = each $coordinates->%*)
 		{
-		if($char eq ' ')
+		if($self->{KEEP_INTERSECTIONS} && exists $self->{coordinates}{$coordinate})
 			{
-			delete $self->{intersecting_elements}{$coordinate}
-			}
-		elsif( ($self->{coordinates}{$coordinate} // ' ') ne ' ')
-			{
-			$self->{intersecting_elements}{$coordinate} = [ $char, $self->{coordinates}{$coordinate} ] ;
+			unshift $self->{intersecting_elements}{$coordinate}->@*, $self->{coordinates}{$coordinate}
+				unless exists $self->{intersecting_elements}{$coordinate} ;
+			
+			unshift $self->{intersecting_elements}{$coordinate}->@*, $char
 			}
 		
 		$self->{coordinates}{$coordinate} = $char ;
@@ -82,6 +81,56 @@ return \%coordinates ;
 
 # ------------------------------------------------------------------------------
 
+sub get_neighbors
+{
+my ($self, $coordinate) = @_ ;
+my ($x, $y)             = split ';', $coordinate ;
+
+# order: 315, up, 45, right, 135, down, 225, left
+
+return 
+	{
+	map 
+		{
+		exists $self->{coordinates}{$_} 
+			? ($_ => $self->{coordinates}{$_})
+			: ()
+		}
+		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
+		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
+		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
+	}
+}
+
+# ------------------------------------------------------------------------------
+
+sub get_neighbors_stack
+{
+my ($self, $coordinate) = @_ ;
+my ($x, $y)             = split ';', $coordinate ;
+
+# order: 315, up, 45, right, 135, down, 225, left
+
+return 
+	{
+	map 
+		{
+		exists $self->{coordinates}{$_} 
+			? 
+				(
+				exists $self->{intersecting_elements}{$_} 
+					? ($_ => $self->{intersecting_elements}{$_})
+					: ($_ => [$self->{coordinates}{$_}])
+				) 
+			: () }
+		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
+		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
+		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
+	}
+}
+
+# ------------------------------------------------------------------------------
+
 sub render_text
 {
 my ($self, $COLS, $ROWS) = @_ ;
@@ -99,8 +148,8 @@ while ( my ($coordinate, $char) = each $self->{coordinates}->%*)
 
 print "$rendering\e[m" ;
 
-my $t1 = Time::HiRes::gettimeofday();
-printf "render time: %0.4f sec.\n", $t1 - $t0 ;
+# my $t1 = Time::HiRes::gettimeofday();
+# printf "render time: %0.4f sec.\n", $t1 - $t0 ;
 }
 
 # ------------------------------------------------------------------------------
@@ -125,110 +174,6 @@ sub update_elements_list
 
 # $self->remove_elements( grep { ! exists $new_list{$_} } keys %{$self->{elements}} ) ;
 # $self->add_elements(@elements) ;
-}
-
-# ------------------------------------------------------------------------------
-
-sub get_neighbors
-{
-my ($self, $coordinate) = @_ ;
-my ($x, $y)             = split ';', $coordinate ;
-
-# order: 315, up, 45, right, 135, down, 225, left
-
-return 
-	{
-	map 
-		{
-		exists $self->{coordinates}{$_} 
-			? (
-				$self->{coordinates}{$_} ne ' ' 
-					? ( $self->{coordinates}{$_} ne ' ' ? ($_ => $self->{coordinates}{$_}) : ()) 
-					: ()
-					) 
-			: () }
-		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
-		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
-		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
-	}
-}
-
-# ------------------------------------------------------------------------------
-
-sub get_neighbors_stack
-{
-my ($self, $coordinate) = @_ ;
-my ($x, $y)             = split ';', $coordinate ;
-
-# order: 315, up, 45, right, 135, down, 225, left
-
-return 
-	{
-	map 
-		{
-		exists $self->{coordinates}{$_} 
-			? (
-				$self->{coordinates}{$_} ne ' ' 
-					? (exists $self->{intersecting_elements}{$_} ? ($_ => $self->{intersecting_elements}{$_}) : ($_ => [$self->{coordinates}{$_}]))
-					: ()
-					) 
-			: () }
-		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
-		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
-		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
-	}
-}
-
-# ------------------------------------------------------------------------------
-
-sub get_cardinal_neighbors
-{
-# returns undef for non existing neighbors
-
-my ($self, $coordinate) = @_ ;
-my ($x, $y)             = split ';', $coordinate ;
-
-# order: 315, up, 45, right, 135, down, 225, left
-
-return 
-	{
-	map 
-		{
-		$_ => $self->{coordinates}{$_} 
-		# exists $self->{coordinates}{$_} 
-			# ? ( $self->{coordinates}{$_} ne ' ' ? ($_ => $self->{coordinates}{$_}) : ($_ => undef) )
-			# : undef
-		}
-		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
-		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
-		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
-	}
-
-}
-
-# ------------------------------------------------------------------------------
-
-sub get_cardinal_neighbors_stack
-{
-# returns undef for non existing neighbors
-
-my ($self, $coordinate) = @_ ;
-my ($x, $y)             = split ';', $coordinate ;
-
-# order: 315, up, 45, right, 135, down, 225, left
-
-return 
-	{
-	map 
-		{
-		exists $self->{coordinates}{$_} 
-			? (exists $self->{intersecting_elements}{$_} ? ($_ => $self->{intersecting_elements}{$_}) : ($_ => [$self->{coordinates}{$_}]))
-			: ($_ => undef )
-		}
-		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
-		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
-		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
-	}
 }
 
 # ------------------------------------------------------------------------------
