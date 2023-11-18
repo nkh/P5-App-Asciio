@@ -16,7 +16,8 @@ my ($self, $alignment) = @_ ;
 $self->create_undo_snapshot() ;
 
 my @elements_to_move = grep { my @connectors = $_->get_connector_points() ; @connectors == 0 }
-				grep { ! defined $_->{GROUP} } $self->get_selected_elements(1) ;
+				grep { ! defined $_->{GROUP} || 0 == $_->{GROUP}->@* }
+					$self->get_selected_elements(1) ;
 
 my %groups ;
 for my $element (
@@ -25,16 +26,20 @@ for my $element (
 		)
 	{
 	my $element_group = $element->{GROUP}[-1] ;
-	
-	$groups{$element_group}{X}      = min $element->{X}, $groups{$element_group}{X} // 10_000 ;
-	$groups{$element_group}{Y}      = min $element->{Y}, $groups{$element_group}{Y} // 10_000 ;
-	
-	my ($w, $h)    = $element->get_size() ;
-	
-	$groups{$element_group}{RIGHT}  = max($element->{X} + $w, ($groups{$element_group}{RIGHT} // 0)) ;
-	$groups{$element_group}{BOTTOM} = max($element->{Y} + $h, ($groups{$element_group}{BOTTOM} // 0)) ;
-	
-	push $groups{$element_group}{elements}->@*, $element ;
+
+	if(defined $element_group)
+		{
+		
+		$groups{$element_group}{X}      = min $element->{X}, $groups{$element_group}{X} // 10_000 ;
+		$groups{$element_group}{Y}      = min $element->{Y}, $groups{$element_group}{Y} // 10_000 ;
+		
+		my ($w, $h)    = $element->get_size() ;
+		
+		$groups{$element_group}{RIGHT}  = max($element->{X} + $w, ($groups{$element_group}{RIGHT} // 0)) ;
+		$groups{$element_group}{BOTTOM} = max($element->{Y} + $h, ($groups{$element_group}{BOTTOM} // 0)) ;
+		
+		push $groups{$element_group}{elements}->@*, $element ;
+		}
 	}
 
 for ($alignment)
