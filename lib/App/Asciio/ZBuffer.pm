@@ -28,10 +28,12 @@ my $t0 = Time::HiRes::gettimeofday();
 
 for my $element (@elements)
 	{
-	my $coordinates = $self->get_coordinates($element) ;
+	my $glyphs = $self->get_glyphs($element) ;
 	
-	while (my ($coordinate, $char) = each $coordinates->%*)
+	for my $glyph ($glyphs->@*)
 		{
+		my ($coordinate, $char) = $glyph->@* ;
+		
 		if($self->{KEEP_INTERSECTIONS} && exists $self->{coordinates}{$coordinate})
 			{
 			unshift $self->{intersecting_elements}{$coordinate}->@*, $self->{coordinates}{$coordinate}
@@ -50,10 +52,10 @@ for my $element (@elements)
 
 # ------------------------------------------------------------------------------
 
-sub get_coordinates
+sub get_glyphs
 {
 my ($self, $element) = @_ ;
-my %coordinates ;
+my @glyphs ;
 
 for my $strip (@{$element->get_stripes})
 	{
@@ -67,7 +69,7 @@ for my $strip (@{$element->get_stripes})
 			{
 			my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 			my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
-			$coordinates{"$Y;$X"} = $char ; 
+			push @glyphs, [ "$Y;$X", $char] ; 
 			
 			$character_index++ ;
 			}
@@ -76,7 +78,7 @@ for my $strip (@{$element->get_stripes})
 		}
 	}
 
-return \%coordinates ;
+return \@glyphs ;
 }
 
 # ------------------------------------------------------------------------------
