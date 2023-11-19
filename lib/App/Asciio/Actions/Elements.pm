@@ -39,6 +39,28 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub open_stencil
+{
+my ($self, $file_name) = @_ ;
+
+unless (defined $file_name)
+	{
+	# pick a file
+	$file_name = $self->get_file_name ;
+	}
+
+if(defined $file_name && $file_name ne '')
+	{
+	# check path
+	
+	system "asciio '$file_name' &" ;
+	}
+
+}
+
+#----------------------------------------------------------------------------------------------
+
+
 sub add_help_box
 {
 my ($self) = @_ ;

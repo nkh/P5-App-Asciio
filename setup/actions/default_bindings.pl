@@ -250,6 +250,9 @@ register_action_handlers
 	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
 	'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
 	
+	'From default_stencil'                => ['000-s', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'              ], 
+	'From stencil'                        => ['00S-S', \&App::Asciio::Actions::Elements::open_stencil                                        ], 
+	
 	'<< Multiple >>'                      => ['000-m', sub { $_[0]->use_action_group('group_insert_multiple') ; }                            ] ,
 	'<< Unicode >>'                       => ['000-u', sub { $_[0]->use_action_group('group_insert_unicode') ; }                             ] ,
 	'<< Box >>'                           => ['000-b', sub { $_[0]->use_action_group('group_insert_box') ; }                                 ] ,

@@ -124,6 +124,9 @@ register_action_handlers_remove_old_shortcuts
 		'Add multiple boxes'                             => [ 'C-b'],
 		'Add multiple texts'                             => [ 'C-t'],
 		
+		'From default_stencil'                           => ['000-s'], 
+		'From stencil'                                   => ['000-S'], 
+		
 		'Add angled arrow'                               => [ 'A' ],
 		'Add arrow'                                      => [ 'a' ],
 		'Add box'                                        => [ 'b' ],
