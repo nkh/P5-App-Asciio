@@ -14,6 +14,7 @@ use Clone ;
 use Sereal qw(
     get_sereal_decoder
     get_sereal_encoder
+	looks_like_sereal
  
 ) ;
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
@@ -110,13 +111,32 @@ sub import_elements_from_system_clipboard
 {
 my ($self) = @_ ;
 
-my $elements_base64 = qx~xsel -p -o~ ;
+my @clipboard_out_options=("-b", "-p") ;
+my $invalid_flag = 1 ;
+my $elements_serail ;
 
-my $elements_serail = MIME::Base64::decode_base64($elements_base64) ;
-my $decoder = get_sereal_decoder() ;
-my $other_elements = $decoder->decode($elements_serail) ;
 
-$self->{CLIPBOARD} = Clone::clone($other_elements) ;
+for my $option (@clipboard_out_options)
+{
+	my $elements_base64 = qx~xsel $option -o~ ;
+
+	# print "get data:==>" . $elements_base64 . "\n" ;
+
+	$elements_serail = MIME::Base64::decode_base64($elements_base64) ;
+
+	if(looks_like_sereal($elements_serail))
+		{
+		$invalid_flag = 0 ;
+		last;
+		}
+	else
+		{
+		print "data from $option is invalid!\n" ;
+		}
+}
+return if($invalid_flag) ;
+
+$self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($elements_serail)) ;
 
 insert_from_clipboard($self) ;
 
@@ -135,6 +155,8 @@ my $export_elements = Clone::clone($self->{CLIPBOARD}) ;
 my $encoder = get_sereal_encoder({compress => SRL_ZLIB}) ;
 my $serialized = $encoder->encode($export_elements) ;
 my $base64 = MIME::Base64::encode_base64($serialized, '') ;
+
+# print "sent data:=>" . $base64 . "\n" ;
 
 use open qw( :std :encoding(UTF-8) ) ;
 open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
