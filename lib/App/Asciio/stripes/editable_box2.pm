@@ -329,7 +329,12 @@ sub get_connection_points
 {
 my ($self) = @_ ;
 
-$self->{CONNECTORS}->@*,
+if(exists $self->{CONNECTORS} && defined $self->{CONNECTORS})
+	{
+	return $self->{CONNECTORS}->@* ;
+	}
+
+return ;
 }
 
 #-----------------------------------------------------------------------------
