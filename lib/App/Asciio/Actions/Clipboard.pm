@@ -10,15 +10,13 @@ use List::Util qw(min max) ;
 use MIME::Base64 ;
 use Clone ;
 
-
 use Sereal qw(
-    get_sereal_decoder
-    get_sereal_encoder
+	get_sereal_decoder
+	get_sereal_encoder
 	looks_like_sereal
- 
-) ;
-use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+	) ;
 
+use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
 sub copy_to_clipboard
 {
@@ -115,31 +113,30 @@ my @clipboard_out_options=("-b", "-p") ;
 my $invalid_flag = 1 ;
 my $elements_serail ;
 
-
 for my $option (@clipboard_out_options)
-{
-	my $elements_base64 = qx~xsel $option -o~ ;
+	{
+		my $elements_base64 = qx~xsel $option -o~ ;
+		
+		# print "get data:==>" . $elements_base64 . "\n" ;
+		
+		$elements_serail = MIME::Base64::decode_base64($elements_base64) ;
+		
+		if(looks_like_sereal($elements_serail))
+			{
+			$invalid_flag = 0 ;
+			last;
+			}
+		else
+			{
+			print "data from $option is invalid!\n" ;
+			}
+	}
 
-	# print "get data:==>" . $elements_base64 . "\n" ;
-
-	$elements_serail = MIME::Base64::decode_base64($elements_base64) ;
-
-	if(looks_like_sereal($elements_serail))
-		{
-		$invalid_flag = 0 ;
-		last;
-		}
-	else
-		{
-		print "data from $option is invalid!\n" ;
-		}
-}
 return if($invalid_flag) ;
 
 $self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($elements_serail)) ;
 
 insert_from_clipboard($self) ;
-
 }
 
 #----------------------------------------------------------------------------------------------
@@ -164,9 +161,7 @@ local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
 
 print CLIPBOARD $base64 ;
 close CLIPBOARD ;
-
 }
-
 
 #----------------------------------------------------------------------------------------------
 

@@ -105,28 +105,26 @@ register_action_handlers
 
 'Mouse on element id'                => ['000-m',                                  \&App::Asciio::Actions::Mouse::mouse_on_element_id                                  ],
 
-'Copy to clipboard'                  => [['C00-c', 'C00-Insert'],                  \&App::Asciio::Actions::Clipboard::copy_to_clipboard                                ],
-'Insert from clipboard'              => [['C00-v', '00S-Insert'],                  \&App::Asciio::Actions::Clipboard::insert_from_clipboard                            ],
-'Copy to outside clipboard'          => [['C0S-C'],                                \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard              ],
-'Insert from outside clipboard'      => [['C0S-V'],                                \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard            ],
+'Copy to clipboard'                  => [['C00-c', 'C00-Insert'],                  \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard              ],
+'Insert from clipboard'              => [['C00-v', '00S-Insert'],                  \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard            ],
 
 '<< yank leader >>' =>
 	{
 	SHORTCUTS => '000-y',
 	
-	'Copy to clipboard'                      => ['000-y', \&App::Asciio::Actions::Clipboard::copy_to_clipboard            ],
-	'Export to clipboard & primary as ascii' => ['00S-Y', \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii ],
-	'Export to clipboard & primary as markup'=> ['000-m', \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_markup],
+	'Copy to clipboard'                      => ['000-y', \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard],
+	'Export to clipboard & primary as ascii' => ['00S-Y', \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_ascii       ],
+	'Export to clipboard & primary as markup'=> ['000-m', \&App::Asciio::Actions::Clipboard::export_to_clipboard_as_markup      ],
 	},
 
 '<< paste leader >>' =>
 	{
 	SHORTCUTS => '000-p',
-	'Insert from clipboard'         => ['000-p', \&App::Asciio::Actions::Clipboard::insert_from_clipboard        ],
-	'Import from primary to box'    => ['00S-P', \&App::Asciio::Actions::Clipboard::import_from_primary_to_box   ],
-	'Import from primary to text'   => ['0A0-p', \&App::Asciio::Actions::Clipboard::import_from_primary_to_text  ],
-	'Import from clipboard to box'  => ['000-b', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box ],
-	'Import from clipboard to text' => ['000-t', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text],
+	'Insert from clipboard'         => ['000-p', \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard],
+	'Import from primary to box'    => ['00S-P', \&App::Asciio::Actions::Clipboard::import_from_primary_to_box           ],
+	'Import from primary to text'   => ['0A0-p', \&App::Asciio::Actions::Clipboard::import_from_primary_to_text          ],
+	'Import from clipboard to box'  => ['000-b', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box         ],
+	'Import from clipboard to text' => ['000-t', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text        ],
 	},
 
 '<< grouping leader >>' => 
