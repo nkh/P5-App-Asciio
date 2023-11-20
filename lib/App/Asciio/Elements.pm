@@ -550,7 +550,7 @@ return
 
 #-----------------------------------------------------------------------------
 
-sub any_select_elements
+sub any_selected_elements
 {
 my ($self) = @_ ;
 

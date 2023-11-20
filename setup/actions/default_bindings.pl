@@ -70,8 +70,15 @@ register_action_handlers
 'Mouse right-click'                  => ['000-button-press-3',                     \&App::Asciio::Actions::Mouse::mouse_right_click                                    ],
 
 'Mouse left-click'                   => ['000-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_left_click                                     ],
-'Mouse expand selection'             => ['00S-button-press-1',                     \&App::Asciio::Actions::Mouse::expand_selection                                     ],
-'Mouse selection flip'               => ['C00-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
+'Start Drag and Drop'                => ['C00-button-press-1',                     sub { $_[0]->{ IN_DRAG_DROP} = 1 ; }                                                ],
+
+'Mouse left-release'                 => ['000-button-release-1',                   \&App::Asciio::Actions::Mouse::mouse_left_release                                   ],
+'Mouse left-release2'                => ['C00-button-release-1',                   \&App::Asciio::Actions::Mouse::mouse_left_release                                   ],
+'Mouse left-release3'                => ['00S-button-release-1',                   \&App::Asciio::Actions::Mouse::mouse_left_release                                   ],
+'Mouse left-release4'                => ['C0S-button-release-1',                   \&App::Asciio::Actions::Mouse::mouse_left_release                                   ],
+
+# 'Mouse expand selection'             => ['',                     \&App::Asciio::Actions::Mouse::expand_selection                                     ],
+'Mouse selection flip'               => ['00S-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
 
 'Mouse quick link'                   => [['0A0-button-press-1', '000-period'],     \&App::Asciio::Actions::Mouse::quick_link                                           ],
 'Mouse duplicate elements'           => [['0AS-button-press-1', '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                              ],
@@ -85,7 +92,7 @@ register_action_handlers
 
 'Mouse motion'                       => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                         ], 
 'Mouse motion 2'                     => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                         ],
-'Mouse drag canvas'                  => ['C00-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_drag_canvas                                    ],         
+#'Mouse drag canvas'                  => ['C00-motion_notify', see drag-and-drop    \&App::Asciio::Actions::Mouse::mouse_drag_canvas                                    ],         
 
 # mouse emulation
 'Mouse emulation toggle'             => [['000-apostrophe', "'"],                  \&App::Asciio::Actions::Mouse::toggle_mouse                                         ],

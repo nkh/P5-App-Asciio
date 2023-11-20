@@ -44,7 +44,14 @@ register_action_handlers_remove_old_shortcuts
 'Mouse right-click'                               => ['000-button-press-3'],
 
 'Mouse left-click'                                => ['000-button-press-1'],
-'Mouse expand selection'                          => ['not set'], #'00S-button-press-1' shit + button not available
+'Start Drag and Drop'                             => ['C00-button-press-1'],
+
+'Mouse left-release'                              => ['000-button-release-1'],
+'Mouse left-release2'                             => ['C00-button-release-1'],
+'Mouse left-release3'                             => ['00S-button-release-1'],
+'Mouse left-release4'                             => ['C0S-button-release-1'],
+
+#'Mouse expand selection'                          => ['not set'], #'00S-button-press-1' shit + button not available
 'Mouse selection flip'                            => ['C00-button-press-1'],
 
 'Mouse quick link'                                => [['0A0-button-press-1', '.']],

@@ -26,6 +26,7 @@ use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
+use App::Asciio::GTK::Asciio::DnD ;
 
 use App::Asciio::Cross ;
 use App::Asciio::String ;
@@ -774,7 +775,28 @@ for my $rendering (@$renderings)
 
 sub button_release_event { my (undef, $event, $self) = @_ ; $self->SUPER::button_release_event($self->create_asciio_event($event)) ; }
 sub button_press_event   { my (undef, $event, $self) = @_ ; $self->SUPER::button_press_event($self->create_asciio_event($event)) ; }
-sub motion_notify_event  { my (undef, $event, $self) = @_ ; $self->SUPER::motion_notify_event($self->create_asciio_event($event)) ; }
+
+sub motion_notify_event  {
+
+my (undef, $event, $self) = @_ ;
+
+my $event_type = $event->type() ;
+
+if
+	(
+	$event_type eq "motion-notify"
+	|| ref $event eq "Gtk3::Gdk::EventButton" 
+	)
+	{
+	my $COORDINATES = [$self->closest_character($event->get_coords())]  ;
+	
+	$self->start_dnd($event)
+		if $self->{IN_DRAG_DROP} && $event_type eq "motion-notify" && $self->any_selected_elements() ;
+	}
+
+$self->SUPER::motion_notify_event($self->create_asciio_event($event)) ; 
+}
+
 sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
 sub mouse_scroll_event   { my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; }
 

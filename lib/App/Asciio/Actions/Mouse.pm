@@ -22,6 +22,25 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub mouse_left_release
+{
+my ($self) = @_;
+
+if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
+   {
+   $self->{EDIT_SEMAPHORE}--;
+   return ;
+   }
+
+undef $self->{DRAGGING} ;
+delete $self->{IN_DRAG_DROP} ;
+
+$self->pop_undo_buffer(1) if defined $self->{MODIFIED_INDEX} && defined $self->{MODIFIED} && $self->{MODIFIED_INDEX} == $self->{MODIFIED} ;
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+
 sub mouse_move
 {
 my ($self, $offsets) = @_;
@@ -43,6 +62,9 @@ $self->update_display() ;
 sub mouse_left_click
 {
 my ($self) = @_;
+
+return if $self->{IN_DRAG_DROP} ;
+
 my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
 
 my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;

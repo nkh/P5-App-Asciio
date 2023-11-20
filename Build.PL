@@ -75,6 +75,7 @@ lib/App/Asciio/GTK/Asciio.pm
 
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
+lib/App/Asciio/GTK/Asciio/DnD.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm

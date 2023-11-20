@@ -742,28 +742,10 @@ sub button_release_event
 {
 my ($self, $event) = @_ ;
 
-if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
-   {
-   $self->{EDIT_SEMAPHORE}--;
-   return ;
-   }
-
 my $button = $event->{BUTTON} ;
 my $modifiers = $event->{MODIFIERS} ;
 
-if($self->exists_action("${modifiers}$event->{TYPE}-$button"))
-	{
-	$self->run_actions(["${modifiers}$event->{TYPE}-$button", $event]) ;
-	}
-
-undef $self->{DRAGGING} ;
-
-if(defined $self->{MODIFIED_INDEX} && defined $self->{MODIFIED} && $self->{MODIFIED_INDEX} == $self->{MODIFIED})
-	{
-	$self->pop_undo_buffer(1) ; # no changes
-	}
-
-$self->update_display();
+$self->run_actions(["${modifiers}$event->{TYPE}-$button", $event]) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -804,7 +786,7 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
 	delete $self->{BINDINGS_COMPLETION} ;
 	$self->update_display ;
-
+	
 	if($self->exists_action("${modifiers}motion_notify"))
 		{
 		$self->run_actions(["${modifiers}motion_notify", $event]) ;

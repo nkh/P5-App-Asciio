@@ -21,11 +21,17 @@ use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 sub copy_to_clipboard
 {
 my ($self) = @_ ;
+
 my $cache = $self->{CACHE} ;
 $self->invalidate_rendering_cache() ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
-return unless @selected_elements ;
+
+unless(@selected_elements)
+	{
+	delete $self->{CLIPBOARD} ;
+	return ;
+	}
 
 my %selected_elements = map { $_ => 1 } @selected_elements ;
 
@@ -141,25 +147,29 @@ insert_from_clipboard($self) ;
 
 #----------------------------------------------------------------------------------------------
 
-sub export_elements_to_system_clipboard
+sub serialize_selected_elements
 {
 my ($self) = @_ ;
 
 copy_to_clipboard($self) ;
 
 my $export_elements = Clone::clone($self->{CLIPBOARD}) ;
+my $encoder         = get_sereal_encoder({compress => SRL_ZLIB}) ;
+my $serialized      = $encoder->encode($export_elements) ;
+my $base64          = MIME::Base64::encode_base64($serialized, '') ;
+}
 
-my $encoder = get_sereal_encoder({compress => SRL_ZLIB}) ;
-my $serialized = $encoder->encode($export_elements) ;
-my $base64 = MIME::Base64::encode_base64($serialized, '') ;
+sub export_elements_to_system_clipboard
+{
+my ($self) = @_ ;
 
-# print "sent data:=>" . $base64 . "\n" ;
+my $serialized_elements = serialize_selected_elements($self) ;
 
 use open qw( :std :encoding(UTF-8) ) ;
 open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
 local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
 
-print CLIPBOARD $base64 ;
+print CLIPBOARD $serialized_elements ;
 close CLIPBOARD ;
 }
 

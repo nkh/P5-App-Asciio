@@ -62,6 +62,7 @@ COLOR_SCHEMES =>
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
 		hint_background => [0.20, 0.20, 0.20],
+		drag_and_drop   => [1.00, 0.00, 0.00],
 		}, 
 	'system' =>
 		{
@@ -94,6 +95,7 @@ COLOR_SCHEMES =>
 		
 		mouse_rectangle => [0.90, 0.20, 0.20],
 		hint_background => [0.20, 0.20, 0.20],
+		drag_and_drop   => [1.00, 0.00, 0.00],
 		} 
 	},
 

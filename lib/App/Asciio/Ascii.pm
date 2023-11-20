@@ -14,6 +14,8 @@ use Readonly ;
 Readonly my $EXPORT_PLAIN_TEXT => 0 ;
 Readonly my $EXPORT_MARKUP  => 1 ;
 
+use List::Util qw(min) ;
+
 #-----------------------------------------------------------------------------
 
 sub transform_elements_to_ascii_buffer
@@ -21,6 +23,25 @@ sub transform_elements_to_ascii_buffer
 my ($self, @elements)  = @_ ;
 
 my $text = join("\n", $self->transform_elements_to_ascii_array(@elements)) . "\n" ;
+$text =~ s/^\n+|\n\K\n+$//g ;
+
+return($text) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub transform_elements_to_ascii_buffer_aligned_left
+{
+my ($self, @elements)  = @_ ;
+
+my @lines           = $self->transform_elements_to_ascii_array(@elements) ;
+my @non_empty_lines = grep { length($_) }  @lines ;
+
+my $empty_columns   = min(map { /(\s+)/ ; length($1 // '') } @non_empty_lines) ;
+   $empty_columns //= 0 ;
+
+my $text = join("\n", map { length($_) ? substr($_, $empty_columns) : '' } @lines) . "\n" ;
+
 $text =~ s/^\n+|\n\K\n+$//g ;
 
 return($text) ;
