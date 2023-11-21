@@ -199,7 +199,7 @@ register_action_handlers
 	'Prepend multi_wirl section'          => ['C00-s', \&App::Asciio::Actions::Multiwirl::prepend_section                             ],
 	'Remove last section from multi_wirl' => ['CA0-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow ],
 	'Start no disconnect'                 => ['C00-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0                  ],
-	'End no disconnect'                   => ['0A0-D', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1                  ],
+	'End no disconnect'                   => ['0A0-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1                  ],
 	},
 
 '<< debug leader >>' => 
