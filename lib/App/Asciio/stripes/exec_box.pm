@@ -108,6 +108,7 @@ else
 		}
 	
 	$output = decode("utf-8", $output) ;
+	$self->{COMMAND} = decode("utf-8", $self->{COMMAND}) ;
 	$output =~ s/\r//g;
 	$output =~ s/\t/$asciio->{TAB_AS_SPACES}/g;
 	}
