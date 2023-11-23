@@ -25,9 +25,17 @@
 
 ```
 
-## Asciio simplified interface
+## Executing your scripts
 
-These examples show you the simplified scripting interface which hides some of the details for you. The full source code is at the bottom of this page and in the scripting directory in the documentation of the project.
+[**Executing your scripts**](scripting_execute.md)
+
+## Simplified scripting interface
+
+The simplified scripting interface is an API which hides some of the scripting details for you. 
+
+Examples of scripts, using both the simplified API and full API, can be found in the *documentation/scripting* directory of the distribution.
+
+[**Simplified scripting API**](scripting_api.md)
 
 ## Create a new Perl script
 
@@ -152,27 +160,5 @@ optimize ;
 save_to "from_script.asciio" ;
 
 ascii_out ;
-```
-
-## Executing your script
-
-### From the command line
-
-The script is a normal perl script.
-
-```
-perl my_asciio_script.pl
-```
-
-### From within Asciio
-
-***Binding:*** «:!»
-
-Pick the file you want to execute.
-
-Or pass it on the command line 
-
-```
-asciio -s full_path_to_script
 ```
 

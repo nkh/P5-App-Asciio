@@ -96,6 +96,8 @@
 
 - [For Developers](for_developers/README.md)
 	- [Scripting](for_developers/scripting.md)
+	    - [Execute](for_developers/scripting_execute.md)
+	    - [API](for_developers/scripting_api.md)
 	- [Modifying Asciio](for_developers/modify_Asciio.md)
 		- [Bindings](for_developers/bindings.md)
 

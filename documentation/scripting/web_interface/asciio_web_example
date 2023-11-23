@@ -1,0 +1,19 @@
+
+# bash script that adds an element to an asciio instance, offsets it, and deletes it
+
+# create a script to add one element, the script can contain many scripting commands
+# httpie has a large startup time, use xh instead
+
+script= ; for i in $(seq 1) ; do script="$script add '1', new_box(TEXT_ONLY =>'$i'),  $((($i - 1) * 6)),  $((($i - 1) * 4)) ;" ; done
+
+# execute the script
+xh -f POST http://localhost:4444/script script="$script"
+
+# offset the element
+for i in $(seq 25) ; do sleep .05 ; xh  -f POST http://localhost:4444/script script="offset '1', 1, 1 ;" ; done
+
+# delete the element
+xh  -f POST http://localhost:4444/script script="delete_by_name '1' ;"
+
+# you can also run a script
+# xh -f POST http://localhost:4444/script_file script=./documentation/scripting/asciio_script.pl

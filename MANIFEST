@@ -9,6 +9,7 @@ script/A
 script/T
 script/asciio_to_text
 script/startup_script.pl
+script/stdin_to_asciio_web
 
 setup/setup.ini
 
@@ -42,6 +43,7 @@ lib/App/Asciio/Io.pm
 lib/App/Asciio/Menues.pm
 lib/App/Asciio/Options.pm
 lib/App/Asciio/Scripting.pm
+lib/App/Asciio/Server.pm
 lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
 lib/App/Asciio/String.pm
@@ -99,6 +101,9 @@ documentation/scripting/manual_connect.pl
 documentation/scripting/multi_wirl.pl
 documentation/scripting/objects.pl
 documentation/scripting/three_boxes.pl
+
+documentation/scripting/web_interface/stdin_to_asciio_web_example
+documentation/scripting/web_interface/asciio_web_example
 
 documentation/text/depend_and_build.txt
 documentation/text/permissions.txt
@@ -240,6 +245,8 @@ documentation/mdbook_asciio/src/for_developers/modify_Asciio.md
 documentation/mdbook_asciio/src/for_developers/overlay.md
 documentation/mdbook_asciio/src/for_developers/README.md
 documentation/mdbook_asciio/src/for_developers/scripting.md
+documentation/mdbook_asciio/src/for_developers/scripting_api.md
+documentation/mdbook_asciio/src/for_developers/scripting_execute.md
 documentation/mdbook_asciio/src/for_developers/unicode_support.md
 documentation/mdbook_asciio/src/gen_doc
 documentation/mdbook_asciio/src/grouping.md

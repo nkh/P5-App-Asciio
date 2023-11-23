@@ -1,0 +1,2 @@
+
+xh --ignore-stdin -f POST http://localhost:4444/script script="$(cat)"

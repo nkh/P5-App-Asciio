@@ -85,8 +85,16 @@ my @flags_and_help =
 		'Sets the root of the setup directory.',
 		'',
 		
-	's|script=s'                          => \$asciio_config->{SCRIPT},
+	's|script=s'                            => \$asciio_config->{SCRIPT},
 		'script to be run at Asciio start.',
+		'',
+		
+	'web_server'                            => \$asciio_config->{WEB_SERVER},
+		'Asciio run a script we server at port 4444 (see --web_port).',
+		'',
+	
+	'p|web_port=s'                              => \$asciio_config->{WEB_PORT},
+		'port for web server.',
 		'',
 	) ;
 	

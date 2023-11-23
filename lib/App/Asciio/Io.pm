@@ -19,6 +19,7 @@ use Sereal qw(
     encode_sereal
     decode_sereal
 ) ;
+
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
 #-----------------------------------------------------------------------------
@@ -257,8 +258,12 @@ for my $element (@{$self->{ELEMENTS}})
 $self->{CACHE}{ENCODER} = my $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
 local $self->{CACHE} = undef ;
 
+my $on_exit = $self->{ON_EXIT} ;
+delete $self->{ON_EXIT} ;
+
 my $serialized = $encoder->encode($self) ;
 
+$self->{ON_EXIT} = $on_exit ;
 $_->[0]{CACHE} = $_->[1] for @elements_cache ;
 
 return $serialized ;

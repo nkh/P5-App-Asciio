@@ -23,6 +23,7 @@ lib/App/Asciio/Io.pm
 lib/App/Asciio/Menues.pm
 lib/App/Asciio/Options.pm
 lib/App/Asciio/Scripting.pm
+lib/App/Asciio/Server.pm
 lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
 lib/App/Asciio/String.pm
@@ -298,7 +299,7 @@ my $build = $class->new
 		
 	pm_files     => \%all_modules,
 	
-	script_files => ['script/asciio', 'script/tasciio', 'script/asciio_to_text', 'script/A', 'script/T',],
+	script_files => [qw(script/asciio script/tasciio script/asciio_to_text script/A script/T script/stdin_to_asciio_web) ],
 	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@gmail.com>',
 	dist_abstract => 'App::Asciio - ASCII diagramming',
 	);

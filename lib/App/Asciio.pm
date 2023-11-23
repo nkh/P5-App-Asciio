@@ -673,6 +673,8 @@ sub exit
 {
 my ($self, $code) = @_ ;
 
+$self->{ON_EXIT}() if $self->{ON_EXIT} ;
+
 exit ($code // 0) ;
 }
 

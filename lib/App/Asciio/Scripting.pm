@@ -4,7 +4,7 @@ package App::Asciio::Scripting ;
 require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
-	new_script
+	update_display
 
 	add
 	add_type
@@ -12,23 +12,27 @@ require Exporter ;
 	new_text
 	new_wirl_arrow
 
+	delete_by_name
+	move
+	offset
+
 	select_all_elements
 	deselect_all_elements
+	select_all_script_elements
+	deselect_all_script_elements
 
 	connect_elements
-	set_connection
-	add_connection
-	move_named_connector
-
-	optimize_connections
-	get_canonizer
 	optimize
 
 	save_to
 	to_ascii
 	ascii_out
-
-	run_external_script
+	
+	optimize_connections
+	get_canonizer
+	set_connection
+	add_connection
+	move_named_connector
 	) ;
 
 use strict ; use warnings ;
@@ -60,17 +64,42 @@ sub ddt { print DumpTree @_ ; }
 my $script_asciio ; # make script non OO
 my %name_to_element ;
 
-sub run_external_script
+sub run_external_script_text
 {
 my ($asciio, $script) = @_ ;
 
-$script //= $asciio->get_file_name() ;
-
 if(defined $script)
 	{
+	print "Asciio: script: $script\n" ;
+	
 	$script_asciio = $asciio ;
 	
-	do $script ;
+	eval $script ;
+	
+	$asciio->update_display() ;
+	
+	print "Asciio: error running script: $@ \n" if $@ ;
+	}
+}
+
+sub run_external_script
+{
+my ($asciio, $file) = @_ ;
+
+$file //= $asciio->get_file_name() ;
+
+if(defined $file)
+	{
+	print "Asciio: script file: '$file'\n" ;
+	
+	$script_asciio = $asciio ;
+	
+	unless (my $return = do $file)
+		{
+		warn "Asciio: error running script $file: $@" if $@ ;
+		# warn "couldn't do $file: $!"    unless defined $return ;
+		# warn "couldn't run $file"       unless $return ;
+		}
 	
 	$asciio->update_display() ;
 	}
@@ -109,6 +138,34 @@ $name_to_element{$name} = $element ;
 $script_asciio->add_element_at($element, $x, $y) ;
 }
 
+sub move
+{
+my ($name, $x, $y) = @_ ;
+
+my $element = $name_to_element{$name} ;
+
+@$element{'X', 'Y'} = ($x, $y) if defined $element && defined $x && defined $y ;
+}
+
+sub offset 
+{
+my ($name, $x_offset, $y_offset) = @_ ;
+
+my $element = $name_to_element{$name} ;
+
+@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset)
+	if defined $element && defined $x_offset && defined $y_offset ;
+}
+
+sub delete_by_name 
+{
+my ($name) = @_ ;
+
+my $element = $name_to_element{$name} ;
+
+$script_asciio->delete_elements($element) ;
+}
+
 sub add_type
 {
 my ($name, $type, $x, $y) = @_ ;
@@ -129,15 +186,16 @@ my ($state, @elements) = @_ ;
 $script_asciio->select_elements($state, @name_to_element{@elements}) ;
 }
 
-sub select_all_elements { $script_asciio->select_all_elements() ; }
-sub deselect_all_elements { $script_asciio->select_all_elements() ; }
+sub select_all_elements          { $script_asciio->select_all_elements() ; }
+sub select_all_script_elements   { $script_asciio->select_elements(1, values %name_to_element) ; }
 
-sub save_to        { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
-sub to_ascii       { $script_asciio->transform_elements_to_ascii_buffer() ; }
-sub ascii_out      { print $script_asciio->transform_elements_to_ascii_buffer() ; }
-sub optimize       { $script_asciio->call_hook('CANONIZE_CONNECTIONS', $script_asciio->{CONNECTIONS}) ; }
-sub set_connection { $script_asciio->add_connections(@_) ; }
+sub deselect_all_elements        { $script_asciio->deselect_all_elements() ; }
+sub deselect_all_script_elements { $script_asciio->select_elements(0, values %name_to_element) ; }
 
+sub save_to                      { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
+sub to_ascii                     { $script_asciio->transform_elements_to_ascii_buffer() ; }
+sub ascii_out                    { print $script_asciio->transform_elements_to_ascii_buffer() ; }
+sub optimize                     { $script_asciio->call_hook('CANONIZE_CONNECTIONS', $script_asciio->{CONNECTIONS}) ; }
 }
 
 #--------------------------------------------------------------------------------------------
@@ -336,7 +394,6 @@ EOC
 	) ;
 }
 # ~/nadim/devel/repositories/perl_modules/P5-App-Asciio/setup/hooks/canonize_connections.pl"
-
 #--------------------------------------------------------------------------------------------
 
 1 ;

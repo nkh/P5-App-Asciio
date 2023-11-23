@@ -85,6 +85,7 @@ $window->signal_connect (delete_event => \&delete_event, \@asciios) ;
 sub delete_event
 {
 my ($window, $event, $asciios) = @_;
+
 my $answer = 'yes';
 
 my $should_save ;
@@ -108,9 +109,20 @@ if($answer eq 'save_and_quit')
 		}
 	}
 
-return $answer eq 'cancel';
+$asciios[0]->exit() ;
+
+# return $answer eq 'cancel';
 }
 
 #--------------------------------------------------------------------------
 
+if($asciio_config->{WEB_SERVER})
+{
+require App::Asciio::Server ;
+
+App::Asciio::Server::start_web_server($asciios[0], $asciio_config->{WEB_PORT} // 4444) ; 
+}
+
+
 Gtk3->main();
+
