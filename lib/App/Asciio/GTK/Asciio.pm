@@ -30,6 +30,8 @@ use App::Asciio::GTK::Asciio::Menues ;
 use App::Asciio::Cross ;
 use App::Asciio::String ;
 use App::Asciio::Markup ;
+use App::Asciio::ZBuffer ;
+
 
 sub hide_pointer
 {
@@ -556,13 +558,15 @@ my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), $
 
 my ($start_x, $end_x, $start_y, $end_y) = 
 	(
-	int( $h_value / $character_width ), 
-	int( ($h_value + $windows_width) / $character_width ),
-	int( $v_value / $character_height),
-	int( ($v_value + $windows_height) / $character_height)
+	int( $h_value / $character_width - 2 ), 
+	int( ($h_value + $windows_width) / $character_width + 2),
+	int( $v_value / $character_height - 2),
+	int( ($v_value + $windows_height) / $character_height + 2)
 	) ;
 
-for (App::Asciio::Cross::get_cross_mode_overlays($self, $start_x, $end_x, $start_y, $end_y))
+my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
+
+for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer, $start_x, $end_x, $start_y, $end_y))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 	

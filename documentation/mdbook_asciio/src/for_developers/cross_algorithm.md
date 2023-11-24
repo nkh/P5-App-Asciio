@@ -37,7 +37,7 @@ then the steps are as follows:
 5. update drawing.
 
 # Detailed steps
-## Find the cross point
+## 1 Find the cross point
 
 The cross point must be the coverage of characters, 
 and the characters that cover each other are the characters we care about.
@@ -66,9 +66,9 @@ because they absolutely determine what kind of cross point is generated.
 diagonal crossing, you also need to record characters at 45 degrees, 
 135 degrees, 225 degrees, and 315 degrees.
 
-## Judgment scene
+## 2 Judgment scene
 
-### General situation
+### 2.1 General situation
 
 First of all, all cross characters are directional, we need to group 
 them by direction and type.
@@ -135,7 +135,7 @@ For the `╤` sign, the condition for its appearance is that:
 Pay attention to the bold part above, because if this condition is true, 
 then the filling character should be `╪`, not `╤`.
 
-### Improve efficiency
+### 2.2 Improve efficiency
 
 There is no need to perform calculations every time to determine the characters 
 filled in the middle. Whenever a new scene calculation occurs, we can save the 
@@ -146,7 +146,7 @@ A hash table is most suitable for this, and the hash key can use a combination
 of upper, lower, left, and right characters(The oblique lines are the four diagonal 
 directions.).
 
-### An additional case needs to be considered separately
+### 2.3 An additional case needs to be considered separately
 
 ```
    ││
@@ -179,10 +179,11 @@ in the background is ok, so we think it ok!
 **In summary:** If the character next to it is also an cross point, then 
 either the foreground character or the background character of the 
 intersection can meet the requirements.So I said earlier that the foreground 
-and background characters of the cross point all need to be recorded.
+and background characters of the cross point all need to be recorded.In fact, 
+there may be more than one character that meets the condition in the background, 
+so all of these characters need to be considered, not just limited to 2 characters.
 
-
-### The case of character coverage
+### 2.4 The case of character coverage
 
 There is another situation that needs to be explained separately,Similar to 
 above but slightly different
@@ -219,6 +220,15 @@ characters are considered.
 >The definition of the cross point has already been mentioned in the 
 previous chapter
 
+### 2.5 A method to simplify logical judgment
 
+When we determine what characters should be filled in a point, we first consider 
+the characters in the four directions. Then after these characters are considered, 
+characters in three directions are considered, and finally characters in two directions 
+are considered. The advantage of this is that if the characters in the four directions 
+do not meet the conditions, then when judging the characters in the three directions, 
+there is no need to repeatedly consider that a certain character may be a character 
+in the four directions, because it has been ruled out before. Similar logic is used 
+for two-way characters. This can greatly reduce the complexity of logical judgment.
 
 

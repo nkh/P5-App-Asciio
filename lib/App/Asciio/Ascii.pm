@@ -8,6 +8,7 @@ use strict; use warnings;
 use App::Asciio::Cross ;
 use App::Asciio::String ;
 use App::Asciio::Markup ;
+use App::Asciio::ZBuffer ;
 
 use Readonly ;
 Readonly my $EXPORT_PLAIN_TEXT => 0 ;
@@ -100,7 +101,9 @@ for my $element (@elements)
 # If there is cross overlay, the characters of the cross need to be exported
 if($self->{USE_CROSS_MODE})
 	{
-	for(App::Asciio::Cross::get_cross_mode_overlays($self))
+	my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
+
+	for(App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
 		{
 		$lines[$_->[1]][$_->[0]] = [$_->[2]] if defined $lines[$_->[1]][$_->[0]] ;
 		}

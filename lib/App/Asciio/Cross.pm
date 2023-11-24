@@ -12,79 +12,6 @@ use Clone;
 use List::Util qw(first) ;
 use List::MoreUtils qw(any) ;
 
-use App::Asciio::String ;
-use App::Asciio::Markup ;
-
-
-sub get_ascii_array_and_crossings
-{
-my ($asciio, $cross_filler_chars, $start_x, $end_x, $start_y, $end_y)  = @_ ;
-
-my (@lines, @cross_point_index) ;
-
-for my $element (@{$asciio->{ELEMENTS}})
-	{
-	next if any { $_ eq ref($element) } @{$asciio->{CROSS_MODE_IGNORE}} ;
-	
-	for my $strip (@{$element->get_stripes()})
-		{
-		my $line_index = -1 ;
-		
-		for my $sub_strip (split("\n", $strip->{TEXT}))
-			{
-			$line_index++ ;
-			
-			my $y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
-			
-			next if defined $start_y && ($y < $start_y || $y >= $end_y) ;
-			
-			$sub_strip = $USE_MARKUP_CLASS->delete_markup_characters($sub_strip) ;
-			
-			my $character_index = 0 ;
-			
-			for my $character (split '', $sub_strip)
-				{
-				my $x =  $element->{X} + $strip->{X_OFFSET} + $character_index ;
-				
-				if((defined $start_x) && ($x < $start_x || $x >= $end_x))
-					{
-					# skip
-					}
-				elsif($x >= 0 && $y >= 0)
-					{
-					# keep the characters that may be crossing in the array 
-					# other characters are discarded
-					if(exists $cross_filler_chars->{$character})
-						{
-						if(defined $lines[$y][$x])
-							{
-							push @{$lines[$y][$x]}, $character ;
-							
-							push @cross_point_index, [$y, $x] ;
-							}
-						else
-							{
-							$lines[$y][$x] = [$character] ;
-							}
-						
-						}
-					else
-						{
-						delete $lines[$y][$x] ;
-						}
-					}
-				
-				$character_index += unicode_length($character);
-				}
-			}
-		}
-	}
-
-@cross_point_index = grep { defined $lines[$_->[0]][$_->[1]][1] } @cross_point_index ;
-
-return(\@lines, \@cross_point_index) ;
-}
-
 #-----------------------------------------------------------------------------
 # ascii: + X . '
 # unicode: ┼ ┤ ├ ┬ ┴ ╭ ╮ ╯ ╰ ╳ ... ...
@@ -113,24 +40,25 @@ my %all_cross_chars = map {$_, 1}
 			'┵', '┶', '┷', '┸', '┹', '┺',
 			'┽', '┾', '┿', '╀', '╁', '╂', '╃',
 			'╄', '╅', '╆', '╇', '╈', '╉', '╊',
+			'┌', '┐', '└', '┘', '┅', '┄', '┆', '┇'
 			) ;
 
 my %diagonal_cross_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
 
-my %unicode_left_thin_chars    = map {$_, 1} ('─', '┼', '├', '┬', '┴', '╭', '╰', '╫', '╨', '╥', '╟', '╙', '╓', '┎', '┖', '┞', '┟', '┠', '┭', '┰', '┱', '┵', '┸', '┹', '┽', '╀', '╁', '╂', '╃', '╅', '╉') ;
-my %unicode_right_thin_chars   = map {$_, 1} ('─', '┼', '┤', '┬', '┴', '╮', '╯', '╫', '╨', '╥', '╢', '╜', '╖', '┒', '┚', '┦', '┧', '┨', '┮', '┰', '┲', '┶', '┸', '┺', '┾', '╀', '╁', '╂', '╄', '╆', '╊') ;
-my %unicode_up_thin_chars      = map {$_, 1} ('│', '┼', '┤', '├', '┬', '╭', '╮', '╪', '╤', '╡', '╞', '╕', '╒', '┍', '┑', '┝', '┞', '┡', '┥', '┦', '┩', '┭', '┮', '┯', '┽', '┾', '┿', '╀', '╃', '╄', '╇') ;
-my %unicode_down_thin_chars    = map {$_, 1} ('│', '┼', '┤', '├', '┴', '╯', '╰', '╪', '╧', '╡', '╞', '╛', '╘', '┕', '┙', '┝', '┟', '┢', '┥', '┧', '┪', '┵', '┶', '┷', '┽', '┾', '┿', '╁', '╅', '╆', '╈') ;
+my %unicode_left_thin_chars    = map {$_, 1} ('─', '┼', '├', '┬', '┴', '╭', '╰', '╫', '╨', '╥', '╟', '╙', '╓', '┎', '┖', '┞', '┟', '┠', '┭', '┰', '┱', '┵', '┸', '┹', '┽', '╀', '╁', '╂', '╃', '╅', '╉', '┌', '└', '┄') ;
+my %unicode_right_thin_chars   = map {$_, 1} ('─', '┼', '┤', '┬', '┴', '╮', '╯', '╫', '╨', '╥', '╢', '╜', '╖', '┒', '┚', '┦', '┧', '┨', '┮', '┰', '┲', '┶', '┸', '┺', '┾', '╀', '╁', '╂', '╄', '╆', '╊', '┐', '┘', '┄') ;
+my %unicode_up_thin_chars      = map {$_, 1} ('│', '┼', '┤', '├', '┬', '╭', '╮', '╪', '╤', '╡', '╞', '╕', '╒', '┍', '┑', '┝', '┞', '┡', '┥', '┦', '┩', '┭', '┮', '┯', '┽', '┾', '┿', '╀', '╃', '╄', '╇', '┌', '┐', '┆') ;
+my %unicode_down_thin_chars    = map {$_, 1} ('│', '┼', '┤', '├', '┴', '╯', '╰', '╪', '╧', '╡', '╞', '╛', '╘', '┕', '┙', '┝', '┟', '┢', '┥', '┧', '┪', '┵', '┶', '┷', '┽', '┾', '┿', '╁', '╅', '╆', '╈', '└', '┘', '┆') ;
 
 my %unicode_left_double_chars  = map {$_, 1} ('═', '╬', '╠', '╦', '╩', '╔', '╚', '╪', '╧', '╤', '╞', '╘', '╒') ;
 my %unicode_right_double_chars = map {$_, 1} ('═', '╬', '╣', '╦', '╩', '╗', '╝', '╪', '╧', '╤', '╡', '╛', '╕') ;
 my %unicode_up_double_chars    = map {$_, 1} ('║', '╬', '╣', '╠', '╦', '╔', '╗', '╫', '╥', '╢', '╟', '╖', '╓') ;
 my %unicode_down_double_chars  = map {$_, 1} ('║', '╬', '╣', '╠', '╩', '╝', '╚', '╫', '╨', '╢', '╟', '╜', '╙') ;
 
-my %unicode_left_bold_chars    = map {$_, 1} ('━', '╋', '┣', '┳', '┻', '┏', '┗', '┍', '┕', '┝', '┡', '┢', '┮', '┯', '┲', '┶', '┷', '┺', '┾', '┿', '╄', '╆', '╇', '╈', '╊') ;
-my %unicode_right_bold_chars   = map {$_, 1} ('━', '╋', '┫', '┳', '┻', '┓', '┛', '┑', '┙', '┥', '┩', '┪', '┭', '┯', '┱', '┵', '┷', '┹', '┽', '┿', '╃', '╅', '╇', '╈', '╉') ;
-my %unicode_up_bold_chars      = map {$_, 1} ('┃', '╋', '┫', '┣', '┳', '┏', '┓', '┎', '┒', '┟', '┠', '┢', '┧', '┨', '┪', '┰', '┱', '┲', '╁', '╂', '╅', '╆', '╈', '╉', '╊') ;
-my %unicode_down_bold_chars    = map {$_, 1} ('┃', '╋', '┫', '┣', '┻', '┛', '┗', '┖', '┚', '┞', '┠', '┡', '┦', '┨', '┩', '┸', '┹', '┺', '╀', '╂', '╃', '╄', '╇', '╉', '╊') ;
+my %unicode_left_bold_chars    = map {$_, 1} ('━', '╋', '┣', '┳', '┻', '┏', '┗', '┍', '┕', '┝', '┡', '┢', '┮', '┯', '┲', '┶', '┷', '┺', '┾', '┿', '╄', '╆', '╇', '╈', '╊', '┅') ;
+my %unicode_right_bold_chars   = map {$_, 1} ('━', '╋', '┫', '┳', '┻', '┓', '┛', '┑', '┙', '┥', '┩', '┪', '┭', '┯', '┱', '┵', '┷', '┹', '┽', '┿', '╃', '╅', '╇', '╈', '╉', '┅') ;
+my %unicode_up_bold_chars      = map {$_, 1} ('┃', '╋', '┫', '┣', '┳', '┏', '┓', '┎', '┒', '┟', '┠', '┢', '┧', '┨', '┪', '┰', '┱', '┲', '╁', '╂', '╅', '╆', '╈', '╉', '╊', '┇') ;
+my %unicode_down_bold_chars    = map {$_, 1} ('┃', '╋', '┫', '┣', '┻', '┛', '┗', '┖', '┚', '┞', '┠', '┡', '┦', '┨', '┩', '┸', '┹', '┺', '╀', '╂', '╃', '╄', '╇', '╉', '╊', '┇') ;
 
 my @unicode_cross_chars = (
 	{%unicode_left_thin_chars}  , {%unicode_left_double_chars}  , {%unicode_left_bold_chars}  ,
@@ -272,27 +200,58 @@ my @diagonal_char_func = (
 	['╳', \&scene_unicode_x],
 ) ;
 
-
 sub get_cross_mode_overlays
 {
-my ($asciio, $start_x, $end_x, $start_y, $end_y) = @_;
-
-my ($ascii_array, $crossings) = get_ascii_array_and_crossings($asciio, \%all_cross_chars, $start_x, $end_x, $start_y, $end_y);
-my @ascii_array = @{$ascii_array} ;
+my ($zbuffer, $start_x, $end_x, $start_y, $end_y) = @_;
 
 my @overlays ;
 
-for(@{$crossings})
+return @overlays unless(defined $zbuffer->{intersecting_elements}) ;
+
+my $cross_zbuffer = Clone::clone($zbuffer) ;
+
+while (my ($coordinate, $char_stacks) = each %{ $cross_zbuffer->{intersecting_elements} })
 	{
-	my ($row, $col) = @{$_} ;
+	my $cross_array ;
+	my $char_count = 0 ;
+	for my $char (@$char_stacks)
+		{
+		last unless exists $all_cross_chars{$char};
+		push @{$cross_array}, $char;
+		$char_count++;
+		}
+	if($char_count >= 2)
+		{
+		$cross_zbuffer->{intersecting_elements}{$coordinate} = $cross_array ;
+		}
+	else
+		{
+		delete $cross_zbuffer->{intersecting_elements}{$coordinate} ;
+		}
+	}
+
+while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}->%*)
+	{
+	my ($Y, $X) = split ';', $coordinate ;
+
+	if(defined $start_x)
+		{
+		next if(($Y>$end_y) || ($Y<$start_y) || ($X>$end_x) || ($X<$start_x)) ;
+		}
+
+	my $neighbors_stack = $cross_zbuffer->get_neighbors_stack($coordinate) ;
+
+	my ($char_315, $up, $char_45, $right, $char_135, $down, $char_225, $left) = 
+		($neighbors_stack->{($Y-1) . ';' . ($X-1)} // [$undef_char],
+		$neighbors_stack->{($Y-1) . ';' . $X} // [$undef_char],
+		$neighbors_stack->{($Y-1) . ';' . ($X+1)} // [$undef_char],
+		$neighbors_stack->{$Y . ';' . ($X+1)} // [$undef_char],
+		$neighbors_stack->{($Y+1) . ';' . ($X+1)} // [$undef_char],
+		$neighbors_stack->{($Y+1) . ';' . $X} // [$undef_char],
+		$neighbors_stack->{($Y+1) . ';' . ($X-1)} // [$undef_char],
+		$neighbors_stack->{$Y . ';' . ($X-1)} // [$undef_char]);
 	
-	my ($up,                        $down,                      $left,                      $right) = 
-	   ($ascii_array[$row-1][$col], $ascii_array[$row+1][$col], $ascii_array[$row][$col-1], $ascii_array[$row][$col+1]);
-	
-	my $normal_key = ((defined $up) ? join('o', @{$up}) : $undef_char) . '_' 
-			. ((defined $down) ? join('o', @{$down}) : $undef_char) . '_' 
-			. ((defined $left) ? join('o', @{$left}) : $undef_char) . '_' 
-			. ((defined $right) ? join('o', @{$right}) : $undef_char) ;
+	my $normal_key = join(join('o', @{$up}), '_', join('o', @{$down}), '_', join('o', @{$left}), '_', join('o', @{$right})) ;
 	
 	unless(exists $normal_char_cache{$normal_key})
 		{
@@ -302,23 +261,17 @@ for(@{$crossings})
 	
 	if($normal_char_cache{$normal_key})
 		{
-		if($normal_char_cache{$normal_key} ne $ascii_array[$row][$col][-1])
+		if($normal_char_cache{$normal_key} ne $elements->[0])
 			{
-			push @overlays, [$col, $row, $normal_char_cache{$normal_key}];
+			push @overlays, [$X, $Y, $normal_char_cache{$normal_key}];
 			}
 
 		next;
 		}
 	
-	next unless exists $diagonal_cross_chars{$ascii_array[$row][$col][-1]} ;
+	next unless exists $diagonal_cross_chars{$elements->[0]} ;
 	
-	my ($char_45,                     $char_135,                    $char_225,                    $char_315) = 
-	   ($ascii_array[$row-1][$col+1], $ascii_array[$row+1][$col+1], $ascii_array[$row+1][$col-1], $ascii_array[$row-1][$col-1]);
-	
-	my $diagonal_key = ((defined $char_45) ? join('o', @{$char_45}) : $undef_char) . '_' 
-				. ((defined $char_135) ? join('o', @{$char_135}) : $undef_char) . '_' 
-				. ((defined $char_225) ? join('o', @{$char_225}) : $undef_char) . '_' 
-				. ((defined $char_315) ? join('o', @{$char_315}) : $undef_char) ;
+	my $diagonal_key = join(join('o', @{$char_45}), '_', join('o', @{$char_135}), '_', join('o', @{$char_225}), '_', join('o', @{$char_315})) ;
 	
 	unless(exists $diagonal_char_cache{$diagonal_key})
 		{
@@ -326,9 +279,9 @@ for(@{$crossings})
 		$diagonal_char_cache{$diagonal_key} = ($scene_func) ? $scene_func->[$CHARACTER] : '';
 		}
 	
-	if($diagonal_char_cache{$diagonal_key} && ($diagonal_char_cache{$diagonal_key} ne $ascii_array[$row][$col][-1]))
+	if($diagonal_char_cache{$diagonal_key} && ($diagonal_char_cache{$diagonal_key} ne $elements->[0]))
 		{
-		push @overlays, [$col, $row, $diagonal_char_cache{$diagonal_key}];
+		push @overlays, [$X, $Y, $diagonal_char_cache{$diagonal_key}];
 		}
 
 	}

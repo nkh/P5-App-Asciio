@@ -1,6 +1,6 @@
 # Cross Mode
 
-## Introduction
+## 1 Introduction
 
 In normal mode, elements boundaries are independent of each.
 
@@ -11,7 +11,7 @@ In cross mode intersections are merged:
 ![cross_elements](cross_elements.png)
 
 
-## Complex graphics
+## 2 Complex graphics
 
 The cross-mode lets you create graphics like this table
 
@@ -31,9 +31,9 @@ The cross-mode lets you create graphics like this table
 
 ```
 
-## Enabling cross-mode
+## 3 Enabling cross-mode
 
-### Globally
+### 3.1 Globally
 
 Add this line in your user configuration.
 
@@ -41,22 +41,22 @@ Add this line in your user configuration.
 USE_CROSS_MODE => 1,
 ```
 
-### Dynamically
+### 3.2 Dynamically
 
-Binding: «x» 'Switch cross mode'
+Binding: «z-x» 'Switch cross mode'
 
-## Line and Box
+## 4 Line and Box
 
 ![cross_lines](cross_lines.gif)
 
 ![cross_boxs](cross_boxs.gif)
 
-## Lines and boxes
+## 5 Lines and boxes
 
 ![cross_box_line](cross_box_line.gif)
 
 
-## Exported to text
+## 6 Exported to text
 
 ```
         .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
@@ -96,20 +96,5 @@ Binding: «x» 'Switch cross mode'
                                              ╚════════╝   ╚══════════════╝
 
 ```
-
-## Excluded elements
-
-Some elements do not need to cross, such as ellipse, so they can 
-be excluded in the configuration file.
-
-```perl
-CROSS_MODE_IGNORE =>
-    [
-    'App::Asciio::stripes::ellipse',
-	'App::Asciio::stripes::if_box'
-    ],
-```
-
-Just write the full path of the element to be excluded.
 
 

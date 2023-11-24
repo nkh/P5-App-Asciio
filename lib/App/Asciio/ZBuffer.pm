@@ -3,6 +3,10 @@ package App::Asciio::ZBuffer ;
 use strict; use warnings;
 use utf8;
 
+use App::Asciio::String ;
+use App::Asciio::Markup ;
+
+
 # ------------------------------------------------------------------------------
 
 sub new
@@ -39,7 +43,7 @@ for my $element (@elements)
 			unshift $self->{intersecting_elements}{$coordinate}->@*, $self->{coordinates}{$coordinate}
 				unless exists $self->{intersecting_elements}{$coordinate} ;
 			
-			unshift $self->{intersecting_elements}{$coordinate}->@*, $char
+			unshift $self->{intersecting_elements}{$coordinate}->@*, $char ;
 			}
 		
 		$self->{coordinates}{$coordinate} = $char ;
@@ -59,6 +63,7 @@ my @glyphs ;
 
 for my $strip (@{$element->get_stripes})
 	{
+	$strip = $USE_MARKUP_CLASS->delete_markup_characters($strip) ;
 	my $line_index = 0 ;
 	
 	for my $line (split /\n/, $strip->{TEXT})
@@ -69,9 +74,17 @@ for my $strip (@{$element->get_stripes})
 			{
 			my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 			my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
-			push @glyphs, [ "$Y;$X", $char] ; 
 			
-			$character_index++ ;
+			if(is_nonspacing_char($char))
+				{
+				$glyphs[$#glyphs][1] .= $char if @glyphs ;
+				}
+			else
+				{
+				push @glyphs, [ "$Y;$X", $char] ; 
+				}
+			
+			$character_index += unicode_length($char);
 			}
 		
 		$line_index++ ;
@@ -86,7 +99,7 @@ return \@glyphs ;
 sub get_neighbors
 {
 my ($self, $coordinate) = @_ ;
-my ($x, $y)             = split ';', $coordinate ;
+my ($y, $x)             = split ';', $coordinate ;
 
 # order: 315, up, 45, right, 135, down, 225, left
 
@@ -98,10 +111,10 @@ return
 			? ($_ => $self->{coordinates}{$_})
 			: ()
 		}
-		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
-		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
-		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
-	}
+		($y-1) .';'. ($x-1), ($y-1) .';'. $x, ($y-1) .';'. ($x+1), 
+		$y .';'. ($x+1),                      ($y+1) .';'. ($x+1), 
+		($y+1) .';'. $x,     ($y+1) .';'. ($x-1), $y .';'. ($x-1)
+	} ;
 }
 
 # ------------------------------------------------------------------------------
@@ -109,7 +122,7 @@ return
 sub get_neighbors_stack
 {
 my ($self, $coordinate) = @_ ;
-my ($x, $y)             = split ';', $coordinate ;
+my ($y, $x)             = split ';', $coordinate ;
 
 # order: 315, up, 45, right, 135, down, 225, left
 
@@ -125,10 +138,10 @@ return
 					: ($_ => [$self->{coordinates}{$_}])
 				) 
 			: () }
-		($x-1) .';'. ($y-1), $x .';'. ($y-1), ($x+1) .';'. ($y-1), 
-		($x-1) .';'. $y,                      ($x+1) .';'. $y, 
-		($x-1) .';'. ($y+1), $x .';'. ($y+1), ($x+1) .';'. ($y+1)
-	}
+		($y-1) .';'. ($x-1), ($y-1) .';'. $x, ($y-1) .';'. ($x+1), 
+		$y .';'. ($x+1),                      ($y+1) .';'. ($x+1), 
+		($y+1) .';'. $x,     ($y+1) .';'. ($x-1), $y .';'. ($x-1)
+	};
 }
 
 # ------------------------------------------------------------------------------

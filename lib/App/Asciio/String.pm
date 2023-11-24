@@ -6,6 +6,7 @@ require Exporter ;
 @EXPORT = qw(
 	unicode_length
 	make_vertical_text
+	is_nonspacing_char
 	) ;
 
 #-----------------------------------------------------------------------------
@@ -19,6 +20,17 @@ use App::Asciio::Markup ;
 
 use Memoize ;
 memoize('unicode_length') ;
+memoize('is_nonspacing_char') ;
+
+#-----------------------------------------------------------------------------
+
+sub is_nonspacing_char
+{
+my ($character) = @_ ;
+return $character =~ /\p{gc:Mn}/ ;
+}
+
+#-----------------------------------------------------------------------------
 
 sub unicode_length
 {
