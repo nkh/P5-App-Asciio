@@ -294,6 +294,8 @@ my $build = $class->new
 		'Term::Size::Any'       => 0,
 		'Term::TermKey'         => 0,
 		'Test::Block'           => 0,
+		'Gtk3::Helper'          => 0,
+		'HTTP::Request::Params' => 0,  
 		'version'               => 0.50,
 		},
 		
