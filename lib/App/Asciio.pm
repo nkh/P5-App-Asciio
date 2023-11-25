@@ -784,6 +784,12 @@ my $modifiers = $event->{MODIFIERS} ;
 
 if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
+	if (@{$self->{SELECTION_POLYGON}//[]} > 0)
+		{
+		push @{$self->{SELECTION_POLYGON}}, [$x, $y];
+		$self->polygon_selection();
+		}
+
 	delete $self->{BINDINGS_COMPLETION} ;
 	$self->update_display ;
 	

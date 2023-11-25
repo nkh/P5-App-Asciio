@@ -361,6 +361,7 @@ register_action_handlers
 
 	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
 	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
+	'Mouse polygon selection'        => [ '000-x',             \&App::Asciio::GTK::Asciio::mouse_polygon_selection_switch               ],
 	},
 
 '<< eraser leader >>' =>

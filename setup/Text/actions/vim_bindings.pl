@@ -326,15 +326,16 @@ register_action_handlers_remove_old_shortcuts
 
 '<< selection leader >>' =>
 	{
-	SHORTCUTS   => 'r',
+	SHORTCUTS   => 's',
 	ENTER_GROUP => \&App::Asciio::Actions::Selection::selection_enter,
-	ESCAPE_KEYS => ['r', 'Escape'],
+	ESCAPE_KEYS => ['s', 'Escape'],
 	
-	'Selection escape'               => ['r'],
+	'Selection escape'               => ['s'],
 	'Selection escape2'              => ['Escape'],
 
-	'select flip mode'               => ['f'],
+	'select flip mode'               => ['e'],
 	'select motion'                  => ['000-motion_notify'],
+	'Mouse polygon selection'        => ['not_set'],
 	},
 
 '<< eraser leader >>' =>

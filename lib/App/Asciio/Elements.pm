@@ -299,6 +299,7 @@ for my $element (@elements)
 		}
 	
 	$self->{MODIFIED }++ ;
+	delete $element->{CACHE}{COORDINATES} ;
 	}
 }
 

@@ -27,6 +27,7 @@ use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
 use App::Asciio::GTK::Asciio::DnD ;
+use App::Asciio::GTK::Asciio::Selection ;
 
 use App::Asciio::Cross ;
 use App::Asciio::String ;
@@ -434,6 +435,8 @@ if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	
 	delete $self->{SELECTION_RECTANGLE}{END_X} ;
 	}
+
+$self->draw_polygon_selection($gc, $character_width, $character_height) ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
