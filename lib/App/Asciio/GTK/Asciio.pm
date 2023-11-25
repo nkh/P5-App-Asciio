@@ -475,21 +475,24 @@ my ($self, $gc, $character_width, $character_height) = @_ ;
 
 if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	{
+	my ($font_character_width, $font_character_height) = (9, 21) ;
+	
 	$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
 	
-	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $character_width, $character_height * $self->{BINDINGS_COMPLETION}->@*) ;
+	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
 	
 	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
-	my ($scroll_bar_x, $scroll_bar_y) = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
+	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
+	my $window_end                     = $window_width + $scroll_bar_x ;
 	
 	my $start_x ;
-	if ($window_width + $scroll_bar_x < (($self->{MOUSE_X} + 3) * $character_width) + $width)
+	if ( $window_end < ($self->{MOUSE_X} * $character_width) + $width)
 		{
-		$start_x = (($self->{MOUSE_X} - 3) * $character_width) - $width ;
+		$start_x = (($self->{MOUSE_X} + 1) * $character_width) - $width ; # place left
 		}
 	else
 		{
-		$start_x = ($self->{MOUSE_X} + 3) * $character_width ;
+		$start_x = ($self->{MOUSE_X} + 1) * $character_width ;
 		}
 	
 	my $start_y = min($window_height + $scroll_bar_y - $height , ($self->{MOUSE_Y} + 1) * $character_height) ;
@@ -501,7 +504,7 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	my $gco = Cairo::Context->create($surface) ;
 	
 	my $layout = Pango::Cairo::create_layout($gco) ;
-	my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+	my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} 11") ;
 	$layout->set_font_description($font_description) ;
 	
 	$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
