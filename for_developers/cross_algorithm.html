@@ -204,7 +204,7 @@ and delete the old fill character.</li>
 <li>update drawing.</li>
 </ol>
 <h1 id="detailed-steps"><a class="header" href="#detailed-steps">Detailed steps</a></h1>
-<h2 id="find-the-cross-point"><a class="header" href="#find-the-cross-point">Find the cross point</a></h2>
+<h2 id="1-find-the-cross-point"><a class="header" href="#1-find-the-cross-point">1 Find the cross point</a></h2>
 <p>The cross point must be the coverage of characters, 
 and the characters that cover each other are the characters we care about.
 &gt;The characters we care about refer to commonly used tab characters, 
@@ -229,8 +229,8 @@ because they absolutely determine what kind of cross point is generated.
 &gt;Record the upper, lower, left, and right characters. If you want to achieve 
 diagonal crossing, you also need to record characters at 45 degrees, 
 135 degrees, 225 degrees, and 315 degrees.</p>
-<h2 id="judgment-scene"><a class="header" href="#judgment-scene">Judgment scene</a></h2>
-<h3 id="general-situation"><a class="header" href="#general-situation">General situation</a></h3>
+<h2 id="2-judgment-scene"><a class="header" href="#2-judgment-scene">2 Judgment scene</a></h2>
+<h3 id="21-general-situation"><a class="header" href="#21-general-situation">2.1 General situation</a></h3>
 <p>First of all, all cross characters are directional, we need to group 
 them by direction and type.</p>
 <p>Let me give you an example, if the center has generated a character<code>┼</code>,
@@ -286,7 +286,7 @@ one <code>╤</code> to fill.</p>
 </ol>
 <p>Pay attention to the bold part above, because if this condition is true, 
 then the filling character should be <code>╪</code>, not <code>╤</code>.</p>
-<h3 id="improve-efficiency"><a class="header" href="#improve-efficiency">Improve efficiency</a></h3>
+<h3 id="22-improve-efficiency"><a class="header" href="#22-improve-efficiency">2.2 Improve efficiency</a></h3>
 <p>There is no need to perform calculations every time to determine the characters 
 filled in the middle. Whenever a new scene calculation occurs, we can save the 
 calculation result in a cache and read it directly next time without performing 
@@ -294,7 +294,7 @@ logical calculations again.</p>
 <p>A hash table is most suitable for this, and the hash key can use a combination 
 of upper, lower, left, and right characters(The oblique lines are the four diagonal 
 directions.).</p>
-<h3 id="an-additional-case-needs-to-be-considered-separately"><a class="header" href="#an-additional-case-needs-to-be-considered-separately">An additional case needs to be considered separately</a></h3>
+<h3 id="23-an-additional-case-needs-to-be-considered-separately"><a class="header" href="#23-an-additional-case-needs-to-be-considered-separately">2.3 An additional case needs to be considered separately</a></h3>
 <pre><code>   ││
  ──││─────
    ││
@@ -319,8 +319,10 @@ in the background is ok, so we think it ok!</p>
 <p><strong>In summary:</strong> If the character next to it is also an cross point, then 
 either the foreground character or the background character of the 
 intersection can meet the requirements.So I said earlier that the foreground 
-and background characters of the cross point all need to be recorded.</p>
-<h3 id="the-case-of-character-coverage"><a class="header" href="#the-case-of-character-coverage">The case of character coverage</a></h3>
+and background characters of the cross point all need to be recorded.In fact, 
+there may be more than one character that meets the condition in the background, 
+so all of these characters need to be considered, not just limited to 2 characters.</p>
+<h3 id="24-the-case-of-character-coverage"><a class="header" href="#24-the-case-of-character-coverage">2.4 The case of character coverage</a></h3>
 <p>There is another situation that needs to be explained separately,Similar to 
 above but slightly different</p>
 <pre><code> ╭─────╮
@@ -351,6 +353,15 @@ characters are considered.</p>
 <p>The definition of the cross point has already been mentioned in the 
 previous chapter</p>
 </blockquote>
+<h3 id="25-a-method-to-simplify-logical-judgment"><a class="header" href="#25-a-method-to-simplify-logical-judgment">2.5 A method to simplify logical judgment</a></h3>
+<p>When we determine what characters should be filled in a point, we first consider 
+the characters in the four directions. Then after these characters are considered, 
+characters in three directions are considered, and finally characters in two directions 
+are considered. The advantage of this is that if the characters in the four directions 
+do not meet the conditions, then when judging the characters in the three directions, 
+there is no need to repeatedly consider that a certain character may be a character 
+in the four directions, because it has been ruled out before. Similar logic is used 
+for two-way characters. This can greatly reduce the complexity of logical judgment.</p>
 
                     </main>
 

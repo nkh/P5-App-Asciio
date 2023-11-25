@@ -172,12 +172,12 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
-<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
+<h2 id="1-introduction"><a class="header" href="#1-introduction">1 Introduction</a></h2>
 <p>In normal mode, elements boundaries are independent of each.</p>
 <p><img src="normal_elements.png" alt="normal_elements" /></p>
 <p>In cross mode intersections are merged:</p>
 <p><img src="cross_elements.png" alt="cross_elements" /></p>
-<h2 id="complex-graphics"><a class="header" href="#complex-graphics">Complex graphics</a></h2>
+<h2 id="2-complex-graphics"><a class="header" href="#2-complex-graphics">2 Complex graphics</a></h2>
 <p>The cross-mode lets you create graphics like this table</p>
 <pre><code>
         ╔═══════╤══════════════════════════════════════════════════════════════╗
@@ -193,19 +193,19 @@
         ╚═══════╧══════╧═══════╧═══════╧════════╧═══════╧══════╧════════╧══════╝
 
 </code></pre>
-<h2 id="enabling-cross-mode"><a class="header" href="#enabling-cross-mode">Enabling cross-mode</a></h2>
-<h3 id="globally"><a class="header" href="#globally">Globally</a></h3>
+<h2 id="3-enabling-cross-mode"><a class="header" href="#3-enabling-cross-mode">3 Enabling cross-mode</a></h2>
+<h3 id="31-globally"><a class="header" href="#31-globally">3.1 Globally</a></h3>
 <p>Add this line in your user configuration.</p>
 <pre><code class="language-perl">USE_CROSS_MODE =&gt; 1,
 </code></pre>
-<h3 id="dynamically"><a class="header" href="#dynamically">Dynamically</a></h3>
-<p>Binding: «x» 'Switch cross mode'</p>
-<h2 id="line-and-box"><a class="header" href="#line-and-box">Line and Box</a></h2>
+<h3 id="32-dynamically"><a class="header" href="#32-dynamically">3.2 Dynamically</a></h3>
+<p>Binding: «z-x» 'Switch cross mode'</p>
+<h2 id="4-line-and-box"><a class="header" href="#4-line-and-box">4 Line and Box</a></h2>
 <p><img src="cross_lines.gif" alt="cross_lines" /></p>
 <p><img src="cross_boxs.gif" alt="cross_boxs" /></p>
-<h2 id="lines-and-boxes"><a class="header" href="#lines-and-boxes">Lines and boxes</a></h2>
+<h2 id="5-lines-and-boxes"><a class="header" href="#5-lines-and-boxes">5 Lines and boxes</a></h2>
 <p><img src="cross_box_line.gif" alt="cross_box_line" /></p>
-<h2 id="exported-to-text"><a class="header" href="#exported-to-text">Exported to text</a></h2>
+<h2 id="6-exported-to-text"><a class="header" href="#6-exported-to-text">6 Exported to text</a></h2>
 <pre><code>        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
         |        |      │        │    ┃        ┃    ║        ║
         |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
@@ -243,16 +243,6 @@
                                              ╚════════╝   ╚══════════════╝
 
 </code></pre>
-<h2 id="excluded-elements"><a class="header" href="#excluded-elements">Excluded elements</a></h2>
-<p>Some elements do not need to cross, such as ellipse, so they can 
-be excluded in the configuration file.</p>
-<pre><code class="language-perl">CROSS_MODE_IGNORE =&gt;
-    [
-    'App::Asciio::stripes::ellipse',
-	'App::Asciio::stripes::if_box'
-    ],
-</code></pre>
-<p>Just write the full path of the element to be excluded.</p>
 
                     </main>
 

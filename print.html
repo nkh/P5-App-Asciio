@@ -1328,12 +1328,12 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
 <p>or in the popup menu for both.</p>
 <p><img src="modes/git_popup_menu.png" alt="git_popup menu" /></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
-<h2 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h2>
+<h2 id="1-introduction"><a class="header" href="#1-introduction">1 Introduction</a></h2>
 <p>In normal mode, elements boundaries are independent of each.</p>
 <p><img src="modes/normal_elements.png" alt="normal_elements" /></p>
 <p>In cross mode intersections are merged:</p>
 <p><img src="modes/cross_elements.png" alt="cross_elements" /></p>
-<h2 id="complex-graphics"><a class="header" href="#complex-graphics">Complex graphics</a></h2>
+<h2 id="2-complex-graphics"><a class="header" href="#2-complex-graphics">2 Complex graphics</a></h2>
 <p>The cross-mode lets you create graphics like this table</p>
 <pre><code>
         ╔═══════╤══════════════════════════════════════════════════════════════╗
@@ -1349,19 +1349,19 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
         ╚═══════╧══════╧═══════╧═══════╧════════╧═══════╧══════╧════════╧══════╝
 
 </code></pre>
-<h2 id="enabling-cross-mode"><a class="header" href="#enabling-cross-mode">Enabling cross-mode</a></h2>
-<h3 id="globally"><a class="header" href="#globally">Globally</a></h3>
+<h2 id="3-enabling-cross-mode"><a class="header" href="#3-enabling-cross-mode">3 Enabling cross-mode</a></h2>
+<h3 id="31-globally"><a class="header" href="#31-globally">3.1 Globally</a></h3>
 <p>Add this line in your user configuration.</p>
 <pre><code class="language-perl">USE_CROSS_MODE =&gt; 1,
 </code></pre>
-<h3 id="dynamically"><a class="header" href="#dynamically">Dynamically</a></h3>
-<p>Binding: «x» 'Switch cross mode'</p>
-<h2 id="line-and-box"><a class="header" href="#line-and-box">Line and Box</a></h2>
+<h3 id="32-dynamically"><a class="header" href="#32-dynamically">3.2 Dynamically</a></h3>
+<p>Binding: «z-x» 'Switch cross mode'</p>
+<h2 id="4-line-and-box"><a class="header" href="#4-line-and-box">4 Line and Box</a></h2>
 <p><img src="modes/cross_lines.gif" alt="cross_lines" /></p>
 <p><img src="modes/cross_boxs.gif" alt="cross_boxs" /></p>
-<h2 id="lines-and-boxes"><a class="header" href="#lines-and-boxes">Lines and boxes</a></h2>
+<h2 id="5-lines-and-boxes"><a class="header" href="#5-lines-and-boxes">5 Lines and boxes</a></h2>
 <p><img src="modes/cross_box_line.gif" alt="cross_box_line" /></p>
-<h2 id="exported-to-text"><a class="header" href="#exported-to-text">Exported to text</a></h2>
+<h2 id="6-exported-to-text"><a class="header" href="#6-exported-to-text">6 Exported to text</a></h2>
 <pre><code>        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
         |        |      │        │    ┃        ┃    ║        ║
         |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
@@ -1399,16 +1399,6 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
                                              ╚════════╝   ╚══════════════╝
 
 </code></pre>
-<h2 id="excluded-elements"><a class="header" href="#excluded-elements">Excluded elements</a></h2>
-<p>Some elements do not need to cross, such as ellipse, so they can 
-be excluded in the configuration file.</p>
-<pre><code class="language-perl">CROSS_MODE_IGNORE =&gt;
-    [
-    'App::Asciio::stripes::ellipse',
-	'App::Asciio::stripes::if_box'
-    ],
-</code></pre>
-<p>Just write the full path of the element to be excluded.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="slides"><a class="header" href="#slides">slides</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="examples-1"><a class="header" href="#examples-1">Examples</a></h1>
 <h1 id="unix-structure"><a class="header" href="#unix-structure">Unix structure</a></h1>
@@ -2556,7 +2546,7 @@ and delete the old fill character.</li>
 <li>update drawing.</li>
 </ol>
 <h1 id="detailed-steps"><a class="header" href="#detailed-steps">Detailed steps</a></h1>
-<h2 id="find-the-cross-point"><a class="header" href="#find-the-cross-point">Find the cross point</a></h2>
+<h2 id="1-find-the-cross-point"><a class="header" href="#1-find-the-cross-point">1 Find the cross point</a></h2>
 <p>The cross point must be the coverage of characters, 
 and the characters that cover each other are the characters we care about.
 &gt;The characters we care about refer to commonly used tab characters, 
@@ -2581,8 +2571,8 @@ because they absolutely determine what kind of cross point is generated.
 &gt;Record the upper, lower, left, and right characters. If you want to achieve 
 diagonal crossing, you also need to record characters at 45 degrees, 
 135 degrees, 225 degrees, and 315 degrees.</p>
-<h2 id="judgment-scene"><a class="header" href="#judgment-scene">Judgment scene</a></h2>
-<h3 id="general-situation"><a class="header" href="#general-situation">General situation</a></h3>
+<h2 id="2-judgment-scene"><a class="header" href="#2-judgment-scene">2 Judgment scene</a></h2>
+<h3 id="21-general-situation"><a class="header" href="#21-general-situation">2.1 General situation</a></h3>
 <p>First of all, all cross characters are directional, we need to group 
 them by direction and type.</p>
 <p>Let me give you an example, if the center has generated a character<code>┼</code>,
@@ -2638,7 +2628,7 @@ one <code>╤</code> to fill.</p>
 </ol>
 <p>Pay attention to the bold part above, because if this condition is true, 
 then the filling character should be <code>╪</code>, not <code>╤</code>.</p>
-<h3 id="improve-efficiency"><a class="header" href="#improve-efficiency">Improve efficiency</a></h3>
+<h3 id="22-improve-efficiency"><a class="header" href="#22-improve-efficiency">2.2 Improve efficiency</a></h3>
 <p>There is no need to perform calculations every time to determine the characters 
 filled in the middle. Whenever a new scene calculation occurs, we can save the 
 calculation result in a cache and read it directly next time without performing 
@@ -2646,7 +2636,7 @@ logical calculations again.</p>
 <p>A hash table is most suitable for this, and the hash key can use a combination 
 of upper, lower, left, and right characters(The oblique lines are the four diagonal 
 directions.).</p>
-<h3 id="an-additional-case-needs-to-be-considered-separately"><a class="header" href="#an-additional-case-needs-to-be-considered-separately">An additional case needs to be considered separately</a></h3>
+<h3 id="23-an-additional-case-needs-to-be-considered-separately"><a class="header" href="#23-an-additional-case-needs-to-be-considered-separately">2.3 An additional case needs to be considered separately</a></h3>
 <pre><code>   ││
  ──││─────
    ││
@@ -2671,8 +2661,10 @@ in the background is ok, so we think it ok!</p>
 <p><strong>In summary:</strong> If the character next to it is also an cross point, then 
 either the foreground character or the background character of the 
 intersection can meet the requirements.So I said earlier that the foreground 
-and background characters of the cross point all need to be recorded.</p>
-<h3 id="the-case-of-character-coverage"><a class="header" href="#the-case-of-character-coverage">The case of character coverage</a></h3>
+and background characters of the cross point all need to be recorded.In fact, 
+there may be more than one character that meets the condition in the background, 
+so all of these characters need to be considered, not just limited to 2 characters.</p>
+<h3 id="24-the-case-of-character-coverage"><a class="header" href="#24-the-case-of-character-coverage">2.4 The case of character coverage</a></h3>
 <p>There is another situation that needs to be explained separately,Similar to 
 above but slightly different</p>
 <pre><code> ╭─────╮
@@ -2703,6 +2695,15 @@ characters are considered.</p>
 <p>The definition of the cross point has already been mentioned in the 
 previous chapter</p>
 </blockquote>
+<h3 id="25-a-method-to-simplify-logical-judgment"><a class="header" href="#25-a-method-to-simplify-logical-judgment">2.5 A method to simplify logical judgment</a></h3>
+<p>When we determine what characters should be filled in a point, we first consider 
+the characters in the four directions. Then after these characters are considered, 
+characters in three directions are considered, and finally characters in two directions 
+are considered. The advantage of this is that if the characters in the four directions 
+do not meet the conditions, then when judging the characters in the three directions, 
+there is no need to repeatedly consider that a certain character may be a character 
+in the four directions, because it has been ruled out before. Similar logic is used 
+for two-way characters. This can greatly reduce the complexity of logical judgment.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="unicode-character-classification"><a class="header" href="#unicode-character-classification">Unicode character classification</a></h1>
 <ul>
 <li>characters of length 1</li>
