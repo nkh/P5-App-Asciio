@@ -2845,9 +2845,9 @@ my @overlays = map { [ $asciio-&gt;{MOUSE_X} + $_-&gt;[0], $asciio-&gt;{MOUSE_Y}
 <h2 id="callback--hideshow-mouse"><a class="header" href="#callback--hideshow-mouse">Callback  hide/show mouse</a></h2>
 <p>Hide and show the mouse pointer, useful if you draw objects that are moved around.</p>
 <pre><code class="language-perl">
-sub callback_enter { my ($asciio) = @_ ; $asciio-&gt;hide_pointer ; ... }
+sub callback_enter { my ($asciio) = @_ ; $asciio-&gt;hide_cursor ; ... }
 
-sub callback_escape { my ($asciio) = @_ ; $asciio-&gt;show_pointer ; ... }
+sub callback_escape { my ($asciio) = @_ ; $asciio-&gt;show_cursor ; ... }
 
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="contributors"><a class="header" href="#contributors">Contributors</a></h1>
