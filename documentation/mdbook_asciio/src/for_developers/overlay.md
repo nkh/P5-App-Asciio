@@ -101,9 +101,9 @@ Hide and show the mouse pointer, useful if you draw objects that are moved aroun
 
 ```perl
 
-sub callback_enter { my ($asciio) = @_ ; $asciio->hide_pointer ; ... }
+sub callback_enter { my ($asciio) = @_ ; $asciio->hide_cursor ; ... }
 
-sub callback_escape { my ($asciio) = @_ ; $asciio->show_pointer ; ... }
+sub callback_escape { my ($asciio) = @_ ; $asciio->show_cursor ; ... }
 
 ```
 

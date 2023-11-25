@@ -10,6 +10,7 @@ use App::Asciio::Actions::Colors ;
 use App::Asciio::Actions::Debug ;
 use App::Asciio::Actions::Elements ;
 use App::Asciio::Actions::ElementsManipulation ;
+use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
@@ -330,14 +331,24 @@ register_action_handlers
 	SHORTCUTS => '000-e',
 	
 	'Shrink box'                     => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                              ],
-
+	
 	'Make element narrower'          => ['000-1',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [-1, 0]         ],
 	'Make element taller'            => ['000-2',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0,  1]         ],
 	'Make element shorter'           => ['000-3',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0, -1]         ],
 	'Make element wider'             => ['000-4',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [1,  0]         ],
-
+	
 	'Make elements Unicode'          => ['C00-u',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 1                            ],
 	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],
+	},
+
+'<< eraser leader >>' =>
+	{
+	SHORTCUTS => '00S-E',
+	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
+	ESCAPE_KEY => '000-Escape',
+	
+	'Eraser escape'                  => [ '000-Escape',        \&App::Asciio::Actions::Eraser::eraser_escape                            ],
+	'Eraser motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Eraser::erase_elements                           ],
 	},
 
 '<< clone leader >>' =>

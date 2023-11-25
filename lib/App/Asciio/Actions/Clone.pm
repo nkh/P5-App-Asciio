@@ -70,14 +70,14 @@ else
 	clone_set_overlay($asciio, ['Asciio/box', 0]) ;
 	}
 
-$asciio->hide_pointer ;
+$asciio->hide_cursor ;
 
 $asciio->set_overlays_sub(\&clone_get_overlay) ;
 
 $asciio->update_display ;
 }
 
-sub clone_escape { my ($asciio) = @_ ; $asciio->set_overlays_sub(undef) ; $asciio->show_pointer ; $asciio->update_display ; }
+sub clone_escape { my ($asciio) = @_ ; $asciio->set_overlays_sub(undef) ; $asciio->show_cursor ; $asciio->update_display ; }
 sub clone_mouse_motion { my ($asciio, $event) = @_ ; App::Asciio::Actions::Mouse::mouse_motion($asciio, $event) ; $asciio->update_display() ; }
 
 sub clone_add_element

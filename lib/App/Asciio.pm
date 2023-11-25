@@ -933,8 +933,9 @@ sub get_overlays { defined $overlays_sub ? $overlays_sub->(@_) : () ; }
 
 #-----------------------------------------------------------------------------
 
-sub show_pointer { ; }
-sub hide_pointer { ; }
+sub change_cursor { ; }
+sub show_cursor { ; }
+sub hide_cursor { ; }
     
 #-----------------------------------------------------------------------------
 

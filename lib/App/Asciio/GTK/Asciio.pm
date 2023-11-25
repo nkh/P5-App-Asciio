@@ -32,45 +32,6 @@ use App::Asciio::String ;
 use App::Asciio::Markup ;
 use App::Asciio::ZBuffer ;
 
-
-sub hide_pointer
-{
-my ($asciio) = @_ ;
-
-my $display = $asciio->{widget}->get_display();
-my $cursor = Gtk3::Gdk::Cursor->new_for_display($display, 'blank-cursor');
-
-my $win = $asciio->{widget}->get_parent_window() ;
-
-$asciio->{CACHE}{CURSOR} = $win->get_cursor() ;
-
-$win->set_cursor($cursor);
-# fleur
-# x_cursor
-}
-
-sub show_pointer
-{
-my ($asciio) = @_ ;
-
-my $display = $asciio->{widget}->get_display();
-my $cursor ;
-
-if (exists $asciio->{CACHE}{CURSOR}) 
-	{
-	$cursor = $asciio->{CACHE}{CURSOR} ;
-	}
-else
-	{
-	$cursor = Gtk3::Gdk::Cursor->new_for_display($display, 'arrow');
-	}
-
-my $win = $asciio->{widget}->get_parent_window() ;
-$win->set_cursor($cursor);
-}
-    
-#-----------------------------------------------------------------------------
-
 our $VERSION = '0.01' ;
 
 #-----------------------------------------------------------------------------
@@ -926,8 +887,28 @@ for my $element (@{$self->{ELEMENTS}})
 delete $self->{CACHE} ;
 }
 
-#----------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 
+sub change_cursor
+{
+my ($self, $cursor_name) = @_ ;
+
+my $display = $self->{widget}->get_display() ;
+
+my $cursor = Gtk3::Gdk::Cursor->new_for_display($display, $cursor_name) ;
+
+$self->{widget}->get_parent_window()->set_cursor($cursor) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub hide_cursor { my ($self) = @_ ; $self->change_cursor('blank-cursor') ; }
+
+#-----------------------------------------------------------------------------
+
+sub show_cursor { my ($self) = @_ ; $self->change_cursor('left_ptr') ; }
+    
+#-----------------------------------------------------------------------------
 
 =head1 DEPENDENCIES
 

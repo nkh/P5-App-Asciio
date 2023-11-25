@@ -307,14 +307,24 @@ register_action_handlers_remove_old_shortcuts
 	SHORTCUTS => 'e',
 	
 	'Shrink box'                              => ['s'],
-
+	
 	'Make element narrower'                   => ['1'],
 	'Make element taller'                     => ['2'],
 	'Make element shorter'                    => ['3'],
 	'Make element wider'                      => ['4'],
-
+	
 	'Make elements Unicode'                   => ['u'],
 	'Make elements not Unicode'               => ['U'],
+	},
+
+'<< eraser leader >>' =>
+	{
+	SHORTCUTS => '00S-E',
+	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
+	ESCAPE_KEY => '000-Escape',
+	
+	'Eraser escape'                           => ['Escape'],
+	'Eraser motion'                           => [ '000-motion_notify'],
 	},
 
 '<< clone leader >>' =>
