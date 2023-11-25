@@ -97,6 +97,7 @@ register_action_handlers_remove_old_shortcuts
 '<< paste leader >>' =>
 	{
 	SHORTCUTS => 'p',
+
 	'Insert from clipboard'                   => ['p'],
 	'Import from clipboard to box'            => ['b'],
 	'Import from clipboard to text'           => ['t'],
@@ -141,7 +142,6 @@ register_action_handlers_remove_old_shortcuts
 	SHORTCUTS => 'z',
 	
 	'Change font'                             => ['F'],
-	
 	'<< Change color >>'                      => ['c'],
 	
 	'Flip binding completion'                 => ['b'],
@@ -317,21 +317,34 @@ register_action_handlers_remove_old_shortcuts
 	'Make elements not Unicode'               => ['U'],
 	},
 
+'<< selection leader >>' =>
+	{
+	SHORTCUTS   => 'r',
+	ENTER_GROUP => \&App::Asciio::Actions::Selection::selection_enter,
+	ESCAPE_KEYS => ['r', 'Escape'],
+	
+	'Selection escape'               => ['r'],
+	'Selection escape2'              => ['Escape'],
+
+	'select flip mode'               => ['f'],
+	'select motion'                  => ['000-motion_notify'],
+	},
+
 '<< eraser leader >>' =>
 	{
-	SHORTCUTS => '00S-E',
+	SHORTCUTS   => '00S-E',
 	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
-	ESCAPE_KEY => '000-Escape',
+	ESCAPE_KEYS => '000-Escape',
 	
 	'Eraser escape'                           => ['Escape'],
-	'Eraser motion'                           => [ '000-motion_notify'],
+	'Eraser motion'                           => ['000-motion_notify'],
 	},
 
 '<< clone leader >>' =>
 	{
-	SHORTCUTS => 'c',
+	SHORTCUTS   => 'c',
 	ENTER_GROUP => \&App::Asciio::Actions::Clone::clone_enter,
-	ESCAPE_KEY => 'Escape',
+	ESCAPE_KEYS => 'Escape',
 	
 	# 'clone escape'                            => ['Escape'],
 	'clone motion'                            => ['000-motion_notify'], 
@@ -357,8 +370,8 @@ register_action_handlers_remove_old_shortcuts
 
 '<< git leader >>' =>
 	{
-	SHORTCUTS => 'G',
-	ESCAPE_KEY => 'Escape',
+	SHORTCUTS   => 'G',
+	ESCAPE_KEYS => 'Escape',
 	
 	'Show git bindings'                       => ['?'],
 	
@@ -387,6 +400,7 @@ register_action_handlers_remove_old_shortcuts
 '<< slides leader >>' => 
 	{
 	SHORTCUTS => 'S',
+	ESCAPE_KEYS => 'Escape',
 	
 	'Load slides'                             => ['l'],
 	'previous slide'                          => ['N'],
@@ -398,8 +412,8 @@ register_action_handlers_remove_old_shortcuts
 
 '<< move arrow ends leader >>' =>
 	{
-	SHORTCUTS => 'A-a',
-	ESCAPE_KEY => 'Escape',
+	SHORTCUTS  => 'A-a',
+	ESCAPE_KEYS => 'Escape',
 	
 	'arrow start up'                          => ['Up'],
 	'arrow start down'                        => ['Dpwn'],

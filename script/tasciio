@@ -52,7 +52,13 @@ $asciio->{ACTION_VERBOSE} = sub { print STDERR "$_[0]\n" ; } ;
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 
 $asciio->set_modified_state(0) ;
-$asciio->run_script($asciio_config->{SCRIPT}) ;
+
+if(defined $asciio_config->{SCRIPT})
+	{
+	require App::Asciio::Scripting ;
+	
+	App::Asciio::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
+	}
 
 #--------------------------------------------------------------------------
 

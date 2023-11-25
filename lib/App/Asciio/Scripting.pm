@@ -64,6 +64,8 @@ sub ddt { print DumpTree @_ ; }
 my $script_asciio ; # make script non OO
 my %name_to_element ;
 
+#------------------------------------------------------------------------------------------------------
+
 sub run_external_script_text
 {
 my ($asciio, $script) = @_ ;

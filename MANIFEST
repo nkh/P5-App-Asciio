@@ -67,6 +67,7 @@ lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Multiwirl.pm
 lib/App/Asciio/Actions/Presentation.pm
 lib/App/Asciio/Actions/Ruler.pm
+lib/App/Asciio/Actions/Selection.pm
 lib/App/Asciio/Actions/Shapes.pm
 lib/App/Asciio/Actions/Unsorted.pm
 lib/App/Asciio/Actions/ZBuffer.pm

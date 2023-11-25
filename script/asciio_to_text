@@ -43,7 +43,13 @@ if(defined $asciio_config->{TARGETS}[0])
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	}
 	
-$asciio->run_script($asciio_config->{SCRIPT}) ;
+
+if(defined $asciio_config->{SCRIPT})
+	{
+	require App::Asciio::Scripting ;
+	
+	App::Asciio::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
+	}
 
 use open qw( :std :encoding(UTF-8) ) ;
 print $asciio->transform_elements_to_ascii_buffer() ;

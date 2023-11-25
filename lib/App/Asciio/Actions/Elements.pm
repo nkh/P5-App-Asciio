@@ -52,7 +52,6 @@ unless (defined $file_name)
 if(defined $file_name && $file_name ne '')
 	{
 	# check path
-	
 	system "asciio '$file_name' &" ;
 	}
 
@@ -181,23 +180,28 @@ my @headless_arrows =
 sub add_line
 {
 my ($self, $line_type) = @_;
+
 $self->create_undo_snapshot();
+
+$self->deselect_all_elements() ;
 
 my $arrow_type = $headless_arrows[$line_type] ;
 
-my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
-			({
-			POINTS => [[5, 0, 'right']],
-			DIRECTION => 'left',
-			ALLOW_DIAGONAL_LINES => 0,
-			EDITABLE => 1,
-			RESIZABLE => 1,
-			ARROW_TYPE => $arrow_type,
-			});
+my $line = new App::Asciio::stripes::section_wirl_arrow
+		({
+		POINTS => [[5, 0, 'right']],
+		DIRECTION => 'left',
+		ALLOW_DIAGONAL_LINES => 0,
+		EDITABLE => 1,
+		RESIZABLE => 1,
+		ARROW_TYPE => $arrow_type,
+		});
 
-$my_line_obj->{NAME} = 'line';
+$line->{NAME} = 'line';
 
-$self->add_element_at($my_line_obj, $self->{MOUSE_X}, $self->{MOUSE_Y});
+$self->add_element_at($line, $self->{MOUSE_X}, $self->{MOUSE_Y});
+
+$self->select_elements(1, $line);
 
 $self->update_display();
 }
@@ -207,26 +211,31 @@ $self->update_display();
 sub add_non_connecting_line
 {
 my ($self, $line_type) = @_;
+
 $self->create_undo_snapshot();
+
+$self->deselect_all_elements() ;
 
 my $arrow_type = $headless_arrows[$line_type] ;
 
-my $my_line_obj = new App::Asciio::stripes::section_wirl_arrow
-			({
-			POINTS => [[2, 0, 'right']],
-			DIRECTION => 'left',
-			ALLOW_DIAGONAL_LINES => 0,
-			EDITABLE => 1,
-			RESIZABLE => 1,
-			ARROW_TYPE => $arrow_type,
-			});
+my $line = new App::Asciio::stripes::section_wirl_arrow
+		({
+		POINTS => [[2, 0, 'right']],
+		DIRECTION => 'left',
+		ALLOW_DIAGONAL_LINES => 0,
+		EDITABLE => 1,
+		RESIZABLE => 1,
+		ARROW_TYPE => $arrow_type,
+		});
 
-$my_line_obj->{NAME} = 'line';
-$my_line_obj->enable_autoconnect(0);
-$my_line_obj->allow_connection('start', 0);
-$my_line_obj->allow_connection('end', 0);
+$line->{NAME} = 'line';
+$line->enable_autoconnect(0);
+$line->allow_connection('start', 0);
+$line->allow_connection('end', 0);
 
-$self->add_element_at($my_line_obj, $self->{MOUSE_X}, $self->{MOUSE_Y});
+$self->add_element_at($line, $self->{MOUSE_X}, $self->{MOUSE_Y});
+
+$self->select_elements(1, $line);
 
 $self->update_display();
 }

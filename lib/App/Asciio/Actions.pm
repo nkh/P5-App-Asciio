@@ -5,6 +5,7 @@ use strict ; use warnings ;
 
 use Encode ;
 use List::Util qw(max) ;
+use List::MoreUtils qw(any) ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -16,30 +17,19 @@ sub use_action_group
 {
 my ($self, $action) = @_ ; ;
 
-$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
-$self->run_actions($action) ;
-$self->{CROSS_ACTION_GROUP}++ ;
+$self->{CURRENT_ACTIONS} = $self->{ACTIONS}{$action} ;
 }
 
-sub create_binding_completions
+sub show_binding_completions
 {
 my ($self, $keep_visible) = @_ ;
 
 if($self->{USE_BINDINGS_COMPLETION})
 	{
-	my $binding_max_length = 
-		max map { length } 
-			grep {
-				$_ ne 'IS_GROUP'
-				&& $_ ne 'ENTER_GROUP'
-				&& $_ ne 'ESCAPE_KEY'
-				&& $_ ne 'NAME'
-				&& $_ ne 'SHORTCUTS'
-				&& $_ ne 'ORIGIN'
-				&& $_ ne 'CODE'
-				}
-				keys $self->{CURRENT_ACTIONS}->%* ;
-				
+	my %reserved = map { $_ => 1 } qw(IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE) ;
+
+	my $binding_max_length = max map { length } grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
+	
 	my $max_length = 0 ;
 	
 	$self->{BINDINGS_COMPLETION} = 
@@ -52,20 +42,10 @@ if($self->{USE_BINDINGS_COMPLETION})
 				$max_length = $length if $length > $max_length ;
 				$completion ;
 				}
-				sort grep {
-					$_ ne 'IS_GROUP'
-					&& $_ ne 'ENTER_GROUP'
-					&& $_ ne 'ESCAPE_KEY'
-					&& $_ ne 'NAME'
-					&& $_ ne 'SHORTCUTS'
-					&& $_ ne 'ORIGIN'
-					&& $_ ne 'CODE'
-					}
-					keys $self->{CURRENT_ACTIONS}->%*
+				sort grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%*
 			] ;
 	
 	$self->{BINDINGS_COMPLETION_LENGTH} = $max_length ;
-	
 	$self->update_display() ;
 	}
 else
@@ -101,40 +81,28 @@ for my $action (@actions)
 	$modifiers //= '000-' ;
 	
 	next if $action_key eq 'Shift_R' || $action_key eq 'Shift_L' ||  $action_key eq 'Alt_R' ||  $action_key eq 'Alt_L' ;
-	# C00-Shift_R
-	# C00-Shift_L
-	# C00-Alt_L
-	# C00-Alt_L
-	# CA0-Shift_R
-	# C00-Shift_L
-	# C0S-Shift_R
-	# 0A0-Shift_R
-	# 0A0-Shift_L
 	
 	my $action = encode('utf8', $action) ;
 	
 	if(exists $self->{CURRENT_ACTIONS}{$action})
 		{
-		my $is_group = $self->{CURRENT_ACTIONS}{$action}{IS_GROUP} ;
-		my $in_capture = defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY} ;
-		
-		my $group_tag = $is_group ? defined $self->{CURRENT_ACTIONS}{$action}{ESCAPE_KEY}
-						? "[c] "
-						: "[g] "
-					  : '' ;
-		
-		my $capture_tag = $in_capture ? "[$self->{CURRENT_ACTIONS}{NAME}] " : '' ;
+		my $action_is_group  = $self->{CURRENT_ACTIONS}{$action}{IS_GROUP} ;
+		my $action_capture   = defined $self->{CURRENT_ACTIONS}{$action}{ESCAPE_KEYS} && $self->{CURRENT_ACTIONS}{$action}{ESCAPE_KEYS}->@* ;
+		my $action_group_tag = $action_is_group ? ($action_capture ? "[ge] " : "[g] ") : '' ;
 		
 		$self->{ACTION_VERBOSE}->
 			(
 			sprintf
 				(
 				"%-30s %-30s [%s]",
-				"${modifiers}$action_key $group_tag$capture_tag",
+				"${modifiers}$action_key $action_group_tag",
 				$self->{CURRENT_ACTIONS}{$action}{NAME},
 				$self->{CURRENT_ACTIONS}{$action}{ORIGIN}
 				)
 			) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion' ;
+		
+		# Note: action sub is what changes $self->{CURRENT_ACTIONS} to a new action group
+		my $start_actions = $self->{CURRENT_ACTIONS} ;
 		
 		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
 			{
@@ -150,20 +118,14 @@ for my $action (@actions)
 			}
 		else
 			{
-			push @results,
-				[
-				$self->{CURRENT_ACTIONS}{$action}{CODE}->($self, @arguments)
-				] ;
+			push @results, [ $self->{CURRENT_ACTIONS}{$action}{CODE}->($self, @arguments) ] ;
 			}
 		
-		$is_group += $self->{CROSS_ACTION_GROUP} // 0 ;
-		delete $self->{CROSS_ACTION_GROUP} ;
-		
-		$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $is_group || $in_capture ;
-		
-		if ($is_group)
+		if($start_actions != $self->{CURRENT_ACTIONS})
 			{
-			$self->create_binding_completions() ;
+			# entered new group
+			$self->{CURRENT_ACTIONS}{ENTER_GROUP}->($self) if defined $self->{CURRENT_ACTIONS}{ENTER_GROUP} ;
+			$self->show_binding_completions() ; 
 			}
 		else
 			{
@@ -174,37 +136,31 @@ for my $action (@actions)
 				}
 			
 			delete $self->{KEEP_BINDINGS_COMPLETION} ;
-			}
-		
-		if($is_group && defined $self->{CURRENT_ACTIONS}{ENTER_GROUP})
-			{
-			$self->{CURRENT_ACTIONS}{ENTER_GROUP}->($self) ;
-			}
 			
-		if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
-			{
-			my $escape_key = "escape key: $self->{CURRENT_ACTIONS}{ESCAPE_KEY}" ;
-			
-			if($action eq $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
-				{
-				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
-				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
-				}
-			}
-		}
-	else
-		{
-		if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
-			{
-			my $escape_key = "escape key: $self->{CURRENT_ACTIONS}{ESCAPE_KEY}" ;
-			
-			if($action eq $self->{CURRENT_ACTIONS}{ESCAPE_KEY})
+			if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
 				{
 				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
 				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 				}
 			else
 				{
+				my $in_capture = defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@* ;
+				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} unless $in_capture ;
+				}
+			}
+		}
+	else
+		{
+		if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
+			{
+			if(any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
+				{
+				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
+				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+				}
+			else
+				{
+				my $escape_key = "escape keys: " . join (', ', $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*) ;
 				$self->{ACTION_VERBOSE}->("\e[31m$action, [$self->{CURRENT_ACTIONS}{NAME}], $escape_key\e[m") if $self->{ACTION_VERBOSE} ; 
 				}
 			}
@@ -212,11 +168,10 @@ for my $action (@actions)
 			{
 			$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-30s\e[m", "$action") if $self->{ACTION_VERBOSE} ; 
 			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
-			
 			}
 		
-		$self->update_display() ;
 		delete $self->{BINDINGS_COMPLETION} ;
+		$self->update_display() ;
 		}
 	}
 	
@@ -257,11 +212,11 @@ for my $action (@actions)
 				push @results,
 					[
 					$current_actions_by_name->{$action}{CODE}->
-							(
-							$self,
-							$self->{CURRENT_ACTIONS}{$action}{ARGUMENTS},
-							@arguments
-							)
+						(
+						$self,
+						$self->{CURRENT_ACTIONS}{$action}{ARGUMENTS},
+						@arguments
+						)
 					] ;
 				}
 			else

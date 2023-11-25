@@ -38,27 +38,26 @@ Goals when adding bindings:
 
 - sort by name or key if possible
 
+## Binding Groups
 
 ```perl
-
-'Cross element Insert leader' => 
+'<< selection leader >>' =>
 	{
-	SHORTCUTS => '000-x',
+	SHORTCUTS   => '000-r',                                               # also accepts multiple entries in an array ref
+	ENTER_GROUP => \&App::Asciio::Actions::Selection::selection_enter,
+	ESCAPE_KEYS => [ '000-r', '000-Escape' ],                             # also accepts single entry
+
+	# ESCAPE_KEYS need to be define of group will catch input untill an action is selected 
 	
-	'Add cross angled arrow'              => ['A'],
-	'Add cross arrow'                     => ['a'],
-	'Add cross box'                       => ['b'],
-	'Add cross exec box'                  => ['e'],
+	# same keys as the ESCAPE_KEYS, will be called on exit
+	'Selection escape'               => [ '000-r',             \&App::Asciio::Actions::Selection::selection_escape                      ],
+	'Selection escape2'              => [ '000-Escape',        \&App::Asciio::Actions::Selection::selection_escape                      ],
 
-	'Select cross elements'               => ['c'],
-	'Select cross filler elements'        => ['f'],
-	'Select normal elements'              => ['C'],
-	'Select normal filler elements'       => ['F'],
+	# simple action 
+	'select flip mode'               => [ '000-f',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
 
-	'Add cross unicode line 2'            => ['i'],
-	'Add cross unicode line 3'            => ['I'],
-	'Change to cross elements'            => ['s'],
-	'Change to normal elements'           => ['S'],
+	# handle mouse movement
+	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
 	},
 ```
 
