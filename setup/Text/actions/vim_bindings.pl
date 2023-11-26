@@ -352,6 +352,8 @@ register_action_handlers_remove_old_shortcuts
 	
 	'Make elements Unicode'                   => ['u'],
 	'Make elements not Unicode'               => ['U'],
+	'convert to big text'                     => ['00S-T'], 
+	'convert to small pixels'                 => ['000-p'], 
 	},
 
 '<< selection leader >>' =>
@@ -418,6 +420,20 @@ register_action_handlers_remove_old_shortcuts
 	'clone emulation right'                   => ['C-Right'],
 	'clone emulation up'                      => ['C-Up'],
 	'clone emulation down'                    => ['C-Down'],
+	},
+
+'<< pen leader >>' =>
+	{
+	SHORTCUTS   => 'not set',
+	ENTER_GROUP => 'not set',
+	ESCAPE_KEYS => 'not set',
+	
+	'pen escape'                   => [ 'not set' ],
+	'pen motion'                   => [ 'not set' ], 
+	
+	'pen insert'                   => [ 'not set' ],
+	'pen insert2'                  => [ 'not set' ],
+	'pen mouse change char'        => [ 'not set' ],
 	},
 
 '<< git leader >>' =>

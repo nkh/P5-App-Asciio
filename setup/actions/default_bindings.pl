@@ -6,6 +6,7 @@ use App::Asciio::Actions::Asciio ;
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Clipboard ;
 use App::Asciio::Actions::Clone ;
+use App::Asciio::Actions::Pen ;
 use App::Asciio::Actions::Colors ;
 use App::Asciio::Actions::Debug ;
 use App::Asciio::Actions::Elements ;
@@ -189,7 +190,7 @@ register_action_handlers
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
 	'Flip hint lines'                     => ['000-h', \&App::Asciio::Actions::Unsorted::flip_hint_lines                       ],
 	'Flip edit inline'                    => ['000-i', \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type                   ], 
-	'Flip show/hide connectors'           => ['000-v', \&App::Asciio::Actions::Unsorted::flip_connector_display                ], 
+	'Flip show/hide connectors'           => ['000-v', \&App::Asciio::Actions::Unsorted::flip_connector_display                ],
 	},
 
 'group_color' => 
@@ -378,6 +379,8 @@ register_action_handlers
 	
 	'Make elements Unicode'          => ['C00-u',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 1                            ],
 	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],
+   	'convert to big text'            => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_element_to_text                   ], 
+   	'convert to small pixels'        => ['000-p',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_pixels                ], 
 	},
 
 '<< selection leader >>' =>
@@ -444,6 +447,57 @@ register_action_handlers
 	'clone emulation right'          => ['C00-Right',            \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                          ],
 	'clone emulation up'             => ['C00-Up',               \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                          ],
 	'clone emulation down'           => ['C00-Down',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                          ],
+	},
+
+'<< pen leader >>' =>
+	{
+	SHORTCUTS   => '000-b',
+	ENTER_GROUP => \&App::Asciio::Actions::Pen::pen_enter,
+	ESCAPE_KEYS => '000-Escape',
+	
+	'pen escape'                   => [ '000-Escape',          \&App::Asciio::Actions::Pen::pen_escape                                  ],
+	'pen motion'                   => [ '000-motion_notify',   \&App::Asciio::Actions::Pen::pen_mouse_motion                            ], 
+	
+	'pen insert or delete'         => [ '000-button-press-1',  \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
+	'pen insert2 or delete2'       => [ '000-Return',          \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
+	'pen mouse change char'        => [ '000-button-press-3',  \&App::Asciio::Actions::Pen::mouse_change_char                           ],
+	'pen eraser switch'            => [ '000-Tab',             \&App::Asciio::Actions::Pen::pen_eraser_switch                           ],
+	(map { "pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::Actions::Pen::pen_enter, [$_->[1]]]}(
+		['asterisk'    , '*']  ,
+		['parenleft'   , '(']  ,
+		['exclam'      , '!']  ,
+		['at'          , '@']  ,
+		['numbersign'  , '#']  ,
+		['dollar'      , '$']  ,
+		['percent'     , '%']  ,
+		['asciicircum' , '^']  ,
+		['ampersand'   , '&']  ,
+		['parenright'  , ')']  ,
+		['underscore'  , '_']  ,
+		['plus'        , '+']  ,
+		['braceleft'   , '{']  ,
+		['braceright'  , '}']  ,
+		['colon'       , ':']  ,
+		['quotedbl'    , '"']  ,
+		['asciitilde'  , '~']  ,
+		['bar'         , '|']  ,
+		['question'    , '?']  ,
+		['less'        , '<']  ,
+		['greater'     , '>']  , )) ,
+	(map { "pen insert " . $_->[0] => ["000-" . $_->[0], \&App::Asciio::Actions::Pen::pen_enter, [$_->[1]]]}(
+		['minus'        , '-']  ,
+		['equal'        , '=']  ,
+		['bracketleft'  , '[']  ,
+		['bracketright' , ']']  ,
+		['semicolon'    , ';']  ,
+		['apostrophe'   , '\''] ,
+		['grave'        , '`']  ,
+		['backslash'    , '\\'] ,
+		['slash'        , '/']  ,
+		['comma'        , ',']  ,
+		['period'       , '.']  , )) ,
+	(map { "pen insert " . $_ => ["00S-" . $_, \&App::Asciio::Actions::Pen::pen_enter, [$_]] }('A'..'Z')),
+	(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::Actions::Pen::pen_enter, [$_]] }('a'..'z', '0'..'9')),
 	},
 
 '<< git leader >>' =>
@@ -547,6 +601,7 @@ SHORTCUTS => '00S-question',
 '<< slides leader >>'            => 1,
 '<< element leader >>'           => 1,
 '<< clone leader >>'             => 1,
+'<< pen leader >>'               => 1,
 '<< git leader >>'               => 1,
 '<< move arrow ends leader >>'   => 1,
 

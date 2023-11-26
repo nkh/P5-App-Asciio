@@ -315,6 +315,12 @@ IMPORT_EXPORT =>
         'import_export/perl.pl',
         'import_export/png.pl',
         ],
+
+CUSTOM_MOUSE_CURSORS =>
+        {
+        'pen'    => 'mouse_cursors/pen.png',
+        'eraser' => 'mouse_cursors/eraser.png',
+        },
 }
 ```
 

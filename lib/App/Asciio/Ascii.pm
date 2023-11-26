@@ -198,4 +198,46 @@ return($self->transform_elements_to_array($EXPORT_MARKUP, @elements));
 }
 #-----------------------------------------------------------------------------
 
+sub get_text_rectangle 
+{
+	my ($self, $coordinates) = @_;
+	my ($min_x, $min_y, $max_x, $max_y);
+
+	for my $key (keys %$coordinates) 
+	{
+		my ($y, $x) = split /;/, $key;
+		$min_x = $x if !defined($min_x) || $x < $min_x;
+		$max_x = $x if !defined($max_x) || $x > $max_x;
+		$min_y = $y if !defined($min_y) || $y < $min_y;
+		$max_y = $y if !defined($max_y) || $y > $max_y;
+	}
+
+	my @rectangle;
+	for my $y ($min_y .. $max_y) 
+	{
+		my $x = $min_x;
+		while ($x <= $max_x)
+			{
+			$rectangle[$y - $min_y][$x - $min_x] = $coordinates->{"$y;$x"} // ' ';
+			my $char_length = unicode_length($coordinates->{"$y;$x"} // ' ') ;
+			$x += $char_length ;
+			if($char_length == 0)
+				{
+				warn "found nonspacing char(" . $coordinates->{"$y;$x"} . ")here\n" ;
+				$x++;
+				}
+			}
+	}
+
+	my $output = "";
+	for my $row (@rectangle) 
+	{
+		$output .= join('', @$row) . "\n";
+	}
+
+	return ($output, $min_x, $min_y, $max_x - $min_x + 1, $max_y - $min_y + 1);
+}
+
+#-----------------------------------------------------------------------------
+
 1 ;

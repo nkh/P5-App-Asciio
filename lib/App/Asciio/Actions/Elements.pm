@@ -11,6 +11,10 @@ use File::HomeDir ;
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::stripes::section_wirl_arrow ;
+use App::Asciio::Stencil qw(create_box) ;
+use App::Asciio::stripes::pixel ;
+
+use App::Asciio::String ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -364,6 +368,72 @@ $self->add_element_at($line, $self->{MOUSE_X}, $self->{MOUSE_Y});
 $self->select_elements(1, $line);
 
 $self->update_display();
+}
+
+
+#----------------------------------------------------------------------------------------------
+
+sub convert_selected_element_to_text
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+
+	my $zbuffer = App::Asciio::ZBuffer->new(0, @selected_elements) ;
+
+	$self->delete_elements(@selected_elements) ;
+
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($zbuffer->{coordinates}) ;
+
+	my $new_element = create_box
+					(
+					NAME => 'text',
+					TEXT_ONLY => $text,
+					AUTO_SHRINK => 1) ;
+	
+	@$new_element{'X', 'Y', 'SELECTED'} = ($min_x, $min_y, 1) ;
+	$self->add_elements($new_element) ;
+	
+	$self->update_display() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub convert_selected_elements_to_pixels
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+
+	my $zbuffer = App::Asciio::ZBuffer->new(0, @selected_elements) ;
+
+	$self->delete_elements(@selected_elements) ;
+
+	while ( my ($coordinate, $char) = each $zbuffer->{coordinates}->%*)
+		{
+		next if ($char eq ' ') ;
+		
+		my $new_pixel_element = App::Asciio::stripes::pixel->new({TEXT => $char, NAME => 'pixel'}) ;
+
+		my ($y, $x) = split /;/, $coordinate;
+
+		@$new_pixel_element{'X', 'Y', 'SELECTED'} = ($x, $y, 1) ;
+
+		$self->add_elements($new_pixel_element) ;
+		}
+	
+	
+	$self->update_display() ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------

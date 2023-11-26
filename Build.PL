@@ -36,6 +36,7 @@ lib/App/Asciio/Actions/Arrow.pm
 lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Clone.pm
+lib/App/Asciio/Actions/Pen.pm
 lib/App/Asciio/Actions/Colors.pm
 lib/App/Asciio/Actions/Debug.pm
 lib/App/Asciio/Actions/Elements.pm
@@ -64,6 +65,7 @@ lib/App/Asciio/stripes/process_box.pm
 lib/App/Asciio/stripes/rhombus.pm
 lib/App/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/stripes/single_stripe.pm
+lib/App/Asciio/stripes/pixel.pm
 lib/App/Asciio/stripes/stripes.pm
 lib/App/Asciio/stripes/triangle_down.pm
 lib/App/Asciio/stripes/triangle_up.pm
@@ -125,6 +127,8 @@ setup/Stencils/People
 
 setup/GTK/setup.ini
 setup/GTK/import_export/png.pl
+setup/GTK/mouse_cursors/pen.png
+setup/GTK/mouse_cursors/eraser.png
 
 setup/Text/setup.ini
 setup/Text/actions/vim_bindings.pl

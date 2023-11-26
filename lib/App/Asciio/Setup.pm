@@ -63,6 +63,7 @@ for my $setup_file (@{$setup_ini_files})
 	$self->setup_hooks($setup_path, $ini_files->{HOOK_FILES} || []) ;
 	$self->setup_action_handlers($setup_path, $ini_files->{ACTION_FILES} || []) ;
 	$self->setup_import_export_handlers($setup_path, $ini_files->{IMPORT_EXPORT} || []) ;
+	$self->setup_mouse_cursors($setup_path, $ini_files->{CUSTOM_MOUSE_CURSORS} || {}) ;
 	}
 }
 
@@ -488,6 +489,21 @@ EOC
 		}
 	}
 }
+
+#------------------------------------------------------------------------------------------------------
+sub setup_mouse_cursors
+{
+my ($self, $setup_path, $mouse_cursor_files) = @_ ;
+
+$self->{CUSTOM_MOUSE_CURSORS} //= {} ;
+
+while (my ($key, $value) = each %{$mouse_cursor_files}) 
+	{
+	$self->{CUSTOM_MOUSE_CURSORS}{$key} = "$setup_path/$value"
+	}
+}
+
+
 
 #------------------------------------------------------------------------------------------------------
 
