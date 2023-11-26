@@ -227,25 +227,24 @@
 <p>sort by name or key if possible</p>
 </li>
 </ul>
-<pre><code class="language-perl">
-'Cross element Insert leader' =&gt; 
+<h2 id="binding-groups"><a class="header" href="#binding-groups">Binding Groups</a></h2>
+<pre><code class="language-perl">'&lt;&lt; selection leader &gt;&gt;' =&gt;
 	{
-	SHORTCUTS =&gt; '000-x',
+	SHORTCUTS   =&gt; '000-r',                                               # also accepts multiple entries in an array ref
+	ENTER_GROUP =&gt; \&amp;App::Asciio::Actions::Selection::selection_enter,
+	ESCAPE_KEYS =&gt; [ '000-r', '000-Escape' ],                             # also accepts single entry
+
+	# ESCAPE_KEYS need to be define of group will catch input untill an action is selected 
 	
-	'Add cross angled arrow'              =&gt; ['A'],
-	'Add cross arrow'                     =&gt; ['a'],
-	'Add cross box'                       =&gt; ['b'],
-	'Add cross exec box'                  =&gt; ['e'],
+	# same keys as the ESCAPE_KEYS, will be called on exit
+	'Selection escape'               =&gt; [ '000-r',             \&amp;App::Asciio::Actions::Selection::selection_escape                      ],
+	'Selection escape2'              =&gt; [ '000-Escape',        \&amp;App::Asciio::Actions::Selection::selection_escape                      ],
 
-	'Select cross elements'               =&gt; ['c'],
-	'Select cross filler elements'        =&gt; ['f'],
-	'Select normal elements'              =&gt; ['C'],
-	'Select normal filler elements'       =&gt; ['F'],
+	# simple action 
+	'select flip mode'               =&gt; [ '000-f',             \&amp;App::Asciio::Actions::Selection::selection_mode_flip                   ],
 
-	'Add cross unicode line 2'            =&gt; ['i'],
-	'Add cross unicode line 3'            =&gt; ['I'],
-	'Change to cross elements'            =&gt; ['s'],
-	'Change to normal elements'           =&gt; ['S'],
+	# handle mouse movement
+	'select motion'                  =&gt; [ '000-motion_notify', \&amp;App::Asciio::Actions::Selection::select_elements                       ],
 	},
 </code></pre>
 
