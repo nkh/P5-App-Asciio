@@ -29,6 +29,22 @@
 
 [**Executing your scripts**](scripting_execute.md)
 
+## transform JSON, via Data::TreeDumper, to Asciio script
+
+The *json_dtd_to_asciio' script is installed with Asciio. It will read a JSON stream from stdin.
+
+It takes the following arguments:
+- title      
+- x position         
+- y position         
+- 'box', if you want the data to be boxed        
+- start_level, 0/1: 0 meanss no start tree grlyph
+
+
+```
+<coordinates_json ./script/json_dtd_to_asciio '' 10 10 box 0 | stdin_to_asciio_web 
+```
+
 ## Simplified scripting interface
 
 The simplified scripting interface is an API which hides some of the scripting details for you. 

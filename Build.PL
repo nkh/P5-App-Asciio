@@ -304,7 +304,7 @@ my $build = $class->new
 		
 	pm_files     => \%all_modules,
 	
-	script_files => [qw(script/asciio script/tasciio script/asciio_to_text script/A script/T script/stdin_to_asciio_web) ],
+	script_files => [qw(script/asciio script/tasciio script/asciio_to_text script/A script/T script/stdin_to_asciio_web script/json_dtd_to_asciio) ],
 	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@gmail.com>',
 	dist_abstract => 'App::Asciio - ASCII diagramming',
 	);
