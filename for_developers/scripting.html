@@ -197,6 +197,18 @@
 </code></pre>
 <h2 id="executing-your-scripts"><a class="header" href="#executing-your-scripts">Executing your scripts</a></h2>
 <p><a href="scripting_execute.html"><strong>Executing your scripts</strong></a></p>
+<h2 id="transform-json-via-datatreedumper-to-asciio-script"><a class="header" href="#transform-json-via-datatreedumper-to-asciio-script">transform JSON, via Data::TreeDumper, to Asciio script</a></h2>
+<p>The *json_dtd_to_asciio' script is installed with Asciio. It will read a JSON stream from stdin.</p>
+<p>It takes the following arguments:</p>
+<ul>
+<li>title</li>
+<li>x position</li>
+<li>y position</li>
+<li>'box', if you want the data to be boxed</li>
+<li>start_level, 0/1: 0 meanss no start tree grlyph</li>
+</ul>
+<pre><code>&lt;coordinates_json ./script/json_dtd_to_asciio '' 10 10 box 0 | stdin_to_asciio_web 
+</code></pre>
 <h2 id="simplified-scripting-interface"><a class="header" href="#simplified-scripting-interface">Simplified scripting interface</a></h2>
 <p>The simplified scripting interface is an API which hides some of the scripting details for you. </p>
 <p>Examples of scripts, using both the simplified API and full API, can be found in the <em>documentation/scripting</em> directory of the distribution.</p>
