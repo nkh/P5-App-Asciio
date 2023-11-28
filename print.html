@@ -2337,6 +2337,10 @@ xh  -f POST http://localhost:4444/script script=&quot;delete_by_name '1' ;&quot;
 
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="simplified-scripting-api"><a class="header" href="#simplified-scripting-api">Simplified Scripting API</a></h1>
+<h2 id="create_undo_snapshot"><a class="header" href="#create_undo_snapshot">create_undo_snapshot</a></h2>
+<p>Creates an undo snapshot.</p>
+<pre><code>create_undo_snapshot ;
+</code></pre>
 <h2 id="add"><a class="header" href="#add">add</a></h2>
 <p>Adds a named element:</p>
 <ul>
@@ -2421,6 +2425,18 @@ new_box(TEXT_ONLY =&gt;'text') ;
 <h2 id="optimize"><a class="header" href="#optimize">optimize</a></h2>
 <p>Optimizes the connections.</p>
 <pre><code>optimize
+</code></pre>
+<h2 id="delete_all_ruler_lines"><a class="header" href="#delete_all_ruler_lines">delete_all_ruler_lines</a></h2>
+<p>Deletes all ruler lines.</p>
+<pre><code>delete_all_ruler_lines ;
+</code></pre>
+<h2 id="add_ruler_line"><a class="header" href="#add_ruler_line">add_ruler_line</a></h2>
+<p>Adds a ruler line.</p>
+<ul>
+<li>axis: 'vertical' or 'horizontal'</li>
+<li>position</li>
+</ul>
+<pre><code>add_ruler_line 'vertical, 10 ;
 </code></pre>
 <h2 id="save_to"><a class="header" href="#save_to">save_to</a></h2>
 <p>Saves the diagram to a file in Asciio's native format.</p>
