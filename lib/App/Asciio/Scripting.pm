@@ -13,6 +13,7 @@ require Exporter ;
 	new_wirl_arrow
 
 	delete_by_name
+	delete_selected_elements
 	move
 	offset
 
@@ -157,6 +158,11 @@ my $element = $name_to_element{$name} ;
 
 @$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset)
 	if defined $element && defined $x_offset && defined $y_offset ;
+}
+
+sub delete_selected_elements
+{
+$script_asciio->delete_selected_elements() ;
 }
 
 sub delete_by_name 

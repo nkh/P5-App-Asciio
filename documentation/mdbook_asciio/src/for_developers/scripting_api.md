@@ -20,6 +20,14 @@ Deletes an element by name
 delete_by_name 'text1' ;
 ```
 
+## delete_selected_elements
+
+Deletes selected elements
+
+```
+delete_selected_elements ;
+```
+
 ## add_type
 
 Adds a named element:

@@ -413,6 +413,28 @@ $self->{ELEMENTS} = [@elements, @new_element_list] ;
 
 #-----------------------------------------------------------------------------
 
+sub delete_selected_elements
+{
+my($self, @elements) = @_ ;
+
+my %elements_to_delete = map {$_, 1} grep { defined $_ } $self->get_selected_elements(1) ;
+
+for my $element (@{$self->{ELEMENTS}})
+	{
+	if(exists $elements_to_delete{$element})
+		{
+		$self->delete_connections_containing($element) ;
+		$element = undef ;
+		}
+	}
+
+@{$self->{ELEMENTS}} = grep { defined $_} @{$self->{ELEMENTS}} ;
+
+$self->{MODIFIED }++ ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub delete_elements
 {
 my($self, @elements) = @_ ;
