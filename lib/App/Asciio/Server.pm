@@ -186,7 +186,7 @@ my $path       = $request->{PATH} ;
 my $parameters = $request->{PARAMETERS} ;
 
 '/script_file' eq $path && App::Asciio::Scripting::run_external_script($asciio, $parameters->{script} // '') ;
-'/script'      eq $path && App::Asciio::Scripting::run_external_script_text($asciio, $parameters->{script} // '') ;
+'/script'      eq $path && App::Asciio::Scripting::run_external_script_text($asciio, $parameters->{script} // '', $parameters->{show_script}) ;
 
 return 1 ;
 }

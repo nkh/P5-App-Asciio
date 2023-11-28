@@ -62,7 +62,7 @@ for my $ruler_line_to_remove (@ruler_lines_to_remove)
 		{
 		if
 			(
-			$ruler_line->{TYPE} eq $ruler_line_to_remove->{TYPE}
+			   $ruler_line->{TYPE}     eq $ruler_line_to_remove->{TYPE}
 			&& $ruler_line->{POSITION} == $ruler_line_to_remove->{POSITION}
 			)
 			{

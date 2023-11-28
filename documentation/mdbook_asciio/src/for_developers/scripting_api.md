@@ -1,5 +1,13 @@
 # Simplified Scripting API
 
+## create_undo_snapshot
+
+Creates an undo snapshot.
+
+```
+create_undo_snapshot ;
+```
+
 ## add
 
 Adds a named element:
@@ -137,6 +145,25 @@ Optimizes the connections.
 
 ```
 optimize
+```
+
+## delete_all_ruler_lines
+
+Deletes all ruler lines.
+
+```
+delete_all_ruler_lines ;
+```
+
+## add_ruler_line
+
+Adds a ruler line.
+
+- axis: 'vertical' or 'horizontal'
+- position
+
+```
+add_ruler_line 'vertical, 10 ;
 ```
 
 ## save_to

@@ -44,7 +44,7 @@ $self->remove_ruler_lines
 	(
 	$to_remove // 
 		(
-		{ TYPE => 'VERTICAL', POSITION => $self->{MOUSE_X} },
+		{ TYPE => 'VERTICAL',   POSITION => $self->{MOUSE_X} },
 		{ TYPE => 'HORIZONTAL', POSITION => $self->{MOUSE_Y} },
 		)
 	) ;

@@ -5,6 +5,7 @@ require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
 	update_display
+	create_undo_snapshot
 
 	add
 	add_type
@@ -25,6 +26,9 @@ require Exporter ;
 	connect_elements
 	optimize
 
+	delete_all_ruler_lines
+	add_ruler_line
+	
 	save_to
 	to_ascii
 	ascii_out
@@ -55,6 +59,8 @@ use App::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::stripes::stripes ;
 use App::Asciio::stripes::wirl_arrow ;
 
+use Digest::MD5 qw(md5_hex)  ;
+
 use Data::TreeDumper ;
 sub ddt { print DumpTree @_ ; }
 
@@ -69,11 +75,12 @@ my %name_to_element ;
 
 sub run_external_script_text
 {
-my ($asciio, $script) = @_ ;
+my ($asciio, $script, $show_script) = @_ ;
 
 if(defined $script)
 	{
-	print "Asciio: script: $script\n" ;
+	print "Asciio: script: " . md5_hex($script) . "\n" ;
+	print "$script\n" if $show_script ;
 	
 	$script_asciio = $asciio ;
 	
@@ -132,6 +139,11 @@ else
 new_script_asciio() ;
 
 #--------------------------------------------------------------------------------------------
+
+sub create_undo_snapshot
+{
+$script_asciio->create_undo_snapshot() ;
+}
 
 sub add
 {
@@ -199,6 +211,26 @@ sub select_all_script_elements   { $script_asciio->select_elements(1, values %na
 
 sub deselect_all_elements        { $script_asciio->deselect_all_elements() ; }
 sub deselect_all_script_elements { $script_asciio->select_elements(0, values %name_to_element) ; }
+
+sub delete_all_ruler_lines       { delete $script_asciio->{RULER_LINES} ; } ;
+
+sub add_ruler_line 
+{
+my ($axis, $position) = @_ ;
+
+my $data ;
+
+if($axis eq 'vertical')
+	{
+	$data = {TYPE => 'VERTICAL', POSITION => $position} ;
+	}
+else
+	{
+	$data = {TYPE => 'hORIZONTAL', POSITION => $position} ;
+	}
+
+$script_asciio->add_ruler_lines({NAME => 'from script', %{$data}}) ;
+}
 
 sub save_to                      { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
 sub to_ascii                     { $script_asciio->transform_elements_to_ascii_buffer() ; }
