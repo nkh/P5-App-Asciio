@@ -266,7 +266,9 @@ if($self->{AUTO_SHRINK})
 else
 	{ 
 	$action = ($x == $self->{WIDTH} - 1 && $y == $self->{HEIGHT} - 1)
-			? 'resize'
+			? ($self->{WIDTH} != 1 || $self->{HEIGHT} != 1)
+				? 'resize'
+				: 'move'
 			: 'move' ;
 	}
 
