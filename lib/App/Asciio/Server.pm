@@ -171,7 +171,7 @@ my ($fh, $asciio_tag) = @_ ;
 my ($asciio, $tag) = $asciio_tag->@* ;
 
 my $buffer ;
-unless(sysread($fh, $buffer, 32 * 1024))
+unless(sysread($fh, $buffer, 256 * 1024))
 	{
 	Gtk3::Helper->remove_watch($tag) or die "GTK3::Helper: couldn't remove watcher" ;
 	close($fh) ;

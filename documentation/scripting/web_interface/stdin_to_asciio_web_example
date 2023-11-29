@@ -1,6 +1,6 @@
-<<< "add 'box', new_box(), 0, 0 ;" stdin_to_asciio_web
+<<< "add 'box', new_box(), 0, 0 ;" stdin_to_asciio
 
-<<< "add '1', new_box(TEXT_ONLY => '1'), 0, 0 ;" stdin_to_asciio_web
-<<<"offset '1', 10, 10 ;" stdin_to_asciio_web
+<<< "add '1', new_box(TEXT_ONLY => '1'), 0, 0 ;" stdin_to_asciio
+<<<"offset '1', 10, 10 ;" stdin_to_asciio
 
 

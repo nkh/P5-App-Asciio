@@ -124,14 +124,20 @@ $self->{EDIT_TEXT_INLINE} ^= 1 ;
 
 #-----------------------------------------------------------------------------
 
+sub stop_updating_display  { my ($self) = @_ ; $self->{NO_UPDATE_DISPLAY} = 1 ; }
+sub start_updating_display { my ($self) = @_ ; $self->{NO_UPDATE_DISPLAY} = 0 ; $self->update_display() }
+
 sub update_display 
 {
 my ($self) = @_;
 
-$self->SUPER::update_display() ;
+if (!$self->{NO_UPDATE_DISPLAY})
+	{
+	$self->SUPER::update_display() ;
 
-my $widget = $self->{widget} ;
-$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+	my $widget = $self->{widget} ;
+	$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+	}
 }
 
 #-----------------------------------------------------------------------------

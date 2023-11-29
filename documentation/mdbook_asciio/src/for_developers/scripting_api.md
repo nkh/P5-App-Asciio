@@ -1,5 +1,21 @@
 # Simplified Scripting API
 
+## stop_updating_display  
+
+Stops updating the display until *start_updating_display* is called; this can be used to reduce flickering.
+
+```
+stop_updating_display
+```
+
+## start_updating_display  
+
+Start updating the display; display will automatically be updated from when this is called. An update is also made.
+
+```
+start_updating_display
+```
+
 ## create_undo_snapshot
 
 Creates an undo snapshot.

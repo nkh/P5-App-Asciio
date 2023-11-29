@@ -9,8 +9,8 @@ script/A
 script/T
 script/asciio_to_text
 script/startup_script.pl
-script/stdin_to_asciio_web
-script/json_dtd_to_asciio 
+script/stdin_to_asciio
+script/json_dtd_to_asciio_script 
 
 setup/setup.ini
 
