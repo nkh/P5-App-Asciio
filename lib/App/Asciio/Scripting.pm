@@ -5,6 +5,9 @@ require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = qw(
 	update_display
+	start_updating_display  
+	stop_updating_display  
+
 	create_undo_snapshot
 
 	add
@@ -139,6 +142,16 @@ else
 new_script_asciio() ;
 
 #--------------------------------------------------------------------------------------------
+
+sub stop_updating_display  
+{ 
+$script_asciio->stop_updating_display() ;
+}
+
+sub start_updating_display 
+{ 
+$script_asciio->start_updating_display() ;
+}
 
 sub create_undo_snapshot
 {

@@ -31,7 +31,7 @@
 
 ## transform JSON, via Data::TreeDumper, to Asciio script
 
-The *json_dtd_to_asciio' script is installed with Asciio. It will read a JSON stream from stdin.
+The *json_dtd_to_asciio_script' script is installed with Asciio. It will read a JSON stream from stdin.
 
 It takes the following arguments:
 - title      
@@ -42,7 +42,7 @@ It takes the following arguments:
 
 
 ```
-<coordinates_json ./script/json_dtd_to_asciio '' 10 10 box 0 | stdin_to_asciio_web 
+<coordinates_json ./script/json_dtd_to_asciio_script '' 10 10 box 0 | stdin_to_asciio 
 ```
 
 ## Simplified scripting interface
