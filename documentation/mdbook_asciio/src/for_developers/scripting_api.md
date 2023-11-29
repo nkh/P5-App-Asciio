@@ -115,6 +115,22 @@ Offsets a named element:
 offset 'text1', 22,  20 ;
 ```
 
+## change_selected_elements_color
+
+Changes selected elements background or foreground color.
+
+```
+change_selected_elements_color 1, [1, 0, 0] ; # foreground color to red
+```
+
+## select_by_name
+
+Selects an elements by name.
+
+```
+select_by_name 'A' ;
+```
+
 ## select_all_elements
 
 Selects all the elements in Asciio.

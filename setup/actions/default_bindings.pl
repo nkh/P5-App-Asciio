@@ -184,8 +184,8 @@ register_action_handlers
 	{
 	SHORTCUTS   => 'group_color',
 	
-	'Change elements foreground color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 0       ],
-	'Change elements background color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 1       ],
+	'Change elements foreground color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0       ],
+	'Change elements background color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1       ],
 
 	'Change Asciio background color'      => ['000-B', \&App::Asciio::Actions::Colors::change_background_color         ],
 	'Change grid color'                   => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color               ],

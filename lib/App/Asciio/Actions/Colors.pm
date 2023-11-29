@@ -5,9 +5,18 @@ package App::Asciio::Actions::Colors ;
 
 sub change_elements_colors
 {
-my ($self, $is_background) = @_ ;
+my ($self, $is_background, $rgb) = @_ ;
 
-my ($color) = $self->get_color_from_user([0, 0, 0]) ;
+my $color ;
+
+if($rgb)
+	{
+	$color = $rgb ;
+	}
+else
+	{
+	($color) = $self->get_color_from_user([0, 0, 0]) ;
+	}
 
 $self->create_undo_snapshot() ;
 

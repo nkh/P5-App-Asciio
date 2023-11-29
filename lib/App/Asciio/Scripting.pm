@@ -16,10 +16,13 @@ require Exporter ;
 	new_text
 	new_wirl_arrow
 
+	select_by_name
 	delete_by_name
+
 	delete_selected_elements
 	move
 	offset
+	change_selected_elements_color
 
 	select_all_elements
 	deselect_all_elements
@@ -67,6 +70,8 @@ use Digest::MD5 qw(md5_hex)  ;
 use Data::TreeDumper ;
 sub ddt { print DumpTree @_ ; }
 
+use App::Asciio::Actions::Colors ; 
+
 #--------------------------------------------------------------------------------------------
 
 {
@@ -76,13 +81,17 @@ my %name_to_element ;
 
 #------------------------------------------------------------------------------------------------------
 
+my $external_script_run = 0 ;
+
 sub run_external_script_text
 {
 my ($asciio, $script, $show_script) = @_ ;
 
 if(defined $script)
 	{
-	print "Asciio: script: " . md5_hex($script) . "\n" ;
+	$external_script_run++ ;
+	
+	print "Asciio: script [$external_script_run]: " . md5_hex($script) . ' ' . length($script) . "\n" ;
 	print "$script\n" if $show_script ;
 	
 	$script_asciio = $asciio ;
@@ -185,9 +194,13 @@ my $element = $name_to_element{$name} ;
 	if defined $element && defined $x_offset && defined $y_offset ;
 }
 
-sub delete_selected_elements
+sub select_by_name 
 {
-$script_asciio->delete_selected_elements() ;
+my ($name) = @_ ;
+
+my $element = $name_to_element{$name} ;
+
+$script_asciio->select_elements(1, $element) ;
 }
 
 sub delete_by_name 
@@ -197,6 +210,20 @@ my ($name) = @_ ;
 my $element = $name_to_element{$name} ;
 
 $script_asciio->delete_elements($element) ;
+}
+
+sub delete_selected_elements
+{
+$script_asciio->delete_selected_elements() ;
+}
+
+sub change_selected_elements_color
+{
+my ($is_background, $color) = @_ ;
+
+$color //= [0, 0, 0] ;
+
+App::Asciio::Actions::Colors::change_elements_colors($script_asciio, $is_background, $color) ;
 }
 
 sub add_type

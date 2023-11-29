@@ -129,7 +129,10 @@ else
 				# '/' eq $path && print "Asciio:: Web server: POST\n" . DumpTree($parameters) ; 
 				
 				my $request_json = JSON->new->allow_nonref->canonical(1)->pretty->encode({ PATH => $path, PARAMETERS => $parameters}) ;
-				print $to_parent $request_json . "\n" ; 
+				
+				my $size = length($request_json) ;
+				print $to_parent pack 'L', $size ; 
+				print $to_parent $request_json ; 
 				
 				$c->send_status_line ;
 				$c->send_crlf ;
@@ -146,7 +149,9 @@ else
 				# '/' eq $path && print "Asciio:: Web server: PUT\n" . DumpTree($parameters) ; 
 				
 				my $request_json = JSON->new->allow_nonref->canonical(1)->pretty->encode({ PATH => $path, PARAMETERS => $parameters}) ;
-				print $to_parent $request_json . "\n" ; 
+				my $size = length($request_json) ;
+				print $to_parent pack L $size ; 
+				print $to_parent $request_json ; 
 				
 				$c->send_status_line ;
 				$c->send_crlf ;
@@ -170,8 +175,12 @@ my ($fh, $asciio_tag) = @_ ;
 
 my ($asciio, $tag) = $asciio_tag->@* ;
 
+my $size ;
+sysread($fh, $size, 4) ;
+$size = unpack 'L', $size ;
+
 my $buffer ;
-unless(sysread($fh, $buffer, 256 * 1024))
+unless(sysread($fh, $buffer, $size))
 	{
 	Gtk3::Helper->remove_watch($tag) or die "GTK3::Helper: couldn't remove watcher" ;
 	close($fh) ;
