@@ -4,6 +4,8 @@ MANIFEST
 README.md
 META.yml
 Todo.txt
+META.json
+META.yml
 
 script/A
 script/T
