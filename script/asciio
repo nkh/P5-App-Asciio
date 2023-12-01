@@ -10,6 +10,7 @@ use Gtk3 -init;
 Gtk3->init;
 
 use App::Asciio::GTK::Asciio ;
+use App::Asciio::Server ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
@@ -122,13 +123,7 @@ $asciios[0]->exit() ;
 
 #--------------------------------------------------------------------------
 
-if($asciio_config->{WEB_SERVER})
-{
-require App::Asciio::Server ;
-
 App::Asciio::Server::start_web_server($asciios[0], $asciio_config->{WEB_PORT} // 4444) ; 
-}
-
 
 Gtk3->main();
 

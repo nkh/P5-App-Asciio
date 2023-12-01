@@ -24,7 +24,7 @@ asciio -s full_path_to_script
 
 You can POST scripts via HTTP. 
 
-Start Asciio with **--web_server**, a server will run at port **4444**; you can change the port with **--port other_port**. 
+Asciio runs a web server at port **4444**; you can change the port with **--port other_port**. 
 
 ### script commands
 
