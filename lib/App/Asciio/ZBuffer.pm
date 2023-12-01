@@ -63,11 +63,11 @@ my @glyphs ;
 
 for my $strip (@{$element->get_stripes})
 	{
-	$strip = $USE_MARKUP_CLASS->delete_markup_characters($strip) ;
 	my $line_index = 0 ;
 	
 	for my $line (split /\n/, $strip->{TEXT})
 		{
+		$line = $USE_MARKUP_CLASS->delete_markup_characters($line) ;
 		my $character_index = 0 ;
 		
 		for my $char ( split '', $line)

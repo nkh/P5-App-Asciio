@@ -251,7 +251,7 @@ while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}
 		$neighbors_stack->{($Y+1) . ';' . ($X-1)} // [$undef_char],
 		$neighbors_stack->{$Y . ';' . ($X-1)} // [$undef_char]);
 	
-	my $normal_key = join(join('o', @{$up}), '_', join('o', @{$down}), '_', join('o', @{$left}), '_', join('o', @{$right})) ;
+	my $normal_key = join('_', join('o', @{$up}), join('o', @{$down}), join('o', @{$left}), join('o', @{$right})) ;
 	
 	unless(exists $normal_char_cache{$normal_key})
 		{
@@ -271,7 +271,7 @@ while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}
 	
 	next unless exists $diagonal_cross_chars{$elements->[0]} ;
 	
-	my $diagonal_key = join(join('o', @{$char_45}), '_', join('o', @{$char_135}), '_', join('o', @{$char_225}), '_', join('o', @{$char_315})) ;
+	my $diagonal_key = join('_', join('o', @{$char_45}), join('o', @{$char_135}), join('o', @{$char_225}), join('o', @{$char_315})) ;
 	
 	unless(exists $diagonal_char_cache{$diagonal_key})
 		{
