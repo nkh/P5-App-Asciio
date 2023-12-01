@@ -345,14 +345,14 @@ register_action_handlers
 
 '<< selection leader >>' =>
 	{
-	SHORTCUTS   => '000-r',
+	SHORTCUTS   => '000-s',
 	ENTER_GROUP => \&App::Asciio::Actions::Selection::selection_enter,
-	ESCAPE_KEYS => [ '000-r', '000-Escape' ],
+	ESCAPE_KEYS => [ '000-s', '000-Escape' ],
 	
-	'Selection escape'               => [ '000-r',             \&App::Asciio::Actions::Selection::selection_escape                      ],
+	'Selection escape'               => [ '000-s',             \&App::Asciio::Actions::Selection::selection_escape                      ],
 	'Selection escape2'              => [ '000-Escape',        \&App::Asciio::Actions::Selection::selection_escape                      ],
 
-	'select flip mode'               => [ '000-f',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
+	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
 	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
 	},
 
