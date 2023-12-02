@@ -209,6 +209,8 @@ documentation/mdbook_asciio/src/continuous-integration.md
 documentation/mdbook_asciio/src/edit_dialog.png
 documentation/mdbook_asciio/src/edit_inline.png
 documentation/mdbook_asciio/src/editing.md
+documentation/mdbook_asciio/src/editing/drag_and_drop.gif
+documentation/mdbook_asciio/src/editing/drag_drop.md
 documentation/mdbook_asciio/src/editing/clone_base_element.gif
 documentation/mdbook_asciio/src/editing/clone_hint_lines.gif
 documentation/mdbook_asciio/src/editing/clone_selection.gif

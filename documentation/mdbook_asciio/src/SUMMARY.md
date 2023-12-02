@@ -34,7 +34,7 @@
 	- [Keyboard](editing/keyboard.md)
 	- [Mouse](editing/mouse.md)
 	- [Cloning](editing/cloning.md)
-	- [Grouping](editing/grouping.md)
+	- [Drag and Drop](editing/drag_drop.md)
 	- [Strip groups](editing/strip-groups.md)
 
 - [Export/Save](exporting.md)
