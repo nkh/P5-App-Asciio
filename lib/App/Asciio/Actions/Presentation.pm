@@ -6,12 +6,8 @@ use File::Slurp ;
 
 #----------------------------------------------------------------------------------------------
 
-my ($slides, $current_slide) ;
-
-sub get_slides { return $slides ; }
-sub get_current_slide { return $current_slide ; }
-
-#----------------------------------------------------------------------------------------------
+{
+my @stack ;
 
 sub load_slides
 {
@@ -22,29 +18,61 @@ $file_name = $self->get_file_name('open') unless defined $file_name ;
 
 if(defined $file_name && $file_name ne q{})
 	{
-	# load slides
-	$slides = do $file_name or die $@ ;
-	$current_slide = 0 ;
+	my $slides = do $file_name or die $@ ;
 	
-	# run first slide
-	$slides->[$current_slide]->($self) ;
-	$self->deselect_all_elements() ;
-	$self->update_display() ;
+	return unless  defined $slides and 'ARRAY' eq ref $slides ;
+	
+	@stack = [0, $slides] ;
+	run_slide($self, $slides) ;
 	}
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub first_slide
+sub run_slide
 {
-my ($self) = @_ ;
+my ($self, $slide) = @_ ;
 
-if($slides)
+# use Data::TreeDumper ;
+# print DumpTree \@stack, 'stack:' ;
+
+if(defined $slide)
 	{
-	$current_slide = 0 ;
-	$slides->[$current_slide]->($self) ;
-	$self->deselect_all_elements() ;
-	$self->update_display() ;
+	for my $element ($slide->@*)
+		{
+		# print "running element: $element '" . ref($element) . "' $slide\n" ;
+		
+		if('' eq ref($element))
+			{
+			clear_all()->($self),
+			box(0, 0, '', $element, 1)->($self),
+			$self->update_display() ;
+			}
+		
+		if('CODE' eq ref($element))
+			{
+			$element->($self) ;
+			$self->update_display() ;
+			}
+		
+		if('ARRAY' eq ref($element))
+			{
+			# print "PUSH $element\n" ;
+			
+			push @stack, [0, $element] ;
+			run_slide($self, $element) ;
+			
+			last ;
+			}
+		
+		if('HASH' eq ref($element))
+			{
+			$stack[-1][2] = $element ;
+			print "Asciio: slide has scripts\n" ;
+			}
+		
+		$stack[-1][0]++ ;
+		}
 	}
 }
 
@@ -54,12 +82,37 @@ sub next_slide
 {
 my ($self) = @_ ;
 
-if($slides && $current_slide != $#$slides)
+if(@stack)
 	{
-	$current_slide++ ;
-	$slides->[$current_slide]->($self) ;
-	$self->deselect_all_elements() ;
-	$self->update_display() ;
+	my ($index, $slide) = $stack[-1]->@* ;
+	
+	# print "$index < " . $slide->@* . "\n" ;
+	
+	if($index < $slide->@*)
+		{
+		# print "NEXT\n" ;
+		$stack[-1][0]++ ;
+		
+		my $next_slide = $slide->[$index + 1] ;
+		
+		if('ARRAY' eq ref($next_slide))
+			{
+			# print "PUSH $next_slide\n" ;
+			push @stack, [0, $next_slide] ;
+			}
+		
+		run_slide($self, $next_slide) ;
+		}
+	else
+		{
+		if(@stack > 1)
+			{
+			# print "POP\n" ;
+			pop @stack ;
+			
+			next_slide($self) ;
+			}
+		}
 	}
 }
 
@@ -69,13 +122,60 @@ sub previous_slide
 {
 my ($self) = @_ ;
 
-if($slides && $current_slide != 0)
+use Data::TreeDumper ;
+print DumpTree \@stack, 'stack:' ;
+
+if(@stack)
 	{
-	$current_slide-- ;
-	$slides->[$current_slide]->($self) ;
-	$self->deselect_all_elements() ;
-	$self->update_display() ;
+	@stack = [ $stack[0]->@* ] ;
+
+	
+	my $slides = $stack[0][1] ;
+	my $index  = $stack[0][0] >= $stack[0][1]->@* ? $stack[0][0] - 2 : $stack[0][0] - 1 ; 
+	
+print "new index: $index\n" ;
+
+	if($index >= 0)
+		{
+		$stack[0][0] = $index ; 
+		
+		push @stack, [0, $slides->[$index]] ;
+		run_slide($self, $slides->[$index]) 
+		}
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub first_slide
+{
+my ($self) = @_ ;
+
+if(@stack)
+	{
+	@stack = [0, $stack[0][1]] ;
+	run_slide($self, $stack[0][1]) ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub run_script
+{
+my ($self, $script_args) = @_ ;
+
+if(defined $stack[-1][2])
+	{
+	my $scripts = $stack[-1][2] ;
+	
+	if(exists $scripts->{$script_args->[0]})
+		{
+		$scripts->{$script_args->[0]}($self, $script_args) ;
+		$self->use_action_group('<< slides leader >>') ;
+		}
+	}
+}
+
 }
 
 #----------------------------------------------------------------------------------------------

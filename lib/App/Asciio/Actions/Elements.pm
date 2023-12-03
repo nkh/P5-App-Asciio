@@ -22,9 +22,9 @@ $self->create_undo_snapshot() ;
 
 $self->deselect_all_elements() ;
 
-my ($name, $edit) = @{$name_and_edit} ;
+my ($name, $edit, $x, $y) = @{$name_and_edit} ;
 
-my $element = $self->add_new_element_named($name, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
 
 if($edit)
 	{

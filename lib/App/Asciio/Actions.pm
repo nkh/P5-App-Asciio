@@ -17,7 +17,7 @@ sub use_action_group
 {
 my ($self, $action) = @_ ; ;
 
-$self->{CURRENT_ACTIONS} = $self->{ACTIONS}{$action} ;
+$self->{CURRENT_ACTIONS} = $self->{ACTIONS}{$action} // $self->{ACTIONS_BY_NAME}{$action} ;
 }
 
 sub show_binding_completions

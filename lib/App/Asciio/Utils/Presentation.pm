@@ -4,7 +4,7 @@ use warnings;
 
 #------------------------------------------------------------------------------------------------------
 
-sub load_diagram
+sub load
 {
 my ($x_offset, $y_offset, $file) = @_ ;
 
@@ -26,6 +26,11 @@ return
 		my ($self) = @_ ;
 		$self->run_actions_by_name(['Insert', $x_offset, $y_offset, $file]) ;
 		} ;
+}
+
+sub script
+{
+my ($script) = @_ ;
 }
 
 sub box
@@ -52,6 +57,7 @@ return
 	sub
 		{
 		my ($self) = @_ ;
+		
 		$self->select_all_elements() ;
 		$self->delete_elements($self->get_selected_elements(1)) ;
 		} ;
@@ -73,15 +79,15 @@ return
 		} ;
 }
 
-sub new_slide_single_box_at
+sub clear_and_box_at
 {
-my ($x_,$y, $text) = @_ ;
+my ($x, $y, $text) = @_ ;
 
 return 
 	compose
 		(
 		clear_all(),
-		box($x_,$y, '', $text, 1),
+		box($x, $y, '', $text, 1),
 		) ;
 }
 

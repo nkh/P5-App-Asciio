@@ -430,6 +430,15 @@ register_action_handlers_remove_old_shortcuts
 	'first slide'                             => ['g'],
 	'show previous message'                   => ['m'],
 	'show next message'                       => ['M'],
+	'<< run script >>'                        => ['s'] ,
+	},
+
+'group_slides_script' => 
+	{
+	SHORTCUTS   => 'group_slides_script',
+	ESCAPE_KEYS => 'Escape',
+	
+	map { my $name =  "slides script $_" ; $name => ["$_", \&App::Asciio::Actions::Presentation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
 	},
 
 '<< move arrow ends leader >>' =>

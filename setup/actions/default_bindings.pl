@@ -450,12 +450,21 @@ register_action_handlers
 	SHORTCUTS   => '00S-S',
 	ESCAPE_KEYS => '000-Escape',
 	
-	'Load slides'                    => ['000-l', \&App::Asciio::Actions::Presentation::load_slides   ] ,
-	'previous slide'                 => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
-	'next slide'                     => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
-	'first slide'                    => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
+	'Load slides'                    => ['000-l', \&App::Asciio::Actions::Presentation::load_slides          ] ,
+	'previous slide'                 => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide       ],
+	'next slide'                     => ['000-n', \&App::Asciio::Actions::Presentation::next_slide           ],
+	'first slide'                    => ['000-g', \&App::Asciio::Actions::Presentation::first_slide          ],
 	'show previous message'          => ['000-m', \&App::Asciio::Actions::Presentation::show_previous_message],
-	'show next message'              => ['00S-M', \&App::Asciio::Actions::Presentation::show_next_message],
+	'show next message'              => ['00S-M', \&App::Asciio::Actions::Presentation::show_next_message    ],
+	'<< run script >>'               => ['000-s', sub { $_[0]->use_action_group('group_slides_script') ; }   ] ,
+	},
+
+'group_slides_script' => 
+	{
+	SHORTCUTS   => 'group_slides_script',
+	ESCAPE_KEYS => '000-Escape',
+	
+	map { my $name =  "slides script $_" ; $name => ["000-$_", \&App::Asciio::Actions::Presentation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
 	},
 
 '<< move arrow ends leader >>' =>
