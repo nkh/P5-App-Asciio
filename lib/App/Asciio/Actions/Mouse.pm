@@ -35,8 +35,6 @@ if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
 undef $self->{DRAGGING} ;
 delete $self->{IN_DRAG_DROP} ;
 
-delete $self->{SELECTION_POLYGON} ;
-
 $self->pop_undo_buffer(1) if defined $self->{MODIFIED_INDEX} && defined $self->{MODIFIED} && $self->{MODIFIED_INDEX} == $self->{MODIFIED} ;
 $self->update_display();
 }

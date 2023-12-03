@@ -361,7 +361,21 @@ register_action_handlers
 
 	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
 	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
-	'Mouse polygon selection'        => [ '000-x',             \&App::Asciio::GTK::Asciio::mouse_polygon_selection_switch               ],
+	'<< polygon selection >>'        => [ '000-x',             sub { $_[0]->use_action_group('group_polygon') ; }                       ] ,
+	},
+
+'group_polygon' =>
+	{
+	SHORTCUTS => 'group_polygon',
+	ENTER_GROUP => \&App::Asciio::GTK::Asciio::polygon_selection_enter,
+	ESCAPE_KEYS => [ '000-x', '000-Escape' ],
+
+	'Polygon selection escape'               => [ '000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape             ],
+	'Polygon selection escape2'              => [ '000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape             ],
+	'Polygon select motion'                  => [ '000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1          ],
+	'Polygon deselect motion'                => [ 'C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0          ],
+	'Polygon select left-release'            => [ '000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release     ],
+	'Polygon select left-release 2'          => [ 'C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release     ],
 	},
 
 '<< eraser leader >>' =>

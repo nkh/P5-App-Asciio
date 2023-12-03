@@ -6,6 +6,9 @@ use strict ; use warnings ;
 use App::Asciio::ZBuffer ;
 
 
+my %elements_selection_status ;
+
+
 #-----------------------------------------------------------------------------
 
 sub all_points_in_polygon
@@ -51,21 +54,25 @@ return $is_inside;
 }
 
 #----------------------------------------------------------------------------------------------
-sub mouse_polygon_selection_switch
+
+sub polygon_selection_enter
 {
 my ($self) = @_ ;
 
-if(@{$self->{SELECTION_POLYGON} // []} == 0)
-	{
-	$self->deselect_all_elements();
+$self->change_cursor('dot') ;
+%elements_selection_status = () ;
 
-	my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'};
-	$self->{SELECTION_POLYGON} = [[$x, $y]];
-	}
-else
-	{
-	$self->{SELECTION_POLYGON} = [];
-	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub polygon_selection_escape
+{
+my ($self) = @_ ;
+
+$self->{SELECTION_POLYGON} = [] ;
+$self->change_cursor('left_ptr') ;
+
 }
 
 #----------------------------------------------------------------------------------------------
@@ -100,9 +107,7 @@ if(@{$self->{SELECTION_POLYGON}//[]} > 0)
 #-----------------------------------------------------------------------------
 sub polygon_selection
 {
-my ($self) = @_ ;
-
-$self->deselect_all_elements() ;
+my ($self, $select_type) = @_ ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
@@ -114,9 +119,60 @@ for my $element (@{$self->{ELEMENTS}})
 		}
 	if(all_points_in_polygon($element->{CACHE}{COORDINATES}, $self->{SELECTION_POLYGON}))
 		{
-		$self->select_elements(1, $element);
+		$self->select_elements($select_type, $element);
+		$elements_selection_status{$element} = 1 ;
+		}
+	else
+		{
+		if(exists($elements_selection_status{$element}))
+			{
+			$self->select_elements(!$select_type, $element);
+			delete $elements_selection_status{$element} ;
+			}
 		}
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub polygon_selection_motion
+{
+my ($self, $select_type, $event) = @_;
+
+my ($x, $y) = @{$event->{COORDINATES}}[0,1] ;
+
+($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+
+if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
+	{
+	if(@{$self->{SELECTION_POLYGON} // []} == 0)
+		{
+		%elements_selection_status = () ;
+		$self->{SELECTION_POLYGON} = [[$x, $y]];
+		$self->change_cursor($select_type == 1 ? "dot" : "tcross") ;
+		}
+	else
+		{
+		push @{$self->{SELECTION_POLYGON}}, [$x, $y] ;
+		$self->polygon_selection($select_type) ;
+		}
+	}
+
+if($event->{STATE} ne 'dragging-button1')
+	{
+	$self->{SELECTION_POLYGON} = [] ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub polygon_selection_button_release
+{
+my ($self, $event) = @_ ;
+
+$self->{SELECTION_POLYGON} = [] ;
+$self->change_cursor('dot') ;
 }
 
 #----------------------------------------------------------------------------------------------

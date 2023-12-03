@@ -335,7 +335,21 @@ register_action_handlers_remove_old_shortcuts
 
 	'select flip mode'               => ['e'],
 	'select motion'                  => ['000-motion_notify'],
-	'Mouse polygon selection'        => ['not_set'],
+	'<< polygon selection >>'        => ['not_set'] ,
+	},
+
+'group_polygon' =>
+	{
+	SHORTCUTS => 'group_polygon',
+	ENTER_GROUP => 'not_set',
+	ESCAPE_KEYS => 'not_set',
+
+	'Polygon selection escape'               => ['not_set'],
+	'Polygon selection escape2'              => ['not_set'],
+	'Polygon select motion'                  => ['not_set'],
+	'Polygon deselect motion'                => ['not_set'],
+	'Polygon select left-release'            => ['not_set'],
+	'Polygon select left-release 2'          => ['not_set'],
 	},
 
 '<< eraser leader >>' =>
