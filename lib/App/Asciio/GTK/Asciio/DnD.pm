@@ -15,6 +15,7 @@ use Sereal qw(
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
 
 use App::Asciio::Actions::Clipboard ;
+use App::Asciio::String ;
 
 #--------------------------------------------------------------------------
 
@@ -80,7 +81,7 @@ my $text = $self->transform_elements_to_ascii_buffer_aligned_left($self->get_sel
 my $lines = $text =~ tr /\n/\n/ ;
 
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($width, $height)                     = (length($text) * $character_width, $character_height * $lines) ;
+my ($width, $height)                     = (max(map { unicode_length $_ } split('\n', $text)) * $character_width, $character_height * $lines) ;
 my $surface                              = Cairo::ImageSurface->create('argb32', $width, $height) ;
 my $gc                                   = Cairo::Context->create($surface) ;
 my $layout                               = Pango::Cairo::create_layout($gc) ;

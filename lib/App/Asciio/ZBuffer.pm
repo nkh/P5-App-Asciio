@@ -75,7 +75,9 @@ for my $strip (@{$element->get_stripes})
 			my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 			my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
 			
-			if(is_nonspacing_char($char))
+			my $character_length = unicode_length($char) ;
+
+			if($character_length == 0)
 				{
 				$glyphs[$#glyphs][1] .= $char if @glyphs ;
 				}
@@ -84,7 +86,7 @@ for my $strip (@{$element->get_stripes})
 				push @glyphs, [ "$Y;$X", $char] ; 
 				}
 			
-			$character_index += unicode_length($char);
+			$character_index += $character_length;
 			}
 		
 		$line_index++ ;
