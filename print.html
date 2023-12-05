@@ -1396,6 +1396,85 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
 
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="slides"><a class="header" href="#slides">slides</a></h1>
+<p>You can create a slide show with Asciio ... but it's a work in progress. We write some documentation here but you're better off asking the developers directly.</p>
+<h2 id="bindings"><a class="header" href="#bindings">Bindings</a></h2>
+<div class="table-wrapper"><table><thead><tr><th>binding</th><th>action</th></tr></thead><tbody>
+<tr><td>S</td><td>enter slides mode</td></tr>
+<tr><td>Escape</td><td>escape slides mode</td></tr>
+<tr><td>L</td><td>Load slides</td></tr>
+<tr><td>n</td><td>next slide</td></tr>
+<tr><td>N</td><td>previous slide</td></tr>
+<tr><td>g</td><td>first slide</td></tr>
+<tr><td>s</td><td>run script</td></tr>
+<tr><td>n/a</td><td>show previous message</td></tr>
+<tr><td>n/a</td><td>show next message</td></tr>
+</tbody></table>
+</div>
+<h2 id="slides-format"><a class="header" href="#slides-format">Slides Format</a></h2>
+<p>Slides are a very simplified script.</p>
+<pre><code>use strict ;
+use warnings ;
+
+use App::Asciio::Utils::Presentation ;
+
+# the slides definition
+[
+	# first slide
+	[ 
+		# text is added to a box at 0, 0
+		&quot;0 intro&quot;, 
+	
+		# you can add scritpt with shortcuts per slide
+		{
+		a =&gt; sub
+			{
+			my ($self) = @_ ;
+			App::Asciio::Actions::Elements::add_element($self, ['Asciio/box', 0, 20, 20]) ;
+			},
+		},
+	],
+	
+	# second slide
+	[ 
+		# if you have multiple elements in squre bracket, Asciio uses them as steps in your slide
+		[ &quot;1.0&quot;, ],
+		[ &quot;1.1&quot;, ],
+		
+		# a step within a step, thereäs no limit but navigation becomes more intricate
+		[ 
+			[&quot;1.2.0&quot;, ]
+		],
+	],
+	
+	# third slide
+	[
+	clear_and_box_at(0, 0, &quot;2&quot;), ], 
+	],
+	
+	# fourth slide
+	[ 
+		# you can load an asciio file
+		load(0, 0, 'path/file.asciio'),
+		
+		# and add elements to the slide
+		box(10, 20, 'title', '3', 0),
+	],
+	
+	# final slide
+	[
+	clear_all(),
+	
+	# multiline box
+	box(19, 11, '', &lt;&lt;'EOT', 0), 
+6.0
+(\_/)
+(O.o) ASCII world domination is near!
+(&gt; &lt;) 
+EOT
+	],
+]
+</code></pre>
+<p>Utilities are defined in <em>lib/App/Asciio/Utils/Presentation.pm</em></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="examples-1"><a class="header" href="#examples-1">Examples</a></h1>
 <h1 id="unix-structure"><a class="header" href="#unix-structure">Unix structure</a></h1>
 <pre><code>              .---.  .---. .---.  .---.    .---.  .---.
@@ -1554,7 +1633,7 @@ to convert text files to SVG.</p>
 <p>Some older videos (15 years!) that show some basic usage:</p>
 <p><a href="https://www.youtube.com/watch?v=0l9W84PhOyI"><img src="videos/old_video.jpg" alt="old video" /></a></p>
 <p><a href="https://www.youtube.com/watch?v=d5Fq17Bxurs">asciio 1.0</a></p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings"><a class="header" href="#bindings">Bindings</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h1>
 <p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.</p>
 <p>It's faster and easier to work with keyboard shortcuts than the mouse and the number of combination of mouse buttons * control-keys is very limited.</p>
 <p><em>Asciio</em> bindings are vim-like, they initially take more time to get used to, and often take multiple key presses but they are much more logical as families of commands are
@@ -2475,7 +2554,7 @@ new_box(TEXT_ONLY =&gt;'text') ;
 <pre><code>ascii_out ;
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-asciio-1"><a class="header" href="#modifying-asciio-1">Modifying Asciio</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h1>
 <p>Bindings consists of </p>
 <ul>
 <li>
