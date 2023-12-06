@@ -209,7 +209,6 @@ documentation/mdbook_asciio/src/config/user_bindings/capturing_groups.md
 documentation/mdbook_asciio/src/config/user_bindings/capturing_groups_overlay.md
 documentation/mdbook_asciio/src/config/user_bindings/group_bindings.md
 documentation/mdbook_asciio/src/config/user_bindings/warning.svg
-documentation/mdbook_asciio/src/config/user_stencils.md
 documentation/mdbook_asciio/src/configuration.md
 documentation/mdbook_asciio/src/continuous-integration.md
 documentation/mdbook_asciio/src/edit_dialog.png

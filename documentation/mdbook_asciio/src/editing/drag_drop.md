@@ -20,6 +20,14 @@ Then uses one of the following keys:
 | 2        | open 'people.asciio'    from $HOME/.config/Asciio/stencils/  |
 | 3        | open 'buildings.asciio' from $HOME/.config/Asciio/stencils/  |
 
+## user stencils
+
+User stencils are plain Asciio files.
+
+The distribution contains a few asciio stencils in "setup/Stencils/*.asciio", copy the ones you want to your $HOME/.config/Asciio/stencils.
+
+You can create a new stencil directly from the file picker, just type the name of the new stencil and open it.
+
 ## Drag and Drop
 
 ***Binding:*** control + left click + drag

@@ -88,8 +88,6 @@
 		- [Binding override](config/user_bindings/binding_override.md)
 		- [Capturing groups with overalay](config/user_bindings/capturing_groups_overlay.md)
 
-	- [user stencils](config/user_stencils.md)
-
 -----------
 
 # Developer Guide
