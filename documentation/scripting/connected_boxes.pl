@@ -21,7 +21,7 @@ $process->set_text("line 1\nline 2\nline 3") ;
 
 optimize ;
 
-save_to "from_script.asciio" ;
+# save_to "from_script.asciio" ;
 
 ascii_out ;
 

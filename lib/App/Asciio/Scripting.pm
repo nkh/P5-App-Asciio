@@ -77,7 +77,6 @@ use App::Asciio::Actions::Colors ;
 {
 
 my $script_asciio ; # make script non OO
-my %name_to_element ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -174,7 +173,8 @@ sub add
 {
 my ($name, $element, $x, $y) = @_ ;
 
-$name_to_element{$name} = $element ;
+$element->set_user_data(NAME => $name) ;
+$element->set_user_data(SCRIPT_OBJECT => 1) ;
 $script_asciio->add_element_at($element, $x, $y) ;
 }
 
@@ -182,37 +182,41 @@ sub move
 {
 my ($name, $x, $y) = @_ ;
 
-my $element = $name_to_element{$name} ;
-
-@$element{'X', 'Y'} = ($x, $y) if defined $element && defined $x && defined $y ;
+for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+	{
+	@$element{'X', 'Y'} = ($x, $y) if defined $x && defined $y ;
+	}
 }
 
 sub offset 
 {
 my ($name, $x_offset, $y_offset) = @_ ;
 
-my $element = $name_to_element{$name} ;
-
-@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset)
-	if defined $element && defined $x_offset && defined $y_offset ;
+for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+	{
+	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset)
+		if defined $x_offset && defined $y_offset ;
+	}
 }
 
 sub select_by_name 
 {
 my ($name) = @_ ;
 
-my $element = $name_to_element{$name} ;
-
-$script_asciio->select_elements(1, $element) ;
+for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+	{
+	$script_asciio->select_elements(1, $element) ;
+	}
 }
 
 sub delete_by_name 
 {
 my ($name) = @_ ;
 
-my $element = $name_to_element{$name} ;
-
-$script_asciio->delete_elements($element) ;
+for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+	{
+	$script_asciio->delete_elements($element) ;
+	}
 }
 
 sub delete_selected_elements
@@ -233,27 +237,52 @@ sub add_type
 {
 my ($name, $type, $x, $y) = @_ ;
 
-$name_to_element{$name} = $script_asciio->add_new_element_named('Asciio/Boxes/process', $x, $y) ;
+my $element = $script_asciio->add_new_element_named($type, $x, $y) ;
+$element->set_user_data(NAME => $name) ;
+
+return $element ;
 }
 
 sub connect_elements
 {
 my ($element1_name, $element2_name, @args) = @_ ;
 
-add_connection($script_asciio, @name_to_element{$element1_name, $element2_name}, @args) ;
+my ($element1) = grep { ($_->get_user_data('NAME') // '') eq $element1_name } $script_asciio->get_elements() ;
+my ($element2) = grep { ($_->get_user_data('NAME') // '') eq $element2_name } $script_asciio->get_elements() ;
+
+add_connection($script_asciio, $element1, $element2, @args)
+	if defined $element1 && defined $element2 ;
 }
 
 sub select_elements
 {
-my ($state, @elements) = @_ ;
-$script_asciio->select_elements($state, @name_to_element{@elements}) ;
+my ($state, @elements_names) = @_ ;
+
+my %named_elements = map { $_ => 1 } @elements_names ;
+
+for my $element (grep { $_->get_user_data('SCRIPT_OBJECT') } $script_asciio->get_elements())
+	{
+	$script_asciio->select_elements($state, $element) ;
+	}
 }
 
 sub select_all_elements          { $script_asciio->select_all_elements() ; }
-sub select_all_script_elements   { $script_asciio->select_elements(1, values %name_to_element) ; }
+sub select_all_script_elements   
+{
+for my $element (grep { $_->get_user_data('SCRIPT_OBJECT') } $script_asciio->get_elements())
+	{
+	$script_asciio->select_elements(1, $element) ; 
+	}
+}
 
 sub deselect_all_elements        { $script_asciio->deselect_all_elements() ; }
-sub deselect_all_script_elements { $script_asciio->select_elements(0, values %name_to_element) ; }
+sub deselect_all_script_elements
+{
+for my $element (grep { $_->get_user_data('SCRIPT_OBJECT') } $script_asciio->get_elements())
+	{
+	$script_asciio->select_elements(0, $element) ; 
+	}
+}
 
 sub delete_all_ruler_lines       { delete $script_asciio->{RULER_LINES} ; } ;
 
