@@ -129,7 +129,10 @@ if(defined $file)
 
 sub new_script_asciio
 {
+local @ARGV = @ARGV ;
 $script_asciio = App::Asciio->new() ;
+
+warn "Asciio: created script asciio object\n" ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $script_asciio->ParseSwitches([@ARGV], 0) ;
