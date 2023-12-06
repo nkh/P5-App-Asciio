@@ -267,14 +267,26 @@ register_action_handlers
 	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
 	'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
 	
-	'From default_stencil'                => ['000-s', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'              ], 
-	'From stencil'                        => ['00S-S', \&App::Asciio::Actions::Elements::open_stencil                                        ], 
-	
+	'<< Stencil >>'                       => ['000-s', sub { $_[0]->use_action_group('group_insert_stencil') ; }                            ] ,
 	'<< Multiple >>'                      => ['000-m', sub { $_[0]->use_action_group('group_insert_multiple') ; }                            ] ,
 	'<< Unicode >>'                       => ['000-u', sub { $_[0]->use_action_group('group_insert_unicode') ; }                             ] ,
 	'<< Box >>'                           => ['000-b', sub { $_[0]->use_action_group('group_insert_box') ; }                                 ] ,
 	'<< Elements >>'                      => ['000-e', sub { $_[0]->use_action_group('group_insert_element') ; }                             ] ,
 	'<< Ruler >>'                         => ['000-r', sub { $_[0]->use_action_group('group_insert_ruler') ; }                               ] ,
+	},
+
+'group_insert_stencil' => 
+	{
+	SHORTCUTS   => 'group_insert_stencil',
+	
+	'From user stencils'                  => ['000-s', \&App::Asciio::Actions::Elements::open_user_stencil                                   ], 
+	'From default_stencil'                => ['000-d', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'              ], 
+	'From any stencil'                    => ['000-a', \&App::Asciio::Actions::Elements::open_stencil                                        ], 
+	
+	'From user elements'                  => ['000-0', \&App::Asciio::Actions::Elements::open_user_stencil, 'elements.asciio'                ], 
+	'From user computer'                  => ['000-1', \&App::Asciio::Actions::Elements::open_user_stencil, 'computer.asciio'                ], 
+	'From user people'                    => ['000-2', \&App::Asciio::Actions::Elements::open_user_stencil, 'people.asciio'                  ], 
+	'From user buildings'                 => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio'               ], 
 	},
 
 'group_insert_multiple' => 

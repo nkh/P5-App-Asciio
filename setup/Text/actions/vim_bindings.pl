@@ -241,14 +241,26 @@ register_action_handlers_remove_old_shortcuts
 	'Add ascii line'                          => ['l'], 
 	'Add ascii no-connect line'               => ['k'], 
 	
-	'From default_stencil'                    => ['s'], 
-	'From stencil'                            => ['S'], 
-	
+	'<< Stencil >>'                           => ['s'] ,
 	'<< Multiple >>'                          => ['m'] ,
 	'<< Unicode >>'                           => ['u'] ,
 	'<< Box >>'                               => ['b'] ,
 	'<< Elements >>'                          => ['e'] ,
 	'<< Ruler >>'                             => ['r'] ,
+	},
+
+'group_insert_stencil' => 
+	{
+	SHORTCUTS   => 'group_insert_stencil',
+	
+	'From user stencils'                      => ['s'], 
+	'From default_stencil'                    => ['d'], 
+	'From any stencil'                        => ['a'], 
+	
+	'From user elements'                      => ['0'], 
+	'From user computer'                      => ['1'], 
+	'From user people'                        => ['2'], 
+	'From user buildings'                     => ['3'], 
 	},
 
 'group_insert_multiple' => 

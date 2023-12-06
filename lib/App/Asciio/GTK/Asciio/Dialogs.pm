@@ -331,18 +331,20 @@ return $new_text
 
 sub get_file_name
 {
-my ($self, $type) = @_ ;
+my ($self, $title, $mode, $directory) = @_ ;
 
 my $file_name = '' ;
 
 my $file_chooser = Gtk3::FileChooserDialog->new 
-				(
-				$type, undef, $type,
-				'gtk-cancel' => 'cancel', 'gtk-ok' => 'ok'
-				);
+			(
+			$title, undef, $mode,
+			'gtk-cancel' => 'cancel', 'gtk-ok' => 'ok'
+			);
 
+$file_chooser->set_current_folder($directory) if defined $directory ;
+$file_chooser->set_create_folders(1) ;
 $file_name = $file_chooser->get_filename if ('ok' eq $file_chooser->run) ;
-	
+
 $file_chooser->destroy;
 while(Gtk3::events_pending())
 	{

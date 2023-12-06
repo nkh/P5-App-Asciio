@@ -59,6 +59,32 @@ if(defined $file_name && $file_name ne '')
 
 #----------------------------------------------------------------------------------------------
 
+sub open_user_stencil
+{
+my ($self, $file_name) = @_ ;
+
+my $user_stencils_path = File::HomeDir->my_home() . '/.config/Asciio/stencils' ;
+
+if(defined $file_name)
+	{
+	$file_name = "$user_stencils_path/$file_name" ;
+	}
+else
+	{
+	# pick a file
+	$file_name = $self->get_file_name('', 'save', $user_stencils_path) ;
+	}
+
+if(defined $file_name && $file_name ne '')
+	{
+	# todo: check path
+	system "asciio '$file_name' &" ;
+	}
+
+}
+
+#----------------------------------------------------------------------------------------------
+
 
 sub add_help_box
 {

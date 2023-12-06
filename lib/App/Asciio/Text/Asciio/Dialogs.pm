@@ -118,7 +118,7 @@ return $result // '' ;
 
 sub get_file_name
 {
-my ($self, $type) = @_ ; # type: save|open
+my ($self, $title, $mode, $directory) = @_ ; # type: save|open
 
 print "\e[2J\e[H\e[?25h" ;
 

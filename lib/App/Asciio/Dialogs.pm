@@ -80,7 +80,7 @@ return $answer ;
 
 sub get_file_name
 {
-my ($self, $type) = @_ ;
+my ($self, $title, $mode, $directory) = @_ ;
 
 print "get_file_name:\n" ;
 

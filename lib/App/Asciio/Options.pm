@@ -31,7 +31,7 @@ do
 	{
 	while(@ARGV && $ARGV[0] !~ /^-/)
 		{
-		#~ print "target => $ARGV[0] \n" ;
+		# print "target => $ARGV[0] \n" ;
 		push @targets, shift @ARGV ;
 		}
 		
