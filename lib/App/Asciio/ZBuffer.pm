@@ -51,7 +51,7 @@ for my $element (@elements)
 	}
 
 # my $t1 = Time::HiRes::gettimeofday();
-# printf "add time: %0.4f sec.\n", $t1 - $t0 ;
+# printf STDERR "add time: %0.4f sec.\n", $t1 - $t0 ;
 }
 
 # ------------------------------------------------------------------------------
@@ -163,10 +163,10 @@ while ( my ($coordinate, $char) = each $self->{coordinates}->%*)
 	# $rendering .= "${coordinate}->$char\n" ;
 	}
 
-print "$rendering\e[m" ;
+print STDERR "$rendering\e[m" ;
 
 # my $t1 = Time::HiRes::gettimeofday();
-# printf "render time: %0.4f sec.\n", $t1 - $t0 ;
+# printf STDERR "render time: %0.4f sec.\n", $t1 - $t0 ;
 }
 
 # ------------------------------------------------------------------------------
@@ -205,7 +205,7 @@ while( my($coordinate, $elements) = each $zbuffer->{intersecting_elements}->%*)
 	{
 	my $neighbors = $zbuffer->get_neighbors($coordinate) ;
 	
-	print DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ;
+	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ;
 	# compute overlay
 	}
 }

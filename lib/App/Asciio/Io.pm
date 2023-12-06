@@ -159,7 +159,7 @@ for my $new_element (@{$elements})
 		{
 		if(exists $self->{ELEMENT_TYPES_BY_NAME}{$new_element->{NAME}})
 			{
-			print "Overriding element type '$new_element->{NAME}'!\n" ;
+			print STDERR "Overriding element type '$new_element->{NAME}'!\n" ;
 			$self->{ELEMENT_TYPES}[$self->{ELEMENT_TYPES_BY_NAME}{$new_element->{NAME}}]
 				= $new_element ;
 			}

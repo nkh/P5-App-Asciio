@@ -646,7 +646,7 @@ if(defined $start_element)
 	
 	if($is_start)
 		{
-		#~ print "Moving start connector\n" ;
+		#~ print STDERR "Moving start connector\n" ;
 		
 		($start_x_offset, $start_y_offset) = 
 			$start_element->resize

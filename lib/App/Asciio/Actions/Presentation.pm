@@ -34,13 +34,13 @@ sub run_slide
 my ($self, $slide) = @_ ;
 
 # use Data::TreeDumper ;
-# print DumpTree \@stack, 'stack:' ;
+# print STDERR DumpTree \@stack, 'stack:' ;
 
 if(defined $slide)
 	{
 	for my $element ($slide->@*)
 		{
-		# print "running element: $element '" . ref($element) . "' $slide\n" ;
+		# print STDERR "running element: $element '" . ref($element) . "' $slide\n" ;
 		
 		if('' eq ref($element))
 			{
@@ -57,7 +57,7 @@ if(defined $slide)
 		
 		if('ARRAY' eq ref($element))
 			{
-			# print "PUSH $element\n" ;
+			# print STDERR "PUSH $element\n" ;
 			
 			push @stack, [0, $element] ;
 			run_slide($self, $element) ;
@@ -68,7 +68,7 @@ if(defined $slide)
 		if('HASH' eq ref($element))
 			{
 			$stack[-1][2] = $element ;
-			print "Asciio: slide has scripts\n" ;
+			print STDERR "Asciio: slide has scripts\n" ;
 			}
 		
 		$stack[-1][0]++ ;
@@ -86,18 +86,18 @@ if(@stack)
 	{
 	my ($index, $slide) = $stack[-1]->@* ;
 	
-	# print "$index < " . $slide->@* . "\n" ;
+	# print STDERR "$index < " . $slide->@* . "\n" ;
 	
 	if($index < $slide->@*)
 		{
-		# print "NEXT\n" ;
+		# print STDERR "NEXT\n" ;
 		$stack[-1][0]++ ;
 		
 		my $next_slide = $slide->[$index + 1] ;
 		
 		if('ARRAY' eq ref($next_slide))
 			{
-			# print "PUSH $next_slide\n" ;
+			# print STDERR "PUSH $next_slide\n" ;
 			push @stack, [0, $next_slide] ;
 			}
 		
@@ -107,7 +107,7 @@ if(@stack)
 		{
 		if(@stack > 1)
 			{
-			# print "POP\n" ;
+			# print STDERR "POP\n" ;
 			pop @stack ;
 			
 			next_slide($self) ;
@@ -122,8 +122,8 @@ sub previous_slide
 {
 my ($self) = @_ ;
 
-use Data::TreeDumper ;
-print DumpTree \@stack, 'stack:' ;
+# use Data::TreeDumper ;
+# print STDERR DumpTree \@stack, 'stack:' ;
 
 if(@stack)
 	{
@@ -133,8 +133,8 @@ if(@stack)
 	my $slides = $stack[0][1] ;
 	my $index  = $stack[0][0] >= $stack[0][1]->@* ? $stack[0][0] - 2 : $stack[0][0] - 1 ; 
 	
-print "new index: $index\n" ;
-
+	# print STDERR "new index: $index\n" ;
+	
 	if($index >= 0)
 		{
 		$stack[0][0] = $index ; 

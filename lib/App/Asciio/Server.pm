@@ -87,16 +87,16 @@ else
 	$to_parent->autoflush(1) ;
 	
 	my $daemon = HTTP::Daemon->new(ReusePort => 1, LocalAddr => 'localhost', LocalPort => $port) or die "Server: Error: can't start server\n" ;
-	print  "Asciio: running HTTP server on port $port\n" ;
+	print  STDERR "Asciio: running HTTP server on port $port\n" ;
 	
 	$SIG{INT} = sub {
-			# print "Asciio: Server received SIGINT\n" ;
+			# print STDERR "Asciio: Server received SIGINT\n" ;
 			undef $daemon ;
 			} ;
 	
 	$SIG{TERM} = sub 
 			{
-			# print "Asciio: Server received SIGTERM\n" ;
+			# print STDERR "Asciio: Server received SIGTERM\n" ;
 			undef $daemon ;
 			} ;
 	
@@ -113,7 +113,7 @@ else
 			{
 			my $path = $rq->uri->path ;
 			
-			# print "Asciio: Http: " . $rq->method . ' ' . $daemon->url . "$path, count: $counter - $$\n" ;
+			# print STDERR "Asciio: Http: " . $rq->method . ' ' . $daemon->url . "$path, count: $counter - $$\n" ;
 			
 			if ($rq->method eq 'GET')
 				{
@@ -126,7 +126,7 @@ else
 				my $parser = HTTP::Request::Params->new({req => $rq}) ;
 				my $parameters = $parser->params() ;
 				
-				# '/' eq $path && print "Asciio:: Web server: POST\n" . DumpTree($parameters) ; 
+				# '/' eq $path && print STDERR "Asciio:: Web server: POST\n" . DumpTree($parameters) ; 
 				
 				my $request_json = JSON->new->allow_nonref->canonical(1)->pretty->encode({ PATH => $path, PARAMETERS => $parameters}) ;
 				
@@ -146,7 +146,7 @@ else
 				
 				'/stop' eq $path && $stop++ ; 
 				
-				# '/' eq $path && print "Asciio:: Web server: PUT\n" . DumpTree($parameters) ; 
+				# '/' eq $path && print STDERR "Asciio:: Web server: PUT\n" . DumpTree($parameters) ; 
 				
 				my $request_json = JSON->new->allow_nonref->canonical(1)->pretty->encode({ PATH => $path, PARAMETERS => $parameters}) ;
 				my $size = length($request_json) ;

@@ -43,7 +43,7 @@ $window->drag_dest_set_target_list($target_list) ;
 
 $window->signal_connect(drag_data_received => \&drag_data_received_cb, $self) ;
 
-# $window->signal_connect(drag_motion => sub{ print "drag_motion\n"}, $self) ;
+# $window->signal_connect(drag_motion => sub{ print STDERR "drag_motion\n"}, $self) ;
 $window->signal_connect(drag_end => sub { $self->{IN_DRAG_DROP} = 0 ; }, $self);
 
 $window->signal_connect(drag_data_get => \&drag_data_get_cb, $self) ;

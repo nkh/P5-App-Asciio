@@ -237,7 +237,7 @@ if($asciio_connection->{CONNECTION}{NAME} ne $connection_name)
 	my $y_offset_to_connection =  ($connectee->{Y} + $connection->{Y}) - ($connected->{Y} + $connector->{Y}) ;
 
 	# move connector
-	#~ print "reconnect: $connection_name $connector_name\n" ;
+	#~ print STDERR "reconnect: $connection_name $connector_name\n" ;
 	my ($x_offset, $y_offset, $width, $height, $new_connector) = 
 		$connected->move_connector($connector_name, $x_offset_to_connection, $y_offset_to_connection, $hint) ;
 		

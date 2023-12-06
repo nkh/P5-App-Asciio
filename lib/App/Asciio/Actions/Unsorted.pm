@@ -210,7 +210,7 @@ sub display_commands
 {
 my ($self) = @_ ;
 
-#~ print Data::TreeDumper::DumpTree $self->{ACTIONS_BY_NAME}, 'ACTIONS_BY_NAME:';
+#~ print STDERR Data::TreeDumper::DumpTree $self->{ACTIONS_BY_NAME}, 'ACTIONS_BY_NAME:';
 
 my $commands = get_commands($self->{ACTIONS_BY_NAME}) ;
 
@@ -338,8 +338,8 @@ for my $action (keys %{$key_mapping})
 		generate_keyboard_mapping_text_dump($key_mapping->{$action}, $sub_actions) ;
 		}
 		
-		#~ print Data::TreeDumper::DumpTree $key_mapping->{$action} ;
-		#~ print Data::TreeDumper::DumpTree $sub_actions ;
+		#~ print STDERR Data::TreeDumper::DumpTree $key_mapping->{$action} ;
+		#~ print STDERR Data::TreeDumper::DumpTree $sub_actions ;
 		
 		my $shortcuts = $key_mapping->{$action}{SHORTCUTS} ;
 		$shortcuts = join(' ', @{$key_mapping->{$action}{SHORTCUTS}}) 
@@ -350,7 +350,7 @@ for my $action (keys %{$key_mapping})
 		}
 	else
 		{
-		#~ print Data::TreeDumper::DumpTree $key_mapping->{$action}, $action ;
+		#~ print STDERR Data::TreeDumper::DumpTree $key_mapping->{$action}, $action ;
 		#~ die "unknown type while running 'dump_keyboard_mapping'\n" ;
 		}
 	}

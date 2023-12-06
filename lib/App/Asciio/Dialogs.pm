@@ -22,7 +22,7 @@ sub show_dump_window
 {
 my ($self, $data, $title, @dumper_setup) = @_ ;
 
-print DumpTree $data, $title, @dumper_setup ;
+print STDERR DumpTree $data, $title, @dumper_setup ;
 }
 
 #-----------------------------------------------------------------------------
@@ -31,7 +31,7 @@ sub display_message_modal
 {
 my ($self, $message) = @_ ;
 
-print $message ;
+print STDERR $message ;
 }
 
 #-----------------------------------------------------------------------------
@@ -40,9 +40,9 @@ sub display_yes_no_cancel_dialog
 {
 my ($self, $title, $text) = @_ ;
 
-print "$title\n$text\n" ;
+print STDERR "$title\n$text\n" ;
 
-print "Yes/No/Cancel\n" ;
+print STDERR "Yes/No/Cancel\n" ;
 my $answer = <STDIN> ;
 chomp ($answer) ;
 
@@ -55,8 +55,8 @@ sub display_quit_dialog
 {
 my ($self, $title, $text) = @_ ;
 
-print "$title\n$text\n" ;
-print "Yes/No/Cancel\n" ;
+print STDERR "$title\n$text\n" ;
+print STDERR "Yes/No/Cancel\n" ;
 
 my $answer = <STDIN> ;
 chomp ($answer) ;
@@ -68,7 +68,7 @@ sub display_edit_dialog
 {
 my ($self, $title, $text) = @_ ;
 
-print "$title\n$text\n" ;
+print STDERR "$title\n$text\n" ;
 
 my $answer = <STDIN> ;
 chomp ($answer) ;
@@ -82,7 +82,7 @@ sub get_file_name
 {
 my ($self, $title, $mode, $directory) = @_ ;
 
-print "get_file_name:\n" ;
+print STDERR "get_file_name:\n" ;
 
 my $answer = <STDIN> ;
 chomp ($answer) ;

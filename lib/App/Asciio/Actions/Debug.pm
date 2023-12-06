@@ -15,7 +15,7 @@ my $size = sum(map { length } @{$self->{DO_STACK}}) || 0 ;
 
 local $self->{DO_STACK} = scalar(@{$self->{DO_STACK}})  . " [$size]";
 
-#~ print Data::TreeDumper::DumpTree $self ;
+#~ print STDERR Data::TreeDumper::DumpTree $self ;
 $self->show_dump_window($self, 'asciio') ;
 }
 
@@ -25,7 +25,7 @@ sub dump_selected_elements
 {
 my ($self) = @_ ;
 
-#~ print Data::TreeDumper::DumpTree [$self->get_selected_elements(1)] ;
+#~ print STDERR Data::TreeDumper::DumpTree [$self->get_selected_elements(1)] ;
 $self->show_dump_window([$self->get_selected_elements(1)], 'asciio selected elements') ;
 }
 
@@ -35,7 +35,7 @@ sub dump_all_elements
 {
 my ($self) = @_ ;
 
-#~ print Data::TreeDumper::DumpTree $self->{ELEMENTS} ;
+#~ print STDERR Data::TreeDumper::DumpTree $self->{ELEMENTS} ;
 $self->show_dump_window($self->{ELEMENTS}, 'asciio elements') ;
 }
 

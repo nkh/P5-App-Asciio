@@ -68,7 +68,7 @@ use App::Asciio::stripes::wirl_arrow ;
 use Digest::MD5 qw(md5_hex)  ;
 
 use Data::TreeDumper ;
-sub ddt { print DumpTree @_ ; }
+sub ddt { print STDERR DumpTree @_ ; }
 
 use App::Asciio::Actions::Colors ; 
 
@@ -91,8 +91,8 @@ if(defined $script)
 	{
 	$external_script_run++ ;
 	
-	print "Asciio: script [$external_script_run]: " . md5_hex($script) . ' ' . length($script) . "\n" ;
-	print "$script\n" if $show_script ;
+	print STDERR "Asciio: script [$external_script_run]: " . md5_hex($script) . ' ' . length($script) . "\n" ;
+	print STDERR "$script\n" if $show_script ;
 	
 	$script_asciio = $asciio ;
 	
@@ -100,7 +100,7 @@ if(defined $script)
 	
 	$asciio->update_display() ;
 	
-	print "Asciio: error running script: $@ \n" if $@ ;
+	print STDERR "Asciio: error running script: $@ \n" if $@ ;
 	}
 }
 
@@ -112,7 +112,7 @@ $file //= $asciio->get_file_name() ;
 
 if(defined $file)
 	{
-	print "Asciio: script file: '$file'\n" ;
+	print STDERR "Asciio: script file: '$file'\n" ;
 	
 	$script_asciio = $asciio ;
 	

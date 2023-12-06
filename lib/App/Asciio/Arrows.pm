@@ -283,6 +283,6 @@ if(exists $arrow_types{$data->{TYPE}})
 	}
 }
 
-sub clone { my ($type) = @_ ; print "cloning arrow $type\n" ; Clone::clone($arrow_types{$type}) ; }
+sub clone { my ($type) = @_ ; print STDERR "cloning arrow $type\n" ; Clone::clone($arrow_types{$type}) ; }
 
 }

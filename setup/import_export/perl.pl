@@ -106,7 +106,7 @@ my @asciio_lines = split "\n", $asciio_section ;
 my $asciio_header = shift @asciio_lines ;
 
 #~ use Data::TreeDumper ;
-#~ print DumpTree \@asciio_lines, 'asciio_lines' ;
+#~ print STDERR DumpTree \@asciio_lines, 'asciio_lines' ;
 
 my $whole_file = read_file($file_name) ;
 

@@ -724,7 +724,7 @@ if($options->{info})
 if($options->{stats})
 	{
 	use Data::TreeDumper ;
-	print DumpTree \%stats, "stats:", DISPLAY_ADDRESS => 0 ;
+	print STDERR DumpTree \%stats, "stats:", DISPLAY_ADDRESS => 0 ;
 	}
 
 if($options->{json})

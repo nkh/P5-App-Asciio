@@ -161,7 +161,7 @@ my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->g
 # 	use Data::TreeDumper ; 
 
 # 	my $neighbors = $zbuffer->get_neighbors_stack($coordinate) ; 
-# 	print DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
+# 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
 # 	} 
 
 my $grid_rendering = $self->{CACHE}{GRID} ;
@@ -593,7 +593,7 @@ for (@overlay_elements)
 	{
 	if(! defined $_)
 		{
-		print "GTK::Asciio: got undef\n" ;
+		print STDERR "GTK::Asciio: got undef\n" ;
 		}
 	elsif(ref $_ eq 'ARRAY')
 		{
@@ -621,7 +621,7 @@ for (@overlay_elements)
 		}
 	else
 		{
-		print "GTK::Asciio: got someting else " . ref($_) . "\n" ;
+		print STDERR "GTK::Asciio: got someting else " . ref($_) . "\n" ;
 		}
 	}
 # draw hint_lines

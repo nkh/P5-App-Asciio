@@ -156,7 +156,7 @@ for my $context_menu_handler
 			} sort keys %{$self->{CURRENT_ACTIONS}}
 	)
 	{
-	# print "Adding context menu from action '$context_menu_handler->{NAME}'.\n" ;
+	# print STDERR "Adding context menu from action '$context_menu_handler->{NAME}'.\n" ;
 	
 	if(defined $context_menu_handler->{CONTEXT_MENU_ARGUMENTS})
 		{

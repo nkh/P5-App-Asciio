@@ -124,7 +124,7 @@ for my $option (@clipboard_out_options)
 	{
 		my $elements_base64 = qx~xsel $option -o~ ;
 		
-		# print "get data:==>" . $elements_base64 . "\n" ;
+		# print STDERR "get data:==>" . $elements_base64 . "\n" ;
 		
 		$elements_serail = MIME::Base64::decode_base64($elements_base64) ;
 		
@@ -135,7 +135,7 @@ for my $option (@clipboard_out_options)
 			}
 		else
 			{
-			print "data from $option is invalid!\n" ;
+			print STDERR "data from $option is invalid!\n" ;
 			}
 	}
 
