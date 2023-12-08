@@ -264,15 +264,14 @@ register_action_handlers
 	
 	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]             ],
 	
-	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
-	'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
-	
-	'<< Stencil >>'                       => ['000-s', sub { $_[0]->use_action_group('group_insert_stencil') ; }                            ] ,
+	'<< Stencil >>'                       => ['000-s', sub { $_[0]->use_action_group('group_insert_stencil') ; }                             ] ,
 	'<< Multiple >>'                      => ['000-m', sub { $_[0]->use_action_group('group_insert_multiple') ; }                            ] ,
 	'<< Unicode >>'                       => ['000-u', sub { $_[0]->use_action_group('group_insert_unicode') ; }                             ] ,
 	'<< Box >>'                           => ['000-b', sub { $_[0]->use_action_group('group_insert_box') ; }                                 ] ,
 	'<< Elements >>'                      => ['000-e', sub { $_[0]->use_action_group('group_insert_element') ; }                             ] ,
 	'<< Ruler >>'                         => ['000-r', sub { $_[0]->use_action_group('group_insert_ruler') ; }                               ] ,
+	'<< Line >>'                          => ['000-l', sub { $_[0]->use_action_group('group_insert_line') ; }                                ] ,
+	'<< Connected >>'                     => ['000-k', sub { $_[0]->use_action_group('group_insert_connected') ; }                           ] ,
 	},
 
 'group_insert_stencil' => 
@@ -293,8 +292,8 @@ register_action_handlers
 	{
 	SHORTCUTS   => 'group_insert_multiple',
 	
-	'Add multiple texts'                  => ['000-t', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 0      ],
-	'Add multiple boxes'                  => ['000-b', \&App::Asciio::Actions::Unsorted::insert_multiple_boxes_from_text_description, 1      ],
+	'Add multiple texts'                  => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'                ],
+	'Add multiple boxes'                  => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box'                 ],
 	},
 
 'group_insert_ruler' => 
@@ -304,6 +303,24 @@ register_action_handlers
 	'Add vertical ruler'                  => ['000-v', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}                        ],
 	'Add horizontal ruler'                => ['000-h', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'HORIZONTAL'}                      ],
 	'delete rulers'                       => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                                           ],
+	},
+
+'group_insert_line' => 
+	{
+	SHORTCUTS   => 'group_insert_line',
+
+	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
+	'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
+	},
+
+'group_insert_connected' => 
+	{
+	SHORTCUTS   => 'group_insert_connected',
+
+	'Add connected box edit'              => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]             ], 
+	'Add multiple connected box edit'     => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1]    ], 
+	'Add connected text edit'             => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]            ], 
+	'Add multiple connected text edit'     => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]   ], 
 	},
 
 'group_insert_element' => 

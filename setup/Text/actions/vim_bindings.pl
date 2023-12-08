@@ -238,15 +238,14 @@ register_action_handlers_remove_old_shortcuts
 	
 	'Add angled arrow'                        => ['A'],
 	
-	'Add ascii line'                          => ['l'], 
-	'Add ascii no-connect line'               => ['k'], 
-	
 	'<< Stencil >>'                           => ['s'] ,
 	'<< Multiple >>'                          => ['m'] ,
 	'<< Unicode >>'                           => ['u'] ,
 	'<< Box >>'                               => ['b'] ,
 	'<< Elements >>'                          => ['e'] ,
 	'<< Ruler >>'                             => ['r'] ,
+	'<< Line >>'                              => ['l'] ,
+	'<< Connected >>'                         => ['k'] ,
 	},
 
 'group_insert_stencil' => 
@@ -278,6 +277,24 @@ register_action_handlers_remove_old_shortcuts
 	'Add vertical ruler'                      => ['v'],
 	'Add horizontal ruler'                    => ['h'],
 	'delete rulers'                           => ['d'],
+	},
+
+'group_insert_line' => 
+	{
+	SHORTCUTS   => 'group_insert_line',
+
+	'Add ascii line'                          => ['l'], 
+	'Add ascii no-connect line'               => ['k'], 
+	},
+
+'group_insert_connected' => 
+	{
+	SHORTCUTS   => 'group_insert_connected',
+
+	'Add connected box edit'                  => ['b'], 
+	'Add multiple connected box edit'         => ['B'], 
+	'Add connected text edit'                 => ['t'], 
+	'Add multiple connected text edit'        => ['T'], 
 	},
 
 'group_insert_element' => 

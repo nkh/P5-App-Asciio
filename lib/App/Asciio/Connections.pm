@@ -49,10 +49,9 @@ for my $element (@elements)
 	
 	last unless @connectors ;
 	
-	# tbd: optimize search by eliminating those elements that are too far
 	for my $connectee (reverse grep { $_->is_autoconnect_enabled() || $_->is_border_connection_allowed() } @{$self->{ELEMENTS}})
 		{
-		next if $connectee == $element ; # dont connect to self
+		next if $connectee == $element ; # don't connect to self
 		
 		for my $connector (@connectors)
 			{
@@ -80,7 +79,7 @@ for my $element (@elements)
 			}
 		}
 	}
-	
+
 return(@possible_connections) ;
 }
 

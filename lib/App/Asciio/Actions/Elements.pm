@@ -35,6 +35,106 @@ if($edit)
 $self->select_elements(1, $element);
 
 $self->update_display() ;
+
+return $element ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_element_connected
+{
+my ($self, $name_and_edit) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+my ($name, $edit, $x, $y) = @{$name_and_edit} ;
+
+my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
+
+if($edit)
+	{
+	$element->edit($self);
+	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{EDIT_TEXT_INLINE}) && ($self->{EDIT_TEXT_INLINE} != 0)) ;
+	}
+
+use App::Asciio::Actions::Mouse ;
+App::Asciio::Actions::Mouse::connect_to_destination_element($self, $element, $x, $y) ;
+
+$self->deselect_all_elements() ;
+$self->select_elements(1, $element);
+
+$self->update_display() ;
+
+return $element ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_multiple_element_connected
+{
+my ($self, $name_and_edit) = @_ ;
+my ($name, $edit, $x, $y) = @{$name_and_edit} ;
+
+$self->create_undo_snapshot() ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+my @new_elements = add_multiple_elements($self, $name) ;
+
+$self->deselect_all_elements() ;
+
+for my $selected_element(@selected_elements)
+	{
+	for my $new_element (reverse @new_elements)
+		{
+		$self->select_elements(1, $selected_element);
+		App::Asciio::Actions::Mouse::connect_to_destination_element($self, $new_element, $x, $y) ;
+		$self->select_elements(0, $selected_element);
+		}
+	}
+
+$self->select_elements(1, @new_elements);
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_multiple_elements
+{
+my ($self, $type) = @_ ;
+
+my $text = $self->display_edit_dialog('multiple objects from input', "\ntext", $self) ;
+
+my @new_elements ;
+
+if(defined $text && $text ne '')
+	{
+	$self->create_undo_snapshot() ;
+	
+	my ($current_x, $current_y) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
+	my ($separator) = split("\n", $text) ;
+	
+	$text =~ s/$separator\n// ;
+	
+	for my $element_text (split("$separator\n", $text))
+		{
+		chomp $element_text ;
+		
+		my $new_element = add_element($self, [$type, 0]) ;
+		$new_element->set_text('', $element_text) ;
+		
+		@$new_element{'X', 'Y'} = ($current_x, $current_y) ;
+		$current_x += $new_element->{WIDTH} + $self->{COPY_OFFSET_X} ; 
+		$current_y += $new_element->{HEIGHT} + $self->{COPY_OFFSET_Y} ;
+		
+		push @new_elements , $new_element ;
+		}
+	
+	$self->deselect_all_elements() ;
+	$self->select_elements(1, @new_elements) ;
+	$self->update_display() ;
+	}
+
+return @new_elements ;
 }
 
 #----------------------------------------------------------------------------------------------

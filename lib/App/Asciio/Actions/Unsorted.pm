@@ -387,64 +387,6 @@ $self->show_dump_window($statistics, 'Undo stack statistics:') ;
 
 #----------------------------------------------------------------------------------------------
 
-sub insert_multiple_boxes_from_text_description
-{
-my ($self, $boxed) = @_ ;
-
-my $text = $self->display_edit_dialog('multiple objects from input', "\ntext", $self) ;
-
-if(defined $text && $text ne '')
-	{
-	$self->create_undo_snapshot() ;
-	
-	my ($current_x, $current_y) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-	my ($separator) = split("\n", $text) ;
-	
-	$text =~ s/$separator\n// ;
-	
-	my @new_elements ;
-	
-	for my $element_text (split("$separator\n", $text))
-		{
-		chomp $element_text ;
-		
-		my $new_element = new App::Asciio::stripes::editable_box2
-							({
-							TITLE => '',
-							TEXT_ONLY => $element_text,
-							EDITABLE => 1,
-							RESIZABLE => 1,
-							}) ;
-		
-		if(! $boxed)
-			{
-			my $box_type = $new_element->get_box_type() ;
-			
-			for  my $box_element (@{$box_type})
-				{
-				$box_element->[0] = 0 ;
-				}
-				
-			$new_element->set_box_type($box_type) ;
-			$new_element->shrink() ;
-			}
-			
-		@$new_element{'X', 'Y'} = ($current_x, $current_y) ;
-		$current_x += $new_element->{WIDTH} + $self->{COPY_OFFSET_X} ; 
-		$current_y += $new_element->{HEIGHT} + $self->{COPY_OFFSET_Y} ;
-		
-		push @new_elements , $new_element ;
-		}
-	
-	$self->deselect_all_elements() ;
-	$self->add_elements(@new_elements) ;
-	$self->select_elements(1, @new_elements) ;
-	$self->update_display() ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
 sub flip_connector_display
 {
 my ($self) = @_ ;
