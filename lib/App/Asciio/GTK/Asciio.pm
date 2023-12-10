@@ -94,6 +94,15 @@ $self->{widget}->get_toplevel()->destroy() ;
 }
 
 #-----------------------------------------------------------------------------
+sub set_modified_state
+{
+my ($self, $state) = @_ ;
+$self->SUPER::set_modified_state($state) ; 
+
+$self->set_title($self->{TITLE}) ;
+}
+
+#-----------------------------------------------------------------------------
 
 sub set_title
 {
@@ -103,7 +112,9 @@ $self->SUPER::set_title($title) ;
 
 if(defined $title)
 	{
-	$self->{widget}->get_toplevel()->set_title($title . ' - asciio') ;
+	$self->{widget}->get_toplevel()->set_title($self->{MODIFIED} 
+												? '* ' . $title . ' - asciio' 
+												: $title . ' - asciio') ;
 	}
 }
 
@@ -473,6 +484,8 @@ if($self->{DRAW_HINT_LINES})
 	}
 
 $self->display_bindings_completion($gc, $character_width, $character_height) ;
+
+$self->set_modified_state($self->{MODIFIED}) ;
 
 return TRUE;
 }
