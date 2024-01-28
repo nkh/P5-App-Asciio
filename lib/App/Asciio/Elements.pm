@@ -300,6 +300,8 @@ for my $element (@elements)
 	
 	$self->{MODIFIED }++ ;
 	delete $element->{CACHE}{COORDINATES} ;
+	delete $element->{CACHE}{COORDINATES_BOUNDARIES};
+	delete $element->{CACHE}{GLYPHS} ;
 	}
 }
 

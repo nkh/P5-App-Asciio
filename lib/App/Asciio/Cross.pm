@@ -202,7 +202,7 @@ my @diagonal_char_func = (
 
 sub get_cross_mode_overlays
 {
-my ($zbuffer, $start_x, $end_x, $start_y, $end_y) = @_;
+my ($zbuffer) = @_;
 
 my @overlays ;
 
@@ -233,11 +233,6 @@ while (my ($coordinate, $char_stacks) = each %{ $cross_zbuffer->{intersecting_el
 while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}->%*)
 	{
 	my ($Y, $X) = split ';', $coordinate ;
-
-	if(defined $start_x)
-		{
-		next if(($Y>$end_y) || ($Y<$start_y) || ($X>$end_x) || ($X<$start_x)) ;
-		}
 
 	my $neighbors_stack = $cross_zbuffer->get_neighbors_stack($coordinate) ;
 

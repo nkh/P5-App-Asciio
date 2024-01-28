@@ -506,6 +506,7 @@ if(@selected_elements == 1 && ref $selected_elements[0] eq 'App::Asciio::stripes
 	
 	for my $element (@$elements)
 		{
+		delete $element->{CACHE} ;
 		@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
 		}
 	

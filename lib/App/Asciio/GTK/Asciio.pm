@@ -12,7 +12,7 @@ use Glib ':constants';
 use Gtk3 -init;
 use Pango ;
 
-use List::Util qw(min) ;
+use List::Util qw(min max) ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
@@ -56,9 +56,9 @@ $window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
 $window->signal_connect(button_press_event => \&button_press_event, $self);
 $window->signal_connect(button_release_event => \&button_release_event, $self);
 
-$window->signal_connect(configure_event => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
-$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
-$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+$window->signal_connect(configure_event => sub { $self->update_display() ; }) ;
+$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
+$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
 $sc_window->add_events(['GDK_SCROLL_MASK']) ;
 $sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
 
@@ -217,18 +217,46 @@ unless (defined $grid_rendering)
 $gc->set_source_surface($grid_rendering, 0, 0);
 $gc->paint;
 
+my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
+my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), 
+						   $self->{sc_window}->get_hadjustment()->get_value()) ;
+my ($start_x, $end_x, $start_y, $end_y) = 
+	(
+	int($h_value / $character_width - 2),
+	int(($h_value + $windows_width) / $character_width + 2),
+	int($v_value / $character_height - 2),
+	int(($v_value + $windows_height) / $character_height + 2)
+	) ;
+
 # draw elements
 my $element_index = 0 ;
+my $seen_elements ;
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
-	$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+	unless(exists $element->{CACHE}{COORDINATES_BOUNDARIES})
+		{
+		my @coordinates = map {[split ';']} keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}} ;
+		@coordinates = map {[reverse @$_]} @coordinates ;
+		$element->{CACHE}{COORDINATES} = \@coordinates ;
+		my @x = sort {$a <=> $b} map {$_->[0]} @{$element->{CACHE}{COORDINATES}} ;
+		my @y = sort {$a <=> $b} map {$_->[1]} @{$element->{CACHE}{COORDINATES}} ;
+		$element->{CACHE}{COORDINATES_BOUNDARIES} = [$x[0], $x[-1], $y[0], $y[-1]] ;
+		}
+	unless(($element->{CACHE}{COORDINATES_BOUNDARIES}->[0] > $end_x)
+		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[1] < $start_x)
+		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[2] > $end_y)
+		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[3] < $start_y))
+		{
+		$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+		push @{$seen_elements}, $element ;
+		}
 	}
 
-$self->draw_cross_overlays($gc, $widget_width, $widget_height, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $seen_elements, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -544,44 +572,44 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 
 sub draw_cross_overlays
 {
-my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+my ($self, $gc, $seen_elements, $character_width, $character_height) = @_ ;
 
-my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
-my $gco = Cairo::Context->create($surface) ;
+my $zbuffer = App::Asciio::ZBuffer->new(1, @{$seen_elements}) ;
 
-my $layout = Pango::Cairo::create_layout($gco) ;
-$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
+my ($default_background_color, $default_foreground_color) = (
+	$self->get_color('element_background'), $self->get_color('element_foreground')) ;
 
-my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
-my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), $self->{sc_window}->get_hadjustment()->get_value()) ;
-
-my ($start_x, $end_x, $start_y, $end_y) = 
-	(
-	int( $h_value / $character_width - 2 ), 
-	int( ($h_value + $windows_width) / $character_width + 2),
-	int( $v_value / $character_height - 2),
-	int( ($v_value + $windows_height) / $character_height + 2)
-	) ;
-
-my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
-
-for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer, $start_x, $end_x, $start_y, $end_y))
+for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+
+	$background_color //= $default_background_color ;
+	$foreground_color //= $default_foreground_color ;
 	
-	$background_color //= $self->get_color('element_background');
-	$foreground_color //= $self->get_color('element_foreground') ;
+	my $cache_key = $background_color . $foreground_color . $overlay ;
+
+	unless(exists $self->{CACHE}{CROSS_OVERLAY}{$cache_key})
+		{
+		my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+		my $gco = Cairo::Context->create($surface) ;
+
+		my $layout = Pango::Cairo::create_layout($gco) ;
+		$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
+
+
+		$gco->set_source_rgb(@{$background_color});
+		$gco->rectangle(0, 0, $character_width, $character_height) ;
+		$gco->fill();
+		
+		$gco->set_source_rgb(@{$foreground_color});
+		
+		$layout->set_text($overlay) ;
+		Pango::Cairo::show_layout($gco, $layout) ;
+
+		$self->{CACHE}{CROSS_OVERLAY}{$cache_key} = $surface ;
+		}
 	
-	$gco->set_source_rgb(@{$background_color});
-	$gco->rectangle(0, 0, $character_width, $character_height) ;
-	$gco->fill();
-	
-	$gco->set_source_rgb(@{$foreground_color});
-	
-	$layout->set_text($overlay) ;
-	Pango::Cairo::show_layout($gco, $layout) ;
-	
-	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
+	$gc->set_source_surface($self->{CACHE}{CROSS_OVERLAY}{$cache_key}, $x * $character_width, $y * $character_height);
 	$gc->paint;
 	}
 }
@@ -944,6 +972,28 @@ my $display = $self->{widget}->get_display() ;
 
 my $cursor = Gtk3::Gdk::Cursor->new_for_display($display, $cursor_name) ;
 
+$self->{widget}->get_parent_window()->set_cursor($cursor) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub change_custom_cursor
+{
+my ($self, $cursor_name) = @_ ;
+
+my $display = $self->{widget}->get_display() ;
+my $pixbuf ;
+
+eval
+	{
+	$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->{CUSTOM_MOUSE_CURSORS}->{$cursor_name});
+	};
+if ($@)
+	{
+	print STDERR "can not set custom cursor with $cursor_name :$@\n" ;
+	return ;
+	}
+my $cursor = Gtk3::Gdk::Cursor->new_from_pixbuf($display, $pixbuf, 0, 0);
 $self->{widget}->get_parent_window()->set_cursor($cursor) ;
 }
 

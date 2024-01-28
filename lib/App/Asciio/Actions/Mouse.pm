@@ -385,23 +385,9 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	my $new_h_value = $h_value - (($x - $self->{PREVIOUS_X}) * $character_width) ;
 	my $new_v_value = $v_value - (($y - $self->{PREVIOUS_Y}) * $character_height) ;
 	
-	if($new_h_value >= 0)
-		{
-		$self->{sc_window}->get_hadjustment()->set_value($new_h_value) ;
-		}
-	else
-		{
-		# scrollbar reached top
-		}
-	
-	if($new_v_value >= 0)
-		{
-		$self->{sc_window}->get_vadjustment()->set_value($new_v_value) ;
-		}
-	else
-		{
-		# scrollbar reached top
-		}
+	# when <=0 scrollbar reached top
+	$self->{sc_window}->get_hadjustment()->set_value(($new_h_value > 0) ? $new_h_value : 0) ;
+	$self->{sc_window}->get_vadjustment()->set_value(($new_v_value > 0) ? $new_v_value : 0) ;
 	}
 else
 	{

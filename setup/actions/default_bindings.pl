@@ -393,7 +393,10 @@ register_action_handlers
 	'Selection escape2'              => [ '000-Escape',        \&App::Asciio::Actions::Selection::selection_escape                      ],
 
 	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
-	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
+	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_motion_with_group              ],
+	'select mouse click'             => [ '000-button-press-1',\&App::Asciio::Actions::Selection::select_elements, 0                    ],
+	'select ignore group motion'     => [ 'C00-motion_notify', \&App::Asciio::Actions::Selection::select_motion_ignore_group            ],
+	'select ignore group mouse click'=> [ 'C00-button-press-1',\&App::Asciio::Actions::Selection::select_elements, 1                    ],
 	'<< polygon selection >>'        => [ '000-x',             sub { $_[0]->use_action_group('group_polygon') ; }                       ] ,
 	},
 
@@ -414,11 +417,13 @@ register_action_handlers
 '<< eraser leader >>' =>
 	{
 	SHORTCUTS   => '00S-E',
-	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
+	ENTER_GROUP => \&App::Asciio::Actions::Pen::eraser_enter,	
 	ESCAPE_KEYS => '000-Escape',
 	
-	'Eraser escape'                  => [ '000-Escape',        \&App::Asciio::Actions::Eraser::eraser_escape                            ],
-	'Eraser motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Eraser::erase_elements                           ],
+	'Eraser escape'                  => [ '000-Escape',          \&App::Asciio::Actions::Pen::pen_escape, 1                               ],
+	'Eraser motion'                  => [ '000-motion_notify',   \&App::Asciio::Actions::Pen::pen_mouse_motion                            ],
+	'Eraser delete'                  => [ '000-button-press-1',  \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
+	'Eraser delete2'                 => [ '000-Return',          \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
 	},
 
 '<< clone leader >>' =>

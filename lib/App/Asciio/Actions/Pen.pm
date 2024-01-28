@@ -18,9 +18,6 @@ use strict ; use warnings ;
 use List::Util qw(max) ;
 use List::MoreUtils qw(any);
 
-my $pen_cursor ;
-my $eraser_cursor ;
-
 my @pixel_elements_to_insert ;
 
 my $overlay_element ;
@@ -82,35 +79,7 @@ sub pen_custom_mouse_cursor
 {
 my ($asciio) = @_ ;
 
-unless(defined $pen_cursor)
-	{
-	my $display = $asciio->{widget}->get_display() ;
-
-	my ($pen_pixbuf, $eraser_pixbuf) ;
-
-	eval
-		{
-		$pen_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($asciio->{CUSTOM_MOUSE_CURSORS}->{'pen'});
-		$eraser_pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($asciio->{CUSTOM_MOUSE_CURSORS}->{'eraser'});
-		};
-	if ($@)
-		{
-		print STDERR "caught an error:$@\n" ;
-		return ;
-		}
-
-	$pen_cursor = Gtk3::Gdk::Cursor->new_from_pixbuf($display, $pen_pixbuf, 0, 0);
-	$eraser_cursor = Gtk3::Gdk::Cursor->new_from_pixbuf($display, $eraser_pixbuf, 0, 0);
-	}
-if($is_eraser)
-	{
-	# :TODO: The eraser mouse cursor is too large and inconvenient to operate. It needs to be replaced.Need a shape similar to that of a pen nib
-	$asciio->{widget}->get_parent_window()->set_cursor($eraser_cursor) ;
-	}
-else
-	{
-	$asciio->{widget}->get_parent_window()->set_cursor($pen_cursor) ;
-	}
+$asciio->change_custom_cursor(($is_eraser) ? 'eraser' : 'pen') ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -131,6 +100,16 @@ pen_custom_mouse_cursor($asciio) ;
 pen_set_overlay($asciio) ;
 $asciio->set_overlays_sub(\&pen_get_overlay) ;
 $asciio->update_display ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub eraser_enter
+{
+my ($asciio) = @_ ;
+
+$is_eraser = 1 ;
+
+pen_enter($asciio, undef, 1) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -193,7 +172,9 @@ else
 
 sub pen_escape
 {
-my ($asciio) = @_;
+my ($asciio, $is_eraser_escape) = @_;
+
+$is_eraser = 0 if $is_eraser_escape ;
 
 $asciio->set_overlays_sub(undef);
 $asciio->change_cursor('left_ptr');
@@ -219,8 +200,8 @@ for(my $i = 0; $i <= $steps; $i++)
 	
 	if (!@points
 		|| $y != $points[$#points][1]
-		|| abs($x - $points[$#points][0]) >= unicode_length(
-			$pen_chars[($char_index+$point_offset) % $char_num - 1]))
+		|| abs($x - $points[$#points][0]) >= (($is_eraser) ? 1 : unicode_length(
+		$pen_chars[($char_index+$point_offset) % $char_num - 1])))
 		{
 		push @points, [$x, $y];
 		$point_offset++;
@@ -284,6 +265,7 @@ my ($asciio) = @_ ;
 my $add_pixel =Clone::clone($pixel_elements_to_insert[$char_index]) ;
 
 @$add_pixel{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
+$asciio->create_undo_snapshot() ;
 $asciio->add_elements($add_pixel);
 $char_index = ($char_index + 1) % $char_num ;
 @last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]);
@@ -303,7 +285,7 @@ if(@elements)
 	{
 	$asciio->create_undo_snapshot() ;
 	$asciio->delete_elements(@elements) ;
-	
+	@last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]) ;
 	$asciio->update_display();
 	}
 }

@@ -32,9 +32,12 @@ my $t0 = Time::HiRes::gettimeofday();
 
 for my $element (@elements)
 	{
-	my $glyphs = $self->get_glyphs($element) ;
+	unless(exists $element->{CACHE}{GLYPHS})
+		{
+		$element->{CACHE}{GLYPHS} = $self->get_glyphs($element) ;
+		}
 	
-	for my $glyph ($glyphs->@*)
+	for my $glyph ($element->{CACHE}{GLYPHS}->@*)
 		{
 		my ($coordinate, $char) = $glyph->@* ;
 		

@@ -61,10 +61,22 @@ in which it was extracted.
 
 ### Switch to pen mode’s built-in eraser mode
 
-This is mainly used to delete a single element without exiting pen mode.
+This is mainly used to delete a single element without exiting pen mode. In pen 
+mode, press the Tab key to switch to the eraser. In order to match the pen 
+theme, the default eraser cursor is designed with a red pen tip (because 
+teachers generally use red pens when revising homework).
 
-:TODO: The details will be added after the code is improved.
+Press the TAB key again to switch back to pen mode.
 
+![eraser_mdoe](eraser_mode.gif)
+
+There are two ways to delete elements:
+1. Click an element directly
+2. Click the left mouse button and then drag, then all elements encountered 
+on the dragging path will be deleted.
+
+If you're not in pen mode, you can also **enter eraser mode directly** via 
+<<Shift + E>>.
 
 ## Merge the completed ascii art into a text box
 
