@@ -335,6 +335,7 @@ register_action_handlers
 	SHORTCUTS   => 'group_insert_element',
 	
 	'Add connector type 2'                => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector2', 0]               ],
+	'Add connector use top character'     => ['00S-C', \&App::Asciio::Actions::Elements::add_center_connector_use_top_character              ],
 	'Add if'                              => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/if', 1]                 ],
 	'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]            ],
 	'Add rhombus'                         => ['0A0-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],

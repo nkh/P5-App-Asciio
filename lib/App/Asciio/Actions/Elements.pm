@@ -13,6 +13,7 @@ use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::Stencil qw(create_box) ;
 use App::Asciio::stripes::pixel ;
+use App::Asciio::stripes::center_connect_box ;
 
 use App::Asciio::String ;
 
@@ -435,6 +436,29 @@ if(@selected_elements >= 1)
 	$self->update_display() ;
 	}
 }
+
+#----------------------------------------------------------------------------------------------
+sub add_center_connector_use_top_character
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot();
+
+my $current_point = $self->{MOUSE_Y} . ';' . $self->{MOUSE_X} ;
+my $all_elements_zbuffer = App::Asciio::ZBuffer->new(0, @{$self->{ELEMENTS}});
+my $current_char = $all_elements_zbuffer->{coordinates}{$current_point} // ' ' ;
+
+my $center_connector = App::Asciio::stripes::center_connect_box->new(
+	{TEXT_ONLY => $current_char, EDITABLE => 1, AUTO_SHRINK => 1}) ;
+
+@$center_connector{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
+
+$self->add_elements($center_connector) ;
+
+$self->update_display() ;
+
+}
+
 
 #----------------------------------------------------------------------------------------------
 
