@@ -5,6 +5,7 @@ use App::Asciio::Actions::Elements ;
 use App::Asciio::ZBuffer ;
 use App::Asciio::String qw(unicode_length) ;
 use App::Asciio::stripes::pixel ;
+use App::Asciio::Actions::Mouse ;
 
 use Gtk3 '-init' ;
 
@@ -28,8 +29,14 @@ my @last_points;
 my $char_index = 0 ;
 my $char_num ;
 my $is_eraser = 0 ;
+my $last_char_lenth = 1;
+my $mouse_emulation_move_direction = 'right' ;
+my $mouse_emulation_first_coordinate ;
 
-# :TODO: The following speed of the current overlay is very slow and needs to be analyze.
+# :TODO: Enter key wrap may be garbled
+# :TODO: vim bindings for all new mappings
+
+
 #----------------------------------------------------------------------------------------------
 sub pen_set_overlay
 {
@@ -113,12 +120,65 @@ pen_enter($asciio, undef, 1) ;
 }
 
 #----------------------------------------------------------------------------------------------
+sub pen_enter_then_move_mouse
+{
+my ($asciio, $chars) = @_ ;
+
+pen_enter($asciio, $chars, undef, $mouse_emulation_move_direction, 1) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub toggle_mouse_emulation_move_direction ()
+{
+if($mouse_emulation_move_direction eq 'right')
+	{
+	$mouse_emulation_move_direction = 'down' ;
+	}
+else
+	{
+	$mouse_emulation_move_direction = 'right' ;
+	}
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_enter
+{
+my ($asciio) = @_ ;
+
+$mouse_emulation_first_coordinate = undef ;
+App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_escape
+{
+my ($asciio) = @_ ;
+
+pen_escape($asciio) ;
+App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_right
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_left
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [-$last_char_lenth, 0]) ;
+}
+
+#----------------------------------------------------------------------------------------------
 sub pen_enter
 {
-my ($asciio, $chars, $no_selected_elements) = @_;
+my ($asciio, $chars, $no_selected_elements, $mouse_move_direction, $disable_overlay) = @_;
 
 # custom mouse cursor
-pen_custom_mouse_cursor($asciio) ;
+pen_custom_mouse_cursor($asciio) unless(defined $disable_overlay);
 
 my @get_chars ;
 
@@ -154,13 +214,15 @@ else
 
 pen_create_clone_elements($asciio, @pen_chars) ;
 
-pen_set_overlay($asciio) ;
-
-$asciio->set_overlays_sub(\&pen_get_overlay) ;
+unless(defined $disable_overlay)
+	{
+	pen_set_overlay($asciio) ;
+	$asciio->set_overlays_sub(\&pen_get_overlay) ;
+	}
 
 if(defined $chars)
 	{
-	pen_add_or_delete_element($asciio) ;
+	pen_add_or_delete_element($asciio, $mouse_move_direction) ;
 	}
 else
 	{
@@ -246,36 +308,60 @@ if($event->{STATE} ne 'dragging-button1')
 #----------------------------------------------------------------------------------------------
 sub pen_add_or_delete_element
 {
-my ($asciio) = @_ ;
+my ($asciio, $mouse_move_direction) = @_ ;
 if($is_eraser)
 	{
 	pen_delete_element($asciio) ;
 	}
 else
 	{
-	pen_add_element($asciio) ;
+	pen_add_element($asciio, $mouse_move_direction) ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+sub mouse_emulation_enter
+{
+my ($asciio) = @_ ;
+
+if(defined $mouse_emulation_first_coordinate)
+{
+($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = ($mouse_emulation_first_coordinate->[0], $mouse_emulation_first_coordinate->[1] + 1) ;
+$asciio->update_display() ;
+}
+
+$mouse_emulation_first_coordinate = undef ;
 }
 
 #----------------------------------------------------------------------------------------------
 sub pen_add_element
 {
-my ($asciio) = @_ ;
+my ($asciio, $mouse_move_direction) = @_ ;
 
-my $add_pixel =Clone::clone($pixel_elements_to_insert[$char_index]) ;
+my $add_pixel = Clone::clone($pixel_elements_to_insert[$char_index]) ;
+$last_char_lenth = unicode_length($pen_chars[$char_index]) ;
 
 @$add_pixel{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
 $asciio->create_undo_snapshot() ;
+
+# If there are one or more pixel elements below the current coordinate, delete it.
+pen_delete_element($asciio, 1) ;
+
 $asciio->add_elements($add_pixel);
 $char_index = ($char_index + 1) % $char_num ;
 @last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]);
+
+@$mouse_emulation_first_coordinate = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) unless(defined $mouse_emulation_first_coordinate) ;
+
+mouse_move_before_or_after($asciio) if(defined $mouse_move_direction) ;
+
 $asciio->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
 sub pen_delete_element
 {
-my ($asciio) = @_ ;
+my ($asciio, $pixel_delete_only) = @_ ;
 
 my @elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{ELEMENTS}} ;
 
@@ -284,10 +370,62 @@ my @elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->
 if(@elements)
 	{
 	$asciio->create_undo_snapshot() ;
-	$asciio->delete_elements(@elements) ;
+	if($pixel_delete_only)
+		{
+		$asciio->delete_elements(grep { ref($_) eq 'App::Asciio::stripes::pixel' } @elements) ;
+		}
+	else
+		{
+		$asciio->delete_elements(@elements) ;
+		}
 	@last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]) ;
 	$asciio->update_display();
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+sub mouse_move_before_or_after
+{
+my ($asciio) = @_ ;
+
+if(defined $mouse_emulation_move_direction)
+	{
+	if($mouse_emulation_move_direction eq 'down')
+		{
+		$asciio->{MOUSE_Y}++ ;
+		}
+	elsif($mouse_emulation_move_direction eq 'right')
+		{
+		$asciio->{MOUSE_X}++ ;
+		}
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+sub mouse_move_back_before_or_after
+{
+my ($asciio) = @_ ;
+
+if(defined $mouse_emulation_move_direction)
+	{
+	if($mouse_emulation_move_direction eq 'down')
+		{
+		$asciio->{MOUSE_Y}-- ;
+		}
+	elsif($mouse_emulation_move_direction eq 'right')
+		{
+		$asciio->{MOUSE_X}-- ;
+		}
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+sub pen_back_delete_element
+{
+my ($asciio, $pixel_delete_only) = @_ ;
+
+mouse_move_back_before_or_after($asciio) ;
+pen_delete_element($asciio, $pixel_delete_only) ;
 }
 
 #----------------------------------------------------------------------------------------------

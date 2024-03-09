@@ -31,8 +31,8 @@ register_action_handlers
 (
 'Undo'                               => [['C00-z', '000-u'],                       \&App::Asciio::Actions::Unsorted::undo                                              ],
 'Redo'                               => [['C00-y', 'C00-r'],                       \&App::Asciio::Actions::Unsorted::redo                                              ],
-'Zoom in'                            => [['000-plus', 'C00-j', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                           ],
-'Zoom out'                           => [['000-minus', 'C00-h', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                          ],
+'Zoom in'                            => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                           ],
+'Zoom out'                           => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                          ],
 
 'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 0]   ],
 'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 0]   ],
@@ -103,16 +103,21 @@ register_action_handlers
 # mouse emulation
 'Mouse emulation toggle'             => [['000-apostrophe', "'"],                  \&App::Asciio::Actions::Mouse::toggle_mouse                                         ],
 
-'Mouse emulation left-click'         => ['000-odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_left_click                                     ],
+'Mouse emulation left-click'         => [['000-odiaeresis', '000-space'],          \&App::Asciio::Actions::Mouse::mouse_left_click                                     ],
 'Mouse emulation expand selection'   => ['00S-Odiaeresis',                         \&App::Asciio::Actions::Mouse::expand_selection                                     ],
-'Mouse emulation selection flip'     => ['C00-odiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
+'Mouse emulation selection flip'     => [['C00-odiaeresis', '000-1'],              \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
 
 'Mouse emulation right-click'        => ['000-adiaeresis',                         \&App::Asciio::Actions::Mouse::mouse_right_click                                    ],
 
-'Mouse emulation move left'          => ['C00-Left',                               \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]                                 ],
-'Mouse emulation move right'         => ['C00-Right',                              \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                                 ],
-'Mouse emulation move up'            => ['C00-Up',                                 \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                                 ],
-'Mouse emulation move down'          => ['C00-Down',                               \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                                 ],
+'Mouse emulation move left'          => [['C00-Left', 'C00-h'],                    \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]                                 ],
+'Mouse emulation move right'         => [['C00-Right', 'C00-l'],                   \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                                 ],
+'Mouse emulation move up'            => [['C00-Up', 'C00-k'],                      \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                                 ],
+'Mouse emulation move down'          => [['C00-Down', 'C00-j'],                    \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                                 ],
+
+'Mouse emulation quick move left'    => ['0A0-h',                                  \&App::Asciio::Actions::Mouse::mouse_move, [-4,  0]                                 ],
+'Mouse emulation quick move right'   => ['0A0-l',                                  \&App::Asciio::Actions::Mouse::mouse_move, [ 4,  0]                                 ],
+'Mouse emulation quick move up'      => ['0A0-k',                                  \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -4]                                 ],
+'Mouse emulation quick move down'    => ['0A0-j',                                  \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  4]                                 ],
 
 'Mouse emulation drag left'          => ['00S-Left',                               \&App::Asciio::Actions::Mouse::mouse_drag_left                                      ],
 'Mouse emulation drag right'         => ['00S-Right',                              \&App::Asciio::Actions::Mouse::mouse_drag_right                                     ],
@@ -123,6 +128,66 @@ register_action_handlers
 
 'Copy to clipboard'                  => [['C00-c', 'C00-Insert'],                  \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard              ],
 'Insert from clipboard'              => [['C00-v', '00S-Insert'],                  \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard            ],
+
+'Save'                               => ['C00-s',                                  \&App::Asciio::Actions::File::save, undef                                           ],
+
+'<< emulation pen leader >>' =>
+	{
+	SHORTCUTS   => "00S-quotedbl",
+	ENTER_GROUP => \&App::Asciio::Actions::Pen::pen_mouse_emulation_enter,	
+	ESCAPE_KEYS => '000-Escape',
+	
+	'mouse pen emulation escape'                  => [ '000-Escape',                       \&App::Asciio::Actions::Pen::pen_mouse_emulation_escape                             ],
+	'mouse pen emulation toggle direction'        => [ 'C00-Tab',                          \&App::Asciio::Actions::Pen::toggle_mouse_emulation_move_direction                  ],
+
+	'Mouse pen emulation move left'          => [['000-Left', 'C00-h'],                    \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_left                          ],
+	'Mouse pen emulation move right'         => [['000-Right', 'C00-l', '000-space'],      \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_right                         ],
+	'Mouse pen emulation move right tab'     => ['000-Tab',                                \&App::Asciio::Actions::Mouse::mouse_move, [ 4,  0]                                 ],
+	'Mouse pen emulation move right back tab'=> ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::Mouse::mouse_move, [ -4,  0]                                ],
+	'Mouse pen emulation move up'            => [['000-Up', 'C00-k'],                      \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                                 ],
+	'Mouse pen emulation move down'          => [['000-Down', 'C00-j'],                    \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                                 ],
+	'Mouse pen emulation enter'              => ['000-Return',                             \&App::Asciio::Actions::Pen::mouse_emulation_enter                                  ],
+	'Mouse pen emulation delete pixel'       => ['000-Delete',                             \&App::Asciio::Actions::Pen::pen_delete_element, 1                                  ],
+	'Mouse pen emulation back delete pixel'  => ['000-BackSpace',                          \&App::Asciio::Actions::Pen::pen_back_delete_element, 1                             ],
+
+
+	(map { "mouse emulation pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::Actions::Pen::pen_enter_then_move_mouse, [$_->[1]]]}(
+		['asterisk'    , '*']  ,
+		['parenleft'   , '(']  ,
+		['exclam'      , '!']  ,
+		['at'          , '@']  ,
+		['numbersign'  , '#']  ,
+		['dollar'      , '$']  ,
+		['percent'     , '%']  ,
+		['asciicircum' , '^']  ,
+		['ampersand'   , '&']  ,
+		['parenright'  , ')']  ,
+		['underscore'  , '_']  ,
+		['plus'        , '+']  ,
+		['braceleft'   , '{']  ,
+		['braceright'  , '}']  ,
+		['colon'       , ':']  ,
+		['quotedbl'    , '"']  ,
+		['asciitilde'  , '~']  ,
+		['bar'         , '|']  ,
+		['question'    , '?']  ,
+		['less'        , '<']  ,
+		['greater'     , '>']  , )) ,
+	(map { "mouse emulation pen insert " . $_->[0] => ["000-" . $_->[0], \&App::Asciio::Actions::Pen::pen_enter_then_move_mouse, [$_->[1]]]}(
+		['minus'        , '-']  ,
+		['equal'        , '=']  ,
+		['bracketleft'  , '[']  ,
+		['bracketright' , ']']  ,
+		['semicolon'    , ';']  ,
+		['apostrophe'   , '\''] ,
+		['grave'        , '`']  ,
+		['backslash'    , '\\'] ,
+		['slash'        , '/']  ,
+		['comma'        , ',']  ,
+		['period'       , '.']  , )) ,
+	(map { "mouse emulation pen insert " . $_ => ["00S-" . $_, \&App::Asciio::Actions::Pen::pen_enter_then_move_mouse, [$_]] }('A'..'Z')),
+	(map { "mouse emulation pen insert " . $_ => ["000-" . $_, \&App::Asciio::Actions::Pen::pen_enter_then_move_mouse, [$_]] }('a'..'z', '0'..'9')),
+	},
 
 '<< yank leader >>' =>
 	{
@@ -608,6 +673,7 @@ SHORTCUTS => '00S-question',
 '<< element leader >>'           => 1,
 '<< clone leader >>'             => 1,
 '<< pen leader >>'               => 1,
+'<< emulation pen leader >>'     => 1,
 '<< git leader >>'               => 1,
 '<< move arrow ends leader >>'   => 1,
 

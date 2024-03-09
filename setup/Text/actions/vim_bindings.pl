@@ -94,8 +94,28 @@ register_action_handlers_remove_old_shortcuts
 
 'Mouse on element id'                             => ['not set'],
 
+'<< emulation pen leader >>' =>
+	{
+	SHORTCUTS   => ['not_set' ],
+	ENTER_GROUP => ['not_set' ],
+	ESCAPE_KEYS => ['not_set' ],
+	
+	'mouse pen emulation escape'                  => ['not_set' ],
+	'mouse pen emulation toggle direction'        => ['not_set' ],
+
+	'Mouse pen emulation move left'          => ['not_set' ],
+	'Mouse pen emulation move right'         => ['not_set' ],
+	'Mouse pen emulation move right tab'     => ['not_set' ],
+	'Mouse pen emulation move right back tab'=> ['not_set' ],
+	'Mouse pen emulation move up'            => ['not_set' ],
+	'Mouse pen emulation move down'          => ['not_set' ],
+	'Mouse pen emulation enter'              => ['not_set' ],
+	'Mouse pen emulation delete pixel'       => ['not_set' ],
+	'Mouse pen emulation back delete pixel'  => ['not_set' ],
 
 
+
+	},
 
 '<< yank leader >>' =>
 	{
@@ -308,6 +328,7 @@ register_action_handlers_remove_old_shortcuts
 	SHORTCUTS => 'group_insert_element',
 	
 	'Add connector type 2'                    => ['c'],
+	'Add connector use top character'         => ['not_set'],
 	'Add if'                                  => ['i'],
 	'Add process'                             => ['p'],
 	'Add rhombus'                             => ['r'],
@@ -430,10 +451,10 @@ register_action_handlers_remove_old_shortcuts
 	
 	'pen escape'                   => [ 'not set' ],
 	'pen motion'                   => [ 'not set' ], 
-	
-	'pen insert'                   => [ 'not set' ],
-	'pen insert2'                  => [ 'not set' ],
-	'pen mouse change char'        => [ 'not set' ],
+	'pen insert or delete'         => [ 'not set' ],
+    'pen insert2 or delete2'       => [ 'not set' ],
+    'pen mouse change char'        => [ 'not set' ],
+    'pen eraser switch'            => [ 'not set' ],
 	},
 
 '<< git leader >>' =>
