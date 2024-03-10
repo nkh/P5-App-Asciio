@@ -482,7 +482,7 @@ if ($self->{MOUSE_TOGGLE})
 	my $start_x = $self->{MOUSE_X} * $character_width ;
 	my $start_y = $self->{MOUSE_Y} * $character_height ;
 	
-	$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
+	$gc->set_source_rgba(@{$self->get_color('mouse_rectangle')});
 	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
 	$gc->fill() ;
 	$gc->stroke() ;

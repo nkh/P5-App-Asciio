@@ -141,12 +141,17 @@ register_action_handlers
 	'mouse pen emulation toggle direction'        => [ 'C00-Tab',                          \&App::Asciio::Actions::Pen::toggle_mouse_emulation_move_direction                  ],
 
 	'Mouse pen emulation move left'          => [['000-Left', 'C00-h'],                    \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_left                          ],
-	'Mouse pen emulation move right'         => [['000-Right', 'C00-l', '000-space'],      \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_right                         ],
-	'Mouse pen emulation move right tab'     => ['000-Tab',                                \&App::Asciio::Actions::Mouse::mouse_move, [ 4,  0]                                 ],
-	'Mouse pen emulation move right back tab'=> ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::Mouse::mouse_move, [ -4,  0]                                ],
-	'Mouse pen emulation move up'            => [['000-Up', 'C00-k'],                      \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                                 ],
-	'Mouse pen emulation move down'          => [['000-Down', 'C00-j'],                    \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                                 ],
-	'Mouse pen emulation enter'              => ['000-Return',                             \&App::Asciio::Actions::Pen::mouse_emulation_enter                                  ],
+	'Mouse pen emulation move right'         => [['000-Right', 'C00-l'],                   \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_right                         ],
+	'Mouse pen emulation move up'            => [['000-Up', 'C00-k'],                      \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_up                            ],
+	'Mouse pen emulation move down'          => [['000-Down', 'C00-j'],                    \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_down                          ],
+	'Mouse pen emulation move left quick'    => ['0A0-h',                                  \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_left_quick                    ],
+	'Mouse pen emulation move right quick'   => ['0A0-l',                                  \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_right_quick                   ],
+	'Mouse pen emulation move up quick'      => ['0A0-k',                                  \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_up_quick                      ],
+	'Mouse pen emulation move down quick'    => ['0A0-j',                                  \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_down_quick                    ],
+	'Mouse pen emulation move space'         => ['000-space',                              \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_space                         ],
+	'Mouse pen emulation move left tab'      => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_left_tab                      ],
+	'Mouse pen emulation move right tab'     => ['000-Tab',                                \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_right_tab                     ],
+	'Mouse pen emulation enter'              => ['000-Return',                             \&App::Asciio::Actions::Pen::mouse_emulation_press_enter_key                        ],
 	'Mouse pen emulation delete pixel'       => ['000-Delete',                             \&App::Asciio::Actions::Pen::pen_delete_element, 1                                  ],
 	'Mouse pen emulation back delete pixel'  => ['000-BackSpace',                          \&App::Asciio::Actions::Pen::pen_back_delete_element, 1                             ],
 
@@ -488,8 +493,8 @@ register_action_handlers
 	
 	'Eraser escape'                  => [ '000-Escape',          \&App::Asciio::Actions::Pen::pen_escape, 1                               ],
 	'Eraser motion'                  => [ '000-motion_notify',   \&App::Asciio::Actions::Pen::pen_mouse_motion                            ],
-	'Eraser delete'                  => [ '000-button-press-1',  \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
-	'Eraser delete2'                 => [ '000-Return',          \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
+	'Eraser delete'                  => [ '000-button-press-1',  \&App::Asciio::Actions::Pen::pen_add_or_delete_element, 0                ],
+	'Eraser delete2'                 => [ '000-Return',          \&App::Asciio::Actions::Pen::pen_add_or_delete_element, 0                ],
 	},
 
 '<< clone leader >>' =>
@@ -529,8 +534,8 @@ register_action_handlers
 	'pen escape'                   => [ '000-Escape',          \&App::Asciio::Actions::Pen::pen_escape                                  ],
 	'pen motion'                   => [ '000-motion_notify',   \&App::Asciio::Actions::Pen::pen_mouse_motion                            ], 
 	
-	'pen insert or delete'         => [ '000-button-press-1',  \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
-	'pen insert2 or delete2'       => [ '000-Return',          \&App::Asciio::Actions::Pen::pen_add_or_delete_element                   ],
+	'pen insert or delete'         => [ '000-button-press-1',  \&App::Asciio::Actions::Pen::pen_add_or_delete_element, 0                ],
+	'pen insert2 or delete2'       => [ '000-Return',          \&App::Asciio::Actions::Pen::pen_add_or_delete_element, 0                ],
 	'pen mouse change char'        => [ '000-button-press-3',  \&App::Asciio::Actions::Pen::mouse_change_char                           ],
 	'pen eraser switch'            => [ '000-Tab',             \&App::Asciio::Actions::Pen::pen_eraser_switch                           ],
 	(map { "pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::Actions::Pen::pen_enter, [$_->[1]]]}(

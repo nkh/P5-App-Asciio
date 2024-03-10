@@ -782,6 +782,8 @@ sub motion_notify_event
 {
 my ($self, $event) = @_ ;
 
+$self->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+
 if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
    {
    $self->{EDIT_SEMAPHORE}--;

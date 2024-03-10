@@ -31,10 +31,8 @@ my $char_num ;
 my $is_eraser = 0 ;
 my $last_char_lenth = 1;
 my $mouse_emulation_move_direction = 'right' ;
-my $mouse_emulation_first_coordinate ;
 
 # :TODO: Enter key wrap may be garbled
-# :TODO: vim bindings for all new mappings
 
 
 #----------------------------------------------------------------------------------------------
@@ -145,8 +143,8 @@ sub pen_mouse_emulation_enter
 {
 my ($asciio) = @_ ;
 
-$mouse_emulation_first_coordinate = undef ;
 App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -159,10 +157,26 @@ App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
 }
 
 #---------------------------------------------------------------------------------------------
-sub pen_mouse_emulation_move_right
+sub pen_mouse_emulation_move_space
 {
 my ($asciio) = @_ ;
 App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
+}
+
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_left_tab
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [-4, 0]) ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_right_tab
+{
+my ($asciio) = @_ ;
+
+App::Asciio::Actions::Mouse::mouse_move($asciio, [4, 0]) ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -170,6 +184,64 @@ sub pen_mouse_emulation_move_left
 {
 my ($asciio) = @_ ;
 App::Asciio::Actions::Mouse::mouse_move($asciio, [-$last_char_lenth, 0]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_right
+{
+my ($asciio) = @_ ;
+
+App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_up
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [0, -1]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_down
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [0, 1]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_up_quick
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [0, -4]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_down_quick
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [0, 4]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_right_quick
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [4, 0]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+}
+
+#---------------------------------------------------------------------------------------------
+sub pen_mouse_emulation_move_left_quick
+{
+my ($asciio) = @_ ;
+App::Asciio::Actions::Mouse::mouse_move($asciio, [-4, 0]) ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -320,17 +392,17 @@ else
 }
 
 #----------------------------------------------------------------------------------------------
-sub mouse_emulation_enter
+sub mouse_emulation_press_enter_key
 {
 my ($asciio) = @_ ;
 
-if(defined $mouse_emulation_first_coordinate)
+if(defined $asciio->{MOUSE_EMULATION_FIRST_COORDINATE})
 {
-($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = ($mouse_emulation_first_coordinate->[0], $mouse_emulation_first_coordinate->[1] + 1) ;
+($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = ($asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[0], $asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[1] + 1) ;
 $asciio->update_display() ;
 }
 
-$mouse_emulation_first_coordinate = undef ;
+$asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -351,9 +423,9 @@ $asciio->add_elements($add_pixel);
 $char_index = ($char_index + 1) % $char_num ;
 @last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]);
 
-@$mouse_emulation_first_coordinate = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) unless(defined $mouse_emulation_first_coordinate) ;
+@{$asciio->{MOUSE_EMULATION_FIRST_COORDINATE}} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) unless(defined $asciio->{MOUSE_EMULATION_FIRST_COORDINATE}) ;
 
-mouse_move_before_or_after($asciio) if(defined $mouse_move_direction) ;
+mouse_move_forward($asciio) if($mouse_move_direction) ;
 
 $asciio->update_display() ;
 }
@@ -384,9 +456,11 @@ if(@elements)
 }
 
 #----------------------------------------------------------------------------------------------
-sub mouse_move_before_or_after
+sub mouse_move_forward
 {
 my ($asciio) = @_ ;
+
+print("mouse_move_forward called" . "\n") ;
 
 if(defined $mouse_emulation_move_direction)
 	{
@@ -402,7 +476,7 @@ if(defined $mouse_emulation_move_direction)
 }
 
 #----------------------------------------------------------------------------------------------
-sub mouse_move_back_before_or_after
+sub mouse_move_backward
 {
 my ($asciio) = @_ ;
 
@@ -424,7 +498,7 @@ sub pen_back_delete_element
 {
 my ($asciio, $pixel_delete_only) = @_ ;
 
-mouse_move_back_before_or_after($asciio) ;
+mouse_move_backward($asciio) ;
 pen_delete_element($asciio, $pixel_delete_only) ;
 }
 
