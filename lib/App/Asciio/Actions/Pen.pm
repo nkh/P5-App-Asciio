@@ -31,8 +31,7 @@ my $char_num ;
 my $is_eraser = 0 ;
 my $last_char_lenth = 1;
 my $mouse_emulation_move_direction = 'right' ;
-
-# :TODO: Enter key wrap may be garbled
+my $is_insert_mode = 0 ;
 
 
 #----------------------------------------------------------------------------------------------
@@ -160,7 +159,14 @@ App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
 sub pen_mouse_emulation_move_space
 {
 my ($asciio) = @_ ;
-App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
+if($mouse_emulation_move_direction eq 'right')
+	{
+	App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
+	}
+else
+	{
+	App::Asciio::Actions::Mouse::mouse_move($asciio, [0, $last_char_lenth]) ;
+	}
 }
 
 
@@ -168,7 +174,14 @@ App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
 sub pen_mouse_emulation_move_left_tab
 {
 my ($asciio) = @_ ;
-App::Asciio::Actions::Mouse::mouse_move($asciio, [-4, 0]) ;
+if($mouse_emulation_move_direction eq 'right')
+	{
+	App::Asciio::Actions::Mouse::mouse_move($asciio, [-4, 0]) ;
+	}
+else
+	{
+	App::Asciio::Actions::Mouse::mouse_move($asciio, [0, -4]) ;
+	}
 }
 
 #---------------------------------------------------------------------------------------------
@@ -176,7 +189,14 @@ sub pen_mouse_emulation_move_right_tab
 {
 my ($asciio) = @_ ;
 
-App::Asciio::Actions::Mouse::mouse_move($asciio, [4, 0]) ;
+if($mouse_emulation_move_direction eq 'right')
+	{
+	App::Asciio::Actions::Mouse::mouse_move($asciio, [4, 0]) ;
+	}
+else
+	{
+	App::Asciio::Actions::Mouse::mouse_move($asciio, [0, 4]) ;
+	}
 }
 
 #---------------------------------------------------------------------------------------------
@@ -303,6 +323,14 @@ else
 }
 
 #----------------------------------------------------------------------------------------------
+sub toggle_mouse_emulation_insert_mode
+{
+my ($asciio) = @_ ;
+
+$is_insert_mode ^= 1 ;
+}
+
+#----------------------------------------------------------------------------------------------
 
 sub pen_escape
 {
@@ -398,7 +426,14 @@ my ($asciio) = @_ ;
 
 if(defined $asciio->{MOUSE_EMULATION_FIRST_COORDINATE})
 {
-($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = ($asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[0], $asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[1] + 1) ;
+if($mouse_emulation_move_direction eq 'right')
+	{
+	($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = ($asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[0], $asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[1] + 1) ;
+	}
+else
+	{
+	($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = ($asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[0] + 1, $asciio->{MOUSE_EMULATION_FIRST_COORDINATE}->[1]) ;
+	}
 $asciio->update_display() ;
 }
 
@@ -419,6 +454,8 @@ $asciio->create_undo_snapshot() ;
 # If there are one or more pixel elements below the current coordinate, delete it.
 pen_delete_element($asciio, 1) ;
 
+move_other_pixel_elements($asciio) if($mouse_move_direction) ;
+
 $asciio->add_elements($add_pixel);
 $char_index = ($char_index + 1) % $char_num ;
 @last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]);
@@ -428,6 +465,31 @@ $char_index = ($char_index + 1) % $char_num ;
 mouse_move_forward($asciio) if($mouse_move_direction) ;
 
 $asciio->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub move_other_pixel_elements
+{
+my ($asciio) = @_ ;
+
+return unless($is_insert_mode) ;
+
+if($mouse_emulation_move_direction eq 'right')
+	{
+	for my $element (grep { ref($_) eq 'App::Asciio::stripes::pixel' 
+							&& $_->{Y} == $asciio->{MOUSE_Y} }@{$asciio->{ELEMENTS}})
+		{
+		$asciio->move_elements(1, 0, $element) if($element->{X} >= $asciio->{MOUSE_X}) ;
+		}
+	}
+else
+	{
+	for my $element (grep { ref($_) eq 'App::Asciio::stripes::pixel' 
+							&& $_->{X} == $asciio->{MOUSE_X} }@{$asciio->{ELEMENTS}})
+		{
+		$asciio->move_elements(0, 1, $element) if($element->{Y} >= $asciio->{MOUSE_Y}) ;
+		}
+	}
 }
 
 #----------------------------------------------------------------------------------------------

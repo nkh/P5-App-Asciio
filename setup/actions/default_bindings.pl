@@ -139,6 +139,7 @@ register_action_handlers
 	
 	'mouse pen emulation escape'                  => [ '000-Escape',                       \&App::Asciio::Actions::Pen::pen_mouse_emulation_escape                             ],
 	'mouse pen emulation toggle direction'        => [ 'C00-Tab',                          \&App::Asciio::Actions::Pen::toggle_mouse_emulation_move_direction                  ],
+	'mouse pen emulation toggle insert mode'      => [ 'C0S-ISO_Left_Tab',                 \&App::Asciio::Actions::Pen::toggle_mouse_emulation_insert_mode                     ],
 
 	'Mouse pen emulation move left'          => [['000-Left', 'C00-h'],                    \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_left                          ],
 	'Mouse pen emulation move right'         => [['000-Right', 'C00-l'],                   \&App::Asciio::Actions::Pen::pen_mouse_emulation_move_right                         ],
