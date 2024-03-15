@@ -100,15 +100,15 @@ for ($asciio->get_selected_elements(1))
 	{
 	if($_->isa('App::Asciio::stripes::editable_box2'))
 		{
-		App::Asciio::Boxes::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'unicode' : 'dash'}, 0)
+		App::Asciio::Boxes::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'unicode' : 'dash'}, 0) ;
 		}
 	elsif($_->isa('App::Asciio::stripes::section_wirl_arrow'))
 		{
-		App::Asciio::Arrows::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'unicode' : 'dash'}, 0)
+		App::Asciio::Arrows::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'unicode' : 'dash'}, 0) ;
 		}
 	elsif($_->isa('App::Asciio::stripes::angled_arrow'))
 		{
-		App::Asciio::Arrows::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'angled_arrow_unicode' : 'angled_arrow_dash' }, 0)
+		App::Asciio::Arrows::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'angled_arrow_unicode' : 'angled_arrow_dash' }, 0) ;
 		}
 	#elsif
 		# || 'App::Asciio::stripes::rhombus' eq ref $element
@@ -120,6 +120,71 @@ for ($asciio->get_selected_elements(1))
 	}
 
 $asciio->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub elements_change_type
+{
+my ($asciio, $element_type, $element_class, $change_type_function, $use_ref) = @_ ;
+
+$asciio->create_undo_snapshot() ;
+
+for my $element (grep { $use_ref ? ref $_ eq $element_class : $_->isa($element_class) } $asciio->get_selected_elements(1))
+{
+	$change_type_function->($asciio, { ELEMENT => $element, TYPE => $element_type }, 0) ;
+	delete $element->{CACHE} ;
+}
+
+$asciio->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub box_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::editable_box2', \&App::Asciio::Boxes::change_type, 0) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub wirl_arrow_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::section_wirl_arrow', \&App::Asciio::Arrows::change_type, 0) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub angled_arrow_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::angled_arrow', \&App::Asciio::Arrows::change_type, 0) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub ellipse_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::ellipse', \&App::Asciio::Boxes::change_type, 1) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub rhombus_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::rhombus', \&App::Asciio::Boxes::change_type, 1) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub triangle_up_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::triangle_up', \&App::Asciio::Boxes::change_type, 1) ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub triangle_down_elements_change_type
+{
+my ($asciio, $element_type) = @_ ;
+elements_change_type($asciio, $element_type, 'App::Asciio::stripes::triangle_down', \&App::Asciio::Boxes::change_type, 1) ;
 }
 
 #----------------------------------------------------------------------------------------------

@@ -453,6 +453,92 @@ register_action_handlers
 	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],
    	'convert to big text'            => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_element_to_text                   ], 
    	'convert to small pixels'        => ['000-p',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_pixels                ], 
+
+	'<< BoxType>>'                   => ['000-b', sub { $_[0]->use_action_group('group_box_type_change') ; }                            ] ,
+	'<< WirlArrowType>>'             => ['000-w', sub { $_[0]->use_action_group('group_wirl_arrow_type_change') ; }                     ] ,
+	'<< AngledArrowType>>'           => ['000-a', sub { $_[0]->use_action_group('group_angled_arrow_type_change') ; }                   ] ,
+	'<< EllipseType>>'               => ['000-e', sub { $_[0]->use_action_group('group_ellipse_type_change') ; }                        ] ,
+	'<< RhombusType>>'               => ['000-r', sub { $_[0]->use_action_group('group_rhombus_type_change') ; }                        ] ,
+	'<< TriangleUpType>>'            => ['000-u', sub { $_[0]->use_action_group('group_triangle_up_type_change') ; }                    ] ,
+	'<< TriangleDownType>>'          => ['000-d', sub { $_[0]->use_action_group('group_triangle_down_type_change') ; }                  ] ,
+	},
+
+'group_box_type_change' => 
+	{
+	SHORTCUTS   => 'group_box_type_change',
+
+	'change box type dash'                      => ['000-d', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'dash'                           ],
+	'change box type dot'                       => ['00S-D', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'dot'                            ],
+	'charge box type star'                      => ['000-s', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'star'                           ],
+	'charge box type math_parantheses'          => ['000-m', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'math_parantheses'               ],
+	'charge box type unicode'                   => ['000-u', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode'                        ],
+	'charge box type unicode_bold'              => ['00S-U', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_bold'                   ],
+	'charge box type unicode_double_line'       => ['000-l', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_double_line'            ],
+	'charge box type unicode_with_filler_type1' => ['000-1', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_with_filler_type1'      ],
+	'charge box type unicode_with_filler_type2' => ['000-2', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_with_filler_type2'      ],
+	'charge box type unicode_with_filler_type3' => ['000-3', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_with_filler_type3'      ],
+	'charge box type unicode_with_filler_type4' => ['000-4', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_with_filler_type4'      ],
+	'charge box type unicode_hollow_dot'        => ['000-h', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_hollow_dot'             ],
+	'charge box type unicode_math_parantheses'  => ['00S-M', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_math_paranthesesar'     ],
+	},
+
+'group_wirl_arrow_type_change' => 
+	{
+	SHORTCUTS   => 'group_wirl_arrow_type_change',
+
+	'change wirl arrow type dash'                => ['000-d', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'dash'                    ],
+	'change wirl arrow type dash_no_arrow'       => ['00S-D', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'dash_no_arrow'           ],
+	'change wirl arrow type dot'                 => ['C00-d', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'dot'                     ],
+	'change wirl arrow type dot_no_arrow'        => ['0A0-D', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'dot_no_arrow'            ],
+	'change wirl arrow type star'                => ['000-s', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'star'                    ],
+	'change wirl arrow type octo'                => ['000-o', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'octo'                    ],
+	'change wirl arrow type unicode'             => ['000-u', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'unicode'                 ],
+	'change wirl arrow type unicode_bold'        => ['00S-U', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'unicode_bold'            ],
+	'change wirl arrow type unicode_double_line' => ['000-l', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'unicode_double_line'     ],
+	'change wirl arrow type unicode_no_arrow'    => ['000-n', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'unicode_no_arrow'        ],
+	'change wirl arrow type unicode_hollow_dot'  => ['000-h', \&App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type, 'unicode_hollow_dot'      ],
+	},
+
+'group_angled_arrow_type_change' => 
+	{
+	SHORTCUTS   => 'group_angled_arrow_type_change',
+
+	'change angled arrow type dash'              => ['000-d', \&App::Asciio::Actions::Asciio::angled_arrow_elements_change_type, 'angled_arrow_dash'    ],
+	'change angled arrow type unicode'           => ['000-u', \&App::Asciio::Actions::Asciio::angled_arrow_elements_change_type, 'angled_arrow_unicode' ],
+	},
+
+'group_ellipse_type_change' => 
+	{
+	SHORTCUTS   => 'group_ellipse_type_change',
+
+	'change ellipse type normal'                 => ['000-n', \&App::Asciio::Actions::Asciio::ellipse_elements_change_type, 'ellipse_normal'                 ],
+	'change ellipse type filler star'            => ['000-s', \&App::Asciio::Actions::Asciio::ellipse_elements_change_type, 'ellipse_normal_with_filler_star'],
+	},
+
+'group_rhombus_type_change' => 
+	{
+	SHORTCUTS   => 'group_rhombus_type_change',
+
+	'change rhombus type normal'                 => ['000-n', \&App::Asciio::Actions::Asciio::rhombus_elements_change_type, 'rhombus_normal'                 ],
+	'change rhombus type filler star'            => ['000-s', \&App::Asciio::Actions::Asciio::rhombus_elements_change_type, 'rhombus_normal_with_filler_star'],
+	'change rhombus type sparseness'             => ['00S-S', \&App::Asciio::Actions::Asciio::rhombus_elements_change_type, 'rhombus_sparseness'             ],
+	'change rhombus type unicode_slash'          => ['000-u', \&App::Asciio::Actions::Asciio::rhombus_elements_change_type, 'rhombus_unicode_slash'          ],
+	},
+
+'group_triangle_up_type_change' => 
+	{
+	SHORTCUTS   => 'group_triangle_up_type_change',
+
+	'change triangle up type normal'             => ['000-n', \&App::Asciio::Actions::Asciio::triangle_up_elements_change_type, 'triangle_up_normal'         ],
+	'change triangle up type dot'                => ['000-s', \&App::Asciio::Actions::Asciio::triangle_up_elements_change_type, 'triangle_up_dot'            ],
+	},
+
+'group_triangle_down_type_change' => 
+	{
+	SHORTCUTS   => 'group_triangle_down_type_change',
+
+	'change triangle down type normal'          => ['000-n', \&App::Asciio::Actions::Asciio::triangle_down_elements_change_type,  'triangle_down_normal'     ],
+	'change triangle down type dot'             => ['000-s', \&App::Asciio::Actions::Asciio::triangle_down_elements_change_type,  'triangle_down_dot'        ],
 	},
 
 '<< selection leader >>' =>
