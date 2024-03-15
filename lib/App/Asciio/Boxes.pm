@@ -66,6 +66,14 @@ my %box_types =
 			[1, 'bottom',          '╰', '─',   '╯', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
+	unicode_imaginary =>
+		[
+			[1, 'top',             '┌', '┄',   '┐', 1, ],
+			[0, 'title separator', '┆', '┄',   '┆', 1, ],
+			[1, 'body separator',  '┆ ', '┆', ' ┆', 1, ], 
+			[1, 'bottom',          '└', '┄',   '┘', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
 	unicode_with_filler_type1 =>
 		[
 			[1, 'top',             '╭', '─',   '╮', 1, ],
@@ -106,7 +114,15 @@ my %box_types =
 			[1, 'bottom',          '┗', '━',   '┛', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
-	unicode_double_line =>
+	unicode_bold_imaginary =>
+		[
+			[1, 'top',             '┏', '┅',   '┓', 1, ],
+			[0, 'title separator', '┇', '┅',   '┇', 1, ],
+			[1, 'body separator',  '┇ ', '┇', ' ┇', 1, ], 
+			[1, 'bottom',          '┗', '┅',   '┛', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_double =>
 		[
 			[1, 'top',             '╔', '═',   '╗', 1, ],
 			[0, 'title separator', '║', '═',   '║', 1, ],

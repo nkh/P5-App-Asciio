@@ -34,8 +34,10 @@ if(@selected_elements == 1 && $element->isa('App::Asciio::stripes::editable_box2
 		star
 		math_parantheses
 		unicode
+		unicode_imaginary
 		unicode_bold
-		unicode_double_line
+		unicode_bold_imaginary
+		unicode_double
 		unicode_with_filler_type1
 		unicode_with_filler_type2
 		unicode_with_filler_type3
