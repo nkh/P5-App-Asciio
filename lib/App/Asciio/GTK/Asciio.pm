@@ -479,13 +479,37 @@ $self->draw_polygon_selection($gc, $character_width, $character_height) ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
+	my $emulation_mouse_type = $self->{SIMULATE_MOUSE_TYPE} // 'rectangle' ;
+
 	my $start_x = $self->{MOUSE_X} * $character_width ;
 	my $start_y = $self->{MOUSE_Y} * $character_height ;
 	
 	$gc->set_source_rgba(@{$self->get_color('mouse_rectangle')});
-	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
-	$gc->fill() ;
-	$gc->stroke() ;
+
+	if($emulation_mouse_type eq 'rectangle')
+		{
+		$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
+		$gc->fill() ;
+		$gc->stroke() ;
+		}
+	elsif($emulation_mouse_type eq 'right_triangle')
+		{
+		$gc->move_to($start_x, $start_y);
+		$gc->line_to($start_x + $character_width, $start_y + $character_height / 2);
+		$gc->line_to($start_x, $start_y + $character_height);
+		$gc->close_path();
+		$gc->fill() ;
+		$gc->stroke() ;
+		}
+	elsif($emulation_mouse_type eq 'down_triangle')
+		{
+		$gc->move_to($start_x + $character_width / 2, $start_y + $character_height);
+		$gc->line_to($start_x, $start_y);
+		$gc->line_to($start_x + $character_width, $start_y);
+		$gc->close_path();
+		$gc->fill() ;
+		$gc->stroke() ;
+		}
 	}
 
 # draw hint_lines

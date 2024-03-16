@@ -35,7 +35,13 @@ my %direction_map = (
     'right'  => 'down',
     'down'   => 'static',
     'static' => 'right',
-);
+) ;
+
+my %simulate_mouse_type_map = (
+	'right' => 'right_triangle',
+	'down'  => 'down_triangle',
+	'static'=> 'rectangle',
+) ;
 
 my $mouse_emulation_move_direction = 'static' ;
 
@@ -133,7 +139,10 @@ pen_enter($asciio, $chars, undef, $mouse_emulation_move_direction) ;
 #----------------------------------------------------------------------------------------------
 sub toggle_mouse_emulation_move_direction ()
 {
+my ($asciio) = @_ ;
+
 $mouse_emulation_move_direction = $direction_map{$mouse_emulation_move_direction} ;
+$asciio->{SIMULATE_MOUSE_TYPE} = $simulate_mouse_type_map{$mouse_emulation_move_direction} ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -143,6 +152,7 @@ my ($asciio) = @_ ;
 
 App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
 $asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+$asciio->{SIMULATE_MOUSE_TYPE} = $simulate_mouse_type_map{$mouse_emulation_move_direction} ;
 pen_enter($asciio) ;
 }
 
