@@ -356,8 +356,16 @@ if(exists $arrow_types{$data->{TYPE}})
 	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
 	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
+
+	my $is_autoconnect_enabled = $data->{ELEMENT}->is_autoconnect_enabled() if $data->{ELEMENT}->can('is_autoconnect_enabled') ;
+	my $is_connection_allowed_start = $data->{ELEMENT}->is_connection_allowed('start') if $data->{ELEMENT}->can('is_connection_allowed') ;
+	my $is_connection_allowed_end = $data->{ELEMENT}->is_connection_allowed('end') if $data->{ELEMENT}->can('is_connection_allowed');
 	
 	$data->{ELEMENT}->set_arrow_type($new_type) ;
+
+	$data->{ELEMENT}->enable_autoconnect($is_autoconnect_enabled) if $data->{ELEMENT}->can('is_autoconnect_enabled') ;
+	$data->{ELEMENT}->allow_connection('start', $is_connection_allowed_start) if $data->{ELEMENT}->can('is_connection_allowed');
+	$data->{ELEMENT}->allow_connection('end', $is_connection_allowed_end) if $data->{ELEMENT}->can('is_connection_allowed');
 	
 	$self->update_display() if $create_undo_snapshot ;
 	}
