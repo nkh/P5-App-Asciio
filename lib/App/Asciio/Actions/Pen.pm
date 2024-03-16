@@ -30,8 +30,14 @@ my $char_index = 0 ;
 my $char_num ;
 my $is_eraser = 0 ;
 my $last_char_lenth = 1;
-my $mouse_emulation_move_direction = 'right' ;
-my $is_insert_mode = 0 ;
+
+my %direction_map = (
+    'right'  => 'down',
+    'down'   => 'static',
+    'static' => 'right',
+);
+
+my $mouse_emulation_move_direction = 'static' ;
 
 
 #----------------------------------------------------------------------------------------------
@@ -90,7 +96,7 @@ $asciio->change_custom_cursor(($is_eraser) ? 'eraser' : 'pen') ;
 sub mouse_change_char
 {
 my ($asciio) = @_;
-pen_enter($asciio, undef, 1) ;
+pen_enter($asciio, undef, 1, $mouse_emulation_move_direction) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -121,20 +127,13 @@ sub pen_enter_then_move_mouse
 {
 my ($asciio, $chars) = @_ ;
 
-pen_enter($asciio, $chars, undef, $mouse_emulation_move_direction, 1) ;
+pen_enter($asciio, $chars, undef, $mouse_emulation_move_direction) ;
 }
 
 #----------------------------------------------------------------------------------------------
 sub toggle_mouse_emulation_move_direction ()
 {
-if($mouse_emulation_move_direction eq 'right')
-	{
-	$mouse_emulation_move_direction = 'down' ;
-	}
-else
-	{
-	$mouse_emulation_move_direction = 'right' ;
-	}
+$mouse_emulation_move_direction = $direction_map{$mouse_emulation_move_direction} ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -144,6 +143,7 @@ my ($asciio) = @_ ;
 
 App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
 $asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
+pen_enter($asciio) ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -151,22 +151,22 @@ sub pen_mouse_emulation_escape
 {
 my ($asciio) = @_ ;
 
-pen_escape($asciio) ;
 App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
+pen_escape($asciio) ;
 }
 
 #---------------------------------------------------------------------------------------------
 sub pen_mouse_emulation_move_space
 {
 my ($asciio) = @_ ;
-if($mouse_emulation_move_direction eq 'right')
-	{
-	App::Asciio::Actions::Mouse::mouse_move($asciio, [$last_char_lenth, 0]) ;
-	}
-else
-	{
-	App::Asciio::Actions::Mouse::mouse_move($asciio, [0, $last_char_lenth]) ;
-	}
+
+return if $mouse_emulation_move_direction eq 'static' ;
+
+App::Asciio::Actions::Mouse::mouse_move(
+	$asciio, 
+	$mouse_emulation_move_direction eq 'right' 
+		? [$last_char_lenth, 0] 
+		: [0, $last_char_lenth]) ;
 }
 
 
@@ -174,14 +174,14 @@ else
 sub pen_mouse_emulation_move_left_tab
 {
 my ($asciio) = @_ ;
-if($mouse_emulation_move_direction eq 'right')
-	{
-	App::Asciio::Actions::Mouse::mouse_move($asciio, [-4, 0]) ;
-	}
-else
-	{
-	App::Asciio::Actions::Mouse::mouse_move($asciio, [0, -4]) ;
-	}
+
+return if $mouse_emulation_move_direction eq 'static' ;
+
+App::Asciio::Actions::Mouse::mouse_move(
+	$asciio, 
+	$mouse_emulation_move_direction eq 'right' 
+		? [-4, 0] 
+		: [0, -4]) ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -189,14 +189,13 @@ sub pen_mouse_emulation_move_right_tab
 {
 my ($asciio) = @_ ;
 
-if($mouse_emulation_move_direction eq 'right')
-	{
-	App::Asciio::Actions::Mouse::mouse_move($asciio, [4, 0]) ;
-	}
-else
-	{
-	App::Asciio::Actions::Mouse::mouse_move($asciio, [0, 4]) ;
-	}
+return if $mouse_emulation_move_direction eq 'static' ;
+
+App::Asciio::Actions::Mouse::mouse_move(
+	$asciio, 
+	$mouse_emulation_move_direction eq 'right' 
+		? [4, 0] 
+		: [0, 4]) ;
 }
 
 #---------------------------------------------------------------------------------------------
@@ -267,10 +266,11 @@ $asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 #----------------------------------------------------------------------------------------------
 sub pen_enter
 {
-my ($asciio, $chars, $no_selected_elements, $mouse_move_direction, $disable_overlay) = @_;
+my ($asciio, $chars, $no_selected_elements, $mouse_move_direction) = @_;
 
 # custom mouse cursor
-pen_custom_mouse_cursor($asciio) unless(defined $disable_overlay);
+# :TODO: Used to read all mouse pixbufs at once, or use cache to prevent reading from the file every time
+pen_custom_mouse_cursor($asciio) ;
 
 my @get_chars ;
 
@@ -306,11 +306,8 @@ else
 
 pen_create_clone_elements($asciio, @pen_chars) ;
 
-unless(defined $disable_overlay)
-	{
-	pen_set_overlay($asciio) ;
-	$asciio->set_overlays_sub(\&pen_get_overlay) ;
-	}
+pen_set_overlay($asciio) ;
+$asciio->set_overlays_sub(\&pen_get_overlay) ;
 
 if(defined $chars)
 	{
@@ -323,14 +320,6 @@ else
 }
 
 #----------------------------------------------------------------------------------------------
-sub toggle_mouse_emulation_insert_mode
-{
-my ($asciio) = @_ ;
-
-$is_insert_mode ^= 1 ;
-}
-
-#----------------------------------------------------------------------------------------------
 
 sub pen_escape
 {
@@ -340,6 +329,7 @@ $is_eraser = 0 if $is_eraser_escape ;
 
 $asciio->set_overlays_sub(undef);
 $asciio->change_cursor('left_ptr');
+
 $asciio->update_display ;
 }
 
@@ -424,6 +414,8 @@ sub mouse_emulation_press_enter_key
 {
 my ($asciio) = @_ ;
 
+return if $mouse_emulation_move_direction eq 'static' ;
+
 if(defined $asciio->{MOUSE_EMULATION_FIRST_COORDINATE})
 {
 if($mouse_emulation_move_direction eq 'right')
@@ -449,12 +441,12 @@ my $add_pixel = Clone::clone($pixel_elements_to_insert[$char_index]) ;
 $last_char_lenth = unicode_length($pen_chars[$char_index]) ;
 
 @$add_pixel{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
+# :TODO: It’s more time consuming here
 $asciio->create_undo_snapshot() ;
 
 # If there are one or more pixel elements below the current coordinate, delete it.
+# :TODO: It’s more time consuming here
 pen_delete_element($asciio, 1) ;
-
-move_other_pixel_elements($asciio) if($mouse_move_direction) ;
 
 $asciio->add_elements($add_pixel);
 $char_index = ($char_index + 1) % $char_num ;
@@ -465,31 +457,6 @@ $char_index = ($char_index + 1) % $char_num ;
 mouse_move_forward($asciio) if($mouse_move_direction) ;
 
 $asciio->update_display() ;
-}
-
-#----------------------------------------------------------------------------------------------
-sub move_other_pixel_elements
-{
-my ($asciio) = @_ ;
-
-return unless($is_insert_mode) ;
-
-if($mouse_emulation_move_direction eq 'right')
-	{
-	for my $element (grep { ref($_) eq 'App::Asciio::stripes::pixel' 
-							&& $_->{Y} == $asciio->{MOUSE_Y} }@{$asciio->{ELEMENTS}})
-		{
-		$asciio->move_elements(1, 0, $element) if($element->{X} >= $asciio->{MOUSE_X}) ;
-		}
-	}
-else
-	{
-	for my $element (grep { ref($_) eq 'App::Asciio::stripes::pixel' 
-							&& $_->{X} == $asciio->{MOUSE_X} }@{$asciio->{ELEMENTS}})
-		{
-		$asciio->move_elements(0, 1, $element) if($element->{Y} >= $asciio->{MOUSE_Y}) ;
-		}
-	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -522,18 +489,15 @@ sub mouse_move_forward
 {
 my ($asciio) = @_ ;
 
-print("mouse_move_forward called" . "\n") ;
+return if $mouse_emulation_move_direction eq 'static' ;
 
-if(defined $mouse_emulation_move_direction)
+if($mouse_emulation_move_direction eq 'down')
 	{
-	if($mouse_emulation_move_direction eq 'down')
-		{
-		$asciio->{MOUSE_Y}++ ;
-		}
-	elsif($mouse_emulation_move_direction eq 'right')
-		{
-		$asciio->{MOUSE_X}++ ;
-		}
+	$asciio->{MOUSE_Y}++ ;
+	}
+else
+	{
+	$asciio->{MOUSE_X}++ ;
 	}
 }
 
@@ -542,16 +506,15 @@ sub mouse_move_backward
 {
 my ($asciio) = @_ ;
 
-if(defined $mouse_emulation_move_direction)
+return if $mouse_emulation_move_direction eq 'static' ;
+
+if($mouse_emulation_move_direction eq 'down')
 	{
-	if($mouse_emulation_move_direction eq 'down')
-		{
-		$asciio->{MOUSE_Y}-- ;
-		}
-	elsif($mouse_emulation_move_direction eq 'right')
-		{
-		$asciio->{MOUSE_X}-- ;
-		}
+	$asciio->{MOUSE_Y}-- ;
+	}
+else
+	{
+	$asciio->{MOUSE_X}-- ;
 	}
 }
 
