@@ -422,9 +422,6 @@ register_action_handlers
 	'charge box type unicode math parantheses'  => ['00S-M', \&App::Asciio::Actions::Asciio::box_elements_change_type, 'unicode_math_paranthesesar'     ],
 	},
 
-
-	# :TODO: Non-linked lines will become linked lines after type conversion
-
 'group_wirl_arrow_type_change' => 
 	{
 	SHORTCUTS   => 'group_wirl_arrow_type_change',

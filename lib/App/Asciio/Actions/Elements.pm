@@ -55,6 +55,17 @@ $self->create_undo_snapshot() ;
 my ($name, $edit, $x, $y) = @{$name_and_edit} ;
 
 my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
+# If it's a box, use the latest type
+if (($name =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
+	{
+	App::Asciio::Actions::Asciio::elements_change_type(
+		$self, 
+		$self->{CACHE}{LAST_BOX_TYPE}, 
+		'App::Asciio::stripes::editable_box2', 
+		\&App::Asciio::Boxes::change_type, 
+		0, 
+		$element) ;
+	}
 
 if($edit)
 	{
@@ -125,6 +136,19 @@ if(defined $text && $text ne '')
 		chomp $element_text ;
 		
 		my $new_element = add_element($self, [$type, 0]) ;
+		
+		# Use last box type
+		if (($type =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
+			{
+			App::Asciio::Actions::Asciio::elements_change_type(
+				$self, 
+				$self->{CACHE}{LAST_BOX_TYPE}, 
+				'App::Asciio::stripes::editable_box2', 
+				\&App::Asciio::Boxes::change_type, 
+				0, 
+				$new_element) ;
+			}
+
 		$new_element->set_text('', $element_text) ;
 		
 		@$new_element{'X', 'Y'} = ($current_x, $current_y) ;

@@ -86,7 +86,7 @@ sub pen_get_overlay
 my ($asciio, $UI_type, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_;
 $asciio->set_element_position($overlay_element, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ;
 
-return (($asciio->{SIMULATE_MOUSE_TYPE} eq 'rectangle') || $is_eraser) ? $overlay_element : undef ;
+$overlay_element ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -95,6 +95,22 @@ sub pen_custom_mouse_cursor
 my ($asciio) = @_ ;
 
 $asciio->change_custom_cursor(($is_eraser) ? 'eraser' : 'pen') ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub pen_set_overlays_sub
+{
+my ($asciio) = @_ ;
+
+if($is_eraser || ($asciio->{SIMULATE_MOUSE_TYPE} eq 'rectangle'))
+	{
+	pen_set_overlay($asciio) ;
+	$asciio->set_overlays_sub(\&pen_get_overlay) ;
+	}
+else
+	{
+	$asciio->set_overlays_sub(undef) ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -112,8 +128,7 @@ my ($asciio) = @_ ;
 $is_eraser ^= 1 ;
 
 pen_custom_mouse_cursor($asciio) ;
-pen_set_overlay($asciio) ;
-$asciio->set_overlays_sub(\&pen_get_overlay) ;
+pen_set_overlays_sub($asciio) ;
 $asciio->update_display ;
 }
 
@@ -315,8 +330,7 @@ else
 
 pen_create_clone_elements($asciio, @pen_chars) ;
 
-pen_set_overlay($asciio) ;
-$asciio->set_overlays_sub(\&pen_get_overlay) ;
+pen_set_overlays_sub($asciio) ;
 
 if(defined $chars)
 	{
@@ -398,8 +412,7 @@ if($event->{STATE} eq 'dragging-button1' && ($asciio->{PREVIOUS_X} != $x || $asc
 if($event->{STATE} ne 'dragging-button1')
 	{
 	@last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]);
-	pen_set_overlay($asciio);
-	$asciio->set_overlays_sub(\&pen_get_overlay);
+	pen_set_overlays_sub($asciio) ;
 	$asciio->update_display ;
 	}
 }

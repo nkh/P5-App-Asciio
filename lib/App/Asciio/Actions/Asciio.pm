@@ -125,11 +125,13 @@ $asciio->update_display() ;
 #----------------------------------------------------------------------------------------------
 sub elements_change_type
 {
-my ($asciio, $element_type, $element_class, $change_type_function, $use_ref) = @_ ;
+my ($asciio, $element_type, $element_class, $change_type_function, $use_ref, @elements) = @_ ;
 
 $asciio->create_undo_snapshot() ;
 
-for my $element (grep { $use_ref ? ref $_ eq $element_class : $_->isa($element_class) } $asciio->get_selected_elements(1))
+my @elements_for_change_type = (@elements) ? @elements : $asciio->get_selected_elements(1) ;
+
+for my $element (grep { $use_ref ? ref $_ eq $element_class : $_->isa($element_class) } @elements_for_change_type)
 {
 	$change_type_function->($asciio, { ELEMENT => $element, TYPE => $element_type }, 0) ;
 	delete $element->{CACHE} ;
@@ -142,6 +144,7 @@ $asciio->update_display() ;
 sub box_elements_change_type
 {
 my ($asciio, $element_type) = @_ ;
+$asciio->{CACHE}{LAST_BOX_TYPE} = $element_type ;
 elements_change_type($asciio, $element_type, 'App::Asciio::stripes::editable_box2', \&App::Asciio::Boxes::change_type, 0) ;
 }
 
