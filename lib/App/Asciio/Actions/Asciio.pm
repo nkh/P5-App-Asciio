@@ -149,6 +149,7 @@ elements_change_type($asciio, $element_type, 'App::Asciio::stripes::editable_box
 sub wirl_arrow_elements_change_type
 {
 my ($asciio, $element_type) = @_ ;
+$asciio->{CACHE}{LAST_WIRL_ARROW_TYPE} = $element_type ;
 elements_change_type($asciio, $element_type, 'App::Asciio::stripes::section_wirl_arrow', \&App::Asciio::Arrows::change_type, 0) ;
 }
 
