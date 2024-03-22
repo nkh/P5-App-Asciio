@@ -80,15 +80,14 @@ for my $char (@chars)
 $char_num = $#pixel_elements_to_insert + 1;
 }
 
-
 #----------------------------------------------------------------------------------------------
 sub pen_get_overlay
 {
 my ($asciio, $UI_type, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_;
 $asciio->set_element_position($overlay_element, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ;
-$overlay_element;
-}
 
+return (($asciio->{SIMULATE_MOUSE_TYPE} eq 'rectangle') || $is_eraser) ? $overlay_element : undef ;
+}
 
 #----------------------------------------------------------------------------------------------
 sub pen_custom_mouse_cursor
