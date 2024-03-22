@@ -901,6 +901,7 @@ if
 		{
 		$asciio_event->{STATE} = "dragging-button1" if $event->state() >= "button1-mask" ;
 		$asciio_event->{STATE} = "dragging-button2" if $event->state() >= "button2-mask" ;
+		$asciio_event->{STATE} = "dragging-button3" if $event->state() >= "button3-mask" ;
 		}
 	}
 
@@ -1001,24 +1002,32 @@ $self->{widget}->get_parent_window()->set_cursor($cursor) ;
 
 #-----------------------------------------------------------------------------
 
+{
+
+my %custom_sursor_cache ;
+
 sub change_custom_cursor
 {
 my ($self, $cursor_name) = @_ ;
 
-my $display = $self->{widget}->get_display() ;
-my $pixbuf ;
+unless(exists $custom_sursor_cache{$cursor_name})
+	{
+	my $display = $self->{widget}->get_display() ;
+	my $pixbuf ;
 
-eval
-	{
-	$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->{CUSTOM_MOUSE_CURSORS}->{$cursor_name});
-	};
-if ($@)
-	{
-	print STDERR "can not set custom cursor with $cursor_name :$@\n" ;
-	return ;
+	eval
+		{
+		$pixbuf = Gtk3::Gdk::Pixbuf->new_from_file($self->{CUSTOM_MOUSE_CURSORS}->{$cursor_name});
+		};
+	if ($@)
+		{
+		print STDERR "can not set custom cursor with $cursor_name :$@\n" ;
+		return ;
+		}
+	$custom_sursor_cache{$cursor_name} = Gtk3::Gdk::Cursor->new_from_pixbuf($display, $pixbuf, 0, 0);
 	}
-my $cursor = Gtk3::Gdk::Cursor->new_from_pixbuf($display, $pixbuf, 0, 0);
-$self->{widget}->get_parent_window()->set_cursor($cursor) ;
+$self->{widget}->get_parent_window()->set_cursor($custom_sursor_cache{$cursor_name}) ;
+}
 }
 
 #-----------------------------------------------------------------------------

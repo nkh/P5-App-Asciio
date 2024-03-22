@@ -103,15 +103,7 @@ sub display_box_edit_dialog_for_mini_edit_mode
 my ($self, $text, undef, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
 
 $text ='' unless defined $text ;
-my @text_lines ;
-if($text)
-	{
-	@text_lines = split("\n", $text) ;
-	}
-else
-	{
-	@text_lines = ('') ;
-	}
+my @text_lines = ($text) ? split("\n", $text) : ('') ;
 
 my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
@@ -119,7 +111,7 @@ $text_width = max($text_width, 3) ;
 $text_heigh =max($text_heigh, 3) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
-my ($root_x, $root_y) = $asciio->{root_window}->get_position();
+my ($root_x, $root_y) = $asciio->{root_window}->get_window()->get_origin() ;
 my ($v_value, $h_value) = ($asciio->{sc_window}->get_vadjustment()->get_value(), $asciio->{sc_window}->get_hadjustment()->get_value());
 
 my $window = new Gtk3::Window() ;

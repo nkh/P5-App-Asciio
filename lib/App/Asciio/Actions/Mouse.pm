@@ -375,7 +375,7 @@ my ($self, $event) = @_ ;
 
 my ($x, $y) = @{$event->{COORDINATES}}[0, 1] ;
 
-if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
+if($event->{STATE} eq 'dragging-button3' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
 	{
 	my ($character_width, $character_height) = $self->get_character_size() ;
 	

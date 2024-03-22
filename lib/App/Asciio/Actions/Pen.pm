@@ -451,7 +451,7 @@ my $add_pixel = Clone::clone($pixel_elements_to_insert[$char_index]) ;
 $last_char_lenth = unicode_length($pen_chars[$char_index]) ;
 
 @$add_pixel{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
-# :TODO: It’s more time consuming here
+
 $asciio->create_undo_snapshot() ;
 
 # If there are one or more pixel elements below the current coordinate, delete it.
@@ -474,21 +474,23 @@ sub pen_delete_element
 {
 my ($asciio, $pixel_delete_only) = @_ ;
 
-my @elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{ELEMENTS}} ;
+my @elements ;
 
-# :TODO: It would be better to temporarily set a color for the element to be deleted,In this way, the eraser does not need to use a space overlay.
+if($pixel_delete_only)
+	{
+	@elements = grep { ( ref($_) eq 'App::Asciio::stripes::pixel' )  
+					   && ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) } reverse @{$asciio->{ELEMENTS}} ;
+	}
+else
+	{
+	@elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{ELEMENTS}} ;
+	}
 
 if(@elements)
 	{
 	$asciio->create_undo_snapshot() ;
-	if($pixel_delete_only)
-		{
-		$asciio->delete_elements(grep { ref($_) eq 'App::Asciio::stripes::pixel' } @elements) ;
-		}
-	else
-		{
-		$asciio->delete_elements(@elements) ;
-		}
+	$asciio->delete_elements(@elements) ;
+
 	@last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]) ;
 	$asciio->update_display();
 	}
@@ -507,7 +509,7 @@ if($mouse_emulation_move_direction eq 'down')
 	}
 else
 	{
-	$asciio->{MOUSE_X}++ ;
+	$asciio->{MOUSE_X} += $last_char_lenth ;
 	}
 }
 

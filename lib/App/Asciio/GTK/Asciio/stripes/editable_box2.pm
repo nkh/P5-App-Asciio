@@ -127,15 +127,8 @@ sub display_box_edit_dialog_inline_mode
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) = @_ ;
 
 $text ='' unless defined $text ;
-my @text_lines ;
-if($text)
-	{
-	@text_lines = split("\n", $text) ;
-	}
-else
-	{
-	@text_lines = ('') ;
-	}
+
+my @text_lines = ($text) ? split("\n", $text) : ('') ;
 
 my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
@@ -143,15 +136,8 @@ $text_width = max($text_width, 3) ;
 $text_heigh =max($text_heigh, 3) ;
 
 $title ='' unless defined $title ;
-my @title_lines ;
-if($title)
-	{
-	@title_lines = split("\n", $title) ;
-	}
-else
-	{
-	@title_lines = ('') ;
-	}
+
+my @title_lines = ($title) ? split("\n", $title) : ('') ;
 
 my $title_width = max(map {unicode_length $_} @title_lines);
 my $title_heigh = @title_lines;
@@ -162,7 +148,8 @@ my $final_width = max($title_width, $text_width) ;
 my $final_heigh = $text_heigh + $title_heigh + 1;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
-my ($root_x, $root_y) = $asciio->{root_window}->get_position();
+# need to exclude the influence of window decoration
+my ($root_x, $root_y) = $asciio->{root_window}->get_window()->get_origin() ;
 my ($v_value, $h_value) = ($asciio->{sc_window}->get_vadjustment()->get_value(), $asciio->{sc_window}->get_hadjustment()->get_value());
 
 
@@ -216,15 +203,10 @@ $dialog->signal_connect(focus_out_event => \&on_focus_out_event, $window) ;
 $dialog->run() ;
 
 my $new_text =  $textview->get_buffer->get_text($text_buffer->get_start_iter, $text_buffer->get_end_iter, TRUE) ;
-my $new_title;
-if($title_separator_exist)
-	{
-	$new_title =  $titleview->get_buffer->get_text($title_buffer->get_start_iter, $title_buffer->get_end_iter, TRUE) ;
-	}
-else
-	{
-	$new_title = $title;
-	}
+
+my $new_title = ($title_separator_exist) 
+					? $titleview->get_buffer->get_text($title_buffer->get_start_iter, $title_buffer->get_end_iter, TRUE) 
+					: $title ;
 
 $dialog->destroy ;
 
