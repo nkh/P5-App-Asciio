@@ -16,6 +16,7 @@ use List::MoreUtils qw(any minmax first_value) ;
 use Readonly ;
 
 use App::Asciio::Connections ;
+use App::Asciio::ZBuffer ;
 
 #-----------------------------------------------------------------------------
 
@@ -616,11 +617,14 @@ sub select_all_elements_by_search_words
 {
 my ($self) = @_ ;
 
-my $search_words = $self->display_edit_dialog("input search words", '', $self);
+my $search_words = $self->display_edit_dialog("input search words", '', $self, undef, undef, undef, undef, 300, 100);
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	$self->select_elements(1, $element) if ($self->transform_elements_to_ascii_buffer($element) =~ m/$search_words/i);
+	my $element_zbuffer = App::Asciio::ZBuffer->new(0, $element) ;
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element_zbuffer->{coordinates}) ;
+
+	$self->select_elements(1, $element) if ($text =~ m/$search_words/i);
 	}
 }
 
@@ -630,11 +634,14 @@ sub select_all_elements_by_search_words_ignore_group
 {
 my ($self) = @_ ;
 
-my $search_words = $self->display_edit_dialog("input search words", '', $self);
+my $search_words = $self->display_edit_dialog("input search words", '', $self, undef, undef, undef, undef, 300, 100);
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	$element->{SELECTED} = ++$self->{SELECTION_INDEX} if ($self->transform_elements_to_ascii_buffer($element) =~ m/$search_words/i);
+	my $element_zbuffer = App::Asciio::ZBuffer->new(0, $element) ;
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element_zbuffer->{coordinates}) ;
+
+	$element->{SELECTED} = ++$self->{SELECTION_INDEX} if ($text =~ m/$search_words/i);
 	}
 }
 

@@ -79,6 +79,7 @@ lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/DnD.pm
 lib/App/Asciio/GTK/Asciio/Selection.pm
+lib/App/Asciio/GTK/Asciio/Find.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
@@ -127,6 +128,7 @@ setup/Stencils/People
 setup/GTK/setup.ini
 setup/GTK/import_export/png.pl
 setup/GTK/mouse_cursors/pen.png
+setup/GTK/mouse_cursors/find.png
 setup/GTK/mouse_cursors/eraser.png
 
 setup/Text/setup.ini

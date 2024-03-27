@@ -267,7 +267,34 @@ return @context_menu_entries ;
 
 sub interactive_add_section
 {
-my ($self) = @_ ;
+my ($self, $is_connection_not_allowed) = @_ ;
+
+if($is_connection_not_allowed)
+	{
+	# my $element = App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]) ;
+	$self->deselect_all_elements() ;
+	my $element = new App::Asciio::stripes::section_wirl_arrow
+		({
+		POINTS => [[0, 0, 'up']],
+		DIRECTION => 'left',
+		ALLOW_DIAGONAL_LINES => 0,
+		EDITABLE => 1,
+		RESIZABLE => 1,
+		});
+	$self->add_elements($element);
+	@$element{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
+
+	if(exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
+		{
+		App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
+		}
+	$element->{NAME} = 'line';
+	$element->enable_autoconnect(0);
+	$element->allow_connection('start', 0);
+	$element->allow_connection('end', 0);
+
+	return ;
+	}
 
 my @selected_elements = $self->get_selected_elements(1) ;
 

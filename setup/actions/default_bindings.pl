@@ -21,6 +21,7 @@ use App::Asciio::Actions::Ruler ;
 use App::Asciio::Actions::Selection ;
 use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
+use App::Asciio::Cross ;
 use App::Asciio::Actions::ZBuffer ;
 
 use App::Asciio::Utils::Scripting ;
@@ -93,7 +94,8 @@ register_action_handlers
 'Arrow to mouse'                     => ['CA0-motion_notify',                      \&App::Asciio::Actions::Arrow::interactive_to_mouse                                 ], 
 'Arrow mouse change direction'       => ['CA0-2button-press-1',                    \&App::Asciio::Actions::Arrow::change_arrow_direction                               ],      
 'Arrow change direction'             => ['CA0-d',                                  \&App::Asciio::Actions::Arrow::interactive_change_arrow_direction                   ],      
-'Wirl arrow add section'             => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section                          ],
+'Wirl arrow add section'             => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section, 0                       ],
+'Wirl arrow add section no connect'  => ['CA0-button-press-3',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section, 1                       ],
 'Wirl arrow insert flex point'       => ['CA0-button-press-2',                     \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                        ],
 
 'Mouse motion'                       => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                         ], 
@@ -191,7 +193,7 @@ register_action_handlers
 	'<< Change color >>'                  => ['000-c', sub { $_[0]->use_action_group('group_color') ; }                        ] ,
 	
 	'Flip binding completion'             => ['000-b', sub { $_[0]->{USE_BINDINGS_COMPLETION} ^= 1 ; $_[0]->update_display() ;}],
-	'Flip cross mode'                     => ['000-x', sub { $_[0]->{USE_CROSS_MODE} ^= 1 ; $_[0]->update_display ; }          ],
+	'Flip cross mode'                     => ['000-x', \&App::Asciio::Cross::flip_cross_mode                                   ],
 	'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme                       ],
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements                  ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
@@ -627,6 +629,22 @@ register_action_handlers
 	(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::Actions::Pen::pen_enter_then_move_mouse, [$_]] }('a'..'z', '0'..'9')),
 	},
 
+'<< find leader >>' =>
+	{
+	SHORTCUTS   => '000-f',
+	ENTER_GROUP => \&App::Asciio::GTK::Asciio::find_enter,
+	ESCAPE_KEYS => ['000-Escape', '000-f'],
+	
+	'find escape'                  => [ '000-Escape',                            \&App::Asciio::GTK::Asciio::find_escape                  ],
+	'find escape2'                 => [ '000-f',                                 \&App::Asciio::GTK::Asciio::find_escape                  ],
+	'find next'                    => [ '000-n',                                 \&App::Asciio::GTK::Asciio::find_next                    ],
+	'find previous'                => [ '00S-N',                                 \&App::Asciio::GTK::Asciio::find_previous                ],
+	'find Zoom in'                 => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::GTK::Asciio::find_zoom, 1                 ],
+	'find Zoom out'                => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::GTK::Asciio::find_zoom, -1                ],
+    'find Mouse drag canvas'       => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas         ],         
+	'find hunk search toggle'      => [ '000-Tab',                               \&App::Asciio::GTK::Asciio::hunk_search_toggle           ],
+	},
+
 '<< git leader >>' =>
 	{
 	SHORTCUTS   => '00S-G',
@@ -729,6 +747,7 @@ SHORTCUTS => '00S-question',
 '<< element leader >>'           => 1,
 '<< clone leader >>'             => 1,
 '<< pen leader >>'               => 1,
+'<< find leader >>'              => 1,
 '<< git leader >>'               => 1,
 '<< move arrow ends leader >>'   => 1,
 

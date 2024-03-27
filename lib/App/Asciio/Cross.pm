@@ -200,6 +200,20 @@ my @diagonal_char_func = (
 	['╳', \&scene_unicode_x],
 ) ;
 
+#-----------------------------------------------------------------------------
+sub flip_cross_mode
+{
+my ($asciio) = @_ ;
+
+undef %normal_char_cache ;
+undef %diagonal_char_cache ;
+
+$asciio->{USE_CROSS_MODE} ^= 1 ;
+
+$asciio->update_display ;
+}
+
+#-----------------------------------------------------------------------------
 sub get_cross_mode_overlays
 {
 my ($zbuffer) = @_;

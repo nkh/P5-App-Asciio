@@ -232,7 +232,7 @@ sub get_text_rectangle
 	my $output = "";
 	for my $row (@rectangle) 
 	{
-		$output .= join('', @$row) . "\n";
+		$output .= join('', grep { defined $_ } @$row) . "\n";
 	}
 
 	return ($output, $min_x, $min_y, $max_x - $min_x + 1, $max_y - $min_y + 1);

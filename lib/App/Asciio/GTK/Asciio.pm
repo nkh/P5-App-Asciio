@@ -28,6 +28,7 @@ use App::Asciio::GTK::Asciio::Dialogs ;
 use App::Asciio::GTK::Asciio::Menues ;
 use App::Asciio::GTK::Asciio::DnD ;
 use App::Asciio::GTK::Asciio::Selection ;
+use App::Asciio::GTK::Asciio::Find ;
 
 use App::Asciio::Cross ;
 use App::Asciio::String ;
@@ -258,6 +259,7 @@ for my $element (@{$self->{ELEMENTS}})
 
 $self->draw_cross_overlays($gc, $seen_elements, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
+$self->draw_find_keywords_highlight($gc, $character_width, $character_height) ;
 
 # draw ruler lines
 for my $line (@{$self->{RULER_LINES}})

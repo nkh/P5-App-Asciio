@@ -62,6 +62,8 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.50, 0.90, 0.50],
+		find_current_highlight => [0, 0, 1, 0.50],
+		find_other_highlight => [0.90, 0.50, 0.90, 0.50],
 		hint_background => [0.20, 0.20, 0.20],
 		drag_and_drop   => [1.00, 0.00, 0.00],
 		}, 
@@ -95,6 +97,8 @@ COLOR_SCHEMES =>
 		extra_point => [0.27, 0.53, 0.27],
 		
 		mouse_rectangle => [0.90, 0.50, 0.90, 0.50],
+		find_current_highlight => [0, 0, 1, 0.50],
+		find_other_highlight => [0.90, 0.50, 0.90, 0.50],
 		hint_background => [0.20, 0.20, 0.20],
 		drag_and_drop   => [1.00, 0.00, 0.00],
 		} 

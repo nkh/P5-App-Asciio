@@ -34,6 +34,7 @@ my $height = ($text =~ tr[\n][\n]) + 1 ;
 $self->set
 	(
 	TEXT => $text,
+	TEXT_ONLY => $text,
 	NAME => $name,
 	WIDTH =>  $width,
 	HEIGHT => $height,

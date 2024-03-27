@@ -208,14 +208,14 @@ $self->response(1) ;
 
 sub display_edit_dialog
 {
-my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) = @_ ;
+my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $dialog_width, $dialog_height) = @_ ;
 if(($asciio->{EDIT_TEXT_INLINE} != 0) && (defined $X) && (defined $Y))
 	{
 	return $self->display_edit_dialog_for_mini_edit_mode($title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y) ;
 	}
 else
 	{
-	return $self->display_edit_dialog_for_normal_mode($title, $text, $asciio) ;
+	return $self->display_edit_dialog_for_normal_mode($title, $text, $asciio, $dialog_width, $dialog_height) ;
 	}
 }
 
@@ -223,7 +223,7 @@ else
 
 sub display_edit_dialog_for_normal_mode
 {
-my ($self, $title, $text, $asciio) = @_ ;
+my ($self, $title, $text, $asciio, $width, $height) = @_ ;
 
 $text ='' unless defined $text ;
 
@@ -232,7 +232,7 @@ my $window = new Gtk3::Window() ;
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
 $dialog->set_position("mouse");
 $dialog->set_border_width(0);
-$dialog->set_default_size (500, 400);
+$dialog->set_default_size ($width // 500, $height // 400);
 $dialog->add_button ('gtk-ok' => 'ok');
 
 my $vbox = Gtk3::VBox->new(FALSE, 5) ;
