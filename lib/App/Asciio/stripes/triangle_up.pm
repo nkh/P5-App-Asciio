@@ -180,6 +180,11 @@ elsif($x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
 	{
 	return {X =>  $middle_width, Y => -1, NAME => 'to_be_optimized'} ;
 	}
+# :TODO: The current algorithm for inside triangles is inaccurate
+elsif($self->{ALLOW_BORDER_CONNECTION} && $x >= -1 && $x <= $self->{WIDTH} && $y >= -1 && $y <= $self->{HEIGHT})
+	{
+	return {X =>  $x, Y => $y, NAME => 'border'} ;
+	}
 else
 	{
 	return ;
@@ -258,6 +263,11 @@ else
 
 sub is_auto_shrink { my($self) = @_ ; return $self->{AUTO_SHRINK} ; }
 sub flip_auto_shrink { my($self) = @_ ; $self->{AUTO_SHRINK} ^= 1 ; }
+
+sub allow_border_connection { my($self, $allow) = @_ ; $self->{ALLOW_BORDER_CONNECTION} = $allow ; }
+sub is_border_connection_allowed { my($self) = @_ ; return $self->{ALLOW_BORDER_CONNECTION} ; }
+
+
 
 #-----------------------------------------------------------------------------
 

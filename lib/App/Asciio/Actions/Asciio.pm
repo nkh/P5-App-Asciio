@@ -74,6 +74,35 @@ if(@selected_elements == 1)
 			? push @context_menu_entries, ["/disable auto shrink", sub { $element->flip_auto_shrink() ; }]
 			: push @context_menu_entries, ["/enable auto shrink",  sub { $element->shrink() ; $element->flip_auto_shrink() ; }] ;
 		}
+	elsif ('App::Asciio::stripes::if_box' eq ref $element
+		|| 'App::Asciio::stripes::process_box' eq ref $element
+		|| 'App::Asciio::stripes::group' eq ref $element)
+		{
+		$element->is_border_connection_allowed()
+			? push @context_menu_entries, ["/disable connect inside borders", sub { $element->allow_border_connection(0) ; }]
+			: push @context_menu_entries, 
+				[
+				"/connect inside borders",
+				sub 
+					{
+					$self->create_undo_snapshot() ;
+					$element->enable_autoconnect(0) ;
+					$element->allow_border_connection(1) ;
+					$self->update_display() ;
+					}
+				];
+			push @context_menu_entries,	[
+				$element->is_autoconnect_enabled() ? '/disable connectors' :  '/enable connectors', 
+				
+				sub 
+					{
+					$self->create_undo_snapshot() ;
+					$element->enable_autoconnect(! $element->is_autoconnect_enabled()) ;
+					$self->update_display() ;
+					}
+				] ,
+				;
+		}
 	}
 else
 	{

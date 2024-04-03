@@ -159,6 +159,11 @@ elsif($x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
 	{
 	return {X =>  $middle_width, Y => -1, NAME => 'to_be_optimized'} ;
 	}
+# :TODO: The algorithm in if_box is currently inaccurate
+elsif($self->{ALLOW_BORDER_CONNECTION} && $x >= -1 && $x <= $self->{WIDTH} && $y >= -1 && $y <= $self->{HEIGHT})
+	{
+	return {X =>  $x, Y => $y, NAME => 'border'} ;
+	}
 else
 	{
 	return ;
@@ -214,6 +219,8 @@ else
 
 #-----------------------------------------------------------------------------
 
+sub allow_border_connection { my($self, $allow) = @_ ; $self->{ALLOW_BORDER_CONNECTION} = $allow ; }
+sub is_border_connection_allowed { my($self) = @_ ; return $self->{ALLOW_BORDER_CONNECTION} ; }
 sub resize
 {
 my ($self, $reference_x, $reference_y, $new_x, $new_y) = @_ ;

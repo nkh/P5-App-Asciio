@@ -131,4 +131,93 @@ return bless({
 
 #-----------------------------------------------------------------------------
 
+sub match_connector
+{
+my ($self, $x, $y) = @_ ;
+
+my $middle_width = int($self->{WIDTH} / 2) ;
+my $middle_height = int($self->{HEIGHT} / 2) ;
+
+if($x == $middle_width && $y == -1)
+	{
+	return {X =>  $x, Y => $y, NAME => 'top_center'} ;
+	}
+elsif($x == $middle_width && $y == $self->{HEIGHT})
+	{
+	return {X =>  $x, Y => $y, NAME => 'bottom_center'} ;
+	}
+if($x == -1 && $y == $middle_height)
+	{
+	return {X =>  $x, Y => $y, NAME => 'left_center'} ;
+	}
+elsif($x == $self->{WIDTH} && $y == $middle_height)
+	{
+	return {X =>  $x, Y => $y, NAME => 'right_center'} ;
+	}
+elsif($x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
+	{
+	return {X =>  $middle_width, Y => -1, NAME => 'to_be_optimized'} ;
+	}
+elsif($self->{ALLOW_BORDER_CONNECTION} && $x >= -1 && $x <= $self->{WIDTH} && $y >= -1 && $y <= $self->{HEIGHT})
+	{
+	return {X =>  $x, Y => $y, NAME => 'border'} ;
+	}
+else
+	{
+	return ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_named_connection
+{
+my ($self, $name) = @_ ;
+my $middle_width = int($self->{WIDTH} / 2)  ;
+my $middle_height = int($self->{HEIGHT} / 2) ;
+
+if($name eq 'top_center')
+	{
+	return( {X =>  $middle_width, Y => -1, NAME => 'top_center'} ) ;
+	}
+elsif($name eq 'bottom_center')
+	{
+	return( {X =>  $middle_width, Y => $self->{HEIGHT}, NAME => 'bottom_center'} ) ;
+	}
+elsif($name eq 'left_center')
+	{
+	return {X =>  -1, Y => $middle_height, NAME => 'left_center'},
+	}
+elsif($name eq 'right_center')
+	{
+	return {X =>  $self->{WIDTH}, Y => $middle_height, NAME => 'right_center'},
+	}
+else
+	{
+	return ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_connection_points
+{
+my ($self) = @_ ;
+my $middle_width = int($self->{WIDTH} / 2)  ;
+my $middle_height = int($self->{HEIGHT} / 2) ;
+
+return
+	(
+	{X =>  $middle_width, Y => -1, NAME => 'top_center'},
+	{X =>  $middle_width, Y => $self->{HEIGHT}, NAME => 'bottom_center'},
+	{X =>  -1, Y => $middle_height, NAME => 'left_center'},
+	{X =>  $self->{WIDTH}, Y => $middle_height, NAME => 'right_center'},
+	) ;
+}
+
+sub allow_border_connection { my($self, $allow) = @_ ; $self->{ALLOW_BORDER_CONNECTION} = $allow ; }
+sub is_border_connection_allowed { my($self) = @_ ; return $self->{ALLOW_BORDER_CONNECTION} ; }
+
+#-----------------------------------------------------------------------------
+
 1 ;
