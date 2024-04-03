@@ -349,6 +349,8 @@ register_action_handlers
 	'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]            ],
 	'Add rhombus'                         => ['0A0-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],
 	'Add ellipse'                         => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
+	'Add triangle up'                     => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/triangle/up', 0]        ],
+	'Add triangle down'                   => ['00S-T', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/triangle/down', 0]      ],
 	},
 
 'group_insert_box' => 
