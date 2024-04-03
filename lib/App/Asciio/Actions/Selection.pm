@@ -115,7 +115,8 @@ my @elements = grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE
 
 if(@elements)
 	{
-	$self->create_undo_snapshot() ;
+	# It will be slower here
+	# $self->create_undo_snapshot() ;
 
 	if($is_ignore_group)
 		{

@@ -119,6 +119,8 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		COLORS
 		ACTION_VERBOSE
 		DO_STACK_POINTER DO_STACK
+		GIT_MODE_CONNECTOR_CHAR_LIST
+		PEN_MODE_CHARS_SETS
 		) ;
 
 sub load_self
@@ -237,9 +239,11 @@ if(defined $name && $name ne q[])
 
 sub serialize_self
 {
-my ($self, $indent) = @_ ;
+my ($self, $indent, $is_not_compress) = @_ ;
 
 local $self->{widget} = undef ;
+local $self->{root_window} = undef ;
+local $self->{sc_window} = undef ;
 local $self->{ACTIONS} = [] ;
 local $self->{HOOKS} = [] ;
 local $self->{CURRENT_ACTIONS} = [] ;
@@ -251,10 +255,13 @@ local $self->{MODIFIED} => 0 ;
 local $self->{TITLE} = '' ;
 local $self->{CREATE_BACKUP} = undef ;
 local $self->{MIDDLE_BUTTON_SELECTION_FILTER} = undef ;
+local $self->{COLORS} = undef ;
 local $self->{ELEMENT_TYPES} = undef ;
 local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
 local $self->{WARN} = undef ;
+local $self->{GIT_MODE_CONNECTOR_CHAR_LIST} = undef ;
+local $self->{PEN_MODE_CHARS_SETS} = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
@@ -263,7 +270,15 @@ for my $element (@{$self->{ELEMENTS}})
 	$element->{CACHE} = undef ;
 	}
 
-$self->{CACHE}{ENCODER} = my $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
+my $encoder ;
+if($is_not_compress)
+	{
+	$self->{CACHE}{SE_ENCODER} = $encoder = $self->{CACHE}{SE_ENCODER} // get_sereal_encoder() ;
+	}
+else
+	{
+	$self->{CACHE}{ENCODER} = $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
+	}
 local $self->{CACHE} = undef ;
 
 my $on_exit = $self->{ON_EXIT} ;

@@ -162,6 +162,7 @@ my ( $widget, $gc, $self ) = @_;
 
 $gc->set_line_width(1);
 
+
 my ($character_width, $character_height) = $self->get_character_size() ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
@@ -176,48 +177,6 @@ my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->g
 # 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
 # 	} 
 
-my $grid_rendering = $self->{CACHE}{GRID} ;
-
-unless (defined $grid_rendering)
-	{
-	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
-	my $gc = Cairo::Context->create($surface);
-		
-	$gc->set_source_rgb(@{$self->get_color('background')});
-	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
-	$gc->fill;
-	
-	if($self->{DISPLAY_GRID})
-		{
-		$gc->set_line_width(1);
-		
-		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
-			{
-			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
-			$gc->set_source_rgb(@{$self->get_color($color)});
-			
-			$gc->move_to(0,  $horizontal * $character_height);
-			$gc->line_to($widget_width, $horizontal * $character_height);
-			$gc->stroke;
-			}
-		
-		for my $vertical(0 .. ($widget_width/$character_width) + 1)
-			{
-			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
-			$gc->set_source_rgb(@{$self->get_color($color)});
-			
-			$gc->move_to($vertical * $character_width, 0) ;
-			$gc->line_to($vertical * $character_width, $widget_height);
-			$gc->stroke;
-			}
-		}
-		
-	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
-	}
-
-$gc->set_source_surface($grid_rendering, 0, 0);
-$gc->paint;
-
 my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
 my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), 
 						   $self->{sc_window}->get_hadjustment()->get_value()) ;
@@ -229,9 +188,55 @@ my ($start_x, $end_x, $start_y, $end_y) =
 	int(($v_value + $windows_height) / $character_height + 2)
 	) ;
 
+my $grid_width = (int($windows_width / $character_width) + 2) * $character_width ;
+my $grid_height = (int($windows_height / $character_height) + 2) * $character_height ;
+my $grid_rendering = $self->{CACHE}{GRID}{$grid_width . '-' . $grid_height} ;
+
+unless (defined $grid_rendering)
+	{
+	delete $self->{CACHE}{GRID} ;
+	my $surface = Cairo::ImageSurface->create('argb32', $grid_width, $grid_height);
+	my $gc = Cairo::Context->create($surface);
+		
+	$gc->set_source_rgb(@{$self->get_color('background')});
+	$gc->rectangle(0, 0, $grid_width, $grid_height);
+	$gc->fill;
+	
+	if($self->{DISPLAY_GRID})
+		{
+		$gc->set_line_width(1);
+		
+		for my $horizontal (0 .. ($grid_height/$character_height) + 1)
+			{
+			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
+			$gc->set_source_rgb(@{$self->get_color($color)});
+			
+			$gc->move_to(0,  $horizontal * $character_height);
+			$gc->line_to($grid_width, $horizontal * $character_height);
+			$gc->stroke;
+			}
+		
+		for my $vertical(0 .. ($grid_width/$character_width) + 1)
+			{
+			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
+			$gc->set_source_rgb(@{$self->get_color($color)});
+			
+			$gc->move_to($vertical * $character_width, 0) ;
+			$gc->line_to($vertical * $character_width, $grid_height);
+			$gc->stroke;
+			}
+		}
+		
+	$grid_rendering = $self->{CACHE}{GRID}{$grid_width . '-' . $grid_height} = $surface ;
+	}
+
+$gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
+$gc->paint;
+
 # draw elements
 my $element_index = 0 ;
 my $seen_elements ;
+my %seen_elements_hash ;
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 
@@ -243,9 +248,10 @@ for my $element (@{$self->{ELEMENTS}})
 		my @coordinates = map {[split ';']} keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}} ;
 		@coordinates = map {[reverse @$_]} @coordinates ;
 		$element->{CACHE}{COORDINATES} = \@coordinates ;
-		my @x = sort {$a <=> $b} map {$_->[0]} @{$element->{CACHE}{COORDINATES}} ;
-		my @y = sort {$a <=> $b} map {$_->[1]} @{$element->{CACHE}{COORDINATES}} ;
-		$element->{CACHE}{COORDINATES_BOUNDARIES} = [$x[0], $x[-1], $y[0], $y[-1]] ;
+		my @x = map {$_->[0]} @{$element->{CACHE}{COORDINATES}};
+		my @y = map {$_->[1]} @{$element->{CACHE}{COORDINATES}};
+		
+		$element->{CACHE}{COORDINATES_BOUNDARIES} = [min(@x), max(@x), min(@y), max(@y)] ;
 		}
 	unless(($element->{CACHE}{COORDINATES_BOUNDARIES}->[0] > $end_x)
 		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[1] < $start_x)
@@ -255,6 +261,11 @@ for my $element (@{$self->{ELEMENTS}})
 		$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
 		push @{$seen_elements}, $element ;
 		}
+	}
+
+if (defined $seen_elements)
+	{
+	@seen_elements_hash{@{$seen_elements}} = () ;
 	}
 
 $self->draw_cross_overlays($gc, $seen_elements, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
@@ -286,6 +297,7 @@ for my $connection (@{$self->{CONNECTIONS}})
 	{
 	my $draw_connection ;
 	my $connector  ;
+	next unless(exists $seen_elements_hash{$connection->{CONNECTED}}) ;
 	
 	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
 		{
@@ -383,8 +395,8 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{ELEMENTS}}
-			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}}
+			? @{$seen_elements}
+			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$seen_elements}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -447,6 +459,7 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 		$character_width, $character_height
 		);
 	}
+$gc->stroke() ;
 
 delete $self->{NEW_CONNECTIONS} ;
 	
@@ -538,6 +551,8 @@ if($self->{DRAW_HINT_LINES})
 	}
 
 $self->display_bindings_completion($gc, $character_width, $character_height) ;
+
+App::Asciio::Actions::Pen::pen_show_mapping_help($self, $gc, $character_width, $character_height) ;
 
 $self->set_modified_state($self->{MODIFIED}) ;
 

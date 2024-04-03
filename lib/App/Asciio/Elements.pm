@@ -695,6 +695,17 @@ my ($self, $element, $x, $y, $field) = @_ ;
 $field //= 0 ;
 my $is_under = 0 ;
 
+if(exists $element->{CACHE}{COORDINATES_BOUNDARIES})
+	{
+	if(($element->{CACHE}{COORDINATES_BOUNDARIES}->[0] > $x + $field)
+		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[1] + 2 <= $x - $field)
+		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[2] > $y + $field)
+		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[3] + 2 <= $y - $field))
+		{
+		return $is_under ;
+		}
+	}
+
 for my $stripe (@{$element->get_stripes()})
 	{
 	my $stripe_x = $element->{X} + $stripe->{X_OFFSET} ;

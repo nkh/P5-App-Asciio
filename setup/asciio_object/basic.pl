@@ -15,6 +15,14 @@ USE_MARKUP_MODE => '',
 EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 
+PEN_MODE_CHARS_SETS => [
+	{
+	},
+	{
+	a => '●', 'A' => '■' , s => '⦿', d => '◎', f => '○', g => '△', h => '⺆', j => '⼌', k => '⼐', l => '⼕',
+	},
+	],
+
 TAB_AS_SPACES => '    ',
 USE_BINDINGS_COMPLETION => 0,
 

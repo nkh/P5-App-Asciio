@@ -589,6 +589,9 @@ register_action_handlers
 	'Mouse pen emulation enter'              => ['00S-Return',                             \&App::Asciio::Actions::Pen::mouse_emulation_press_enter_key                        ],
 	'Mouse pen emulation delete pixel'       => ['000-Delete',                             \&App::Asciio::Actions::Pen::pen_delete_element, 1                                  ],
 	'Mouse pen emulation back delete pixel'  => ['000-BackSpace',                          \&App::Asciio::Actions::Pen::pen_back_delete_element, 1                             ],
+	'Mouse pen emulation switch next'        => ['C00-Return',                             \&App::Asciio::Actions::Pen::pen_switch_next_character_sets, 1                      ],
+	'Mouse pen emulation change help '       => ['C0S-Return',                             \&App::Asciio::Actions::Pen::pen_switch_show_mapping_help_location,                 ],
+	'Mouse pen emulation switch previous'    => ['0A0-Return',                             \&App::Asciio::Actions::Pen::pen_switch_previous_character_sets, 1                  ],
 
 
 	(map { "pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::Actions::Pen::pen_enter_then_move_mouse, [$_->[1]]]}(

@@ -300,16 +300,23 @@ return @overlays ;
 
 #-----------------------------------------------------------------------------
 # +
-sub scene_cross
+sub scene_cross 
 {
 my ($up, $down, $left, $right, $char_category_indexs) = @_;
 
-return 0 unless defined $up && defined $down && defined $left && defined $right ;
+return 0 unless defined $up && defined $down && defined $left && defined $right;
 
-return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''} @{$up}) || (any {$_ eq '+'} @{$up}) || (any {$_ eq '^'} @{$up}))
-	&& ((any {$_ eq '|'} @{$down}) || (any {$_ eq '.'} @{$down}) || (any {$_ eq '\''} @{$down}) || (any {$_ eq '+'} @{$down}) || (any {$_ eq 'v'} @{$down}))
-	&& ((any {$_ eq '-'} @{$left}) || (any {$_ eq '.'} @{$left}) || (any {$_ eq '\''} @{$left}) || (any {$_ eq '+'} @{$left}) || (any {$_ eq '<'} @{$left}))
-	&& ((any {$_ eq '-'} @{$right}) || (any {$_ eq '.'} @{$right}) || (any {$_ eq '\''} @{$right}) || (any {$_ eq '+'} @{$right}) || (any {$_ eq '>'} @{$right})) ;
+my %valid_chars = (
+	up => { map { $_ => 1 } qw(| . ' + ^) },
+	down => { map { $_ => 1 } qw(| . ' + v) },
+	left => { map { $_ => 1 } qw(- . ' + <) },
+	right => { map { $_ => 1 } qw(- . ' + >) },
+);
+
+return (any { $valid_chars{up}{$_} } @$up) 
+	&& (any { $valid_chars{down}{$_} } @$down) 
+	&& (any { $valid_chars{left}{$_} } @$left) 
+	&& (any { $valid_chars{right}{$_} } @$right);
 }
 
 #-----------------------------------------------------------------------------

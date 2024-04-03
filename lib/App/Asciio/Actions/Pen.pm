@@ -7,16 +7,11 @@ use App::Asciio::String qw(unicode_length) ;
 use App::Asciio::stripes::pixel ;
 use App::Asciio::Actions::Mouse ;
 
-use Gtk3 '-init' ;
-
 use utf8;
-# binmode(STDOUT, ":encoding(utf8)");
-# binmode(STDIN, ":encoding(utf8)");
-# binmode(STDERR, ":encoding(utf8)");
 
 use strict ; use warnings ;
 
-use List::Util qw(max) ;
+use List::Util qw(max min) ;
 use List::MoreUtils qw(any);
 
 my @pixel_elements_to_insert ;
@@ -45,6 +40,137 @@ my %simulate_mouse_type_map = (
 
 my $mouse_emulation_move_direction = 'static' ;
 
+my @keyboard_layout = (
+	[qw(` 1 2 3 4 5 6 7 8 9 0 - = BS)],
+	[qw(Tab q w e r t y u i o p [ ] \\)],
+	[qw(CL a s d f g h j k l ; ' Enter)],
+	[qw(Shift z x c v b n m , . / Shift)],
+);
+
+# :TODO: US keyboards and German keyboards may be different, this should not be hardcoded, flexibility needs to be added
+my %key_widths = map { $_ => 30 } ('`', '0'..'9', '-', '=', 'a'..'z', ';', '\'', ',', '.', '/', '[', ']') ;
+@key_widths{'BS', 'Tab', '\\', 'CL', 'Enter', 'Shift'} = (60, 45, 45, 51, 69, 75) ;
+
+my %pen_uc = map { $_ => uc($_) } ('a'..'z') ;
+@pen_uc{'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '=', '`', '[', ']', '\\', ';', "'", ',', '.', '/'} = (
+		')', '!', '@', '#', '$', '%', '^', '&', '*', '(', '_', '+', '~', '{', '}', '|',  ':', '"', '<', '>', '?'
+		) ;
+
+my $pen_mode_enable = 0 ;
+my $pen_show_mapping_location = 'left' ;
+
+#----------------------------------------------------------------------------------------------
+sub pen_switch_show_mapping_help_location
+{
+my ($asciio) = @_ ;
+
+$pen_show_mapping_location = ($pen_show_mapping_location eq 'left') ? 'right' : 'left' ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub pen_show_mapping_help
+{
+my ($asciio, $gc) = @_ ;
+
+if($pen_mode_enable && (scalar keys %{$asciio->{PEN_MODE_CHARS_SETS}->[0]}))
+	{
+	my $pen_randering_cache = $asciio->{CACHE}{PEN_CHARS_MAPPING_RENDERING_CACHE}{$asciio->{PEN_MODE_CHARS_SETS}->[0]} ;
+
+	my ($font_character_width, $font_character_height) = (9, 21) ;
+	my ($width, $height) = (60 * $font_character_width, 30 * $font_character_height) ;
+	
+	my ($window_width, $window_height) = $asciio->{root_window}->get_size() ;
+	my ($scroll_bar_x, $scroll_bar_y)  = ($asciio->{sc_window}->get_hadjustment()->get_value(), $asciio->{sc_window}->get_vadjustment()->get_value()) ;
+
+	my ($overlay_location_x, $overlay_location_y) = ($scroll_bar_x, $scroll_bar_y) ;
+
+	if($pen_show_mapping_location eq 'right')
+		{
+		$overlay_location_x = max($scroll_bar_x, $scroll_bar_x + $window_width - $width) ;
+		}
+	
+	unless(defined $pen_randering_cache)
+		{
+		my $surface = Cairo::ImageSurface->create('argb32', $width, $height) ;
+		my $gco = Cairo::Context->create($surface) ;
+		
+		my $current_mapping_group = $asciio->{PEN_MODE_CHARS_SETS}->[0];
+
+		my $layout = Pango::Cairo::create_layout($gco) ;
+		my $font_description = Pango::FontDescription->from_string("$asciio->{FONT_FAMILY} 9") ;
+		$layout->set_font_description($font_description) ;
+
+		my $key_height = 60 ;
+
+		for my $row (0..$#keyboard_layout) 
+			{
+			my $x = 30 ;
+			for my $col (0..$#{$keyboard_layout[$row]})
+				{
+				my $key = $keyboard_layout[$row][$col];
+
+				my $y = ($row+1) * $key_height;
+
+				# Draw the rectangle for the key
+				$gco->set_source_rgba(0.678, 0.847, 0.902, 1);  # Set color to light blue
+				$gco->rectangle($x, $y, $key_widths{$key}, $key_height);
+				$gco->fill;
+
+				# Draw the border of the key
+				$gco->set_source_rgba(0.565, 0.933, 0.565, 1);  # Set color to light green
+				$gco->rectangle($x, $y, $key_widths{$key}, $key_height);
+				$gco->stroke;
+
+				# Draw the original key
+				$gco->set_source_rgba(0, 0, 0, 1);  # Set color to black
+				$gco->move_to($x + $key_widths{$key} / 3, $y + $key_height / 8);
+				$layout->set_text($key);
+				Pango::Cairo::show_layout($gco, $layout) ;
+
+				# Draw the mapped key
+				if(exists $current_mapping_group->{$key})
+					{
+					$gco->set_source_rgba(1, 0, 0, 1);  # Set color to red
+					$gco->move_to($x + $key_widths{$key} / 3, $y + $key_height / 2.5);
+					$layout->set_text($current_mapping_group->{$key});
+					Pango::Cairo::show_layout($gco, $layout) ;
+					}
+
+				# Draw the uppercase mapped key
+				if(exists $pen_uc{$key} && exists $current_mapping_group->{$pen_uc{$key}})
+					{
+					$gco->set_source_rgba(0.502, 0, 0.502, 1);  # Set color to purple
+					$gco->move_to($x + $key_widths{$key} / 3, $y + 3 * $key_height / 4);
+					$layout->set_text($current_mapping_group->{$pen_uc{$key}});
+					Pango::Cairo::show_layout($gco, $layout) ;
+					}
+				$x += $key_widths{$key} ;
+				}
+			}
+		$asciio->{CACHE}{PEN_CHARS_MAPPING_RENDERING_CACHE}{$asciio->{PEN_MODE_CHARS_SETS}->[0]} = $pen_randering_cache = $surface ;
+		}
+	$gc->set_source_surface($pen_randering_cache, $overlay_location_x, $overlay_location_y) ;
+	$gc->paint;
+	
+	$gc->stroke() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+sub pen_switch_next_character_sets
+{
+my ($asciio) = @_ ;
+
+push @{$asciio->{PEN_MODE_CHARS_SETS}}, shift @{$asciio->{PEN_MODE_CHARS_SETS}} ;
+}
+
+#----------------------------------------------------------------------------------------------
+sub pen_switch_previous_character_sets
+{
+my ($asciio) = @_ ;
+
+unshift @{$asciio->{PEN_MODE_CHARS_SETS}}, pop @{$asciio->{PEN_MODE_CHARS_SETS}} ;
+}
 
 #----------------------------------------------------------------------------------------------
 sub pen_set_overlay
@@ -147,7 +273,8 @@ sub pen_enter_then_move_mouse
 {
 my ($asciio, $chars) = @_ ;
 
-pen_enter($asciio, $chars, undef, $mouse_emulation_move_direction) ;
+$asciio->create_undo_snapshot() ;
+pen_enter($asciio, $chars, undef, $mouse_emulation_move_direction, 1) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -290,17 +417,25 @@ $asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 #----------------------------------------------------------------------------------------------
 sub pen_enter
 {
-my ($asciio, $chars, $no_selected_elements, $mouse_move_direction) = @_;
+my ($asciio, $chars, $no_selected_elements, $mouse_move_direction, $is_key_char) = @_;
+
+$pen_mode_enable = 1;
 
 # custom mouse cursor
-# :TODO: Used to read all mouse pixbufs at once, or use cache to prevent reading from the file every time
 pen_custom_mouse_cursor($asciio) ;
 
 my @get_chars ;
 
 if(defined $chars)
 	{
-	@pen_chars = @{$chars} ;
+	if($is_key_char && exists $asciio->{PEN_MODE_CHARS_SETS}->[0]->{$chars->[0]})
+		{
+		@pen_chars = $asciio->{PEN_MODE_CHARS_SETS}->[0]->{$chars->[0]} ;
+		}
+	else
+		{
+		@pen_chars = @{$chars} ;
+		}
 	}
 else
 	{
@@ -352,6 +487,8 @@ $is_eraser = 0 if $is_eraser_escape ;
 
 $asciio->set_overlays_sub(undef);
 $asciio->change_cursor('left_ptr');
+
+$pen_mode_enable = 0 ;
 
 $asciio->update_display ;
 }
@@ -464,8 +601,6 @@ $last_char_lenth = unicode_length($pen_chars[$char_index]) ;
 
 @$add_pixel{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
 
-$asciio->create_undo_snapshot() ;
-
 # If there are one or more pixel elements below the current coordinate, delete it.
 # :TODO: It’s more time consuming here
 pen_delete_element($asciio, 1) ;
@@ -500,7 +635,6 @@ else
 
 if(@elements)
 	{
-	$asciio->create_undo_snapshot() ;
 	$asciio->delete_elements(@elements) ;
 
 	@last_points = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]) ;
