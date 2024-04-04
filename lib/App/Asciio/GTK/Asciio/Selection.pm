@@ -111,13 +111,18 @@ my ($self, $select_type) = @_ ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
-	unless(exists $element->{CACHE}{COORDINATES})
+	unless(exists $element->{CACHE}{ZBUFFER}{COORDINATES})
 		{
-		my @coordinates = map { [split ';'] } keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}};
+		unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
+			{
+			$element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
+			}
+
+		my @coordinates = map { [split ';'] } keys %{$element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}};
 		@coordinates = map{ [reverse @$_]} @coordinates;
-		$element->{CACHE}{COORDINATES} = \@coordinates;
+		$element->{CACHE}{ZBUFFER}{COORDINATES} = \@coordinates;
 		}
-	if(all_points_in_polygon($element->{CACHE}{COORDINATES}, $self->{SELECTION_POLYGON}))
+	if(all_points_in_polygon($element->{CACHE}{ZBUFFER}{COORDINATES}, $self->{SELECTION_POLYGON}))
 		{
 		$self->select_elements($select_type, $element);
 		$elements_selection_status{$element} = 1 ;

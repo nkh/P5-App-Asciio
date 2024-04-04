@@ -243,30 +243,36 @@ my $font_description = Pango::FontDescription->from_string($self->get_font_as_st
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
-	unless(exists $element->{CACHE}{COORDINATES_BOUNDARIES})
+	unless(exists $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES})
 		{
-		my @coordinates = map {[split ';']} keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}} ;
-		@coordinates = map {[reverse @$_]} @coordinates ;
-		$element->{CACHE}{COORDINATES} = \@coordinates ;
-		my @x = map {$_->[0]} @{$element->{CACHE}{COORDINATES}};
-		my @y = map {$_->[1]} @{$element->{CACHE}{COORDINATES}};
+		unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
+			{
+			$element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
+			}
+		unless(exists $element->{CACHE}{ZBUFFER}{COORDINATES})
+			{
+			my @coordinates = map {[split ';']} keys %{$element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}} ;
+			@coordinates = map {[reverse @$_]} @coordinates ;
+			$element->{CACHE}{ZBUFFER}{COORDINATES} = \@coordinates ;
+			}
+		my @x = map {$_->[0]} @{$element->{CACHE}{ZBUFFER}{COORDINATES}};
+		my @y = map {$_->[1]} @{$element->{CACHE}{ZBUFFER}{COORDINATES}};
 		
-		$element->{CACHE}{COORDINATES_BOUNDARIES} = [min(@x), max(@x), min(@y), max(@y)] ;
+		$element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES} = [min(@x), max(@x), min(@y), max(@y)] ;
 		}
-	unless(($element->{CACHE}{COORDINATES_BOUNDARIES}->[0] > $end_x)
-		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[1] < $start_x)
-		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[2] > $end_y)
-		|| ($element->{CACHE}{COORDINATES_BOUNDARIES}->[3] < $start_y))
+
+
+	unless(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[0] > $end_x)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[1] < $start_x)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[2] > $end_y)
+		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[3] < $start_y))
 		{
-		$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
 		push @{$seen_elements}, $element ;
 		}
 	}
 
-if (defined $seen_elements)
-	{
-	@seen_elements_hash{@{$seen_elements}} = () ;
-	}
+@seen_elements_hash{@{$seen_elements}} = () if (defined $seen_elements) ;
 
 $self->draw_cross_overlays($gc, $seen_elements, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
@@ -698,7 +704,7 @@ for (@overlay_elements)
 		}
 	elsif(ref($_) =~ /^App::Asciio::stripes/)
 		{
-		$self->draw_element($_, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+		$self->draw_element($_, $element_index, $gc, $font_description, $character_width, $character_height) ;
 		$element_index++ ; # should overlay stripes have number?
 		}
 	else
@@ -734,7 +740,7 @@ if(@overlay_elements and $self->{DRAW_HINT_LINES})
 
 sub draw_element
 {
-my ($self, $element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
 
 my $is_selected = $element->{SELECTED} // 0 ;
 $is_selected = 1 if $is_selected > 0 ;

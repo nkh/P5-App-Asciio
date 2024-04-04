@@ -91,16 +91,23 @@ for my $row (split "\n", $text)
 	{
 	$row_cnt++ ;
 	my $ori_x = 0;
-	while($row =~ m/$search_words/gi)
+	eval
 		{
-		$is_text_found++ ;
-		my $fit_str = $&;
-		my $sub_str = substr($row, 0, pos($row)-length($fit_str)) ;
-		$ori_x = $min_x + unicode_length($sub_str) ;
-		my $fit_length = unicode_length($fit_str) ;
-		push @{$self->{CACHE}{FIND_COORDINATES}}, [$ori_x, $min_y+$row_cnt, $fit_length] ;
+		while($row =~ m/$search_words/gi)
+			{
+			$is_text_found++ ;
+			my $fit_str = $&;
+			my $sub_str = substr($row, 0, pos($row)-length($fit_str)) ;
+			$ori_x = $min_x + unicode_length($sub_str) ;
+			my $fit_length = unicode_length($fit_str) ;
+			push @{$self->{CACHE}{FIND_COORDINATES}}, [$ori_x, $min_y+$row_cnt, $fit_length] ;
+			}
 		}
-	}
+		}
+	if ($@)
+		{
+		print STDERR "wrong search characters or wrong regular expression, please check\n" ;
+		}
 return $is_text_found ;
 }
 

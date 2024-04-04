@@ -12,7 +12,7 @@ use utf8;
 use strict ; use warnings ;
 
 use List::Util qw(max min) ;
-use List::MoreUtils qw(any);
+use List::MoreUtils qw(any first_value);
 
 my @pixel_elements_to_insert ;
 
@@ -456,8 +456,20 @@ else
 	else
 		{
 		my $current_point = $asciio->{MOUSE_Y} . ';' . $asciio->{MOUSE_X} ;
-		my $all_elements_zbuffer = App::Asciio::ZBuffer->new(0, @{$asciio->{ELEMENTS}});
-		my $current_char = $all_elements_zbuffer->{coordinates}{$current_point} // ' ' ;
+		my ($first_element) = first_value {$asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y})} reverse @{$asciio->{ELEMENTS}} ;
+		my $current_char ;
+		if($first_element)
+			{
+			unless(exists $first_element->{CACHE}{ZBUFFER}{ELEMENT})
+				{
+				$first_element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $first_element) ;
+				}
+			$current_char = $first_element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}{$current_point} // ' ' ;
+			}
+		else
+			{
+			$current_char = ' ' ;
+			}
 		push @get_chars, $current_char unless $current_char =~ /^\s*$/ ;
 		}
 	@pen_chars = @get_chars if @get_chars ;
