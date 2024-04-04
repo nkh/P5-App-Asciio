@@ -56,7 +56,7 @@ my ($name, $edit, $x, $y) = @{$name_and_edit} ;
 
 my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
 # If it's a box, use the latest type
-if (($name =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
+if ($self->{USE_LAST_ELEMENT_TYPE} && ($name =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
 	{
 	App::Asciio::Actions::Asciio::elements_change_type(
 		$self, 
@@ -138,7 +138,7 @@ if(defined $text && $text ne '')
 		my $new_element = add_element($self, [$type, 0]) ;
 		
 		# Use last box type
-		if (($type =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
+		if ($self->{USE_LAST_ELEMENT_TYPE} && ($type =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
 			{
 			App::Asciio::Actions::Asciio::elements_change_type(
 				$self, 

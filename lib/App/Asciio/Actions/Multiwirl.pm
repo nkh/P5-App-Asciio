@@ -284,7 +284,7 @@ if($is_connection_not_allowed)
 	$self->add_elements($element);
 	@$element{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
 
-	if(exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
+	if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
 		{
 		App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
 		}
@@ -302,7 +302,7 @@ if(0 == @selected_elements)
 	{
 	App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]) ;
 	# Use the last changed arrow type
-	if(exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
+	if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
 		{
 		App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
 		}
@@ -338,7 +338,7 @@ elsif(1 == @selected_elements)
 		
 		$self->deselect_all_elements() ;
 		$self->select_elements(1, $arrow) ;
-		if(exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
+		if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
 			{
 			App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
 			}

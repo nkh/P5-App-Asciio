@@ -79,6 +79,7 @@ use base qw/App::Asciio::Markup/ ;
 use Memoize ;
 memoize('convert_markup_string') ;
 memoize('del_markup_characters') ;
+memoize('is_markup_string') ;
 
 #-----------------------------------------------------------------------------
 

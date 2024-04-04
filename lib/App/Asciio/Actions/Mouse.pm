@@ -222,7 +222,7 @@ my $wirl_arrow = new App::Asciio::stripes::section_wirl_arrow
 					RESIZABLE => 1,
 					}) ;
 
-if(exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
+if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
 	{
 	App::Asciio::Actions::Asciio::elements_change_type(
 		$self, 
