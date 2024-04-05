@@ -20,7 +20,13 @@ use App::Asciio::ZBuffer ;
 
 #-----------------------------------------------------------------------------
 
-sub set_modified_state { my ($self, $state) = @_ ; $self->{MODIFIED} = $state ; }
+sub set_modified_state 
+{ 
+my ($self, $state) = @_ ; 
+exists $self->{asciios} 
+	? (map { $_->{MODIFIED} = $state } @{$self->{asciios}}) 
+	: ($self->{MODIFIED} = $state) ;
+}
 
 #-----------------------------------------------------------------------------
 
@@ -529,7 +535,7 @@ $self->{MODIFIED }++ ;
 }
 
 #-----------------------------------------------------------------------------
-
+# :TODO: when the number of elements is large, this is time-consuming.
 sub get_selected_elements
 {
 my ($self, $state) = @_ ;
@@ -569,7 +575,11 @@ my ($self, $state, @elements) = @_ ;
 
 my %groups_to_select ;
 
-for my $element (@elements) 
+my @selected_elements = ($self->{IGNORE_ELEMENT_FREEZE}) 
+						? @elements 
+						: grep { !$_->is_freeze() } @elements;
+
+for my $element (@selected_elements) 
 	{
 	if($state)
 		{
@@ -587,6 +597,7 @@ for my $element (@elements)
 	}
 
 # select groups
+# :TODO: when the number of elements is large, this is time-consuming.
 for my $element (@{$self->{ELEMENTS}}) 
 	{
 	if
@@ -619,11 +630,7 @@ my $search_words = $self->display_edit_dialog("input search words", '', $self, u
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
-		{
-		my $element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
-		}
-	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}) ;
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle(App::Asciio::ZBuffer->new(0, $element)->{coordinates}) ;
 
 	$self->select_elements(1, $element) if ($text =~ m/$search_words/i);
 	}
@@ -639,11 +646,7 @@ my $search_words = $self->display_edit_dialog("input search words", '', $self, u
 
 for my $element (@{$self->{ELEMENTS}}) 
 	{
-	unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
-		{
-		my $element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
-		}
-	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle($element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}) ;
+	my ($text, $min_x, $min_y, $width, $height) = $self->get_text_rectangle(App::Asciio::ZBuffer->new(0, $element)->{coordinates}) ;
 
 	$element->{SELECTED} = ++$self->{SELECTION_INDEX} if ($text =~ m/$search_words/i);
 	}
@@ -695,6 +698,8 @@ $element->{SELECTED} ;
 sub is_over_element
 {
 my ($self, $element, $x, $y, $field) = @_ ;
+
+return 0 if !$self->{IGNORE_ELEMENT_FREEZE} && $element->is_freeze();
 
 $field //= 0 ;
 my $is_under = 0 ;

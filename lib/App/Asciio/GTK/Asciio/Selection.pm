@@ -109,33 +109,57 @@ sub polygon_selection
 {
 my ($self, $select_type) = @_ ;
 
-for my $element (@{$self->{ELEMENTS}})
-	{
-	unless(exists $element->{CACHE}{ZBUFFER}{COORDINATES})
-		{
-		unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
-			{
-			$element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
-			}
+my @elements_to_be_selected ;
+my @elements_to_be_inverse_selected ;
 
-		my @coordinates = map { [split ';'] } keys %{$element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}};
-		@coordinates = map{ [reverse @$_]} @coordinates;
-		$element->{CACHE}{ZBUFFER}{COORDINATES} = \@coordinates;
-		}
-	if(all_points_in_polygon($element->{CACHE}{ZBUFFER}{COORDINATES}, $self->{SELECTION_POLYGON}))
+for my $element (@{$self->{seen_elements}})
+	{
+	if(exists $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES})
 		{
-		$self->select_elements($select_type, $element);
-		$elements_selection_status{$element} = 1 ;
+		my $coordinates_extremun = $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES} ;
+		my @x = map {$_->[0]} @{$self->{SELECTION_POLYGON}} ;
+		my @y = map {$_->[1]} @{$self->{SELECTION_POLYGON}} ;
+		my @polygon_extremum = (min(@x), max(@x), min(@y), max(@y)) ;
+		if	   (($polygon_extremum[1] < $coordinates_extremun->[0]) 
+			|| ($polygon_extremum[0] > $coordinates_extremun->[1])
+			|| ($polygon_extremum[3] < $coordinates_extremun->[2])
+			|| ($polygon_extremum[2] > $coordinates_extremun->[3]))
+			{
+			if(exists($elements_selection_status{$element}))
+				{
+				push @elements_to_be_inverse_selected, $element ;
+				delete $elements_selection_status{$element} ;
+				}
+			next ;
+			}
+		}
+
+	my @coordinates = map { [split ';'] } keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}};
+	@coordinates = map{ [reverse @$_]} @coordinates;
+
+	# speed up the speed policy. first, check whether the four extreme points are in the list. 
+	# If not, no more judgment is required.
+
+	if(all_points_in_polygon(\@coordinates, $self->{SELECTION_POLYGON}))
+		{
+		unless (exists $elements_selection_status{$element})
+			{
+			push @elements_to_be_selected, $element ;
+			$elements_selection_status{$element} = 1 ;
+			}
 		}
 	else
 		{
 		if(exists($elements_selection_status{$element}))
 			{
-			$self->select_elements(!$select_type, $element);
+			push @elements_to_be_inverse_selected, $element ;
 			delete $elements_selection_status{$element} ;
 			}
 		}
 	}
+$self->select_elements($select_type, @elements_to_be_selected) if (@elements_to_be_selected) ;
+$self->select_elements(!$select_type, @elements_to_be_inverse_selected) if (@elements_to_be_inverse_selected) ;
+
 }
 
 #----------------------------------------------------------------------------------------------
@@ -160,6 +184,7 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	else
 		{
 		push @{$self->{SELECTION_POLYGON}}, [$x, $y] ;
+
 		$self->polygon_selection($select_type) ;
 		}
 	}

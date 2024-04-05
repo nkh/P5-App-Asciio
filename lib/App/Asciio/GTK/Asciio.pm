@@ -11,8 +11,12 @@ use warnings;
 use Glib ':constants';
 use Gtk3 -init;
 use Pango ;
+use utf8 ;
 
 use List::Util qw(min max) ;
+use File::Basename ;
+use Module::Util qw(find_installed) ;
+use Clone ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
 use App::Asciio::GTK::Asciio::stripes::editable_box2;
@@ -45,31 +49,56 @@ our $VERSION = '0.01' ;
 
 sub new
 {
-my ($class, $window, $width, $height, $sc_window) = @_ ;
+my ($class, $window, $width, $height, $notebook, $old_self, $asciio_argv) = @_ ;
 
 my $self = App::Asciio::new($class) ;
 $self->{UI} = 'GUI' ;
 
 bless $self, $class ;
 
-$window->signal_connect(key_press_event => \&key_press_event, $self);
-$window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
-$window->signal_connect(button_press_event => \&button_press_event, $self);
-$window->signal_connect(button_release_event => \&button_release_event, $self);
+$self->{SCROLL_BAR_POSITION} = [0, 0] ;
+$self->{asciio_argv} = Clone::clone($asciio_argv) ;
 
-$window->signal_connect(configure_event => sub { $self->update_display() ; }) ;
-$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
-$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
-$sc_window->add_events(['GDK_SCROLL_MASK']) ;
-$sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
+my $label_num ;
+if(defined $old_self)
+	{
+	$label_num = $old_self->get_new_tab_num() ;
+	}
+else
+	{
+	$label_num = $self->get_new_tab_num() ;
+	}
+
+my $label = Gtk3::Label->new($label_num);
+$label->set_can_focus(FALSE);
+my $scwin = Gtk3::ScrolledWindow->new();
+$scwin->set_policy('always', 'always');
 
 my $drawing_area = Gtk3::DrawingArea->new;
+$drawing_area->set_can_focus(1) ;
+
+
+$self->connect_event('key_press_event', 'key_press_event', \&key_press_event, $drawing_area) ;
+$self->connect_event('motion_notify_event', 'motion_notify_event', \&motion_notify_event, $drawing_area) ;
+$self->connect_event('button_press_event', 'button_press_event', \&button_press_event, $drawing_area) ;
+$self->connect_event('button_release_event', 'button_release_event', \&button_release_event, $drawing_area) ;
+$self->connect_event('configure_event', 'configure_event', sub { $self->update_display() ; }, $drawing_area) ;
+$self->connect_event('h_value_changed', 'value_changed', sub { $self->update_display() ; }, $scwin->get_hadjustment()) ;
+$self->connect_event('v_value_changed', 'value_changed', sub { $self->update_display() ; }, $scwin->get_vadjustment()) ;
+$self->connect_event('delete_event', 'delete_event', \&delete_event, $window) ;
+
+
+$scwin->add_events(['GDK_SCROLL_MASK']) ;
+
+$self->connect_event('scroll_event', 'scroll_event', \&mouse_scroll_event, $scwin) ;
 
 $self->{widget} = $drawing_area ;
 $self->{root_window} = $window ;
-$self->{sc_window} = $sc_window ;
+$self->{sc_window} = $scwin ;
+$self->{notebook} = $notebook ;
+$self->{label} = $label ;
 
-$drawing_area->signal_connect(draw => \&expose_event, $self);
+$self->connect_event('draw', 'draw', \&expose_event, $drawing_area) ;
 
 $drawing_area->set_events
 		([qw/
@@ -82,8 +111,367 @@ $drawing_area->set_events
 		key-release-mask
 		/]);
 
+
+$self->{TAB_LABEL_NAME} = $label_num ;
+$self->{TAB_LABEL_NUM} = $label_num ;
+
+$scwin->add_with_viewport($drawing_area);
+$notebook->append_page($scwin, $label);
+$notebook->set_show_tabs(TRUE) ;
+
+
+my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
+	= $self->ParseSwitches([@{$self->{asciio_argv}}], 0) ;
+
+die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
+
+my $setup_paths = [] ;
+
+
+if(@{$asciio_config->{SETUP_PATHS}})
+	{
+	$setup_paths = $asciio_config->{SETUP_PATHS} ;
+	}
+else
+	{
+	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
+	my $setup_path = $path . $basename . '/setup/' ;
+	
+	$setup_paths = 
+		[
+		$setup_path . 'setup.ini', 
+		$setup_path . 'GTK/setup.ini', 
+		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
+		] ;
+	}
+
+$self->setup($setup_paths) ;
+$self->{ACTION_VERBOSE} = sub { print STDERR "@_\n" } ;
+
+my ($character_width, $character_height) = $self->get_character_size() ;
+
+$self->{widget}->set_size_request($self->{CANVAS_WIDTH} * $character_width, $self->{CANVAS_HEIGHT} * $character_height);
+$self->set_modified_state(0) ;
+
+$self->setup_dnd($window) ;
+
+
+push @{$self->{asciios}}, $self ;
+
+$self->connect_event('switch-page', 'switch-page', \&page_switch_event, $notebook) ;
+$self->connect_event('focus_in_event', 'focus_in_event', \&focus_in_event, $drawing_area) ;
+
+
 return($self) ;
 }
+
+#-----------------------------------------------------------------------------
+sub connect_event 
+	{
+    my ($self, $event_name, $gtk_event_name, $handler, $widget) = @_;
+    $self->{event_handlers}{$event_name} = {
+        handler_id => $widget->signal_connect($gtk_event_name => $handler, $self),
+        handler_widget => $widget
+		} ;
+	}
+
+#-----------------------------------------------------------------------------
+sub DESTROY
+{
+my ($self) = @_;
+# print "asciio($self) object is being destroyed.\n" ;
+}
+
+#-----------------------------------------------------------------------------
+sub delete_event
+{
+my ($window, $event, $self) = @_;
+
+my $answer = 'yes';
+
+my $should_save ;
+
+my $current_page_num = $self->{notebook}->get_current_page() ;
+
+return if($self->{TAB_LABEL_NUM} != $current_page_num) ;
+
+for my $asciio (@{$self->{asciios}})
+	{
+	$should_save++ if $asciio->get_modified_state() ;
+	}
+
+if($should_save) 
+	{
+	$answer = $self->display_quit_dialog('asciio', ' ' x 25 . "Document is modified!\n\nAre you sure you want to quit and lose your changes?\n") ;
+	}
+
+if($answer eq 'save_and_quit')
+	{
+	my @saved_result = $self->run_actions_by_name('Save') ;
+	$answer = 'cancel' if(! defined $saved_result[0][0] || $saved_result[0][0] eq '') ;
+	}
+
+return $answer eq 'cancel';
+}
+
+#-----------------------------------------------------------------------------
+sub get_new_tab_num
+{
+my ($self) = @_ ;
+
+return (defined $self->{asciios}) ? @{$self->{asciios}} : 0 ;
+}
+
+#-----------------------------------------------------------------------------
+sub add_tab
+{
+my ($self) = @_ ;
+
+# get the current active tab index
+my $current_page = $self->{notebook}->get_current_page();
+
+
+my $new_asciio = new App::Asciio::GTK::Asciio($self->{root_window}, 50, 25, $self->{notebook}, $self, $self->{asciio_argv}) ;
+
+# move the new tab to after the current active tab
+$new_asciio->{notebook}->reorder_child($new_asciio->{notebook}->get_nth_page(-1), $current_page + 1);
+splice(@{$self->{asciios}}, $current_page + 1, 0, $new_asciio) ;
+$self->update_all_asciios_ref() ;
+
+$new_asciio->set_modified_state(1) ;
+
+$new_asciio->set_title($self->{TITLE}) ;
+
+# make the new tab the active tab
+$new_asciio->{notebook}->set_current_page($current_page + 1) ;
+
+$new_asciio->{root_window}->show_all() ;
+
+$new_asciio->update_display() ;
+
+return $new_asciio ;
+}
+
+#-----------------------------------------------------------------------------
+sub copy_tab
+{
+my ($self) = @_ ;
+
+my $serialized_self = $self->serialize_self() ;
+
+my $new_asciio = $self->add_tab() ;
+
+$new_asciio->load_self(get_sereal_decoder()->decode($serialized_self)) ;
+
+$new_asciio->set_modified_state(1) ;
+
+$new_asciio->update_display() ;
+}
+
+
+#-----------------------------------------------------------------------------
+sub update_all_asciios_ref
+{
+my ($self) = @_ ;
+
+my $label_cnt = 0 ;
+
+for my $asciio (@{$self->{asciios}})
+	{
+	@{$asciio->{asciios}} = @{$self->{asciios}} ;
+	$asciio->{TAB_LABEL_NUM} = $label_cnt++ ;
+	}
+
+$self->disable_all_switch_focus_event() ;
+$self->enable_all_switch_focus_event();
+}
+
+#-----------------------------------------------------------------------------
+sub disable_all_switch_focus_event
+{
+my ($self) = @_ ;
+
+for my $asciio (@{$self->{asciios}})
+	{
+	$asciio->{notebook}->signal_handler_disconnect($asciio->{event_handlers}{"switch-page"}{handler_id}) ;
+	$asciio->{widget}->signal_handler_disconnect($asciio->{event_handlers}{"focus_in_event"}{handler_id}) ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+sub enable_all_switch_focus_event
+{
+my ($self) = @_ ;
+
+for my $asciio (@{$self->{asciios}})
+	{
+	$asciio->connect_event('switch-page', 'switch-page', \&page_switch_event, $asciio->{notebook}) ;
+	$asciio->connect_event('focus_in_event', 'focus_in_event', \&focus_in_event, $asciio->{widget}) ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+sub disconnect_all_events
+{
+my ($self) = @_ ;
+
+foreach my $event_key (keys %{$self->{event_handlers}})
+	{
+	my $event = $self->{event_handlers}{$event_key};
+	$event->{handler_widget}->signal_handler_disconnect($event->{handler_id}) ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+sub delete_tab
+{
+my ($self, $is_delete_without_warning) = @_ ;
+
+# if there is only one tab left and deletion is not allowed
+my $total_pages = $self->{notebook}->get_n_pages();
+
+return if($total_pages == 1) ;
+
+unless($is_delete_without_warning)
+    {
+    my $user_answer = $self->display_yes_no_cancel_dialog('asciio', 'The deletion operation will lose all data on the current tab page. Are you sure you want to continue?') ;
+    return if($user_answer ne 'yes') ;
+    }
+
+my $page_num = $self->{notebook}->get_current_page();
+
+$self->disconnect_all_events() ;
+
+my $next_asciio = $self->switch_tab(1) ;
+
+@{$self->{asciios}} = () ;
+
+my $current_page = $next_asciio->{notebook}->get_nth_page($page_num) ;
+$next_asciio->{notebook}->remove_page($page_num) ;
+
+$current_page->destroy() ;
+
+splice(@{$next_asciio->{asciios}}, $page_num, 1) ;
+
+$next_asciio->update_all_asciios_ref() ;
+
+$next_asciio->set_modified_state(1) ;
+
+$next_asciio->{root_window}->show_all() ;
+
+return $next_asciio ;
+}
+
+#-----------------------------------------------------------------------------
+sub change_current_tab_lable_name
+{
+my ($self, $tab_name) = @_ ;
+
+my $current_page_index = $self->{notebook}->get_current_page();
+my $current_page = $self->{notebook}->get_nth_page($current_page_index);
+
+my $new_tab_lable_name = (defined $tab_name) ? $tab_name : $self->display_edit_dialog("input a new name", '', $self, undef, undef, undef, undef, 300, 100);
+
+if($new_tab_lable_name ne '')
+	{
+	$self->{label}->set_text($new_tab_lable_name) ;
+	$self->{TAB_LABEL_NAME} = $new_tab_lable_name ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+sub get_tab_label_height
+{
+my ($self) = @_ ;
+my $height = 0 ;
+if ($self->{notebook}->get_show_tabs())
+	{
+	my $page_num = $self->{notebook}->get_current_page();
+	my $tab_label = $self->{notebook}->get_tab_label($self->{notebook}->get_nth_page($page_num));
+	my $allocation = $tab_label->get_allocation();
+	$height = $allocation->{height} + $allocation->{y} ;
+	}
+return $height ;
+}
+
+#-----------------------------------------------------------------------------
+sub show_all_tabs
+{
+my ($self) = @_ ;
+
+$self->{notebook}->set_show_tabs(TRUE) ;
+$self->set_label_focus(FALSE) ;
+
+
+}
+
+#-----------------------------------------------------------------------------
+sub hide_all_tabs
+{
+my ($self) = @_ ;
+
+$self->{notebook}->set_show_tabs(FALSE) ;
+$self->set_label_focus(FALSE) ;
+
+
+}
+
+#-----------------------------------------------------------------------------
+sub set_label_focus
+{
+my ($self, $is_focus) = @_ ;
+
+$self->{notebook}->set_can_focus(FALSE) ;
+$self->{notebook}->set_scrollable(TRUE) ;
+
+for my $asciio (@{$self->{asciios}})
+	{
+	my $current_page_index = $asciio->{notebook}->get_current_page();
+	my $current_page = $asciio->{notebook}->get_nth_page($current_page_index);
+	my $label = $asciio->{notebook}->get_tab_label($current_page);
+
+	$label->set_can_focus($is_focus);
+	$asciio->{widget}->set_can_focus(TRUE);
+	}
+
+}
+
+#-----------------------------------------------------------------------------
+sub switch_specific_tab
+{
+my ($self, $tab_label_num) = @_ ;
+
+my $total_pages = $self->{notebook}->get_n_pages();
+my $page_num = $self->{notebook}->get_current_page();
+
+$self->{notebook}->set_current_page($tab_label_num) ;
+return $self->{asciios}[$tab_label_num] ;
+}
+
+#-----------------------------------------------------------------------------
+sub switch_tab
+{
+my ($self, $step) = @_ ;
+
+my $total_pages = $self->{notebook}->get_n_pages();
+my $page_num = $self->{notebook}->get_current_page();
+
+$self->{notebook}->set_current_page(($page_num + $step) % $total_pages) ;
+return $self->{asciios}[($page_num + $step) % $total_pages] ;
+}
+
+#-----------------------------------------------------------------------------
+sub move_tab_page_forward
+{
+my ($self) = @_ ;
+}
+
+#-----------------------------------------------------------------------------
+sub move_tab_page_back
+{
+my ($self) = @_ ;
+}
+
 
 #-----------------------------------------------------------------------------
 
@@ -91,7 +479,7 @@ sub destroy
 {
 my ($self) = @_;
 
-$self->{widget}->get_toplevel()->destroy() ;
+$self->{root_window}->destroy() ;
 }
 
 #-----------------------------------------------------------------------------
@@ -113,7 +501,7 @@ $self->SUPER::set_title($title) ;
 
 if(defined $title)
 	{
-	$self->{widget}->get_toplevel()->set_title($self->{MODIFIED} 
+	$self->{root_window}->set_title($self->{MODIFIED} 
 												? '* ' . $title . ' - asciio' 
 												: $title . ' - asciio') ;
 	}
@@ -188,9 +576,14 @@ my ($start_x, $end_x, $start_y, $end_y) =
 	int(($v_value + $windows_height) / $character_height + 2)
 	) ;
 
+my $grid_background_color = $self->get_color('background') ;
+my $grid_color = $self->get_color('grid') ;
+my $grid2_color = $self->get_color('grid_2') ;
+
 my $grid_width = (int($windows_width / $character_width) + 2) * $character_width ;
 my $grid_height = (int($windows_height / $character_height) + 2) * $character_height ;
-my $grid_rendering = $self->{CACHE}{GRID}{$grid_width . '-' . $grid_height} ;
+my $grid_cache_key = $grid_width . '-' . $grid_height . ($grid_background_color // undef) . '-' . ($grid_color // undef) . '-' . ($grid2_color // undef) ;
+my $grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} ;
 
 unless (defined $grid_rendering)
 	{
@@ -227,7 +620,7 @@ unless (defined $grid_rendering)
 			}
 		}
 		
-	$grid_rendering = $self->{CACHE}{GRID}{$grid_width . '-' . $grid_height} = $surface ;
+	$grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} = $surface ;
 	}
 
 $gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
@@ -235,7 +628,8 @@ $gc->paint;
 
 # draw elements
 my $element_index = 0 ;
-my $seen_elements ;
+$self->{seen_elements} = undef ;
+
 my %seen_elements_hash ;
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
@@ -245,36 +639,27 @@ for my $element (@{$self->{ELEMENTS}})
 	$element_index++ ;
 	unless(exists $element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES})
 		{
-		unless(exists $element->{CACHE}{ZBUFFER}{ELEMENT})
-			{
-			$element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $element) ;
-			}
-		unless(exists $element->{CACHE}{ZBUFFER}{COORDINATES})
-			{
-			my @coordinates = map {[split ';']} keys %{$element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}} ;
-			@coordinates = map {[reverse @$_]} @coordinates ;
-			$element->{CACHE}{ZBUFFER}{COORDINATES} = \@coordinates ;
-			}
-		my @x = map {$_->[0]} @{$element->{CACHE}{ZBUFFER}{COORDINATES}};
-		my @y = map {$_->[1]} @{$element->{CACHE}{ZBUFFER}{COORDINATES}};
+		my @coordinates = map {[split ';']} keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}} ;
+
+		my @x = map {$_->[1]} @coordinates;
+		my @y = map {$_->[0]} @coordinates;
 		
 		$element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES} = [min(@x), max(@x), min(@y), max(@y)] ;
 		}
-
 
 	unless(($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[0] > $end_x)
 		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[1] < $start_x)
 		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[2] > $end_y)
 		|| ($element->{CACHE}{ZBUFFER}{COORDINATES_BOUNDARIES}->[3] < $start_y))
 		{
-		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
-		push @{$seen_elements}, $element ;
+		$element->gui_draw($self, $element_index, $gc, $font_description, $character_width, $character_height) ;
+		push @{$self->{seen_elements}}, $element ;
 		}
 	}
 
-@seen_elements_hash{@{$seen_elements}} = () if (defined $seen_elements) ;
+@seen_elements_hash{@{$self->{seen_elements}}} = () if (defined $self->{seen_elements}) ;
 
-$self->draw_cross_overlays($gc, $seen_elements, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $self->{seen_elements}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 $self->draw_find_keywords_highlight($gc, $character_width, $character_height) ;
 
@@ -401,8 +786,8 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$seen_elements}
-			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$seen_elements}
+			? @{$self->{seen_elements}}
+			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{seen_elements}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -626,7 +1011,7 @@ my $zbuffer = App::Asciio::ZBuffer->new(1, @{$seen_elements}) ;
 my ($default_background_color, $default_foreground_color) = (
 	$self->get_color('element_background'), $self->get_color('element_foreground')) ;
 
-for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
+for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer, $self->{USE_CROSS_MODE}))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
 
@@ -704,7 +1089,7 @@ for (@overlay_elements)
 		}
 	elsif(ref($_) =~ /^App::Asciio::stripes/)
 		{
-		$self->draw_element($_, $element_index, $gc, $font_description, $character_width, $character_height) ;
+		$_->gui_draw($self, $element_index, $gc, $font_description, $character_width, $character_height) ;
 		$element_index++ ; # should overlay stripes have number?
 		}
 	else
@@ -889,7 +1274,74 @@ $self->SUPER::motion_notify_event($self->create_asciio_event($event)) ;
 }
 
 sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
-sub mouse_scroll_event   { my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; }
+sub mouse_scroll_event   
+{ 
+my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; 
+
+}
+
+#-----------------------------------------------------------------------------
+sub update_focus_in_event
+{
+my ($self, $is_need_focus_in) = @_ ;
+
+for my $asciio (@{$self->{asciios}})
+	{
+	$asciio->{is_need_focus_in} = $is_need_focus_in;
+	}
+}
+
+#-----------------------------------------------------------------------------
+sub page_switch_event
+{
+my ($notebook, $page, $page_num, $self) = @_ ;
+
+$self->update_focus_in_event(1) ;
+
+if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
+	{
+	# Exit key group
+	# :TODO: These functions calls shouldn't be here and are hardcoded here
+	$self->run_actions_by_name('find escape') ;
+	$self->run_actions_by_name('Selection escape') ;
+	$self->run_actions_by_name('Polygon selection escape') ;
+	$self->run_actions_by_name('Eraser escape') ;
+	$self->run_actions_by_name('clone escape') ;
+	$self->run_actions_by_name('pen escape') ;
+	$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
+	$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+	}
+
+# only set the scroll bar when the current page and the page to be switched are the same, or only record
+if($self->{TAB_LABEL_NUM} == $page_num)
+	{
+	my $scwin = $page->get_child() ;
+	my $widget = $scwin->get_child() ;
+	my $root_window = $notebook->get_toplevel() ;
+
+	# here must first get the scroll bar position, and then grab_focus
+	$self->{SCROLL_BAR_POSITION} = [$self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()] ;
+
+	$widget->grab_focus() ;
+	$root_window->show_all() ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+sub focus_in_event
+{
+my ($widget, $event, $self) = @_ ;
+
+if($self->{is_need_focus_in})
+	{
+	my $scwin = $widget->get_parent() ;
+	my $position = delete $self->{FIRST_SCROLL_BAR_POSITION} // $self->{SCROLL_BAR_POSITION} ;
+	
+	$scwin->get_hadjustment()->set_value($position->[0]);
+	$scwin->get_vadjustment()->set_value($position->[1]);
+	$self->update_focus_in_event(0) ;
+	}
+}
 
 #-----------------------------------------------------------------------------
 
@@ -1061,6 +1513,53 @@ sub hide_cursor { my ($self) = @_ ; $self->change_cursor('blank-cursor') ; }
 
 sub show_cursor { my ($self) = @_ ; $self->change_cursor('left_ptr') ; }
     
+#-----------------------------------------------------------------------------
+sub load_all_self
+{
+my ($self, $new_self) = @_ ;
+
+my @asciios = (ref($new_self) eq 'ARRAY') ? @{$new_self} : ($new_self);
+
+# Start operation from TAB 0
+$self = $self->switch_specific_tab(0) ;
+my $new_asciio = $self->switch_tab(1) ;
+for my $index (0 .. scalar @{$self->{asciios}} - 2)
+	{
+	$new_asciio = $new_asciio->delete_tab(1) ;
+	}
+
+# The first TAB must be displayed here, and the order of the last tab pages is correct.
+$self->{root_window}->show_all() ;
+
+my $decoder = get_sereal_decoder() ;
+
+$new_asciio = $self ;
+
+my $is_not_first_self = 0 ;
+
+for my $asciio (@asciios)
+	{
+	if($is_not_first_self++)
+		{
+		$new_asciio = $new_asciio->add_tab() ;
+		}
+
+	my $deserialization_self = (ref($new_self) eq 'ARRAY') ? $decoder->decode($asciio) : $asciio ;
+	$new_asciio->load_self($deserialization_self);
+
+	# when a tab is added, the focus_in event of the current tab page 
+	# cannot be triggered in time because the event processing function is just mounted.
+	# The coordinates saved for the first time in page_switch_event are incorrect.
+	$new_asciio->{FIRST_SCROLL_BAR_POSITION} //= [$new_asciio->{SCROLL_BAR_POSITION}->[0] // 0, $new_asciio->{SCROLL_BAR_POSITION}->[1] // 0] ;		
+
+	$new_asciio->change_current_tab_lable_name($deserialization_self->{TAB_LABEL_NAME} // '0') ;
+
+	$new_asciio->invalidate_rendering_cache();
+	}
+
+return $new_asciio->switch_tab(1) ;
+}
+
 #-----------------------------------------------------------------------------
 
 =head1 DEPENDENCIES

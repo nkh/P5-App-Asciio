@@ -122,8 +122,8 @@ if($user_answer ne 'cancel')
 	
 	if(defined $file_name && $file_name ne q[])
 		{
-		my $title = $self->load_file($file_name) ;
-		
+		my ($title, $asciio) = $self->load_file($file_name) ;
+
 		my ($base_name, $path, $extension) = File::Basename::fileparse($file_name, ('\..*')) ;
 		$extension =~ s/^\.// ;
 		
@@ -131,9 +131,9 @@ if($user_answer ne 'cancel')
 					? $extension
 					: 'asciio_internal_format' ;
 					
-		$self->set_title($title) if defined $title;
-		$self->set_modified_state(0) ;
-		$self->update_display() ;
+		$asciio->set_title($title) if defined $title;
+		$asciio->set_modified_state(0) ;
+		$asciio->update_display() ;
 		}
 	}
 }
@@ -145,6 +145,8 @@ sub insert
 my ($self, $x, $y, $file_name) = @_ ;
 
 $file_name ||= $self->get_file_name('open') ;
+
+# :TODO: need to be change, currently only TAB0 is exported
 
 if(defined $file_name && $file_name ne q[])
 	{

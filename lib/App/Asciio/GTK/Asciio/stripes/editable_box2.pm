@@ -150,6 +150,8 @@ my $final_heigh = $text_heigh + $title_heigh + 1;
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 # need to exclude the influence of window decoration
 my ($root_x, $root_y) = $asciio->{root_window}->get_window()->get_origin() ;
+$root_y += $asciio->get_tab_label_height() ;
+
 my ($v_value, $h_value) = ($asciio->{sc_window}->get_vadjustment()->get_value(), $asciio->{sc_window}->get_hadjustment()->get_value());
 
 

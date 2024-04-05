@@ -11,67 +11,71 @@ Gtk3->init;
 
 use App::Asciio::GTK::Asciio ;
 use App::Asciio::Server ;
-use App::Asciio::GTK::Asciio::DnD ;
-
-use Module::Util qw(find_installed) ;
-use File::Basename ;
 
 #-----------------------------------------------------------------------------
 
 my $window = Gtk3::Window->new('toplevel');
+my $notebook = Gtk3::Notebook->new;
+$notebook->set_can_focus(FALSE);
+$notebook->set_scrollable(TRUE) ;
+
+sub asciio_init
+{
 $window->set_title("asciio");
 $window->set_default_size(1000, 1000) ;
 $window->signal_connect("destroy", sub { exit(0); });
 
-my $scwin = Gtk3::ScrolledWindow->new();
-$scwin->set_policy('automatic', 'automatic');
+$window->add($notebook);
 
-$window->add($scwin);
+# :TOCHECK: by qinqing
+# $window->add($scwin);
 
-my @asciios ;
+# my @asciios ;
 
-push @asciios, my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
+# push @asciios, my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
 
-$scwin->add_with_viewport($asciio->{widget});
-$scwin->show_all();
+# $scwin->add_with_viewport($asciio->{widget});
+# $scwin->show_all();
+my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $notebook, undef, \@ARGV) ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
 
-my %object_override ; 
-if(defined $asciio_config->{DEBUG_FD})
-	{
-	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd $asciio_config->{DEBUG_FD}: $!\n" ; 
-	$fh->autoflush(1) ;
-	%object_override = (WARN => sub { print $fh "@_" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
-	}
-else
-	{
-	%object_override = (WARN => sub { print STDERR "@_" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
-	}
+# :TOCHECK: by qinqing
+# my %object_override ; 
+# if(defined $asciio_config->{DEBUG_FD})
+# 	{
+# 	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd $asciio_config->{DEBUG_FD}: $!\n" ; 
+# 	$fh->autoflush(1) ;
+# 	%object_override = (WARN => sub { print $fh "@_" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
+# 	}
+# else
+# 	{
+# 	%object_override = (WARN => sub { print STDERR "@_" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+# 	}
 
-my $setup_paths = [] ;
+# my $setup_paths = [] ;
 
-if(@{$asciio_config->{SETUP_PATHS}})
-	{
-	$setup_paths = $asciio_config->{SETUP_PATHS} ;
-	}
-else
-	{
-	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
-	my $setup_path = $path . $basename . '/setup/' ;
+# if(@{$asciio_config->{SETUP_PATHS}})
+# 	{
+# 	$setup_paths = $asciio_config->{SETUP_PATHS} ;
+# 	}
+# else
+# 	{
+# 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
+# 	my $setup_path = $path . $basename . '/setup/' ;
 	
-	$setup_paths = 
-		[
-		$setup_path . 'setup.ini', 
-		$setup_path . 'GTK/setup.ini', 
-		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
-		] ;
-	}
+# 	$setup_paths = 
+# 		[
+# 		$setup_path . 'setup.ini', 
+# 		$setup_path . 'GTK/setup.ini', 
+# 		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
+# 		] ;
+# 	}
 
-$asciio->setup($setup_paths, \%object_override) ;
+# $asciio->setup($setup_paths, \%object_override) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 
@@ -84,8 +88,6 @@ if(defined $asciio_config->{TARGETS}[0])
 	$window->set_default_size(@{$asciio->{WINDOW_SIZE}})  if defined $asciio->{WINDOW_SIZE} ;
 	}
 
-$window->show_all();
-
 $asciio->{widget}->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
 $asciio->set_modified_state(0) ;
 
@@ -96,45 +98,18 @@ if(defined $asciio_config->{SCRIPT})
 	App::Asciio::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
 	}
 
-$asciio->setup_dnd($window) ;
-
-#--------------------------------------------------------------------------
-
-$window->signal_connect (delete_event => \&delete_event, \@asciios) ;
-
-sub delete_event
-{
-my ($window, $event, $asciios) = @_;
-
-my $answer = 'yes';
-
-my $should_save ;
-for my $asciio (@{$asciios})
-	{
-	$should_save++ if $asciio->get_modified_state() ;
-	}
-
-if($should_save) 
-	{
-	$answer = $asciios[0]->display_quit_dialog('asciio', ' ' x 25 . "Document is modified!\n\nAre you sure you want to quit and lose your changes?\n") ;
-	}
-
-if($answer eq 'save_and_quit')
-	{
-	for my $asciio (@{$asciios})
-		{
-		my @saved_result = $asciio->run_actions_by_name('Save') ;
-		
-		$answer = 'cancel' if(! defined $saved_result[0][0] || $saved_result[0][0] eq '') ;
-		}
-	}
-
-return $answer eq 'cancel';
+$window->show_all() ;
+$asciio->{widget}->grab_focus() ;
+return ($asciio, $asciio_config->{WEB_PORT}) ;
 }
 
 #--------------------------------------------------------------------------
 
-App::Asciio::Server::start_web_server($asciios[0], $asciio_config->{WEB_PORT} // 4444) ; 
+my ($asciio, $web_port) = asciio_init() ;
 
-Gtk3->main();
+# :TODO: If the first tab is deleted by the user, the web service will be damaged.need to fix.
+# The reference of asciios[0] is retained. Therefore, an error occurs when the tab is deleted.
+# need to fix
+App::Asciio::Server::start_web_server($asciio, $web_port // 4444) ; 
 
+Gtk3->main() ;

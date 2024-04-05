@@ -502,6 +502,41 @@ $self->update_display() ;
 
 }
 
+#----------------------------------------------------------------------------------------------
+sub freeze_elements
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+	
+	$self->select_elements(0, @selected_elements) ;
+
+	map { $_->freeze() } @selected_elements ;
+
+	$self->update_display() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+sub unfreeze_elements
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+	
+	map { $_->unfreeze() } @selected_elements ;
+
+	$self->update_display() ;
+	}
+}
 
 #----------------------------------------------------------------------------------------------
 

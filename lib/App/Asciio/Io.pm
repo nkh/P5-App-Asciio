@@ -11,7 +11,8 @@ my $ASCIIO_MIME_TYPE = "application/x-asciio" ;
 use Data::TreeDumper ;
 use File::Slurp ;
 use Readonly ;
-use Compress::Bzip2 qw(:all :utilities :gzip) ;
+use Clone ;
+use Compress::Bzip2 qw(:all :utilities :gzip);
 
 use Sereal qw(
     get_sereal_decoder
@@ -38,6 +39,8 @@ $extension =~ s/^\.// ;
 my $type = $extension ne q{} ? $extension : 'internal_asciio_format';
 
 my $title ;
+
+my $asciio = $self ;
 
 if
 	(
@@ -76,7 +79,7 @@ else
 			die "load_file: can't load file '$file_name': $! $@\n" ;
 			}
 		
-		$self->load_self($saved_self) ; # resurrect
+		$asciio = $self->load_all_self($saved_self) ; # resurrect
 		delete $self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} ;
 		delete $self->{CACHE} ;
 		
@@ -98,7 +101,7 @@ else
 		}
 	}
 
-return $title ;
+return ($title, $asciio) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -109,6 +112,13 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		widget
 		root_window
 		sc_window
+		notebook
+		label
+		asciios
+		asciio_argv
+		event_handlers
+		is_need_focus_in
+		seen_elements
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
 		TITLE
@@ -133,6 +143,32 @@ delete @{$new_self}{@ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT} ;
 
 my @keys = keys %{$new_self} ;
 @{$self}{@keys} = @{$new_self}{@keys} ;
+}
+
+#-----------------------------------------------------------------------------
+sub load_all_self
+{
+my ($self, $new_self)  = @_;
+
+my @asciios = (ref($new_self) eq 'ARRAY') ? @{$new_self} : ($new_self);
+
+my $decoder = get_sereal_decoder() ;
+my $new_asciio = $self ;
+my $is_not_first_self = 0 ;
+
+for my $asciio (@asciios)
+	{
+	if($is_not_first_self++)
+		{
+		$new_asciio = new App::Asciio() ;
+		$new_asciio->setup(Clone::clone($self->{SETUP_PATHS})) ;
+		}
+	
+	my $deserialization_self = (ref($new_self) eq 'ARRAY') ? $decoder->decode($asciio) : $asciio ;
+	$new_asciio->load_self($deserialization_self);
+	push @{$self->{asciios}}, $new_asciio ;
+	}
+return $self ;
 }
 
 #-----------------------------------------------------------------------------
@@ -236,14 +272,41 @@ if(defined $name && $name ne q[])
 }
 
 #-----------------------------------------------------------------------------
+sub serialize_all_self
+{
+my ($self) = @_ ;
+
+my $all_serialize_str ;
+my $asciios ;
+
+foreach my $asciio (@{$self->{asciios}})
+	{
+	push @{$asciios}, $asciio->serialize_self() ;
+	}
+
+$self->{CACHE}{ENCODER} = my $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
+my $serialized = $encoder->encode($asciios) ;
+
+return $serialized ;
+}
+
+
+#-----------------------------------------------------------------------------
 
 sub serialize_self
 {
-my ($self, $indent, $is_not_compress) = @_ ;
+my ($self, $indent) = @_ ;
 
 local $self->{widget} = undef ;
 local $self->{root_window} = undef ;
 local $self->{sc_window} = undef ;
+local $self->{notebook} = undef ;
+local $self->{asciios} = undef ;
+local $self->{label} = undef ;
+local $self->{event_handlers} = undef ;
+local $self->{asciio_argv} = undef ;
+local $self->{is_need_focus_in} = undef ;
+local $self->{seen_elements} = undef ;
 local $self->{ACTIONS} = [] ;
 local $self->{HOOKS} = [] ;
 local $self->{CURRENT_ACTIONS} = [] ;
@@ -271,14 +334,8 @@ for my $element (@{$self->{ELEMENTS}})
 	}
 
 my $encoder ;
-if($is_not_compress)
-	{
-	$self->{CACHE}{SE_ENCODER} = $encoder = $self->{CACHE}{SE_ENCODER} // get_sereal_encoder() ;
-	}
-else
-	{
-	$self->{CACHE}{ENCODER} = $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
-	}
+# although compression adds a little time, it greatly reduces memory consumption.
+$self->{CACHE}{ENCODER} = $encoder = $self->{CACHE}{ENCODER} // get_sereal_encoder({compress => SRL_ZLIB}) ;
 local $self->{CACHE} = undef ;
 
 my $on_exit = $self->{ON_EXIT} ;
@@ -323,7 +380,9 @@ else
 		}
 		
 	$title = $file_name ;
-	write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
+	# :TOCHECK: by qinqing
+	# write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
+	write_file($file_name, compress($self->serialize_all_self() .'$VAR1 ;')) or $title = undef ;
 	}
 	
 return $title ;

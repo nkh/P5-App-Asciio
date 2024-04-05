@@ -29,6 +29,27 @@ return($text) ;
 }
 
 #-----------------------------------------------------------------------------
+sub transform_asciios_all_elements_to_ascii_buffer
+{
+my ($self) = @_ ;
+
+my ($table_text, $all_asciios_text) ;
+
+my $asciios = $self->{asciios} // $self ;
+
+for my $asciio (@{$asciios})
+	{
+	$table_text = (@{$asciios} > 1) 
+					? "\n" . $asciio->{TAB_LABEL_NAME} . "\n" . "--------------------------------------" . "\n" 
+					: '' ;
+
+	$all_asciios_text .= $table_text . $asciio->transform_elements_to_ascii_buffer() ;
+	}
+
+return $all_asciios_text ;
+}
+
+#-----------------------------------------------------------------------------
 
 sub transform_elements_to_ascii_buffer_aligned_left
 {
@@ -124,7 +145,7 @@ if($self->{USE_CROSS_MODE})
 	{
 	my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
 
-	for(App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
+	for(App::Asciio::Cross::get_cross_mode_overlays($zbuffer, $self->{USE_CROSS_MODE}))
 		{
 		$lines[$_->[1]][$_->[0]] = [$_->[2]] if defined $lines[$_->[1]][$_->[0]] ;
 		}

@@ -41,11 +41,12 @@ my %simulate_mouse_type_map = (
 my $mouse_emulation_move_direction = 'static' ;
 
 my @keyboard_layout = (
-	[qw(` 1 2 3 4 5 6 7 8 9 0 - = BS)],
-	[qw(Tab q w e r t y u i o p [ ] \\)],
-	[qw(CL a s d f g h j k l ; ' Enter)],
-	[qw(Shift z x c v b n m , . / Shift)],
-);
+    ['`', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 'BS'],
+    ['Tab', 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']', '\\'],
+    ['CL', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', "'", 'Enter'],
+    ['Shift', 'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/', 'Shift'],
+) ;
+
 
 # :TODO: US keyboards and German keyboards may be different, this should not be hardcoded, flexibility needs to be added
 my %key_widths = map { $_ => 30 } ('`', '0'..'9', '-', '=', 'a'..'z', ';', '\'', ',', '.', '/', '[', ']') ;
@@ -291,7 +292,7 @@ sub pen_mouse_emulation_enter
 {
 my ($asciio) = @_ ;
 
-App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
+$asciio->{MOUSE_TOGGLE} = 1 ;
 $asciio->{MOUSE_EMULATION_FIRST_COORDINATE} = undef ;
 $asciio->{SIMULATE_MOUSE_TYPE} = $simulate_mouse_type_map{$mouse_emulation_move_direction} ;
 pen_enter($asciio) ;
@@ -302,7 +303,7 @@ sub pen_mouse_emulation_escape
 {
 my ($asciio) = @_ ;
 
-App::Asciio::Actions::Mouse::toggle_mouse($asciio) ;
+$asciio->{MOUSE_TOGGLE} = 0 ;
 pen_escape($asciio) ;
 }
 
@@ -460,11 +461,7 @@ else
 		my $current_char ;
 		if($first_element)
 			{
-			unless(exists $first_element->{CACHE}{ZBUFFER}{ELEMENT})
-				{
-				$first_element->{CACHE}{ZBUFFER}{ELEMENT} = App::Asciio::ZBuffer->new(0, $first_element) ;
-				}
-			$current_char = $first_element->{CACHE}{ZBUFFER}{ELEMENT}->{coordinates}{$current_point} // ' ' ;
+			$current_char = App::Asciio::ZBuffer->new(0, $first_element)->{coordinates}{$current_point} // ' ' ;
 			}
 		else
 			{
@@ -499,6 +496,8 @@ $is_eraser = 0 if $is_eraser_escape ;
 
 $asciio->set_overlays_sub(undef);
 $asciio->change_cursor('left_ptr');
+
+
 
 $pen_mode_enable = 0 ;
 
@@ -638,11 +637,11 @@ my @elements ;
 if($pixel_delete_only)
 	{
 	@elements = grep { ( ref($_) eq 'App::Asciio::stripes::pixel' )  
-					   && ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) } reverse @{$asciio->{ELEMENTS}} ;
+					   && ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) } reverse @{$asciio->{seen_elements}} ;
 	}
 else
 	{
-	@elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{ELEMENTS}} ;
+	@elements = grep { $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) } reverse @{$asciio->{seen_elements}} ;
 	}
 
 if(@elements)

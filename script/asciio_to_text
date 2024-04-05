@@ -55,7 +55,6 @@ if(defined $asciio_config->{TARGETS}[0])
 	local $asciio->{ACTION_VERBOSE} = sub { ; } ;
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	}
-	
 
 if(defined $asciio_config->{SCRIPT})
 	{
@@ -65,5 +64,5 @@ if(defined $asciio_config->{SCRIPT})
 	}
 
 use open qw( :std :encoding(UTF-8) ) ;
-print $asciio->transform_elements_to_ascii_buffer() ;
+print $asciio->transform_asciios_all_elements_to_ascii_buffer() ;
 

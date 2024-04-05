@@ -34,19 +34,19 @@ my @targets=
 	) ;
 
 # $window->drag_source_set(['button1_mask', 'button3_mask'], \@targets, ['copy','move']) ;
-$window->signal_connect('drag-begin' => \&drag_begin_cb, $self);
+$self->connect_event('drag-begin', 'drag-begin', \&drag_begin_cb, $window) ;
+
 
 my $target_list = Gtk3::TargetList->new([ @targets ]) ;
 
 $window->drag_dest_set('all', \@targets, ['copy', 'move']) ;
 $window->drag_dest_set_target_list($target_list) ;
 
-$window->signal_connect(drag_data_received => \&drag_data_received_cb, $self) ;
+$self->connect_event('drag_data_received', 'drag_data_received', \&drag_data_received_cb, $window) ;
 
 # $window->signal_connect(drag_motion => sub{ print STDERR "drag_motion\n"}, $self) ;
-$window->signal_connect(drag_end => sub { $self->{IN_DRAG_DROP} = 0 ; }, $self);
-
-$window->signal_connect(drag_data_get => \&drag_data_get_cb, $self) ;
+$self->connect_event('drag_end', 'drag_end', sub { $self->{IN_DRAG_DROP} = 0 ; }, $window) ;
+$self->connect_event('drag_data_get', 'drag_data_get', \&drag_data_get_cb, $window) ;
 }
 
 #--------------------------------------------------------------------------

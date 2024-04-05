@@ -133,6 +133,7 @@ $text_heigh =max($text_heigh, 3) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 my ($root_x, $root_y) = $asciio->{root_window}->get_window()->get_origin() ;
+$root_y += $asciio->get_tab_label_height() ;
 my ($v_value, $h_value) = ($asciio->{sc_window}->get_vadjustment()->get_value(), $asciio->{sc_window}->get_hadjustment()->get_value());
 
 my $window = new Gtk3::Window() ;

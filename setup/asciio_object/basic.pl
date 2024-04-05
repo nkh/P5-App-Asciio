@@ -16,6 +16,7 @@ EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 
 USE_LAST_ELEMENT_TYPE => 1,
+MAX_UNDO_SNAPSHOTS => 50,
 
 PEN_MODE_CHARS_SETS => [
 	{
@@ -24,6 +25,8 @@ PEN_MODE_CHARS_SETS => [
 	a => '●', 'A' => '■' , s => '⦿', d => '◎', f => '○', g => '△', h => '⺆', j => '⼌', k => '⼐', l => '⼕',
 	},
 	],
+
+IGNORE_ELEMENT_FREEZE => 0,
 
 TAB_AS_SPACES => '    ',
 USE_BINDINGS_COMPLETION => 0,

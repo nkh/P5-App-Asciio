@@ -210,7 +210,7 @@ Readonly my $mini_col => 3;
 
 my $fill_char = ' ';
 
-if($box_type->[8][2])
+if(defined $box_type->[8][2] && $box_type->[8][2] ne '')
 {
     $fill_char = substr($box_type->[8][2], 0, 1);
 }

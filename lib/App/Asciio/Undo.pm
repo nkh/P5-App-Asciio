@@ -109,12 +109,15 @@ my $serialized_self ;
 
 {
 	local $self->{DO_STACK} = undef ;
-	$serialized_self = $self->serialize_self(0, 1)  ;
+	$serialized_self = $self->serialize_self()  ;
 }
 
 splice(@{$self->{DO_STACK}}, min($self->{DO_STACK_POINTER}, scalar(@{$self->{DO_STACK}}))) ; # new do branch
 
 push @{$self->{DO_STACK}}, $serialized_self ;
+
+shift @{$self->{DO_STACK}} while (@{$self->{DO_STACK}} > $self->{MAX_UNDO_SNAPSHOTS}) ;
+
 $self->{DO_STACK_POINTER} = @{$self->{DO_STACK}} ;
 }
 

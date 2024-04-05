@@ -687,14 +687,21 @@ exit ($code // 0) ;
 }
 
 #-----------------------------------------------------------------------------
-
 sub set_title
 {
 my ($self, $title) = @_;
 
-defined $title and $self->{TITLE} = $title ;
+if(exists $self->{asciios})
+	{
+	map { defined $title and $_->{TITLE} = $title } @{$self->{asciios}} ;
+	}
+else
+	{
+	defined $title and $self->{TITLE} = $title ;
+	}
 }
 
+#-----------------------------------------------------------------------------
 sub get_title
 {
 my ($self) = @_;

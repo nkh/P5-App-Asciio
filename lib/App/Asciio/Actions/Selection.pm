@@ -111,7 +111,7 @@ if($event->{STATE} ne 'dragging-button1')
 sub select_elements
 {
 my ($self, $is_ignore_group) = @_ ;
-my @elements = grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y})} reverse @{$self->{ELEMENTS}} ;
+my @elements = grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y})} reverse @{$self->{seen_elements}} ;
 
 if(@elements)
 	{

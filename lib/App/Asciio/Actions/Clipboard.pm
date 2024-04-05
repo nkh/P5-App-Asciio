@@ -7,6 +7,7 @@ use warnings ;
 use utf8;
 use Encode;
 use List::Util qw(min max) ;
+use List::MoreUtils qw(first_value) ;
 use MIME::Base64 ;
 use Clone ;
 
@@ -17,6 +18,8 @@ use Sereal qw(
 	) ;
 
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+
+use App::Asciio::stripes::image_box ;
 
 sub copy_to_clipboard
 {
@@ -240,6 +243,62 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub import_from_system_clipboard_to_image_box
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot();
+
+$self->deselect_all_elements() ;
+
+# libjpeg8-dev libjpeg9-dev
+my %commands = (
+	'png'  => [ 'xclip -selection clipboard -t image/png -o',  'xclip -selection primary -t image/png -o'  ],
+	'jpeg' => [ 'xclip -selection clipboard -t image/jpeg -o', 'xclip -selection primary -t image/jpeg -o' ],
+);
+
+my $type = `xclip -selection clipboard -t TARGETS -o` ;
+$type = `xclip -selection primary -t TARGETS -o` if $type !~ /image/ ;
+
+my $image_type = first_value { $type =~ /$_/ } keys %commands;
+my $use_commands = $commands{$image_type} if $image_type;
+
+my $image ;
+for (@{$use_commands // []})
+	{
+	$image = qx~$_~ ;
+	last if($image ne '') ;
+	}
+
+if (!defined $image || $image eq '') {
+	print STDERR "no image found!\n\e[m" ;
+    return;
+}
+
+my ($character_width, $character_height) = $self->get_character_size() ;
+
+my $image_box = new App::Asciio::stripes::image_box
+		({
+		NAME => 'image_box',
+		TEXT_ONLY => ' ',
+		TITLE => '',
+		EDITABLE => 0,
+		RESIZABLE => 1,
+		AUTO_SHRINK => 0,
+		CHARACTER_WIDTH => $character_width,
+		CHARACTER_HEIGHT => $character_height,
+		IMAGE => $image,
+		IMAGE_TYPE => $image_type,
+		});
+
+$self->add_element_at($image_box, $self->{MOUSE_X}, $self->{MOUSE_Y});
+
+$self->select_elements(1, $image_box);
+
+$self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
 sub import_from_clipboard
 {
 my ($self, $obj) = @_ ;

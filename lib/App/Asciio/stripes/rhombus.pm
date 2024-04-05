@@ -82,11 +82,10 @@ Readonly my $mini_row => 3 ;
 
 my $fill_char = ' ';
 
-if($box_type->[5][3])
+if(defined $box_type->[5][3] && $box_type->[5][3] ne '')
 {
     $fill_char = substr($box_type->[5][3], 0, 1);
 }
-
 $end_y = -5 if $auto_shrink ;
 
 # $number_of_lines must be odd

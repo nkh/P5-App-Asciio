@@ -34,6 +34,9 @@ register_action_handlers
 'Redo'                               => [['C00-y', 'C00-r'],                       \&App::Asciio::Actions::Unsorted::redo                                              ],
 'Zoom in'                            => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                           ],
 'Zoom out'                           => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                          ],
+'mouse scroll switch tab forward'    => ['C0S-scroll-down',                        \&App::Asciio::GTK::Asciio::switch_tab, 1                                           ],
+'mouse scroll switch tab backward'   => ['C0S-scroll-up',                          \&App::Asciio::GTK::Asciio::switch_tab, -1                                          ],
+
 
 'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 0]   ],
 'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 0]   ],
@@ -146,11 +149,12 @@ register_action_handlers
 	{
 	SHORTCUTS   => '000-p',
 
-	'Insert from clipboard'         => ['000-p', \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard],
-	'Import from primary to box'    => ['00S-P', \&App::Asciio::Actions::Clipboard::import_from_primary_to_box           ],
-	'Import from primary to text'   => ['0A0-p', \&App::Asciio::Actions::Clipboard::import_from_primary_to_text          ],
-	'Import from clipboard to box'  => ['000-b', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box         ],
-	'Import from clipboard to text' => ['000-t', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text        ],
+	'Insert from clipboard'              => ['000-p', \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard       ],
+	'Import from primary to box'         => ['00S-P', \&App::Asciio::Actions::Clipboard::import_from_primary_to_box                  ],
+	'Import from primary to text'        => ['0A0-p', \&App::Asciio::Actions::Clipboard::import_from_primary_to_text                 ],
+	'Import from clipboard to box'       => ['000-b', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_box                ],
+	'Import from clipboard to text'      => ['000-t', \&App::Asciio::Actions::Clipboard::import_from_clipboard_to_text               ],
+	'Import from clipboard to image box' => ['000-i', \&App::Asciio::Actions::Clipboard::import_from_system_clipboard_to_image_box   ],
 	},
 
 '<< grouping leader >>' => 
@@ -239,6 +243,22 @@ register_action_handlers
 	'Display numbered objects'            => ['000-t', sub { $_[0]->{NUMBERED_OBJECTS} ^= 1 ; $_[0]->update_display() }],
 	'Test'                                => ['000-o', \&App::Asciio::Actions::Debug::test                             ],
 	'ZBuffer Test'                        => ['000-z', \&App::Asciio::Actions::ZBuffer::dump_crossings                 ],
+	'Clear undo stack'                    => ['000-c', \&App::Asciio::Actions::Unsorted::clear_undo_stack              ],
+	},
+
+'<< tab leader >>' => 
+	{
+	SHORTCUTS   => '000-t',
+	
+	'add new tab'              => ['000-a',   \&App::Asciio::GTK::Asciio::add_tab                       ],
+	'copy current tab'         => ['000-c',   \&App::Asciio::GTK::Asciio::copy_tab                      ],
+	'delete current tab'       => ['000-d',   \&App::Asciio::GTK::Asciio::delete_tab                    ],
+	'force delete current tab' => ['00S-D',   \&App::Asciio::GTK::Asciio::delete_tab, 1                 ],
+	'show tabs lable'          => ['000-s',   \&App::Asciio::GTK::Asciio::show_all_tabs                 ],
+	'hide tabs lable'          => ['000-h',   \&App::Asciio::GTK::Asciio::hide_all_tabs                 ],
+	'switch tab forward'       => ['000-f',   \&App::Asciio::GTK::Asciio::switch_tab, 1                 ],
+	'switch tab backward'      => ['000-b',   \&App::Asciio::GTK::Asciio::switch_tab, -1                ],
+	'change tab lable name'    => ['000-n',   \&App::Asciio::GTK::Asciio::change_current_tab_lable_name ],
 	},
 
 '<< commands leader >>'=> 
@@ -395,6 +415,15 @@ register_action_handlers
 	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],
    	'convert to big text'            => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_element_to_text                   ], 
    	'convert to small pixels'        => ['000-p',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_pixels                ], 
+   	'freeze elements'                => ['000-f',  \&App::Asciio::Actions::Elements::freeze_elements                                    ], 
+   	'unfreeze elements'              => ['00S-U',  \&App::Asciio::Actions::Elements::unfreeze_elements                                  ], 
+   	'toggle disable freeze elements' => ['00S-D',  \&App::Asciio::Actions::ElementsManipulation::toggle_ignore_element_freeze           ], 
+   	'image box increase gray scale'  => ['000-g',  \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1                        ], 
+   	'image box decrease gray scale'  => ['00S-G',  \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1                       ], 
+   	'image box increase alpha'       => ['000-h',  \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1                             ], 
+   	'image box decrease alpha'       => ['00S-H',  \&App::Asciio::Actions::Box::image_box_change_alpha, -0.1                            ], 
+   	'image box revert to default'    => ['000-i',  \&App::Asciio::Actions::Box::image_box_revert_to_default_image                       ], 
+
 
 	'<< BoxType>>'                   => ['000-b', sub { $_[0]->use_action_group('group_box_type_change') ; }                            ] ,
 	'<< WirlArrowType>>'             => ['000-w', sub { $_[0]->use_action_group('group_wirl_arrow_type_change') ; }                     ] ,
@@ -648,6 +677,8 @@ register_action_handlers
 	'find Zoom out'                => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::GTK::Asciio::find_zoom, -1                ],
     'find Mouse drag canvas'       => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas         ],         
 	'find hunk search toggle'      => [ '000-Tab',                               \&App::Asciio::GTK::Asciio::hunk_search_toggle           ],
+	'find flip repeat search mode' => [ '000-o',                                 \&App::Asciio::GTK::Asciio::find_flip_repeat_search_mode ],
+	'clear all find highlight'     => [ '000-c',                                 \&App::Asciio::GTK::Asciio::find_enter, 1                ],
 	},
 
 '<< git leader >>' =>

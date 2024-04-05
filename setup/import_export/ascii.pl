@@ -22,7 +22,7 @@ if($self->{CREATE_BACKUP} && -e $file)
 	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!";		
 	}
 
-my $saved = write_file($file, {binmode => ':utf8'}, $self->transform_elements_to_ascii_buffer()) ;
+my $saved = write_file($file, {binmode => ':utf8'}, $self->transform_asciios_all_elements_to_ascii_buffer()) ;
 
 return $saved ;
 }

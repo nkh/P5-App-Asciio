@@ -21,7 +21,7 @@ Getopt::Long::Configure('no_auto_abbrev', 'no_ignore_case', 'require_order') ;
 
 my @flags = Get_GetoptLong_Data($asciio_config) ;
 
-@ARGV = @{$switches_to_parse} ;
+my @argv = @{$switches_to_parse} ;
 
 # tweek option parsing so we can mix switches with targets
 my $contains_switch ;
@@ -29,19 +29,19 @@ my @targets ;
 
 do
 	{
-	while(@ARGV && $ARGV[0] !~ /^-/)
+	while(@argv && $argv[0] !~ /^-/)
 		{
-		# print "target => $ARGV[0] \n" ;
-		push @targets, shift @ARGV ;
+		# print "target => $argv[0] \n" ;
+		push @targets, shift @argv ;
 		}
 		
-	$contains_switch = @ARGV ;
+	$contains_switch = @argv ;
 	
 	local $SIG{__WARN__} = sub { print STDERR $_[0] unless $ignore_error ; } ;
 			
 	unless(GetOptions(@flags))
 		{
-		return(0, "Try perl asciio -h.", $asciio_config, @ARGV) unless $ignore_error;
+		return(0, "Try perl asciio -h.", $asciio_config, @argv) unless $ignore_error;
 		}
 	}
 while($contains_switch) ;

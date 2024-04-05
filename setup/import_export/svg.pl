@@ -20,7 +20,7 @@ if($self->{CREATE_BACKUP} && -e $file)
 	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!";		
 	}
 
-write_file("$file.txt", {binmode => ':utf8'}, $self->transform_elements_to_ascii_buffer()) ;
+write_file("$file.txt", {binmode => ':utf8'}, $self->transform_asciios_all_elements_to_ascii_buffer()) ;
 
 qx"cat '$file.txt' | goat > '$file'" ;
 qx"rm '$file.txt'" ;

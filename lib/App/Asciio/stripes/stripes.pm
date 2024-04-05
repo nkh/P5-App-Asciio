@@ -183,4 +183,26 @@ return $self->{USER_DATA}{$key} ;
 
 #-----------------------------------------------------------------------------
 
+sub is_freeze
+{
+my ($self, $key) = @_ ;
+
+return 0 ;
+}
+
+#-----------------------------------------------------------------------------
+sub freeze { ; }
+
+#-----------------------------------------------------------------------------
+sub unfreeze { ; }
+
+#-----------------------------------------------------------------------------
+sub gui_draw
+{
+my ($self, $asciio, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
+return $asciio->draw_element($self, $element_index, $gc, $font_description, $character_width, $character_height) ;
+}
+
+#-----------------------------------------------------------------------------
+
 1 ;

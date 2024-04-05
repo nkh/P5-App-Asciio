@@ -10,6 +10,8 @@ my $search_words ;
 my ($x_index, $y_index, $length_index) = (0, 1, 2) ;
 my $is_hunk_search = 0 ;
 
+my $is_use_old_search_keyword = 0 ;
+
 #----------------------------------------------------------------------------------------------
 sub hunk_search_toggle
 {
@@ -19,58 +21,87 @@ $is_hunk_search ^= 1 ;
 }
 
 #----------------------------------------------------------------------------------------------
-sub find_enter
+sub find_flip_repeat_search_mode
 {
 my ($self) = @_ ;
 
-$self->change_custom_cursor('find') ;
-
-if($is_hunk_search)
-	{
-	hunk_search_text($self) ;
-	}
-else
-	{
-	normal_search_text($self) ;
-	}
+$is_use_old_search_keyword ^= 1 ;
 }
 
 #----------------------------------------------------------------------------------------------
-sub normal_search_text
+sub find_enter
 {
-my ($self) = @_ ;
+my ($self, $is_clear_all_height) = @_ ;
 
-$self->{CACHE}{FIND_COORDINATES} = undef ;
+# clear all highlights, and automatically fill in the last searched characters
+map {
+	$_->change_current_tab_lable_name($_->{TAB_LABEL_NAME});
+	$_->{CACHE}{FIND_COORDINATES} = undef;
+} @{$self->{asciios}} ;
 
-$search_words = $self->display_edit_dialog("input search words", '', $self, undef, undef, undef, undef, 300, 100);
-return unless($search_words) ;
+$self->change_custom_cursor('find') ;
 
-if (search_text($self))
+if($is_clear_all_height)
+	{
+	return ;
+	}
+
+if($is_hunk_search)
+	{
+	my @selected_elements = $self->get_selected_elements(1) ;
+
+	if(@selected_elements == 1 
+		&& (! $is_use_old_search_keyword) 
+		&& exists $selected_elements[0]->{TEXT_ONLY} 
+		&& ($selected_elements[0]->{TEXT_ONLY} ne ''))
+		{
+		$search_words = $selected_elements[0]->{TEXT_ONLY} ;
+		}
+	}
+else
+	{
+	unless($is_use_old_search_keyword)
+		{
+		$search_words = $self->display_edit_dialog("input search words", '', $self, undef, undef, undef, undef, 300, 100);
+		}
+
+	}
+
+return unless(defined $search_words && $search_words ne '') ;
+
+if(asciios_search_text($self))
 	{
 	jump_to_first_highlight($self) ;
 	}
 }
 
 #----------------------------------------------------------------------------------------------
-sub hunk_search_text
+sub asciios_search_text
 {
 my ($self) = @_ ;
 
-$self->{CACHE}{FIND_COORDINATES} = undef ;
+my @tabs_found_text ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-if((@selected_elements == 1) 
-	&& exists $selected_elements[0]->{TEXT_ONLY} 
-	&& $selected_elements[0]->{TEXT_ONLY})
+for my $i (0 .. $#{$self->{asciios}}) 
 	{
-	$search_words = $selected_elements[0]->{TEXT_ONLY} ;
-	if(search_text($self))
+	if(search_text($self->{asciios}->[$i]))
 		{
-		jump_to_first_highlight($self) ;
+		push @tabs_found_text, $i ;
+		my $tab_label_name = $self->{asciios}->[$i]->{TAB_LABEL_NAME} ;
+		$self->{asciios}->[$i]->{label}->set_markup("<span background='yellow' foreground='black'>$tab_label_name</span>") ;
 		}
 	}
+if(@tabs_found_text)
+	{
+	# if keywords are found in multiple TABs, the search mode is automatically set to use the old keyword mode.
+	$is_use_old_search_keyword = 1 if(scalar @tabs_found_text > 1) ;
+	$self->{root_window}->show_all() ;
+	$self->update_display() ;
+	return 1 ;
+	}
+return 0 ;
 }
+
 
 #----------------------------------------------------------------------------------------------
 sub search_text
@@ -173,7 +204,7 @@ sub find_zoom
 my ($self, $direction) = @_ ;
 
 App::Asciio::Actions::Unsorted::zoom($self, $direction) ;
-search_text($self) ;
+asciios_search_text($self) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -205,7 +236,6 @@ sub find_escape
 {
 my ($self) = @_ ;
 
-$self->{CACHE}{FIND_COORDINATES} = undef ;
 $self->change_cursor('left_ptr') ;
 }
 

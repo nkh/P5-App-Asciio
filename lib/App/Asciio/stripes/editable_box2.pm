@@ -50,7 +50,7 @@ my ($self, $text_only, $title_text, $box_type, $end_x, $end_y, $resizable, $edit
 
 my $fill_char = ' ';
 
-if($box_type->[4][3])
+if(defined $box_type->[4][3] && $box_type->[4][3] ne '')
 {
     $fill_char = substr($box_type->[4][3], 0, 1);
 }

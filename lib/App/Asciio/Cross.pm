@@ -27,7 +27,7 @@ my ($undef_char, %normal_char_cache, %diagonal_char_cache) = ('w') ;
 
 my %all_cross_chars = map {$_, 1} 
 			( 
-			'-', '|', '.', '\'', '\\', '/', '+', '╱', '╲', '╳',
+			'-', '|', '.', '\'', '\\', '/', '+', '╱', '╲', '╳', 'X',
 			'─', '│', '┼', '┤', '├', '┬', '┴', '╭', '╮', '╯', '╰',
 			'━', '┃', '╋', '┫', '┣', '┳', '┻', '┏', '┓', '┛', '┗', 
 			'═', '║', '╬', '╣', '╠', '╦', '╩', '╔', '╗', '╝', '╚',
@@ -43,7 +43,40 @@ my %all_cross_chars = map {$_, 1}
 			'┌', '┐', '└', '┘', '┅', '┄', '┆', '┇'
 			) ;
 
-my %diagonal_cross_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳') ;
+my @use_cross_mode_rules = (
+		{
+		},
+		{
+		'+' => ')',
+		'┼' => ')',
+		'╋' => '❫',
+		'╬' => '⟫',
+		'╫' => '⟫',
+		'╪' => ')',
+		'┽' => ')', 
+		'┾' => ')', 
+		'┿' => ')', 
+		'╀' => ')', 
+		'╁' => ')', 
+		'╂' => '❫', 
+		'╃' => ')',
+		'╄' => ')', 
+		'╅' => ')', 
+		'╆' => ')', 
+		'╇' => ')', 
+		'╈' => ')', 
+		'╉' => '❫', 
+		'╊' => '❫',
+		},
+		{
+		'╭' => '┌',
+		'╰' => '└',
+		'╯' => '┘',
+		'╮' => '┐',
+		}
+	) ;
+
+my %diagonal_cross_chars = map {$_, 1} ('\\', '/', '╱', '╲', '╳', 'X') ;
 
 my %unicode_left_thin_chars    = map {$_, 1} ('─', '┼', '├', '┬', '┴', '╭', '╰', '╫', '╨', '╥', '╟', '╙', '╓', '┎', '┖', '┞', '┟', '┠', '┭', '┰', '┱', '┵', '┸', '┹', '┽', '╀', '╁', '╂', '╃', '╅', '╉', '┌', '└', '┄') ;
 my %unicode_right_thin_chars   = map {$_, 1} ('─', '┼', '┤', '┬', '┴', '╮', '╯', '╫', '╨', '╥', '╢', '╜', '╖', '┒', '┚', '┦', '┧', '┨', '┮', '┰', '┲', '┶', '┸', '┺', '┾', '╀', '╁', '╂', '╄', '╆', '╊', '┐', '┘', '┄') ;
@@ -205,10 +238,13 @@ sub flip_cross_mode
 {
 my ($asciio) = @_ ;
 
+print "normal_char_cache size: " . scalar(keys %normal_char_cache) . "\n";
+print "diagonal_char_cache size: " . scalar(keys %diagonal_char_cache) . "\n";
+
 undef %normal_char_cache ;
 undef %diagonal_char_cache ;
 
-$asciio->{USE_CROSS_MODE} ^= 1 ;
+$asciio->{USE_CROSS_MODE} = ($asciio->{USE_CROSS_MODE} + 1) % (@use_cross_mode_rules + 1) ;
 
 $asciio->update_display ;
 }
@@ -216,7 +252,7 @@ $asciio->update_display ;
 #-----------------------------------------------------------------------------
 sub get_cross_mode_overlays
 {
-my ($zbuffer) = @_;
+my ($zbuffer, $use_cross_mode) = @_;
 
 my @overlays ;
 
@@ -293,6 +329,14 @@ while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}
 		push @overlays, [$X, $Y, $diagonal_char_cache{$diagonal_key}];
 		}
 
+	}
+
+if (keys %{$use_cross_mode_rules[$use_cross_mode-1]})
+	{
+	for (@overlays) 
+		{
+		$_->[2] = $use_cross_mode_rules[$use_cross_mode-1]{$_->[2]} if exists $use_cross_mode_rules[$use_cross_mode-1]{$_->[2]} ;
+		}
 	}
 
 return @overlays ;

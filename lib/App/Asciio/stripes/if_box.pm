@@ -79,7 +79,7 @@ for my $line (@top_lines)
 	$inside_indentation++ ;
 	}
 
-my $center_line = shift @lines  || '' ;
+my $center_line = shift @lines  // '' ;
 my $padding = ' ' x ($text_width - unicode_length($center_line)) ;
 
 $center_line = '( ' . ' ' x $inside_indentation .  $center_line . $padding . ' ' x $inside_indentation .  ' )' ;

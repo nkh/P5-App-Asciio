@@ -72,7 +72,7 @@ my $text_width_plus_offset  = max(@lines_width_plus_offset, $end_x) ;
 
 my @top_lines = (splice @lines, 0, $number_of_lines / 2) ;
 
-my $center_line = shift @lines  || '' ;
+my $center_line = shift @lines  // '' ;
 
 my @bottom_lines = @lines ;
 push @bottom_lines, '' for (1 .. scalar(@top_lines) - scalar(@bottom_lines)) ;

@@ -85,6 +85,7 @@ lib/App/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/stripes/ellipse.pm
 lib/App/Asciio/stripes/exec_box.pm
+lib/App/Asciio/stripes/image_box.pm
 lib/App/Asciio/stripes/group.pm
 lib/App/Asciio/stripes/if_box.pm
 lib/App/Asciio/stripes/process_box.pm
