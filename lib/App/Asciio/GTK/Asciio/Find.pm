@@ -183,13 +183,13 @@ my $first_highlight_y = $self->{CACHE}{FIND_COORDINATES}->[0][$y_index] * $chara
 
 my $is_need_update = 0 ;
 
-unless($window_x_start < $first_highlight_x < $window_x_end)
+unless ($window_x_start < $first_highlight_x && $first_highlight_x < $window_x_end)
 	{
 	$self->{sc_window}->get_hadjustment()->set_value($first_highlight_x) ;
 	$is_need_update++ ;
 	}
 
-unless($window_y_start < $first_highlight_y < $window_y_end)
+unless ($window_y_start < $first_highlight_y && $first_highlight_y < $window_y_end)
 	{
 	$self->{sc_window}->get_vadjustment()->set_value($first_highlight_y) ;
 	$is_need_update++ ;
