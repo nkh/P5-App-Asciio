@@ -55,16 +55,10 @@ $self->create_undo_snapshot() ;
 my ($name, $edit, $x, $y) = @{$name_and_edit} ;
 
 my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
-# If it's a box, use the latest type
-if ($self->{USE_LAST_ELEMENT_TYPE} && ($name =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
+# If it's a box, Use format painter type
+if ($name =~ /\Qbox\E/i)
 	{
-	App::Asciio::Actions::Asciio::elements_change_type(
-		$self, 
-		$self->{CACHE}{LAST_BOX_TYPE}, 
-		'App::Asciio::stripes::editable_box2', 
-		\&App::Asciio::Boxes::change_type, 
-		0, 
-		$element) ;
+	App::Asciio::Actions::Asciio::change_custom_element_type($self, $element) ;
 	}
 
 if($edit)
@@ -137,16 +131,10 @@ if(defined $text && $text ne '')
 		
 		my $new_element = add_element($self, [$type, 0]) ;
 		
-		# Use last box type
-		if ($self->{USE_LAST_ELEMENT_TYPE} && ($type =~ /\Qbox\E/i) && exists $self->{CACHE}{LAST_BOX_TYPE})
+		# Use format painter type
+		if ($type =~ /\Qbox\E/i)
 			{
-			App::Asciio::Actions::Asciio::elements_change_type(
-				$self, 
-				$self->{CACHE}{LAST_BOX_TYPE}, 
-				'App::Asciio::stripes::editable_box2', 
-				\&App::Asciio::Boxes::change_type, 
-				0, 
-				$new_element) ;
+			App::Asciio::Actions::Asciio::change_custom_element_type($self, $new_element) ;
 			}
 
 		$new_element->set_text('', $element_text) ;

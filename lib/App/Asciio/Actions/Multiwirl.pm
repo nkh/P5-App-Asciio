@@ -281,17 +281,14 @@ if($is_connection_not_allowed)
 		EDITABLE => 1,
 		RESIZABLE => 1,
 		});
-	$self->add_elements($element);
-	@$element{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
 
-	if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
-		{
-		App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
-		}
+	App::Asciio::Actions::Asciio::change_custom_element_type($self, $element) ;
 	$element->{NAME} = 'line';
 	$element->enable_autoconnect(0);
 	$element->allow_connection('start', 0);
 	$element->allow_connection('end', 0);
+	$self->add_elements_no_connection($element);
+	@$element{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
 
 	return ;
 	}
@@ -302,10 +299,7 @@ if(0 == @selected_elements)
 	{
 	App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]) ;
 	# Use the last changed arrow type
-	if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
-		{
-		App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
-		}
+	App::Asciio::Actions::Asciio::change_custom_element_type($self) ;
 	}
 elsif(1 == @selected_elements)
 	{
@@ -338,10 +332,7 @@ elsif(1 == @selected_elements)
 		
 		$self->deselect_all_elements() ;
 		$self->select_elements(1, $arrow) ;
-		if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
-			{
-			App::Asciio::Actions::Asciio::wirl_arrow_elements_change_type($self, $self->{CACHE}{LAST_WIRL_ARROW_TYPE}) ;
-			}
+		App::Asciio::Actions::Asciio::change_custom_element_type($self) ;
 		$self->update_display() ;
 		}
 	}

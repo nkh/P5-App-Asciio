@@ -351,11 +351,17 @@ my ($self, $data, $create_undo_snapshot) = @_ ;
 
 $create_undo_snapshot //= 1 ;
 
-if(exists $arrow_types{$data->{TYPE}})
+my $use_type = defined $data->{USER_TYPE} 
+					? $data->{USER_TYPE} 
+					: exists $arrow_types{$data->{TYPE}}
+						? $arrow_types{$data->{TYPE}}
+						: undef	;
+
+if(defined $use_type)
 	{
 	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
-	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
+	my $new_type = Clone::clone($use_type) ;
 
 	my $is_autoconnect_enabled = $data->{ELEMENT}->is_autoconnect_enabled() if $data->{ELEMENT}->can('is_autoconnect_enabled') ;
 	my $is_connection_allowed_start = $data->{ELEMENT}->is_connection_allowed('start') if $data->{ELEMENT}->can('is_connection_allowed') ;

@@ -251,13 +251,19 @@ my ($self, $data, $create_undo_snapshot) = @_ ;
 
 $create_undo_snapshot //= 1 ;
 
-if(exists $box_types{$data->{TYPE}})
+my $use_type = defined $data->{USER_TYPE} 
+					? $data->{USER_TYPE} 
+					: exists $box_types{$data->{TYPE}}
+						? $box_types{$data->{TYPE}}
+						: undef	;
+
+if(defined $use_type)
 	{
 	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
 	my $element_type = $data->{ELEMENT}->get_box_type() ;
 	
-	my $new_type = Clone::clone($box_types{$data->{TYPE}}) ;
+	my $new_type = Clone::clone($use_type) ;
 	
 	for (my $frame_element_index = 0 ; $frame_element_index < @{$new_type} ; $frame_element_index++)
 		{

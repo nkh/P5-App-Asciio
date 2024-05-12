@@ -119,6 +119,7 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		event_handlers
 		is_need_focus_in
 		seen_elements
+		format_painter
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
 		TITLE
@@ -307,6 +308,7 @@ local $self->{event_handlers} = undef ;
 local $self->{asciio_argv} = undef ;
 local $self->{is_need_focus_in} = undef ;
 local $self->{seen_elements} = undef ;
+local $self->{format_painter} = undef ;
 local $self->{ACTIONS} = [] ;
 local $self->{HOOKS} = [] ;
 local $self->{CURRENT_ACTIONS} = [] ;

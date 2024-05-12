@@ -15,7 +15,6 @@ USE_MARKUP_MODE => '',
 EDIT_TEXT_INLINE => 0,
 GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 
-USE_LAST_ELEMENT_TYPE => 1,
 MAX_UNDO_SNAPSHOTS => 50,
 
 PEN_MODE_CHARS_SETS => [

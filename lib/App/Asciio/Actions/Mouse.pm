@@ -223,16 +223,7 @@ my $wirl_arrow = new App::Asciio::stripes::section_wirl_arrow
 					RESIZABLE => 1,
 					}) ;
 
-if($self->{USE_LAST_ELEMENT_TYPE} && exists $self->{CACHE}{LAST_WIRL_ARROW_TYPE})
-	{
-	App::Asciio::Actions::Asciio::elements_change_type(
-		$self, 
-		$self->{CACHE}{LAST_WIRL_ARROW_TYPE}, 
-		'App::Asciio::stripes::section_wirl_arrow', 
-		\&App::Asciio::Arrows::change_type, 
-		0, 
-		$wirl_arrow) ;
-	}
+App::Asciio::Actions::Asciio::change_custom_element_type($self, $wirl_arrow) ;
 
 $self->add_element_at_no_connection
 		(

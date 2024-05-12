@@ -413,6 +413,9 @@ register_action_handlers
 	
 	'Make elements Unicode'          => ['C00-u',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 1                            ],
 	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],
+	'copy box element type'          => ['C00-t',  \&App::Asciio::Actions::Asciio::box_element_copy_type                                ],
+	'copy arrow element type'        => ['C0S-T',  \&App::Asciio::Actions::Asciio::arrow_element_copy_type                              ],
+	'paste element type'             => ['C00-p',  \&App::Asciio::Actions::Asciio::change_custom_element_type                           ],
    	'convert to big text'            => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_element_to_text                   ], 
    	'convert to small pixels'        => ['000-p',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_pixels                ], 
    	'freeze elements'                => ['000-f',  \&App::Asciio::Actions::Elements::freeze_elements                                    ], 
@@ -432,6 +435,8 @@ register_action_handlers
 	'<< RhombusType>>'               => ['000-r', sub { $_[0]->use_action_group('group_rhombus_type_change') ; }                        ] ,
 	'<< TriangleUpType>>'            => ['000-u', sub { $_[0]->use_action_group('group_triangle_up_type_change') ; }                    ] ,
 	'<< TriangleDownType>>'          => ['000-d', sub { $_[0]->use_action_group('group_triangle_down_type_change') ; }                  ] ,
+
+	
 	},
 
 'group_box_type_change' => 
