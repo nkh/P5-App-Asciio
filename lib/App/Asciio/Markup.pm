@@ -62,6 +62,9 @@ return (@lines) ;
 }
 
 #-----------------------------------------------------------------------------
+sub delete_extra_characters { ; }
+
+#-----------------------------------------------------------------------------
 
 sub ui_show_markup_characters
 {
@@ -81,6 +84,12 @@ memoize('convert_markup_string') ;
 memoize('del_markup_characters') ;
 memoize('is_markup_string') ;
 
+my $hunk_regex = qr/\{\{id:\s+[^{}]+\}\}/ ;
+my $underline_left_regex = qr/<span link="([^<>]+)">/ ;
+my $underline_right_regex = qr/<\/span>/ ;
+my $underline_regex = qr/$underline_left_regex([^<>]+)$underline_right_regex/ ;
+
+
 #-----------------------------------------------------------------------------
 
 sub is_markup_string
@@ -88,7 +97,16 @@ sub is_markup_string
 my ($string) = @_;
 
 return (   $string =~ /(<[bius]>)+([^<]+)(<\/[bius]>)+/ 
-		|| $string =~ /<span link="[^<]+">([^<]+)<\/span>/) ;
+		|| $string =~ /$underline_regex/
+		|| $string =~ /$hunk_regex/) ;
+}
+
+#-----------------------------------------------------------------------------
+sub delete_extra_characters
+{
+my ($self, $text) = @_ ;
+$text =~ s/oo($hunk_regex)oo/$1/g ;
+return $text ;
 }
 
 #-----------------------------------------------------------------------------
@@ -98,6 +116,7 @@ sub del_markup_characters
 my ($string) = @_;
 
 $string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g ;
+$string =~ s/$hunk_regex/oo/g ;
 
 return $string;
 }
@@ -121,7 +140,7 @@ my %markup_coordinate ;
 if(is_markup_string($strip_line))
 	{
 	my $ori_x = 0;
-	while($strip_line =~ /(<\/?[bius]>)+|<\/span>|<span link="[^<]+">/g)
+	while($strip_line =~ /(<\/?[bius]>)+|$underline_right_regex|$underline_left_regex|$hunk_regex/g)
 		{
 		my $sub_str = substr($strip_line, 0, pos($strip_line));
 		$ori_x = $element_x + $strip_x + App::Asciio::String::unicode_length($sub_str) ;
@@ -131,15 +150,20 @@ if(is_markup_string($strip_line))
 		$fit_str =~ s/<\/?i>/\/\//g;
 		$fit_str =~ s/<\/?s>/~~/g;
 		# link [[link|link description]]
-		if($fit_str =~ /<span link="[^<]+">/)
+		if($fit_str =~ /$underline_left_regex/)
 			{
-			$fit_str =~ s/<span link="([^<]+)">/$1/g;
+			$fit_str =~ s/$underline_left_regex/$1/g;
 			$fit_str = '[[' . $fit_str . '|';
 			}
-		if($fit_str =~ /<\/span>/)
+		if($fit_str =~ /$underline_right_regex/)
 			{
 			$fit_str = ']]';
 			}
+		if($fit_str =~ /$hunk_regex/)
+			{
+			$fit_str = $fit_str . 'oo'
+			}
+
 		$markup_coordinate{$y . '-' . $ori_x} = $fit_str if($ori_x >= 0 && $y >=0);
 		}
 	}
@@ -191,7 +215,8 @@ my $use_markup_formart = 0 ;
 if(is_markup_string($string))
 	{
 	$use_markup_formart = 1 ;
-	$string =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
+	$string =~ s/$underline_regex/<span underline="double">$2<\/span>/g;
+	$string =~ s/$hunk_regex/<span background="yellow">oo<\/span>/g ;
 	# convert bold fonts to precise size control 
 	$font_size -= 1 ;
 	$string =~ s/(<b>)((<[ius]>)*)([^<]+)((<\/[ius]>)*)(<\/b>)/<span font_desc="$font_size" weight="bold">$2$4$5<\/span>/g ;

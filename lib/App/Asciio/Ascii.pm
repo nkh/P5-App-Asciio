@@ -76,6 +76,7 @@ my ($self, @elements)  = @_ ;
 
 my $text = join("\n", $self->transform_elements_to_markup(@elements)) . "\n" ;
 $text =~ s/^\n+|\n\K\n+$//g ;
+$text = $USE_MARKUP_CLASS->delete_extra_characters($text) ;
 
 return($text) ;
 }
