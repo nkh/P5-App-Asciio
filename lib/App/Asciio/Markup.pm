@@ -115,7 +115,7 @@ sub del_markup_characters
 {
 my ($string) = @_;
 
-$string =~ s/<span link="[^<]+">|<\/span>|<\/?[bius]>//g ;
+$string =~ s/$underline_left_regex|$underline_right_regex|<\/?[bius]>//g ;
 $string =~ s/$hunk_regex/oo/g ;
 
 return $string;
@@ -161,7 +161,7 @@ if(is_markup_string($strip_line))
 			}
 		if($fit_str =~ /$hunk_regex/)
 			{
-			$fit_str = $fit_str . 'oo'
+			$fit_str = $fit_str . 'oo' ;
 			}
 
 		$markup_coordinate{$y . '-' . $ori_x} = $fit_str if($ori_x >= 0 && $y >=0);

@@ -6,6 +6,7 @@ use strict ; use warnings ;
 use Encode ;
 use List::Util qw(max) ;
 use List::MoreUtils qw(any) ;
+use Clone ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -27,8 +28,19 @@ my ($self, $keep_visible) = @_ ;
 if($self->{USE_BINDINGS_COMPLETION})
 	{
 	my %reserved = map { $_ => 1 } qw(IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE) ;
+	my $hide_bindings_name = $self->{HIDE_GROUP_BINDING_HELP} // {} ;
+	my $current_actions = Clone::clone($self->{CURRENT_ACTIONS}) ;
 
-	my $binding_max_length = max map { length } grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
+	while(my ($key, $value) = each %{$current_actions})
+		{
+		next if(exists $reserved{$key}) ;
+		if((($hide_bindings_name->{$value->{GROUP_NAME}//''}//{})->{$value->{NAME}//''}//'') ne '')
+			{
+			delete $current_actions->{$key} ;
+			}
+		}
+
+	my $binding_max_length = max map { length } grep { ! exists $reserved{$_} } keys $current_actions->%* ;
 	
 	my $max_length = 0 ;
 	
@@ -36,13 +48,13 @@ if($self->{USE_BINDINGS_COMPLETION})
 			[
 			map
 				{
-				my $completion = sprintf("%-${binding_max_length}s - %s", $_, $self->{CURRENT_ACTIONS}{$_}{NAME}) ;
+				my $completion = sprintf("%-${binding_max_length}s - %s", $_, $current_actions->{$_}{NAME}) ;
 				my $length = length $completion ;
 				
 				$max_length = $length if $length > $max_length ;
 				$completion ;
 				}
-				sort grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%*
+				sort grep { ! exists $reserved{$_} } keys $current_actions->%*
 			] ;
 	
 	$self->{BINDINGS_COMPLETION_LENGTH} = $max_length ;
