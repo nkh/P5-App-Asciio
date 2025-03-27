@@ -86,7 +86,7 @@
 		- [Group bindings](config/user_bindings/group_bindings.md)
 		- [Capturing groups](config/user_bindings/capturing_groups.md)
 		- [Binding override](config/user_bindings/binding_override.md)
-		- [Capturing groups with overalay](config/user_bindings/capturing_groups_overlay.md)
+		- [Capturing groups with overlay](config/user_bindings/capturing_groups_overlay.md)
 
 -----------
 

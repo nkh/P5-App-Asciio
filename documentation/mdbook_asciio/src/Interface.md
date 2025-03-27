@@ -8,12 +8,12 @@ Asciio's interface is minimal by design.
 
 This is the preferred method, and the fastest. The bindings are vim-like and which make the many bindings much easier to remember. See the *Bindings* section
 
-## mouse binidings
+## mouse bindings
 
-Although work can mostly be done  using the keyboard, the mouse is still useful in some ccases (selecting in a TUI is difficult) and it even shines when creating new diagrams. See *Working efficiently*
+Although work can mostly be done using the keyboard, the mouse is still useful and it's fast when creating new diagrams. See *Working efficiently*
 
 ## popup menus
 
-My least favorite way of using Asciio, it's slow and cumbersome for most actions. I try to reduce the amount of menu and sub menus.
+My least favorite way of using Asciio, it's slow and cumbersome for most actions. I try to limit the amount of menu and sub menus.
 
 

@@ -32,7 +32,7 @@ If an arrow is selected, move its end point with the mouse.
 ***Binding:*** «ctl-alt-left-mouse-click»
 
 - If a wirl arrow is selected, add section.
-- if another element is selected, add new arror
+- if another element is selected, add new arrow
 
 You can then move the its end point with the mouse. releasing «ctl» lets you move the mouse to another position for a new section.
 

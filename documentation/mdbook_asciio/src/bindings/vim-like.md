@@ -4,7 +4,7 @@
 
 To simplify, let's start with having 26 letters accessible on the keyboard, no uppercase.
 - using ctl + alt + key  gives us around 100 combinations
-- letter + leter gives use around 650 combinations
+- letter + letter gives use around 650 combinations
 - letter + letter + letter gives use around 18 000 combinations
 
 If we had uppercase, ie, 52 letters
@@ -62,5 +62,5 @@ Do you remember (although you've just seen it) ...
 - insert a box
 - insert a box using unicode type 2
 - insert a box that shrinks
-- inserta box with the default unicode
+- insert a box with the default unicode
 
