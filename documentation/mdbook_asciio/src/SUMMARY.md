@@ -48,6 +48,7 @@
 	- [Cross](modes/cross.md)
 	- [Slides](modes/slides.md)
 	- [pen](modes/pen.md)
+	- [find](modes/find.md)
 
 - [Examples](examples.md)
 	- [Class hierarchy](examples/example1.md)

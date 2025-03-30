@@ -1,13 +1,13 @@
 # pen
 
-## Introduction
+## 1 Introduction
 
 Pen mode is used to draw one character at a time into the canvas, often used
-for small ascii art creations.
+for small ascii art creations. This is a special feature of the GUI port.
 
-## Basic operations
+## 2 Basic operations
 
-### Entering and exiting pen mode
+### 2.1 Entering and exiting pen mode
 
 | action         | binding       |
 |----------------|---------------|
@@ -20,7 +20,7 @@ After entering the **pen mode**, the mouse cursor will change into the shape of
 a pen tip. Before any characters are changed, the question mark character is
 currently inserted by default.
 
-### Draw characters
+### 2.2 Draw characters
 
 1. Move the mouse to a certain position, then click the `left mouse button` or
 the `Enter key` to insert a character at the current position.
@@ -30,7 +30,91 @@ passed by the pen tip.
 
 ![pen_drawing_characters](pen_drawing_characters.gif)
 
-### Change the character drawn by the pen
+3. Press a key on the keyboard and the corresponding characters on the keyboard 
+will be inserted immediately at the current position. And the character inserted
+by the current mouse become the character you pressed. 
+
+![pen_insert_single_char](pen_insert_single_char.gif)
+
+4. The overlay prompt has three shapes, which correspond to the position of the
+cursor after different inputs.
+
+(1). Square
+
+After inserting a character, the cursor does not move automatically.
+
+(2). Right triangle
+
+After inserting a character, the cursor automatically moves to the right one
+position, which can be used for automatic input in the horizontal direction.
+
+(3). Downward triangle
+
+After inserting a character, the cursor automatically moves down one position,
+which can be used for automatic input in the vertical direction.
+
+![pen_char_insertion_direction](pen_char_insertion_direction.gif)
+
+In the latter two direction modes, The **backspace** key can delete characters,
+and the **Shift + Enter** key can wrap lines. You can imagine that you are free
+input in a text editor.
+
+![pen_newline_and_wrap](pen_newline_and_wrap.gif)
+
+### 2.3 Fast keyboard-based movement
+
+When we are drawing ascii art, we may have to draw many small elements, if we
+click with the mouse every time we change the character,It may not be efficient,
+but if you can operate it with a pure keyboard within a small range, it may be
+much more efficient. Refer to vim editor, we also Customized a lot of Fast
+keyboard-based movement.
+
+![pen_keyboard_move](pen_keyboard_move.gif)
+
+
+### 2.4 Types of characters that can be entered
+
+By default, we type in ascii characters on the keyboard, including letters,
+numbers and symbols. But if the user is Other character groups are customized in
+gui.pl. So we just need to switch to that character group and press the
+corresponding key on the keyboard.  The characters corresponding to the key in
+the currently specified group will be entered instead of the default ascii
+characters. All keys can be defined at most two character map (with Shift and
+no Shift).
+
+```perl
+PEN_MODE_CHARS_SETS => [
+    {
+    },
+    {
+    a => '●', 'A' => '■' , s => '⦿', d => '◎', f => '○', g => '△', h => '⺆', j => '⼌', k => '⼐', l => '⼕',
+    },
+    {
+    1 => '━', '2' => '┃' , 3 => '║', 4 => '╔'
+    },
+    ],
+```
+
+>In the above configuration, the first null hash is for the default (all default
+>characters on the keyboard). The user-defined map content, there can be
+>infinitely multiple groups(you can map a part of the keys for each group, and
+>the unmaped part according to the default characters of the keyboard.).
+
+By default, there is no overlay prompt because the keys on the keyboard
+correspond to their characters. But if switch to the user-defined group, a
+button prompt panel will appear for you. It is convenient for you to understand
+the corresponding situation of the current key group. The position of the prompt
+panel can be placed on the left or on the right, and the user switches according
+to the current editing situation.
+
+![pen_char_prompt_panel](pen_char_prompt_panel.gif)
+
+
+
+
+
+
+### 2.5 Change the character drawn by the pen
 
 * After entering pen mode, directly press the key corresponding to an ascii
 character on the keyboard to switch to that character. Note: When pressed, one
@@ -59,7 +143,7 @@ insertion characters after entering pen mode. (This has the highest priority).
 >In this case, the pen will loop through each non-blank character in the order 
 in which it was extracted.
 
-### Switch to pen mode’s built-in eraser mode
+### 2.6 Switch to pen mode’s built-in eraser mode
 
 This is mainly used to delete a single element without exiting pen mode. In pen 
 mode, press the Tab key to switch to the eraser. In order to match the pen 
@@ -78,7 +162,7 @@ on the dragging path will be deleted.
 If you're not in pen mode, you can also **enter eraser mode directly** via 
 <<Shift + E>>.
 
-## Merge the completed ascii art into a text box
+## 3 Merge the completed ascii art into a text box
 
 | action              | binding group                 | bingding  |
 |---------------------|-------------------------------|-----------|
@@ -94,7 +178,7 @@ elements, there is no point in saving copies of them, so we can make it simpler.
 
 ![merge_all_pixels_into_a_box](merge_all_pixels_into_a_box.gif)
 
-## Split any element into pixels
+## 4 Split any element into pixels
 
 | action                  | binding group                 | bingding |
 |-------------------------|-------------------------------|----------|
