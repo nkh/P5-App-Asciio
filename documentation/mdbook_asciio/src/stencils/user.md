@@ -313,7 +313,6 @@ IMPORT_EXPORT =>
         [
         'import_export/ascii.pl',
         'import_export/perl.pl',
-        'import_export/asciioe.pl',
         'import_export/png.pl',
         ],
 }

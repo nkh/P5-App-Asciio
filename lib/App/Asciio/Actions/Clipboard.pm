@@ -57,7 +57,13 @@ $self->{CACHE} = $cache ;
 sub insert_from_clipboard
 {
 my ($self, @args) = @_ ;
-my ($x_offset, $y_offset) = 'ARRAY' eq $args[0] ? $args[0]->@* : @args ;
+
+my ($x_offset, $y_offset) ;
+
+if(@args)
+	{
+	($x_offset, $y_offset) = 'ARRAY' eq $args[0] ? $args[0]->@* : @args ;
+	}
 
 if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})
 	{
@@ -139,7 +145,7 @@ for my $option (@clipboard_out_options)
 			}
 	}
 
-return if($invalid_flag) ;
+return if $invalid_flag ;
 
 $self->{CLIPBOARD} = Clone::clone(get_sereal_decoder()->decode($elements_serail)) ;
 

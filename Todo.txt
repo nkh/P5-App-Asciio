@@ -1,14 +1,8 @@
 issue: after box text is changed, connected elements are not properly reconnected
 
-mind mapping mode
-	use a grid for parent-children layout
-	manual layout of specific nodes
-	shortcut like git or selection mode
-
-	re lay out all nodes, only non manual nodes
-	use direction arrows
-
 update the inline help and the display of action files
+
+update the readme to point at the inline help
 
 add link commands shortcuts
 	L as link group

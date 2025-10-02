@@ -335,7 +335,7 @@ my ($self, $title, $mode, $directory, $file_name) = @_ ;
 
 my $file_chooser = Gtk3::FileChooserDialog->new
 			(
-			$title, undef, $mode,
+			$title, undef, 'GTK_FILE_CHOOSER_ACTION_SAVE',
 			'gtk-cancel' => 'cancel', 'gtk-ok' => 'ok'
 			);
 

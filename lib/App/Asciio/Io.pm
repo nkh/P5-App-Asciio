@@ -6,10 +6,12 @@ $|++ ;
 use strict;
 use warnings;
 
+my $ASCIIO_MIME_TYPE = "application/x-asciio" ;
+
 use Data::TreeDumper ;
 use File::Slurp ;
 use Readonly ;
-use Compress::Bzip2 qw(:all :utilities :gzip);
+use Compress::Bzip2 qw(:all :utilities :gzip) ;
 
 use Sereal qw(
     get_sereal_decoder
@@ -59,9 +61,14 @@ else
 	{
 	if(-e $file_name && -s $file_name)
 		{
-		my $serialized_self = decompress(read_file($file_name)) ;
-		my $decoder = get_sereal_decoder() ;
-		my $saved_self = $serialized_self = $decoder->decode($serialized_self) ;
+		my $header_diagram  = read_file($file_name) ;
+		
+		my $magic           = substr($header_diagram, 0, length($ASCIIO_MIME_TYPE)) ;
+		my $diagram         = $magic eq $ASCIIO_MIME_TYPE ? substr($header_diagram, length($ASCIIO_MIME_TYPE)) : $header_diagram ;
+		
+		my $serialized_self = decompress($diagram) ;
+		my $decoder         = get_sereal_decoder() ;
+		my $saved_self      = $serialized_self = $decoder->decode($serialized_self) ;
 		
 		if($@)
 			{
@@ -300,7 +307,7 @@ else
 		}
 		
 	$title = $file_name ;
-	write_file($file_name, compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
+	write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
 	}
 	
 return $title ;
