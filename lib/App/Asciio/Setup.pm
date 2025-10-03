@@ -17,7 +17,7 @@ use File::Basename ;
 
 sub setup
 {
-my($self, $setup_ini_files) = @_ ;
+my($self, $setup_ini_files, $object_overrides) = @_ ;
 
 for my $setup_file (@{$setup_ini_files})
 	{
@@ -43,6 +43,15 @@ for my $setup_file (@{$setup_ini_files})
 	}
 	
 	$self->setup_object_options($setup_path, $ini_files->{ASCIIO_OBJECT_SETUP} || []) ;
+	if (defined $object_overrides)
+		{
+		while( my ($k, $v) = each $object_overrides->%* )
+			{
+			# print "object override $k -> $v\n" ;
+			$self->{$k} = $v ;
+			}
+		}
+	
 	$self->setup_stencils($setup_path, $ini_files->{STENCILS} || []) ;
 	$self->setup_hooks($setup_path, $ini_files->{HOOK_FILES} || []) ;
 	$self->setup_action_handlers($setup_path, $ini_files->{ACTION_FILES} || []) ;
@@ -122,8 +131,6 @@ for my $hook_file (@{ $hook_files })
 sub setup_action_handlers
 {
 my($self, $setup_path, $action_files) = @_ ;
-
-use strict ; use warnings ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
@@ -323,8 +330,9 @@ my $name = $action_handler->{NAME} ;
 if(exists $self->{ACTIONS_BY_NAME}{$name})
 	{
 	my $reused = '' ;
-	print STDERR "\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown') ;
-	
+	print STDERR "\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown')
+		if $self->{DISPLAY_SETUP_ACTION_INFORMATION} ;
+
 	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
 	
 	if(! defined $action_handler->{SHORTCUTS}) 
@@ -414,7 +422,7 @@ for my $name (grep { $_ ne 'SHORTCUTS' && $_ ne 'ESCAPE_KEYS' } keys %{$group_de
 	for my $shortcut ('ARRAY' eq ref $shortcuts_definition ? @$shortcuts_definition : ($shortcuts_definition))
 		{
 		print STDERR "Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n"
-			if exists $handler{$shortcut} ;
+			if exists $handler{$shortcut} && $self->{DISPLAY_SETUP_ACTION_INFORMATION} ;
 		
 		# print STDERR "\e[32maction_handler: '$name' shortcut: $shortcut\e[m\n" ;
 		$handler{$shortcut} = $action_handler ;

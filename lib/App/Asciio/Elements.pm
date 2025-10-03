@@ -533,7 +533,22 @@ sub get_selected_elements
 {
 my ($self, $state) = @_ ;
 
-return grep { $state == $_->{SELECTED}//0 } @{$self->{ELEMENTS}} ;
+$state //= 1 ;
+
+return
+	(
+	grep 
+		{
+		if($state)
+			{
+			exists $_->{SELECTED} && $_->{SELECTED} != 0
+			}
+		else
+			{
+			! exists $_->{SELECTED} || $_->{SELECTED} == 0
+			}
+		} @{$self->{ELEMENTS}}
+	) ;
 }
 
 #-----------------------------------------------------------------------------

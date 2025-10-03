@@ -10,6 +10,7 @@ use Module::Util qw(find_installed) ;
 use File::Basename ;
 
 my $asciio = new App::Asciio() ;
+
 $asciio->{UI} = 'TUI' ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
@@ -35,7 +36,7 @@ else
 		] ;
 	}
 
-$asciio->setup($setup_paths) ;
+$asciio->setup($setup_paths, { DISPLAY_SETUP_ACTION_INFORMATION => 0 }) ;
 
 if(defined $asciio_config->{TARGETS}[0])
 	{

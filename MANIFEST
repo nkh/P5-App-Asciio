@@ -97,6 +97,7 @@ lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
 
 lib/App/Asciio/Utils/Presentation.pm
+lib/App/Asciio/Utils/Scripting.pm
 
 t/001_load.t
 t/002_multi_wirl_connection.t

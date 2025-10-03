@@ -70,6 +70,7 @@ lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
 
 lib/App/Asciio/Utils/Presentation.pm
+lib/App/Asciio/Utils/Scripting.pm
 
 lib/App/Asciio/GTK/Asciio.pm
 

@@ -22,7 +22,7 @@ use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
 use App::Asciio::Actions::ZBuffer ;
 
-use App::Asciio::Scripting ;
+use App::Asciio::Utils::Scripting ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -237,7 +237,7 @@ register_action_handlers
 	'Display action files'                => ['000-f', \&App::Asciio::Actions::Unsorted::display_action_files               ],
 	'Display manpage'                     => ['000-m', \&App::Asciio::Actions::Unsorted::manpage_in_browser                 ],
 	
-	'Run external script'                 => ['00S-exclam', \&App::Asciio::Scripting::run_external_script                   ],
+	'Run external script'                 => ['00S-exclam', \&App::Asciio::Utils::Scripting::run_external_script            ],
 	
 	'Open'                                => ['000-e', \&App::Asciio::Actions::File::open                                   ],
 	'Save'                                => ['000-w', \&App::Asciio::Actions::File::save, undef                            ],

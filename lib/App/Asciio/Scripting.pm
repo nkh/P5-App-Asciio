@@ -2,8 +2,9 @@
 package App::Asciio::Scripting ;
 
 require Exporter ;
-@ISA = qw(Exporter) ;
-@EXPORT = qw(
+
+our @ISA = qw(Exporter) ;
+our @EXPORT = qw(
 	update_display
 	start_updating_display  
 	stop_updating_display  
@@ -60,7 +61,6 @@ use App::Asciio::Io ;
 use App::Asciio::Options ;
 
 use App::Asciio::stripes::angled_arrow ;
-use App::Asciio::stripes::angled_arrow ;
 use App::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::stripes::stripes ;
 use App::Asciio::stripes::wirl_arrow ;
@@ -76,7 +76,7 @@ use App::Asciio::Actions::Colors ;
 
 {
 
-my $script_asciio ; # make script non OO
+our $script_asciio ; # make script non OO
 
 #------------------------------------------------------------------------------------------------------
 
@@ -103,35 +103,12 @@ if(defined $script)
 	}
 }
 
-sub run_external_script
-{
-my ($asciio, $file) = @_ ;
-
-$file //= $asciio->get_file_name() ;
-
-if(defined $file)
-	{
-	print STDERR "Asciio: script file: '$file'\n" ;
-	
-	$script_asciio = $asciio ;
-	
-	unless (my $return = do $file)
-		{
-		warn "Asciio: error running script $file: $@" if $@ ;
-		# warn "couldn't do $file: $!"    unless defined $return ;
-		# warn "couldn't run $file"       unless $return ;
-		}
-	
-	$asciio->update_display() ;
-	}
-}
-
 sub new_script_asciio
 {
 local @ARGV = @ARGV ;
 $script_asciio = App::Asciio->new() ;
 
-warn "Asciio: created script asciio object\n" ;
+# warn "Asciio: created script asciio object\n" ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $script_asciio->ParseSwitches([@ARGV], 0) ;
@@ -258,8 +235,6 @@ sub select_elements
 {
 my ($state, @elements_names) = @_ ;
 
-my %named_elements = map { $_ => 1 } @elements_names ;
-
 for my $element (grep { $_->get_user_data('SCRIPT_OBJECT') } $script_asciio->get_elements())
 	{
 	$script_asciio->select_elements($state, $element) ;
@@ -298,7 +273,7 @@ if($axis eq 'vertical')
 	}
 else
 	{
-	$data = {TYPE => 'hORIZONTAL', POSITION => $position} ;
+	$data = {TYPE => 'HORIZONTAL', POSITION => $position} ;
 	}
 
 $script_asciio->add_ruler_lines({NAME => 'from script', %{$data}}) ;
