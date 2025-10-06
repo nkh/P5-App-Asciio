@@ -727,7 +727,7 @@ if($height < 0)
 	$start_y -= $height ;
 	}
 
-my $is_under = 1 ;
+my $is_within = 1 ;
 
 for my $strip (@{$element->get_stripes()})
 	{
@@ -745,12 +745,12 @@ for my $strip (@{$element->get_stripes()})
 		}
 	else
 		{
-		$is_under = 0 ;
+		$is_within = 0 ;
 		last
 		}
 	}
 
-return($is_under) ;
+return($is_within) ;
 }
 
 #-----------------------------------------------------------------------------

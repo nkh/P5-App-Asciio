@@ -47,6 +47,11 @@ $asciio->setup($setup_paths) ;
 $asciio->set_title($title) if defined $title ;
 
 STDERR->autoflush(1) ;
+
+# open my $fh, ">&=", 5 or die "can't open fh 5: $!\n" ; 
+# $fh->autoflush(1) ;
+# $asciio->{ACTION_VERBOSE} = sub { $counter++ ; print $fh "$counter - $_[0]\n" ; } ;
+
 # $asciio->{ACTION_VERBOSE} = sub { print STDERR "\e[?25l\e[H" ."$_[0]\n" ; } ;
 # $asciio->{ACTION_VERBOSE} = sub { ; } ;
 
@@ -93,17 +98,23 @@ while (1)
 			$last_mouse_update = $float_seconds ;
 			
 			my ($ev, $button, $line, $col) = $tk->interpret_mouse( $key );
-			
+			print $fh "got event $ev " . MOUSE_RELEASE . "\n" ;
 			my $modifiers = '' ;
 			
 			$modifiers .= $key->modifier_ctrl ? 'C' : '0' ;
 			$modifiers .= $key->modifier_alt ? 'A' : '0' ;
 			$modifiers .= '0' ; # shift blocks mouse events
 			
-			$asciio->motion_notify_event($modifiers, $button, $col - 1, $line - 1) if ($ev == 3) ; # 3 ?
 			$asciio->motion_dragging_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_DRAG) ;
-			$asciio->button_press_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_PRESS) ;
-			$asciio->button_release_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_RELEASE) ;
+			$asciio->button_press_event($modifiers, $button, $col - 1, $line - 1)    if ($ev == MOUSE_PRESS) ;
+			
+			# mmouse release or moved without a key pressed ?
+			if ($ev == MOUSE_RELEASE)
+			{
+				$asciio->motion_notify_event($modifiers, $button, $col - 1, $line - 1) ;
+				$asciio->update_display() if $asciio->{DRAGGING} ;
+			}
+			
 			# $asciio->button_scroll_event($modifiers, $button, $col - 1, $line - 1) if ($ev == MOUSE_???) ;
 			}
 		}

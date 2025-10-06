@@ -750,6 +750,8 @@ sub button_release_event
 {
 my ($self, $event) = @_ ;
 
+undef $self->{DRAGGING} ;
+
 my $button = $event->{BUTTON} ;
 my $modifiers = $event->{MODIFIERS} ;
 
@@ -793,7 +795,6 @@ my $modifiers = $event->{MODIFIERS} ;
 if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
 	delete $self->{BINDINGS_COMPLETION} ;
-	$self->update_display ;
 	
 	if($self->exists_action("${modifiers}motion_notify"))
 		{

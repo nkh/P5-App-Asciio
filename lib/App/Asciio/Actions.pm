@@ -132,7 +132,6 @@ for my $action (@actions)
 			unless ($self->{KEEP_BINDINGS_COMPLETION})
 				{
 				delete $self->{BINDINGS_COMPLETION} ;
-				$self->update_display() ;
 				}
 			
 			delete $self->{KEEP_BINDINGS_COMPLETION} ;
@@ -171,7 +170,6 @@ for my $action (@actions)
 			}
 		
 		delete $self->{BINDINGS_COMPLETION} ;
-		$self->update_display() ;
 		}
 	}
 	
