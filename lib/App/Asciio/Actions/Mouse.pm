@@ -353,7 +353,17 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
 	if    ($self->{DRAGGING} eq 'move')   { $self->move_elements_event($x, $y) ; }
 	elsif ($self->{DRAGGING} eq 'resize') { $self->resize_element_event($x, $y) ; }
-	elsif ($self->{DRAGGING} eq 'select') { $self->select_element_event($x, $y) ; }
+	elsif ($self->{DRAGGING} eq 'select') 
+		{
+		if($self->{DRAG_SELECTS_ARROWS})
+			{
+			$self->select_element_event($x, $y) ; 
+			}
+		else
+			{
+			$self->select_element_event($x, $y, sub { my $element = shift ; ref($_) !~ /arrow/ ;}) ; 
+			}
+		}
 	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	}

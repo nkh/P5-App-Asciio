@@ -210,6 +210,7 @@ register_action_handlers
 	'Remove last section from multi_wirl' => ['CA0-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow ],
 	'Start no disconnect'                 => ['C00-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0                  ],
 	'End no disconnect'                   => ['0A0-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1                  ],
+	'Flip drag selects arrows'            => ['0A0-s', \&App::Asciio::Actions::Arrow::drag_selects_arrows                             ],
 	},
 
 '<< debug leader >>' => 

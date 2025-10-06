@@ -12,6 +12,10 @@ use App::Asciio::Actions::Multiwirl ;
 
 #----------------------------------------------------------------------------------------------
 
+sub drag_selects_arrows { my ($self) = @_ ; $self->{DRAG_SELECTS_ARROWS} ^= 1 ; $self->update_display() ; }
+
+#----------------------------------------------------------------------------------------------
+
 sub interactive_change_arrow_direction
 {
 my ($self) = @_ ;

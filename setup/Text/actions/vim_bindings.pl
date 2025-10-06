@@ -184,6 +184,7 @@ register_action_handlers_remove_old_shortcuts
 	'Remove last section from multi_wirl'     => ['A-C-s'],
 	'Start no disconnect'                     => ['C-d'],
 	'End no disconnect'                       => ['A-D'],
+	'Flip drag selects arrows'                => ['A-s'],
 	},
 
 '<< debug leader >>' => 

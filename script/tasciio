@@ -98,7 +98,6 @@ while (1)
 			$last_mouse_update = $float_seconds ;
 			
 			my ($ev, $button, $line, $col) = $tk->interpret_mouse( $key );
-			print $fh "got event $ev " . MOUSE_RELEASE . "\n" ;
 			my $modifiers = '' ;
 			
 			$modifiers .= $key->modifier_ctrl ? 'C' : '0' ;

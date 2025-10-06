@@ -25,6 +25,7 @@ COPY_OFFSET_Y => 1,
 MOUSE_X => 0,
 MOUSE_Y => 0,
 ACTION_VERBOSE => undef,
+DRAG_SELECTS_ARROWS => 0,
 
 COLORS => {},
 
