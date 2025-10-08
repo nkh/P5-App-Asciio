@@ -19,10 +19,18 @@ sub setup
 {
 my($self, $setup_ini_files, $object_overrides) = @_ ;
 
+if (defined $object_overrides)
+	{
+	while( my ($k, $v) = each $object_overrides->%* )
+		{
+		$self->{$k} = $v ;
+		}
+	}
+
 for my $setup_file (@{$setup_ini_files})
 	{
-	print STDERR "Initializing with '$setup_file'\n" if $self->{DISPLAY_SETUP_INFORMATION};
-	warn "Asciio: Warning: can't find setup data '$setup_file'\n" and next unless -e $setup_file ;
+	$self->{WARN}("Initializing with '$setup_file'\n") if $self->{DISPLAY_SETUP_INFORMATION} ;
+	$self->{WARN}("Asciio: Warning: can't find setup data '$setup_file'\n") and next unless -e $setup_file ;
 	
 	push @{$self->{SETUP_PATHS}}, $setup_file ;
 	
@@ -39,7 +47,7 @@ for my $setup_file (@{$setup_ini_files})
 				CODE_FROM_FILE => $setup_file,
 				) ;
 	
-	warn "can't load '$setup_file': $! $@\n" if $@ ;
+	$self->{WARN}("can't load '$setup_file': $! $@\n") if $@ ;
 	}
 	
 	$self->setup_object_options($setup_path, $ini_files->{ASCIIO_OBJECT_SETUP} || []) ;
@@ -47,7 +55,6 @@ for my $setup_file (@{$setup_ini_files})
 		{
 		while( my ($k, $v) = each $object_overrides->%* )
 			{
-			# print "object override $k -> $v\n" ;
 			$self->{$k} = $v ;
 			}
 		}
@@ -71,25 +78,25 @@ for my $stencil (@{$stencils})
 		{
 		if(-f "$setup_path/$stencil")
 			{
-			print STDERR "loading stencil '$setup_path/$stencil'\n" if $self->{DISPLAY_SETUP_INFORMATION} ;
+			$self->{WARN}("loading stencil '$setup_path/$stencil'\n") if $self->{DISPLAY_SETUP_INFORMATION} ;
 			$self->load_elements("$setup_path/$stencil", $stencil) ;
 			}
 		elsif(-d "$setup_path/$stencil")
 			{
 			for(glob("$setup_path/$stencil/*"))
 				{
-				print STDERR "batch loading stencil '$setup_path/$stencil/$_'\n" if $self->{DISPLAY_SETUP_INFORMATION} ;
+				$self->{WARN}("batch loading stencil '$setup_path/$stencil/$_'\n") if $self->{DISPLAY_SETUP_INFORMATION} ;
 				$self->load_elements($_, $stencil) ;
 				}
 			}
 		else
 			{
-			print STDERR "Unknown type '$setup_path/$stencil'!\n" ;
+			$self->{WARN}("Unknown type '$setup_path/$stencil'!\n") ;
 			}
 		}
 	else
 		{
-		print STDERR "Can't find '$setup_path/$stencil'!\n" ;
+		$self->{WARN}("Can't find '$setup_path/$stencil'!\n") ;
 		}
 	}
 }
@@ -180,7 +187,7 @@ for my $action_file (@{ $action_files })
 		if('HASH' eq ref $action_handler_definition)
 			{
 			$shortcuts_definition = $action_handler_definition->{SHORTCUTS}  ;
-			# print STDERR "\e[31maction_handler: '$name' is group $shortcuts_definition\e[m\n" ;
+			# $self->{ACTION_VERBOSE}("\e[31maction_handler: '$name' is group $shortcuts_definition\e[m\n") ;
 			
 			$action_handler = $self->get_group_action_handler($setup_path, $action_file, $name, $action_handler_definition) ;
 			}
@@ -200,7 +207,7 @@ for my $action_file (@{ $action_files })
 			}
 		else
 			{
-			# print STDERR "ignoring '$name'\n"  ;
+			# $self->{ACTION_VERBOSE}("ignoring '$name'\n") ;
 			next ;
 			}
 			
@@ -258,16 +265,16 @@ for my $action_file (@{ $action_files })
 			{
 			if(exists $self->{ACTIONS}{$shortcut})
 				{
-				print STDERR "Overriding shortcut '$shortcut'\n" ;
-				print STDERR "\tnew is '$name' defined in file '$setup_path/$action_file'\n" ;
-				print STDERR "\told was '$self->{ACTIONS}{$shortcut}{NAME}' defined in file '$self->{ACTIONS}{$shortcut}{ORIGIN}'\n" ;
+				$self->{ACTION_VERBOSE}("Overriding shortcut '$shortcut'\n") ;
+				$self->{ACTION_VERBOSE}("\tnew is '$name' defined in file '$setup_path/$action_file'\n") ;
+				$self->{ACTION_VERBOSE}( "\told was '$self->{ACTIONS}{$shortcut}{NAME}' defined in file '$self->{ACTIONS}{$shortcut}{ORIGIN}'\n") ;
 				}
 				
 			$self->{ACTIONS}{$shortcut} = $action_handler ;
 			
 			if (! defined $action_handler->{CODE} && ! defined $action_handler->{CONTEXT_MENU_SUB})
 				{
-				print STDERR "\e[33mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[m\n" ;
+				$self->{ACTION_VERBOSE}("\e[33mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[m\n") ;
 				delete $self->{ACTIONS}{$shortcut} ;
 				}
 			
@@ -330,7 +337,7 @@ my $name = $action_handler->{NAME} ;
 if(exists $self->{ACTIONS_BY_NAME}{$name})
 	{
 	my $reused = '' ;
-	print STDERR "\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown')
+	$self->{ACTION_VERBOSE}("\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown'))
 		if $self->{DISPLAY_SETUP_ACTION_INFORMATION} ;
 
 	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
@@ -364,7 +371,7 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 		$action_handler->{CONTEXT_MENU_ARGUMENTS} = $old_handler->{CONTEXT_MENU_ARGUMENTS}  ;
 		}
 	
-	print STDERR "$reused\e[m\n" ;
+	$self->{ACTION_VERBOSE}("$reused\e[m\n") ;
 	}
 }
 
@@ -421,10 +428,10 @@ for my $name (grep { $_ ne 'SHORTCUTS' && $_ ne 'ESCAPE_KEYS' } keys %{$group_de
 	
 	for my $shortcut ('ARRAY' eq ref $shortcuts_definition ? @$shortcuts_definition : ($shortcuts_definition))
 		{
-		print STDERR "Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n"
+		$self->{ACTION_VERBOSE}("Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n")
 			if exists $handler{$shortcut} && $self->{DISPLAY_SETUP_ACTION_INFORMATION} ;
 		
-		# print STDERR "\e[32maction_handler: '$name' shortcut: $shortcut\e[m\n" ;
+		# $self->{ACTION_VERBOSE}("\e[32maction_handler: '$name' shortcut: $shortcut\e[m\n") ;
 		$handler{$shortcut} = $action_handler ;
 		
 		$handler{$shortcut}{GROUP_NAME} = $group_name if defined $group_name ;
@@ -474,7 +481,7 @@ EOC
 		{
 		if(exists $self->{IMPORT_EXPORT_HANDLERS}{$extension})
 			{
-			print STDERR "Overriding import/export handler for extension '$extension' in file '$setup_path/$import_export_file'\n" ;
+			$self->{WARN}("Overriding import/export handler for extension '$extension' in file '$setup_path/$import_export_file'\n") ;
 			}
 			
 		$self->{IMPORT_EXPORT_HANDLERS}{$extension} = $import_export_handlers{$extension}  ;

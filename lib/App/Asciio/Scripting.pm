@@ -108,21 +108,31 @@ sub new_script_asciio
 local @ARGV = @ARGV ;
 $script_asciio = App::Asciio->new() ;
 
-# warn "Asciio: created script asciio object\n" ;
-
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $script_asciio->ParseSwitches([@ARGV], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
 
+my %object_override ; 
+if(defined $asciio_config->{DEBUG_FD})
+	{
+	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd 5: $!\n" ; 
+	$fh->autoflush(1) ;
+	%object_override = (WARN => sub { print $fh "@_\n" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
+	}
+else
+	{
+	%object_override = (WARN => sub { print STDERR "@_\n" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	}
+
 if(@{$asciio_config->{SETUP_PATHS}})
 	{
-	$script_asciio->setup($asciio_config->{SETUP_PATHS}) ;
+	$script_asciio->setup($asciio_config->{SETUP_PATHS}, \%object_override) ;
 	}
 else
 	{
 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
-	$script_asciio->setup([$path . $basename . '/setup/setup.ini']) ;
+	$script_asciio->setup([$path . $basename . '/setup/setup.ini'], \%object_override) ;
 	}
 }
 

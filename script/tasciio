@@ -12,10 +12,24 @@ use File::Basename ;
 
 my $asciio = App::Asciio::Text->new(50, 25) ;
 
+STDERR->autoflush(1) ;
+
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
+
+my %object_override ; 
+if(defined $asciio_config->{DEBUG_FD})
+	{
+	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd 5: $!\n" ; 
+	$fh->autoflush(1) ;
+	%object_override = (WARN => sub { print $fh "@_\n" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
+	}
+else
+	{
+	%object_override = (WARN => sub { print STDERR "@_\n" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	}
 
 my $setup_paths = [] ;
 
@@ -42,17 +56,10 @@ $asciio->run_actions_by_name(['Open', $title]) if defined $title ;
 # 'open' deserializes an asciio object with it's attributes, if the file
 # was saved by a different asciio object (GUI/TUI), the attributes in
 # the serialized object will not fit, run setup after 'open'
-$asciio->setup($setup_paths) ;
+
+$asciio->setup($setup_paths, \%object_override) ;
 
 $asciio->set_title($title) if defined $title ;
-
-STDERR->autoflush(1) ;
-
-# open my $fh, ">&=", 5 or die "can't open fh 5: $!\n" ; 
-# $fh->autoflush(1) ;
-
-# $asciio->{ACTION_VERBOSE} = sub { print STDERR "\e[?25l\e[H" ."$_[0]\n" ; } ;
-# $asciio->{ACTION_VERBOSE} = sub { ; } ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 

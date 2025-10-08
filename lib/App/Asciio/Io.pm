@@ -254,6 +254,7 @@ local $self->{MIDDLE_BUTTON_SELECTION_FILTER} = undef ;
 local $self->{ELEMENT_TYPES} = undef ;
 local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
+local $self->{WARN} = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 

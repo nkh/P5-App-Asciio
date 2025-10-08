@@ -37,7 +37,7 @@ do
 		
 	$contains_switch = @ARGV ;
 	
-	local $SIG{__WARN__} = sub {print STDERR $_[0] unless $ignore_error ;} ;
+	local $SIG{__WARN__} = sub { print STDERR $_[0] unless $ignore_error ; } ;
 			
 	unless(GetOptions(@flags))
 		{
@@ -81,16 +81,20 @@ $asciio_config->{SETUP_PATHS} = [] ;
 
 my @flags_and_help =
 	(
-	'setup_path=s'                          => $asciio_config->{SETUP_PATHS},
-		'Sets the root of the setup directory.',
+	'setup_path=s'  => $asciio_config->{SETUP_PATHS},
+		'sets the root of the setup directory.',
 		'',
 		
-	's|script=s'                            => \$asciio_config->{SCRIPT},
+	's|script=s'    => \$asciio_config->{SCRIPT},
 		'script to be run at Asciio start.',
 		'',
 		
-	'p|web_port=s'                              => \$asciio_config->{WEB_PORT},
+	'p|web_port=s'  => \$asciio_config->{WEB_PORT},
 		'port for web server.',
+		'',
+	
+	'debug_fd=i'    => \$asciio_config->{DEBUG_FD},
+		'debug file descriptor number.',
 		'',
 	) ;
 	

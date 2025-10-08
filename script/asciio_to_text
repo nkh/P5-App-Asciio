@@ -18,11 +18,23 @@ my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
 
+my %object_override ; 
+if(defined $asciio_config->{DEBUG_FD})
+	{
+	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd 5: $!\n" ; 
+	$fh->autoflush(1) ;
+	%object_override = (WARN => sub { print $fh "@_\n" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
+	}
+else
+	{
+	%object_override = (WARN => sub { print STDERR "@_\n" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	}
+
 my $setup_paths = [] ;
 
 if(@{$asciio_config->{SETUP_PATHS}})
 	{
-	$asciio->setup($asciio_config->{SETUP_PATHS}) ;
+	$asciio->setup($asciio_config->{SETUP_PATHS}, \%object_override) ;
 	}
 else
 	{
@@ -34,13 +46,13 @@ else
 		$setup_path . 'setup.ini', 
 		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
 		] ;
+		
+	$asciio->setup($setup_paths, { %object_override, DISPLAY_SETUP_ACTION_INFORMATION => 0 }) ;
 	}
-
-$asciio->setup($setup_paths, { DISPLAY_SETUP_ACTION_INFORMATION => 0 }) ;
 
 if(defined $asciio_config->{TARGETS}[0])
 	{
-	local $asciio->{ACTION_VERBOSE} = undef ;
+	local $asciio->{ACTION_VERBOSE} = sub { ; } ;
 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	}
 	

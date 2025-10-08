@@ -30,9 +30,7 @@ $window->add($scwin);
 
 my @asciios ;
 
-my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
-
-push @asciios, $asciio ;
+push @asciios, my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
 
 $scwin->add_with_viewport($asciio->{widget});
 $scwin->show_all();
@@ -41,6 +39,18 @@ my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
+
+my %object_override ; 
+if(defined $asciio_config->{DEBUG_FD})
+	{
+	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd 5: $!\n" ; 
+	$fh->autoflush(1) ;
+	%object_override = (WARN => sub { print $fh "@_\n" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
+	}
+else
+	{
+	%object_override = (WARN => sub { print STDERR "@_\n" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	}
 
 my $setup_paths = [] ;
 
@@ -61,8 +71,7 @@ else
 		] ;
 	}
 
-$asciio->setup($setup_paths) ;
-$asciio->{ACTION_VERBOSE} = sub { print STDERR "@_\n" } ;
+$asciio->setup($setup_paths, \%object_override) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 
