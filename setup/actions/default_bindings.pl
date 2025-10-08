@@ -66,6 +66,11 @@ register_action_handlers
 'Move selected elements up 2'        => ['000-k',                                  \&App::Asciio::Actions::ElementsManipulation::move_selection_up                     ],
 'Move selected elements down 2'      => ['000-j',                                  \&App::Asciio::Actions::ElementsManipulation::move_selection_down                   ],
 
+'Make element narrower'              => ['000-1',                                  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [-1, 0]        ],
+'Make element taller'                => ['000-2',                                  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0,  1]        ],
+'Make element shorter'               => ['000-3',                                  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0, -1]        ],
+'Make element wider'                 => ['000-4',                                  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [1,  0]        ],
+
 # mouse
 'Mouse right-click'                  => ['000-button-press-3',                     \&App::Asciio::Actions::Mouse::mouse_right_click                                    ],
 
@@ -370,11 +375,6 @@ register_action_handlers
 	SHORTCUTS   => '000-e',
 	
 	'Shrink box'                     => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                              ],
-	
-	'Make element narrower'          => ['000-1',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [-1, 0]         ],
-	'Make element taller'            => ['000-2',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0,  1]         ],
-	'Make element shorter'           => ['000-3',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [0, -1]         ],
-	'Make element wider'             => ['000-4',  \&App::Asciio::Actions::ElementsManipulation::resize_element_offset, [1,  0]         ],
 	
 	'Make elements Unicode'          => ['C00-u',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 1                            ],
 	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],

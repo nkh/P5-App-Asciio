@@ -40,6 +40,11 @@ register_action_handlers_remove_old_shortcuts
 'Move selected elements up 2'                     => ['Up'],
 'Move selected elements down 2'                   => ['Down'],
 
+'Make element narrower'                           => ['1'],
+'Make element taller'                             => ['2'],
+'Make element shorter'                            => ['3'],
+'Make element wider'                              => ['4'],
+
 # mouse
 'Mouse right-click'                               => ['000-button-press-3'],
 
@@ -344,11 +349,6 @@ register_action_handlers_remove_old_shortcuts
 	SHORTCUTS => 'e',
 	
 	'Shrink box'                              => ['s'],
-	
-	'Make element narrower'                   => ['1'],
-	'Make element taller'                     => ['2'],
-	'Make element shorter'                    => ['3'],
-	'Make element wider'                      => ['4'],
 	
 	'Make elements Unicode'                   => ['u'],
 	'Make elements not Unicode'               => ['U'],
