@@ -686,15 +686,15 @@ my ($self, $element, $x, $y, $field) = @_ ;
 $field //= 0 ;
 my $is_under = 0 ;
 
-for my $strip (@{$element->get_stripes()})
+for my $stripe (@{$element->get_stripes()})
 	{
-	my $stripe_x = $element->{X} + $strip->{X_OFFSET} ;
-	my $stripe_y = $element->{Y} + $strip->{Y_OFFSET} ;
+	my $stripe_x = $element->{X} + $stripe->{X_OFFSET} ;
+	my $stripe_y = $element->{Y} + $stripe->{Y_OFFSET} ;
 	
 	if
 		(
-		$stripe_x - $field <= $x   && $x < $stripe_x + $strip->{WIDTH} + $field
-		&& $stripe_y - $field <= $y && $y < $stripe_y + $strip->{HEIGHT} + $field
+		$stripe_x - $field <= $x   && $x < $stripe_x + $stripe->{WIDTH} + $field
+		&& $stripe_y - $field <= $y && $y < $stripe_y + $stripe->{HEIGHT} + $field
 		) 
 		{
 		$is_under++ ;
@@ -729,17 +729,17 @@ if($height < 0)
 
 my $is_within = 1 ;
 
-for my $strip (@{$element->get_stripes()})
+for my $stripe (@{$element->get_stripes()})
 	{
-	my $stripe_x = $element->{X} + $strip->{X_OFFSET} ;
-	my $stripe_y = $element->{Y} + $strip->{Y_OFFSET} ;
+	my $stripe_x = $element->{X} + $stripe->{X_OFFSET} ;
+	my $stripe_y = $element->{Y} + $stripe->{Y_OFFSET} ;
 	
 	if
 	(
 	    $start_x <= $stripe_x
-	&& ($stripe_x + $strip->{WIDTH})  <= $start_x +$width
+	&& ($stripe_x + $stripe->{WIDTH})  <= $start_x +$width
 	&& $start_y <= $stripe_y 
-	&& ($stripe_y + $strip->{HEIGHT}) <= $start_y + $height
+	&& ($stripe_y + $stripe->{HEIGHT}) <= $start_y + $height
 	) 
 		{
 		}

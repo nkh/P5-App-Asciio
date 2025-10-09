@@ -28,7 +28,8 @@ if(defined $asciio_config->{DEBUG_FD})
 	}
 else
 	{
-	%object_override = (WARN => sub { print STDERR "@_" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	# %object_override = (WARN => sub { print STDERR "@_" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	%object_override = (WARN => sub { ; }, ACTION_VERBOSE => sub { ; } ) ;
 	}
 
 my $setup_paths = [] ;

@@ -66,7 +66,6 @@ my ($self) = @_;
 return if $self->{IN_DRAG_DROP} ;
 
 my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
-
 my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
 
 if(defined $first_element)
@@ -326,11 +325,11 @@ sub mouse_drag
 my ($self, $x, $y) = @_ ;
 
 my @selected_elements = $self->get_selected_elements(1) ;
-my ($first_element) = first_value {$self->is_over_element($_, $self->{PREVIOUS_X}, $self->{PREVIOUS_Y})} reverse @selected_elements ;
+my $first_element = first_value {$self->is_over_element($_, $self->{PREVIOUS_X}, $self->{PREVIOUS_Y})} reverse @selected_elements ;
 
-if(@selected_elements <= 1)
+if(! defined $self->{DRAGGING})
 	{
-	if(! defined $self->{DRAGGING})
+	if(@selected_elements == 1 )
 		{
 		$self->{DRAGGING} = defined $first_element
 					? $first_element->get_selection_action
@@ -340,11 +339,10 @@ if(@selected_elements <= 1)
 								)
 					: 'select' ;
 		}
-	}
-else
-	{
-	$self->{DRAGGING} = defined $first_element ? 'move' : 'select'
-		unless defined $self->{DRAGGING} ;
+	else
+		{
+		$self->{DRAGGING} = defined $first_element ? 'move' : 'select'
+		}
 	}
 
 ($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
