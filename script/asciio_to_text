@@ -21,7 +21,7 @@ die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok
 my %object_override ; 
 if(defined $asciio_config->{DEBUG_FD})
 	{
-	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd 5: $!\n" ; 
+	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd $asciio_config->{DEBUG_FD}: $!\n" ; 
 	$fh->autoflush(1) ;
 	%object_override = (WARN => sub { print $fh "@_\n" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
 	}
