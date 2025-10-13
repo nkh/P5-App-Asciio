@@ -19,6 +19,17 @@ my $notebook = Gtk3::Notebook->new;
 $notebook->set_can_focus(FALSE);
 $notebook->set_scrollable(TRUE) ;
 
+my ($asciio, $web_port) = asciio_init() ;
+
+# :TODO: If the first tab is deleted by the user, the web service will be damaged.need to fix.
+# The reference of asciios[0] is retained. Therefore, an error occurs when the tab is deleted.
+# need to fix
+App::Asciio::Server::start_web_server($asciio, $web_port // 4444) ; 
+
+Gtk3->main() ;
+
+#-----------------------------------------------------------------------------
+
 sub asciio_init
 {
 $window->set_title("asciio");
@@ -42,40 +53,6 @@ my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
 
 die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
-
-# :TOCHECK: by qinqing
-# my %object_override ; 
-# if(defined $asciio_config->{DEBUG_FD})
-# 	{
-# 	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd $asciio_config->{DEBUG_FD}: $!\n" ; 
-# 	$fh->autoflush(1) ;
-# 	%object_override = (WARN => sub { print $fh "@_" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
-# 	}
-# else
-# 	{
-# 	%object_override = (WARN => sub { print STDERR "@_" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
-# 	}
-
-# my $setup_paths = [] ;
-
-# if(@{$asciio_config->{SETUP_PATHS}})
-# 	{
-# 	$setup_paths = $asciio_config->{SETUP_PATHS} ;
-# 	}
-# else
-# 	{
-# 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
-# 	my $setup_path = $path . $basename . '/setup/' ;
-	
-# 	$setup_paths = 
-# 		[
-# 		$setup_path . 'setup.ini', 
-# 		$setup_path . 'GTK/setup.ini', 
-# 		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
-# 		] ;
-# 	}
-
-# $asciio->setup($setup_paths, \%object_override) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 
@@ -105,11 +82,3 @@ return ($asciio, $asciio_config->{WEB_PORT}) ;
 
 #--------------------------------------------------------------------------
 
-my ($asciio, $web_port) = asciio_init() ;
-
-# :TODO: If the first tab is deleted by the user, the web service will be damaged.need to fix.
-# The reference of asciios[0] is retained. Therefore, an error occurs when the tab is deleted.
-# need to fix
-App::Asciio::Server::start_web_server($asciio, $web_port // 4444) ; 
-
-Gtk3->main() ;
