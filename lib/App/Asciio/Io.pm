@@ -382,9 +382,7 @@ else
 		}
 		
 	$title = $file_name ;
-	# :TOCHECK: by qinqing
-	# write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
-	write_file($file_name, compress($self->serialize_all_self() .'$VAR1 ;')) or $title = undef ;
+	write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
 	}
 	
 return $title ;
