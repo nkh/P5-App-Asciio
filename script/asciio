@@ -38,16 +38,8 @@ $window->signal_connect("destroy", sub { exit(0); });
 
 $window->add($notebook);
 
-# :TOCHECK: by qinqing
-# $window->add($scwin);
-
-# my @asciios ;
-
-# push @asciios, my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
-
-# $scwin->add_with_viewport($asciio->{widget});
-# $scwin->show_all();
-my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $notebook, undef, \@ARGV) ;
+my @asciios ;
+push @asciios, my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $notebook, undef, \@ARGV) ;
 
 my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
 	= $asciio->ParseSwitches([@ARGV], 0) ;
