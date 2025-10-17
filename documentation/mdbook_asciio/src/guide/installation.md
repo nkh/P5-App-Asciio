@@ -2,7 +2,11 @@
 
 We're working on having packages pre-build for different distributions
 
-## Ubuntu (probably other debian derivates too)
+## CPAN vs dev versions
+
+The CPAN version is the stable version but we recommend running the latest from github to get most of *asciio*
+
+## Manual install of CPAN version on Ubuntu (probably other debian derivates too)
 
 ```bash
     apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl 
@@ -13,13 +17,22 @@ We're working on having packages pre-build for different distributions
 
 ## container
 
+### pull image from docker hub
+
+Image is at: https://hub.docker.com/r/nadimkhemir/asciio
+
+No night builds yet but it will come, should you need a newer version jut open a ticket. 
+
+Change <YOUR_USER_NAME_HERE> to your user name before running the command below.
+
+```bash
+podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/<YOUR_USER_NAME_HERE>" asciio:1.9.02 asciio
+
+```
+
+### build your own
+
 Using the instructions above build an asciio image ; the image will be large (~700 MB) as it contains gtk and co.
-
-You can then run the asciio or tasciio like this:
-
-```
-podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/xxx" asciio [asciio|tasciio]
-```
 
 ## Windows
 
