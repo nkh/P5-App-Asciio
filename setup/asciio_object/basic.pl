@@ -18,6 +18,7 @@ GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
 TAB_AS_SPACES => '    ',
 USE_BINDINGS_COMPLETION => 0,
 
+DISPLAY_RULERS => 1,
 DISPLAY_GRID => 1,
 DISPLAY_GRID2 => 1,
 COPY_OFFSET_X => 1,

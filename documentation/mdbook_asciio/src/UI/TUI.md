@@ -3,7 +3,7 @@
 
 ![TUI](tasciio.png)
 
-The TUI interface is a work in progress. Drawing graphs in a terminal (without mouse) is more difficult than it seem, I'm actively working on creating better bindings to make as s smooth as when using a mouse.
+The TUI interface is a work in progress. Drawing graphs in a terminal (without mouse) is more difficult than it seem, I'm actively working on creating better bindings to make as smooth as when using a mouse.
 
 - mouse emulation
 - differences

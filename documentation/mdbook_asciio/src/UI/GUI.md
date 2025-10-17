@@ -21,19 +21,41 @@
 
 ```
 
-## Grid
+## Display colors
 
-### Grid lines
+Access the color group with ***binding:***  «zc»
 
-### Grid color
+### Night Colors
 
-### Grid background color
+***binding:*** «zcs»
 
-## Hint lines
+### change grid color
+
+***binding:*** «zcg»
+
+### change grid background color
+
+***binding:*** «zcg»
+
+## Display options
+
+### display/hide grid lines
+
+***binding:*** «zg»
+
+### display/hide hint lines
+
+***binding:*** «zh»
+
+Displays thicker lines around the selected elements to help you with alignment
 
 ![hint lines](hint_lines.png)
 
-## Rulers
+## Rulers 
 
-## Night Colors
+Access the rule group with ***binding:*** «ir»
+
+## display/hide ruler 
+
+***binding:*** «zr»
 

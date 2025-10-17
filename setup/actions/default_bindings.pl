@@ -175,7 +175,7 @@ register_action_handlers
 	'Align horizontally'                  => ['000-h', \&App::Asciio::Actions::Align::align, 'horizontal'],
 	},
 
-'<< change color/font leader >>'=> 
+'<< display options >>' =>
 	{
 	SHORTCUTS   => '000-z',
 	
@@ -184,9 +184,9 @@ register_action_handlers
 	
 	'Flip binding completion'             => ['000-b', sub { $_[0]->{USE_BINDINGS_COMPLETION} ^= 1 ; $_[0]->update_display() ;}],
 	'Flip cross mode'                     => ['000-x', sub { $_[0]->{USE_CROSS_MODE} ^= 1 ; $_[0]->update_display ; }          ],
-	'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme                       ],
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements                  ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
+	'Flip rulers display'                 => ['000-r', \&App::Asciio::Actions::Unsorted::flip_rulers_display                   ],
 	'Flip hint lines'                     => ['000-h', \&App::Asciio::Actions::Unsorted::flip_hint_lines                       ],
 	'Flip edit inline'                    => ['000-i', \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type                   ], 
 	'Flip show/hide connectors'           => ['000-v', \&App::Asciio::Actions::Unsorted::flip_connector_display                ], 
@@ -196,11 +196,13 @@ register_action_handlers
 	{
 	SHORTCUTS   => 'group_color',
 	
-	'Change elements foreground color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0       ],
-	'Change elements background color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1       ],
-
-	'Change Asciio background color'      => ['000-B', \&App::Asciio::Actions::Colors::change_background_color         ],
-	'Change grid color'                   => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color               ],
+	'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme         ] ,
+	
+	'Change elements foreground color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0 ] ,
+	'Change elements background color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1 ] ,
+	
+	'Change Asciio background color'      => ['00S-B', \&App::Asciio::Actions::Colors::change_background_color   ] ,
+	'Change grid color'                   => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color         ] ,
 	},
 
 '<< arrow leader >>' => 
@@ -532,41 +534,41 @@ register_first_level_group
 (
 SHORTCUTS => '00S-question',
 
-'<< Insert leader >>'            => 1,
-'<< yank leader >>'              => 1,
-'<< selection leader >>'         => 1,
-'<< paste leader >>'             => 1,
-'<< grouping leader >>'          => 1,
-'<< stripes leader >>'           => 1,
-'<< align leader >>'             => 1,
-'<< change color/font leader >>' => 1,
-'<< arrow leader >>'             => 1,
-'<< debug leader >>'             => 1,
-'<< commands leader >>'          => 1,
-'<< Insert leader >>'            => 1,
-'<< slides leader >>'            => 1,
-'<< element leader >>'           => 1,
-'<< clone leader >>'             => 1,
-'<< git leader >>'               => 1,
-'<< move arrow ends leader >>'   => 1,
+'<< Insert leader >>'          => 1,
+'<< yank leader >>'            => 1,
+'<< selection leader >>'       => 1,
+'<< paste leader >>'           => 1,
+'<< grouping leader >>'        => 1,
+'<< stripes leader >>'         => 1,
+'<< align leader >>'           => 1,
+'<< display options >>'        => 1,
+'<< arrow leader >>'           => 1,
+'<< debug leader >>'           => 1,
+'<< commands leader >>'        => 1,
+'<< Insert leader >>'          => 1,
+'<< slides leader >>'          => 1,
+'<< element leader >>'         => 1,
+'<< clone leader >>'           => 1,
+'<< git leader >>'             => 1,
+'<< move arrow ends leader >>' => 1,
 
-'Select next non arrow'          => 1,
-'Select previous non arrow'      => 1,
-'Select next arrow'              => 1,
-'Select previous arrow'          => 1,
-'Select all elements'            => 1,
-'Select connected elements'      => 1,
+'Select next non arrow'        => 1,
+'Select previous non arrow'    => 1,
+'Select next arrow'            => 1,
+'Select previous arrow'        => 1,
+'Select all elements'          => 1,
+'Select connected elements'    => 1,
 
-'Edit selected element inline'   => 1,
+'Edit selected element inline' => 1,
 
-'Mouse quick link'               => 1,
-'Mouse duplicate elements'       => 1,
-'Mouse quick box'                => 1,
+'Mouse quick link'             => 1,
+'Mouse duplicate elements'     => 1,
+'Mouse quick box'              => 1,
 
-'Arrow to mouse'                 => 1,
-'Arrow mouse change direction'   => 1,
-'Arrow change direction'         => 1,
-'Wirl arrow add section'         => 1,
-'Wirl arrow insert flex point'   => 1,
+'Arrow to mouse'               => 1,
+'Arrow mouse change direction' => 1,
+'Arrow change direction'       => 1,
+'Wirl arrow add section'       => 1,
+'Wirl arrow insert flex point' => 1,
 ) ;
 

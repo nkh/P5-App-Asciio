@@ -1,6 +1,8 @@
 *.swp
 *.swo
 *.directory
+META.json
+META.yml
 MYMETA.json
 MYMETA.yml
 beating_a_star.pdf

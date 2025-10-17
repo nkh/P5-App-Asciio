@@ -221,22 +221,26 @@ $self->draw_cross_overlays($gc, $widget_width, $widget_height, $character_width,
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
-for my $line (@{$self->{RULER_LINES}})
+if($self->{DISPLAY_RULERS})
 	{
-	$gc->set_source_rgb(@{$self->get_color('ruler_line')});
+	for my $line (@{$self->{RULER_LINES}})
+		{
+		$gc->set_source_rgb(@{$self->get_color('ruler_line')});
+		
+		if($line->{TYPE} eq 'VERTICAL')
+			{
+			$gc->move_to($line->{POSITION} * $character_width, 0) ;
+			$gc->line_to($line->{POSITION} * $character_width, $widget_height) ;
+			}
+		else
+			{
+			$gc->move_to(0, $line->{POSITION} * $character_height) ;
+			$gc->line_to($widget_width, $line->{POSITION} * $character_height);
+			}
+		}
 	
-	if($line->{TYPE} eq 'VERTICAL')
-		{
-		$gc->move_to($line->{POSITION} * $character_width, 0) ;
-		$gc->line_to($line->{POSITION} * $character_width, $widget_height) ;
-		}
-	else
-		{
-		$gc->move_to(0, $line->{POSITION} * $character_height) ;
-		$gc->line_to($widget_width, $line->{POSITION} * $character_height);
-		}
+	$gc->stroke() ;
 	}
-$gc->stroke() ;
 
 # draw connections
 my (%connected_connections, %connected_connectors) ;

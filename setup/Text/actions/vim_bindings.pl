@@ -149,7 +149,7 @@ register_action_handlers_remove_old_shortcuts
 	'Align horizontally'                      => ['h'],
 	},
 
-'<< change color/font leader >>'=> 
+'<< display options >>'=> 
 	{
 	SHORTCUTS => 'z',
 	
@@ -161,6 +161,7 @@ register_action_handlers_remove_old_shortcuts
 	'Flip color scheme'                       => ['s'],
 	'Flip transparent element background'     => ['t'],
 	'Flip grid display'                       => ['g'],
+	'Flip ruler display'                      => ['r'],
 	'Flip hint lines'                         => ['h'],
 	'Flip edit inline'                        => ['i'], 
 	'Flip show/hide connectors'               => ['v'], 

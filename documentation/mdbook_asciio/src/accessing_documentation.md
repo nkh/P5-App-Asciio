@@ -6,16 +6,13 @@ Asciio's documentation is available in multiple formats
 
 - a manpage, available from within Asciio.
 
-- info pages
-
 There's also:
 
 - a bindings list
 
-- a short help
+- a short help 
 
-- a "user" defined documentation.
-         «h»                Add help box
+- a "user" defined documentation. «H» Add help box
 
 
 
