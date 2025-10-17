@@ -326,9 +326,6 @@ be aligned, you can download a font that can align them.</p>
 <li>
 <p>a manpage, available from within Asciio.</p>
 </li>
-<li>
-<p>info pages</p>
-</li>
 </ul>
 <p>There's also:</p>
 <ul>
@@ -339,8 +336,7 @@ be aligned, you can download a font that can align them.</p>
 <p>a short help</p>
 </li>
 <li>
-<p>a "user" defined documentation.
-«h»                Add help box</p>
+<p>a "user" defined documentation. «H» Add help box</p>
 </li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="uis"><a class="header" href="#uis">UIs</a></h1>
@@ -369,17 +365,28 @@ be aligned, you can download a font that can align them.</p>
                most are accessed through the keyboard
 
 </code></pre>
-<h2 id="grid"><a class="header" href="#grid">Grid</a></h2>
-<h3 id="grid-lines"><a class="header" href="#grid-lines">Grid lines</a></h3>
-<h3 id="grid-color"><a class="header" href="#grid-color">Grid color</a></h3>
-<h3 id="grid-background-color"><a class="header" href="#grid-background-color">Grid background color</a></h3>
-<h2 id="hint-lines"><a class="header" href="#hint-lines">Hint lines</a></h2>
+<h2 id="display-colors"><a class="header" href="#display-colors">Display colors</a></h2>
+<p>Access the color group with <em><strong>binding:</strong></em>  «zc»</p>
+<h3 id="night-colors"><a class="header" href="#night-colors">Night Colors</a></h3>
+<p><em><strong>binding:</strong></em> «zcs»</p>
+<h3 id="change-grid-color"><a class="header" href="#change-grid-color">change grid color</a></h3>
+<p><em><strong>binding:</strong></em> «zcg»</p>
+<h3 id="change-grid-background-color"><a class="header" href="#change-grid-background-color">change grid background color</a></h3>
+<p><em><strong>binding:</strong></em> «zcg»</p>
+<h2 id="display-options"><a class="header" href="#display-options">Display options</a></h2>
+<h3 id="displayhide-grid-lines"><a class="header" href="#displayhide-grid-lines">display/hide grid lines</a></h3>
+<p><em><strong>binding:</strong></em> «zg»</p>
+<h3 id="displayhide-hint-lines"><a class="header" href="#displayhide-hint-lines">display/hide hint lines</a></h3>
+<p><em><strong>binding:</strong></em> «zh»</p>
+<p>Displays thicker lines around the selected elements to help you with alignment</p>
 <p><img src="UI/hint_lines.png" alt="hint lines" /></p>
 <h2 id="rulers"><a class="header" href="#rulers">Rulers</a></h2>
-<h2 id="night-colors"><a class="header" href="#night-colors">Night Colors</a></h2>
+<p>Access the rule group with <em><strong>binding:</strong></em> «ir»</p>
+<h2 id="displayhide-ruler"><a class="header" href="#displayhide-ruler">display/hide ruler</a></h2>
+<p><em><strong>binding:</strong></em> «zr»</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="tui"><a class="header" href="#tui">TUI</a></h1>
 <p><img src="UI/tasciio.png" alt="TUI" /></p>
-<p>The TUI interface is a work in progress. Drawing graphs in a terminal (without mouse) is more difficult than it seem, I'm actively working on creating better bindings to make as s smooth as when using a mouse.</p>
+<p>The TUI interface is a work in progress. Drawing graphs in a terminal (without mouse) is more difficult than it seem, I'm actively working on creating better bindings to make as smooth as when using a mouse.</p>
 <ul>
 <li>mouse emulation</li>
 <li>differences
@@ -1227,7 +1234,7 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
 <h3 id="cloning-the-selection"><a class="header" href="#cloning-the-selection">Cloning the Selection</a></h3>
 <p>You can also clone a set of elements that have been selected. The bindings for the base elements are still applicable.</p>
 <p><img src="editing/clone_selection.gif" alt="Clone Selection" /></p>
-<h3 id="hint-lines-1"><a class="header" href="#hint-lines-1">Hint Lines</a></h3>
+<h3 id="hint-lines"><a class="header" href="#hint-lines">Hint Lines</a></h3>
 <p>If hint lines are enabled, additional lines are displayed to indicate the limits of the elements being cloned. You can toggle the hint lines on and off.</p>
 <p><em><strong>Binding:</strong></em> h</p>
 <p><img src="editing/clone_hint_lines.gif" alt="Clone Hint Lines" /></p>
