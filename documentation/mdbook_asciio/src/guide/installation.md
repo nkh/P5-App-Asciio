@@ -25,10 +25,37 @@ No night builds yet but it will come, should you need a newer version jut open a
 
 Change <YOUR_USER_NAME_HERE> to your user name before running the command below.
 
+### linux
+
 ```bash
 podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/<YOUR_USER_NAME_HERE>" asciio:1.9.02 asciio
 
 ```
+
+### windows wsl
+If using Podman, add docker repository to podman in '/etc/containers/registries.conf'
+
+
+```
+[registries.search]
+registries = ['docker.io']
+```
+
+Install an Xserver in windows. I used [VcXsrv](https://vcxsrv.com/) and disabled access control.
+
+The IP of Xserv was not correct. Had to use this, to have it report the Windows host virtual IP: 
+```
+export DISPLAY=$(ip route | grep default | awk '{print $3}'):0
+```
+
+```bash
+podman run -it --net=host --env="DISPLAY" --volume="$HOME:/home/<YOUR_USER_NAME_HERE>" asciio:1.9.02 asciio
+
+```
+
+
+![Win 11 Screenshot](Win11WSL.jpg)
+
 
 ### build your own
 
