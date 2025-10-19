@@ -190,9 +190,23 @@
 <p>Image is at: https://hub.docker.com/r/nadimkhemir/asciio</p>
 <p>No night builds yet but it will come, should you need a newer version jut open a ticket.</p>
 <p>Change &lt;YOUR_USER_NAME_HERE&gt; to your user name before running the command below.</p>
+<h3 id="linux"><a class="header" href="#linux">linux</a></h3>
 <pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:1.9.02 asciio
 
 </code></pre>
+<h3 id="windows-wsl"><a class="header" href="#windows-wsl">windows wsl</a></h3>
+<p>If using Podman, add docker repository to podman in '/etc/containers/registries.conf'</p>
+<pre><code>[registries.search]
+registries = ['docker.io']
+</code></pre>
+<p>Install an Xserver in windows. I used <a href="https://vcxsrv.com/">VcXsrv</a> and disabled access control.</p>
+<p>The IP of Xserv was not correct. Had to use this, to have it report the Windows host virtual IP:</p>
+<pre><code>export DISPLAY=$(ip route | grep default | awk '{print $3}'):0
+</code></pre>
+<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:1.9.02 asciio
+
+</code></pre>
+<p><img src="Win11WSL.jpg" alt="Win 11 Screenshot" /></p>
 <h3 id="build-your-own"><a class="header" href="#build-your-own">build your own</a></h3>
 <p>Using the instructions above build an asciio image ; the image will be large (~700 MB) as it contains gtk and co.</p>
 <h2 id="windows"><a class="header" href="#windows">Windows</a></h2>
