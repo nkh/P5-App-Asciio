@@ -489,11 +489,13 @@ my ($self, $gc, $character_width, $character_height) = @_ ;
 
 if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	{
-	my ($font_character_width, $font_character_height) = (9, 21) ;
-	
 	$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
 	
+	my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
 	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
+	$width += $font_character_width / 2 ;
+
+	print "length: $self->{BINDINGS_COMPLETION_LENGTH}, width: $font_character_width, height: $font_character_height, lines: " . scalar($self->{BINDINGS_COMPLETION}->@*) . "\n" ;
 	
 	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
 	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
@@ -518,7 +520,7 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	my $gco = Cairo::Context->create($surface) ;
 	
 	my $layout = Pango::Cairo::create_layout($gco) ;
-	my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} 11") ;
+	my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} $self->{FONT_BINDINGS_SIZE}") ;
 	$layout->set_font_description($font_description) ;
 	
 	$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
@@ -886,28 +888,32 @@ return("$modifiers-") ;
 
 sub get_character_size
 {
-my ($self) = @_ ;
-	
+my ($self, $font, $size) = @_ ;
+
+$font //= $self->{FONT_FAMILY} ;
+$size //= $self->{FONT_SIZE} ;
+
 if(exists $self->{USER_CHARACTER_WIDTH})
 	{
 	return ($self->{USER_CHARACTER_WIDTH}, $self->{USER_CHARACTER_HEIGHT}) ;
 	}
 else
 	{
-	unless (exists $self->{CACHE}{CHARACTER_SIZE})
+	unless (exists $self->{CACHE}{CHARACTER_SIZE}{$font}{$size})
 		{
 		my $surface = Cairo::ImageSurface->create('argb32', 100, 100);
 		my $gc = Cairo::Context->create($surface);
 		my $layout = Pango::Cairo::create_layout($gc) ;
 		
-		my $font_description = Pango::FontDescription->from_string($self->{FONT_FAMILY} . ' ' . $self->{FONT_SIZE}) ;
+		my $font_description = Pango::FontDescription->from_string($font . ' ' . $size) ;
+		
 		$layout->set_font_description($font_description) ;
 		$layout->set_text('M') ;
 		
-		$self->{CACHE}{CHARACTER_SIZE} = [$layout->get_pixel_size()] ;
+		$self->{CACHE}{CHARACTER_SIZE}{$font}{$size} = [$layout->get_pixel_size()] ;
 		}
 	
-	return @{ $self->{CACHE}{CHARACTER_SIZE} } ;
+	return @{ $self->{CACHE}{CHARACTER_SIZE}{$font}{$size} } ;
 	}
 }
 
