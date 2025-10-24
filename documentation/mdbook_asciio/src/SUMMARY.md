@@ -49,6 +49,7 @@
 	- [Slides](modes/slides.md)
 	- [pen](modes/pen.md)
 	- [find](modes/find.md)
+    - [Selection](modes/selection.md)
 
 - [Examples](examples.md)
 	- [Class hierarchy](examples/example1.md)
