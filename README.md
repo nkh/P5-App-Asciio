@@ -29,17 +29,17 @@ later.
 Diagrams consist of boxes and text elements connected by arrows. Boxes
 stay connected when you move them around.
 
-Both GUI and TUI have vim-like bindings, the GUI has a few extra
+Both GUI and TUI have vim-like bindings (shortcuts), the GUI has a few extra
 bindings that are usually found in GUI applications; bindings can be
-modified.
+customized.
 
-Keyboard bindings are the best way to use Asciio, they can be modified.
+Keyboard bindings are the best way to use Asciio.
 
 To list the bindings: $> perldoc App:Asciio.
  
 # DOCUMENTATION
 
-[Online Documentation](https://nkh.github.io/P5-App-Asciio/)
+Full documentation, including installation and docker image, are found at [Online Documentation](https://nkh.github.io/P5-App-Asciio/)
 
 ## Interface
 
@@ -56,7 +56,7 @@ To list the bindings: $> perldoc App:Asciio.
           '-------------------|-----------------------------------------'
                               |
                context menu access some commands
-               most are accessed through the keyboard
+               but most are accessed through the keyboard
 
 ## Exporting to ASCII
 
@@ -102,8 +102,8 @@ You can also export the selection, in ASCII, to the Primary clipboard.
 
 For simple elements, put your design in a box, with or without a frame.
 
-The an "exec-box" object that lets you put the output of an external
-application in a box, in the example below the table is generated, if
+The "exec-box" element lets you put the output of an external application
+in a box, in the example below the table is generated, if
 you already have text in a file you can use 'cat your_file' as the
 command.
 
@@ -248,7 +248,7 @@ Send me links to your favorites tools (only command line, no libs) and I'll add 
 
 # VIDEO
 
-An old video that shows basic usage:
+An old video that shows basic usage, a lot of functionality has bee added since:
 
 ![Asciio](https://www.youtube.com/watch?v=0l9W84PhOyI)
 
@@ -288,6 +288,5 @@ asciio # GUI asciio
     
     Qin Qing
     northisland2017@gmail.com
-    Unicode support, scroll bar, and rhombus object
 
 
