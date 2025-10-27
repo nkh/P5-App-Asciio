@@ -1,10 +1,10 @@
 # Installation
 
-asciio's is hosted on  github [](https://github.com/nkh/P5-App-Asciio)
+asciio's is hosted on  [github](https://github.com/nkh/P5-App-Asciio)
 
-## No packages pre-build for distributions yet
+## Debian/Ubuntu package
 
-Work on a debian package is ongoing.
+No packages pre-build for distributions yet, work is ongoing.
 
 ## Manual install on debian based distros. 
 
@@ -12,9 +12,9 @@ See the OCI build instruction in [Containerfile](https://github.com/nkh/P5-App-A
 
 ## OCI image
 
-### pull image from  github
+### pre-built image
 
-You can pull the image from [github](https://github.com/users/nkh/packages/container/package/p5-app-asciio)
+The image is on [github](https://github.com/users/nkh/packages/container/package/p5-app-asciio)
 
 Change <PATH_YOU_WANT_TO_SHARE>, if you want to save your files to your file system, before running the command below.
 
@@ -99,3 +99,4 @@ asciio
 # Platforms
 
 Asciio is developed on both Linux and Windows (cygwin).
+

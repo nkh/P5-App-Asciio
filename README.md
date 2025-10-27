@@ -240,21 +240,15 @@ You can call Asciio from vim and insert your diagram.
 # OTHER PROJECTS
 
 SVG conversion:
-![goat](https://github.com/blampe/goat)
+[goat](https://github.com/blampe/goat)
 
 Tree generation:
-![ascii_tree](https://github.com/yzhong52/ascii_tree)
+[ascii_tree](https://github.com/yzhong52/ascii_tree)
 
 ASCII Math and other:
-![Diagon](https://github.com/ArthurSonzogni/Diagon)
+[Diagon](https://github.com/ArthurSonzogni/Diagon)
 
 Send me links to your favorites tools (only command line, no libs) and I'll add them if they integrate will in Asciio.
-
-# VIDEO
-
-An old video that shows basic usage, a lot of functionality has bee added since:
-
-![Asciio](https://www.youtube.com/watch?v=0l9W84PhOyI)
 
 # INSTALL
 
