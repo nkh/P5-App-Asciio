@@ -178,15 +178,15 @@
                         <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>asciio's is hosted on  github <a href="https://github.com/nkh/P5-App-Asciio"></a></p>
 <h2 id="no-packages-pre-build-for-distributions-yet"><a class="header" href="#no-packages-pre-build-for-distributions-yet">No packages pre-build for distributions yet</a></h2>
-<p>Working on a debian package is ongoing.</p>
+<p>Work on a debian package is ongoing.</p>
 <h2 id="manual-install-on-debian-based-distros"><a class="header" href="#manual-install-on-debian-based-distros">Manual install on debian based distros.</a></h2>
 <p>See the OCI build instruction in <a href="https://github.com/nkh/P5-App-Asciio/blob/main/OCI/Containerfile">Containerfile</a>.</p>
-<h2 id="container"><a class="header" href="#container">container</a></h2>
+<h2 id="oci-image"><a class="header" href="#oci-image">OCI image</a></h2>
 <h3 id="pull-image-from--github"><a class="header" href="#pull-image-from--github">pull image from  github</a></h3>
-<p>Pull image from: TBD</p>
-<p>Change &lt;YOUR_USER_NAME_HERE&gt; to your user name before running the command below.</p>
+<p>You can pull the image from <a href="https://github.com/users/nkh/packages/container/package/p5-app-asciio">github</a></p>
+<p>Change &lt;PATH_YOU_WANT_TO_SHARE&gt;, if you want to save your files to your file system, before running the command below.</p>
 <h3 id="linux"><a class="header" href="#linux">linux</a></h3>
-<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME/asciio:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:latest asciio
+<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:&lt;PATH_YOU_WANT_TO_SHARE&gt;" ghcr.io/nkh/p5-app-asciio:release asciio
 
 </code></pre>
 <h3 id="windows-wsl"><a class="header" href="#windows-wsl">windows wsl</a></h3>
@@ -198,7 +198,7 @@ registries = ['ghcr.io']
 <p>The IP of Xserv was not correct. Had to use this, to have it report the Windows host virtual IP:</p>
 <pre><code>export DISPLAY=$(ip route | grep default | awk '{print $3}'):0
 </code></pre>
-<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/asciio:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:latest asciio
+<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME:&lt;PATH_YOU_WANT_TO_SHARE&gt;" p5-app-asciio:release asciio
 
 </code></pre>
 <p><img src="Win11WSL.jpg" alt="Win 11 Screenshot" /></p>
