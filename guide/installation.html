@@ -176,39 +176,32 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<p>We're working on having packages pre-build for different distributions</p>
-<h2 id="cpan-vs-dev-versions"><a class="header" href="#cpan-vs-dev-versions">CPAN vs dev versions</a></h2>
-<p>The CPAN version is the stable version but we recommend running the latest from github to get most of <em>asciio</em></p>
-<h2 id="manual-install-of-cpan-version-on-ubuntu-probably-other-debian-derivates-too"><a class="header" href="#manual-install-of-cpan-version-on-ubuntu-probably-other-debian-derivates-too">Manual install of CPAN version on Ubuntu (probably other debian derivates too)</a></h2>
-<pre><code class="language-bash">    apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl 
-
-    cpan install Data::TreeDumper::Renderer::GTK App::Asciio
-
-</code></pre>
+<p>asciio's is hosted on  github <a href="https://github.com/nkh/P5-App-Asciio"></a></p>
+<h2 id="no-packages-pre-build-for-distributions-yet"><a class="header" href="#no-packages-pre-build-for-distributions-yet">No packages pre-build for distributions yet</a></h2>
+<p>Working on a debian package is ongoing.</p>
+<h2 id="manual-install-on-debian-based-distros"><a class="header" href="#manual-install-on-debian-based-distros">Manual install on debian based distros.</a></h2>
+<p>See the OCI build instruction in <a href="https://github.com/nkh/P5-App-Asciio/blob/main/OCI/Containerfile">Containerfile</a>.</p>
 <h2 id="container"><a class="header" href="#container">container</a></h2>
-<h3 id="pull-image-from-docker-hub"><a class="header" href="#pull-image-from-docker-hub">pull image from docker hub</a></h3>
-<p>Image is at: https://hub.docker.com/r/nadimkhemir/asciio</p>
-<p>No night builds yet but it will come, should you need a newer version jut open a ticket.</p>
+<h3 id="pull-image-from--github"><a class="header" href="#pull-image-from--github">pull image from  github</a></h3>
+<p>Pull image from: TBD</p>
 <p>Change &lt;YOUR_USER_NAME_HERE&gt; to your user name before running the command below.</p>
 <h3 id="linux"><a class="header" href="#linux">linux</a></h3>
-<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:1.9.02 asciio
+<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME/asciio:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:latest asciio
 
 </code></pre>
 <h3 id="windows-wsl"><a class="header" href="#windows-wsl">windows wsl</a></h3>
-<p>If using Podman, add docker repository to podman in '/etc/containers/registries.conf'</p>
+<p>If using Podman, add github repository to podman in '/etc/containers/registries.conf'</p>
 <pre><code>[registries.search]
-registries = ['docker.io']
+registries = ['ghcr.io']
 </code></pre>
 <p>Install an Xserver in windows. I used <a href="https://vcxsrv.com/">VcXsrv</a> and disabled access control.</p>
 <p>The IP of Xserv was not correct. Had to use this, to have it report the Windows host virtual IP:</p>
 <pre><code>export DISPLAY=$(ip route | grep default | awk '{print $3}'):0
 </code></pre>
-<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:1.9.02 asciio
+<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/asciio:/home/&lt;YOUR_USER_NAME_HERE&gt;" asciio:latest asciio
 
 </code></pre>
 <p><img src="Win11WSL.jpg" alt="Win 11 Screenshot" /></p>
-<h3 id="build-your-own"><a class="header" href="#build-your-own">build your own</a></h3>
-<p>Using the instructions above build an asciio image ; the image will be large (~700 MB) as it contains gtk and co.</p>
 <h2 id="windows"><a class="header" href="#windows">Windows</a></h2>
 <p>In the windows environment, you can use asciio through WSL or cygwin.</p>
 <h3 id="wsl"><a class="header" href="#wsl">WSL</a></h3>
