@@ -1,44 +1,37 @@
 # Installation
 
-We're working on having packages pre-build for different distributions
+asciio's is hosted on  github [](https://github.com/nkh/P5-App-Asciio)
 
-## CPAN vs dev versions
+## No packages pre-build for distributions yet
 
-The CPAN version is the stable version but we recommend running the latest from github to get most of *asciio*
+Work on a debian package is ongoing.
 
-## Manual install of CPAN version on Ubuntu (probably other debian derivates too)
+## Manual install on debian based distros. 
 
-```bash
-    apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl 
+See the OCI build instruction in [Containerfile](https://github.com/nkh/P5-App-Asciio/blob/main/OCI/Containerfile).
 
-    cpan install Data::TreeDumper::Renderer::GTK App::Asciio
+## OCI image
 
-```
+### pull image from  github
 
-## container
+You can pull the image from [github](https://github.com/users/nkh/packages/container/package/p5-app-asciio)
 
-### pull image from docker hub
-
-Image is at: https://hub.docker.com/r/nadimkhemir/asciio
-
-No night builds yet but it will come, should you need a newer version jut open a ticket. 
-
-Change <YOUR_USER_NAME_HERE> to your user name before running the command below.
+Change <PATH_YOU_WANT_TO_SHARE>, if you want to save your files to your file system, before running the command below.
 
 ### linux
 
 ```bash
-podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/<YOUR_USER_NAME_HERE>" asciio:1.9.02 asciio
+podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:<PATH_YOU_WANT_TO_SHARE>" ghcr.io/nkh/p5-app-asciio:release asciio
 
 ```
 
 ### windows wsl
-If using Podman, add docker repository to podman in '/etc/containers/registries.conf'
 
+If using Podman, add github repository to podman in '/etc/containers/registries.conf'
 
 ```
 [registries.search]
-registries = ['docker.io']
+registries = ['ghcr.io']
 ```
 
 Install an Xserver in windows. I used [VcXsrv](https://vcxsrv.com/) and disabled access control.
@@ -49,17 +42,13 @@ export DISPLAY=$(ip route | grep default | awk '{print $3}'):0
 ```
 
 ```bash
-podman run -it --net=host --env="DISPLAY" --volume="$HOME:/home/<YOUR_USER_NAME_HERE>" asciio:1.9.02 asciio
+podman run -it --net=host --env="DISPLAY" --volume="$HOME:<PATH_YOU_WANT_TO_SHARE>" p5-app-asciio:release asciio
 
 ```
 
 
 ![Win 11 Screenshot](Win11WSL.jpg)
 
-
-### build your own
-
-Using the instructions above build an asciio image ; the image will be large (~700 MB) as it contains gtk and co.
 
 ## Windows
 

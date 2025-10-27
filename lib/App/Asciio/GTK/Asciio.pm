@@ -494,8 +494,6 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
 	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
 	$width += $font_character_width / 2 ;
-
-	print "length: $self->{BINDINGS_COMPLETION_LENGTH}, width: $font_character_width, height: $font_character_height, lines: " . scalar($self->{BINDINGS_COMPLETION}->@*) . "\n" ;
 	
 	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
 	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;

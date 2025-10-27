@@ -39,11 +39,13 @@ To list the bindings: $> perldoc App:Asciio.
  
 # DOCUMENTATION
 
-Full documentation, including installation and docker image, are found at [Online Documentation](https://nkh.github.io/P5-App-Asciio/)
+Full documentation, including installation and OCI image, are found at [Online Documentation](https://nkh.github.io/P5-App-Asciio/)
 
 ## Interface
 
           .-------------------------------------------------------------.
+          | ........................................................... |
+          | ........................................................... |
           | ........................................................... |
           | ..........-------------..------------..--------------...... |
           | .........| stencils  > || asciio   > || box          |..... |
@@ -52,6 +54,8 @@ Full documentation, including installation and docker image, are found at [Onlin
      grid----->......'-------------'| divers   > || axis         |..... |
           | ..................^.....'------------'| ...          |..... |
           | ..................|...................'--------------'..... |
+          | ........................................................... |
+          | ........................................................... |
           | ..................|........................................ |
           '-------------------|-----------------------------------------'
                               |
@@ -254,31 +258,14 @@ An old video that shows basic usage, a lot of functionality has bee added since:
 
 # INSTALL
 
-## Ubuntu / Debian
+## local build on debian based distribution
 
-```bash
-    apt install libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl libhttp-request-params-perl
-
-    cpan install Data::TreeDumper::Renderer::GTK Gtk3::Helper App::Asciio
-```
-
-Read *documentation/mdbook_asciio/src/guide/installation.md* for more information.
+The **OCI** directory contains a build file [Containerfile](OCI/Containerfile), you can use the same commands to install locally.
 
 ## Container image
 
-```
-docker pull nadimkhemir/asciio
-```
+Read the [Installation guide](documentation/mdbook_asciio/src/guide/installation.md) for more information.
 
-Running the image
-
-```
-podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:/home/nadim" asciio
-
-tasciio # TUI asciio
-
-asciio # GUI asciio
-```
 
 # AUTHORS
 

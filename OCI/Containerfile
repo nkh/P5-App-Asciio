@@ -1,0 +1,20 @@
+FROM debian
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt update && apt install -q -y libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl libemail-address-xs-perl cpanminus curl wget git 
+
+RUN git clone --depth=1  https://github.com/nkh/P5-App-Asciio.git
+
+RUN cpanm -f Data::TreeDumper::Renderer::GTK 
+
+RUN cpanm Module::Install Hash::Slice Gtk3::Helper HTTP::Daemon HTTP::Request::Params JSON
+
+RUN cd P5-App-Asciio && perl Build.PL && ./Build install
+
+COPY OCI/Asciio ~/.config
+
+RUN rm -rf /var/lib/apt/lists/*
+
+
+
