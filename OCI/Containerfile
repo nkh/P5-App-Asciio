@@ -12,7 +12,7 @@ RUN cpanm Module::Install Hash::Slice Gtk3::Helper HTTP::Daemon HTTP::Request::P
 
 RUN cd P5-App-Asciio && perl Build.PL && ./Build install
 
-COPY OCI/Asciio ~/.config
+COPY Asciio /root/.config/Asciio
 
 RUN rm -rf /var/lib/apt/lists/*
 
