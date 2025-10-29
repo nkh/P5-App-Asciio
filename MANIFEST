@@ -8,8 +8,10 @@ META.json
 META.yml
 
 script/A
+script/AV
 script/T
 script/asciio_to_text
+script/text_to_asciio
 script/startup_script.pl
 script/stdin_to_asciio
 script/json_dtd_to_asciio_script 
