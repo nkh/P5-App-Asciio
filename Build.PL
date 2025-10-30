@@ -315,8 +315,8 @@ my $build = $class->new
 			script/AV
 			script/T
 			script/stdin_to_asciio
-			script/json_dtd_to_asciio_script)
-			],
+			script/json_dtd_to_asciio_script
+			)],
 	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@gmail.com>',
 	dist_abstract => 'App::Asciio - ASCII diagramming',
 	);

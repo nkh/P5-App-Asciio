@@ -1,0 +1,4 @@
+#!/bin/bash
+source "$META_HOME/config/git_bash_integration.sh"
+podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:$HOME" localhost/asciio:$(git_pwc) asciio
+
