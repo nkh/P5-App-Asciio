@@ -1,0 +1,13 @@
+#!/bin/env perl
+
+use strict; use warnings;
+
+use App::Asciio::Scripting ;
+use App::Asciio::Actions::Unsorted ;
+
+#-----------------------------------------------------------------------------------------------------------
+
+die "usage: get_keyboard_bindings file_name\n" unless @ARGV ;
+
+generate_keyboard_mapping(@ARGV) ;
+

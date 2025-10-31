@@ -45,6 +45,8 @@ our @EXPORT = qw(
 	set_connection
 	add_connection
 	move_named_connector
+
+	generate_keyboard_mapping
 	) ;
 
 use strict ; use warnings ;
@@ -59,6 +61,7 @@ use App::Asciio::Connections ;
 use App::Asciio::Elements ;
 use App::Asciio::Io ;
 use App::Asciio::Options ;
+use App::Asciio::Actions::Unsorted ;
 
 use App::Asciio::stripes::angled_arrow ;
 use App::Asciio::stripes::section_wirl_arrow ;
@@ -289,10 +292,12 @@ else
 $script_asciio->add_ruler_lines({NAME => 'from script', %{$data}}) ;
 }
 
-sub save_to                      { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
-sub to_ascii                     { $script_asciio->transform_elements_to_ascii_buffer() ; }
-sub ascii_out                    { print $script_asciio->transform_elements_to_ascii_buffer() ; }
-sub optimize                     { $script_asciio->call_hook('CANONIZE_CONNECTIONS', $script_asciio->{CONNECTIONS}) ; }
+sub save_to                   { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
+sub to_ascii                  { $script_asciio->transform_elements_to_ascii_buffer() ; }
+sub ascii_out                 { print $script_asciio->transform_elements_to_ascii_buffer() ; }
+sub optimize                  { $script_asciio->call_hook('CANONIZE_CONNECTIONS', $script_asciio->{CONNECTIONS}) ; }
+
+sub generate_keyboard_mapping { App::Asciio::Actions::Unsorted::get_keyboard_mapping_file($script_asciio, @_) ; }
 }
 
 #--------------------------------------------------------------------------------------------
@@ -491,6 +496,6 @@ EOC
 	) ;
 }
 # ~/nadim/devel/repositories/perl_modules/P5-App-Asciio/setup/hooks/canonize_connections.pl"
-#--------------------------------------------------------------------------------------------
 
+#--------------------------------------------------------------------------------------------
 1 ;

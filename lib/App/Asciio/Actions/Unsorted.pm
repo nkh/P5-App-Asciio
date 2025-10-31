@@ -172,7 +172,7 @@ else
 
 sub get_keyboard_mapping_file
 {
-my ($self) = @_ ;
+my ($self, $file_name) = @_ ;
 
 my (@key_actions, @action_keys, @groups) ;
 
@@ -198,7 +198,7 @@ for my $group (sort { $a->[0] cmp $b->[0] } @groups)
 		}
 	}
 
-my $mapping_file = (tempfile())[1] ;
+my $mapping_file = $file_name // (tempfile())[1] ;
 write_file($mapping_file, @key_actions, "\n\n", sort @action_keys) ;
 
 return $mapping_file ;
