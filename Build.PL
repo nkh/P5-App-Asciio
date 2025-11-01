@@ -73,7 +73,6 @@ lib/App/Asciio/Utils/Presentation.pm
 lib/App/Asciio/Utils/Scripting.pm
 
 lib/App/Asciio/GTK/Asciio.pm
-lib/App/Asciio/GTK/TabManager.pm
 
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm

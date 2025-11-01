@@ -93,7 +93,7 @@ if(defined $asciio_config->{SCRIPT})
 	{
 	require App::Asciio::Scripting ;
 	
-	App::Asciio::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
+	App::Asciio::Utils::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
 	}
 
 $asciio->setup_dnd($window) ;
