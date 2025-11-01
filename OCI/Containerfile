@@ -1,18 +1,23 @@
+# build command, from asciio repo: pm build OCI
+
 FROM debian
 
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt update && apt install -q -y libdata-compare-perl libdata-compare-perl libdirectory-scratch-structured-perl libeval-context-perl libextutils-pkgconfig-perl libfile-homedir-perl libgtk3-perl libio-prompter-perl libterm-size-any-perl libterm-termkey-perl libtest-block-perl libtermkey-dev libmodule-build-perl libsereal-perl libcompress-bzip2-perl libpango-perl libcarp-clan-perl libtest-deep-perl libtest-most-perl libdevel-stacktrace-perl libexception-class-perl libcapture-tiny-perl libtest-differences-perl libmodule-util-perl libtest-nowarnings-perl libemail-address-xs-perl cpanminus curl wget git 
 
-RUN git clone --depth=1  https://github.com/nkh/P5-App-Asciio.git
+RUN git clone https://github.com/nkh/P5-App-Asciio.git
 
+# force install as test need a DISPLAY and we have none in the container being build
 RUN cpanm -f Data::TreeDumper::Renderer::GTK 
 
-RUN cd P5-App-Asciio && perl Build.PL && ./Build install
+WORKDIR P5-App-Asciio
+
+# RUN git switch <the branch to build> if necessary
+
+RUN perl Build.PL && ./Build installdeps && ./Build install
 
 COPY Asciio /root/.config/Asciio
 
 RUN rm -rf /var/lib/apt/lists/*
-
-
 

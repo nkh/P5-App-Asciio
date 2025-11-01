@@ -1,0 +1,20 @@
+# build command, from asciio repo: pm build -f OCI/Containerfile_local . --tag asciio:worktree
+
+# debian asciio, is debian plus all the required modules installed via apt (for a faster build)
+
+FROM debian_asciio
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+COPY . P5-App-Asciio/
+
+RUN cd P5-App-Asciio && perl Build.PL && ./Build installdeps && ./Build install
+
+RUN cpanm -f Data::TreeDumper::Renderer::GTK
+
+COPY OCI/Asciio /root/.config/Asciio
+
+RUN rm -rf /var/lib/apt/lists/*
+
+
+
