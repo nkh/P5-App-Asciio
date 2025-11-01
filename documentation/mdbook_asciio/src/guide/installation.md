@@ -12,6 +12,10 @@ See the OCI build instruction in [Containerfile](https://github.com/nkh/P5-App-A
 
 ## OCI image
 
+### user config
+
+A user configuration is copied from 'repo:OCI/Asciio' to '/root/.config/Asciio/', it can be modified to suit your needs.
+
 ### pre-built image
 
 The image is on [github](https://github.com/users/nkh/packages/container/package/p5-app-asciio)
