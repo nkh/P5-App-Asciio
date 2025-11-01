@@ -73,6 +73,7 @@ lib/App/Asciio/Utils/Presentation.pm
 lib/App/Asciio/Utils/Scripting.pm
 
 lib/App/Asciio/GTK/Asciio.pm
+lib/App/Asciio/GTK/TabManager.pm
 
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
@@ -262,6 +263,7 @@ my $build = $class->new
 		'Directory::Scratch::Structured' => 0,
 		'Hash::Slice'                    => 0,
 		'Module::Build'                  => 0,
+		'Module::Install'                => 0,
 		'Test::Exception'                => 0,
 		'Test::NoWarnings'               => 0,
 		'Test::Warn'                     => 0,
@@ -285,6 +287,7 @@ my $build = $class->new
 		'File::Spec'            => 0,
 		'Glib'                  => 0,
 		'Gtk3'                  => 0,
+		'Data::TreeDumper::Renderer::GTK' => 0, 
 		'IO::Prompter'          => 0,
 		'List::MoreUtils'       => 0,
 		'List::Util'            => 0,
@@ -300,7 +303,13 @@ my $build = $class->new
 		'Term::TermKey'         => 0,
 		'Test::Block'           => 0,
 		'Gtk3::Helper'          => 0,
-		'HTTP::Request::Params' => 0,  
+		'HTTP::Request::Params' => 0,
+		'Module::Install'       => 0,
+		'Hash::Slice'           => 0,
+		'Gtk3::Helper'          => 0,
+		'HTTP::Daemon'          => 0,
+		'HTTP::Request::Params' => 0,
+		'JSON'                  => 0,
 		'version'               => 0.50,
 		},
 		
@@ -315,8 +324,8 @@ my $build = $class->new
 			script/AV
 			script/T
 			script/stdin_to_asciio
-			script/json_dtd_to_asciio_script
-			)],
+			script/json_dtd_to_asciio_script)
+			],
 	dist_author  => 'Khemir Nadim ibn Hamouda. <nadim@gmail.com>',
 	dist_abstract => 'App::Asciio - ASCII diagramming',
 	);
