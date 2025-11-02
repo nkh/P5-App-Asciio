@@ -1,4 +1,4 @@
-# build command, from asciio repo: pm build OCI
+# build command, from asciio repo: pm build -f OCI/Containerfile .
 
 FROM debian
 
@@ -17,7 +17,7 @@ WORKDIR P5-App-Asciio
 
 RUN perl Build.PL && ./Build installdeps && ./Build install
 
-COPY Asciio /root/.config/Asciio
+COPY OCI/Asciio /root/.config/Asciio
 
 RUN rm -rf /var/lib/apt/lists/*
 
