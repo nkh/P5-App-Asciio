@@ -2192,39 +2192,22 @@ DISPLAY_SETUP_ACTION_INFORMATION =&gt; 1,
 </code></pre>
 <h3 id="import_export"><a class="header" href="#import_export">IMPORT_EXPORT</a></h3>
 <p>Links to files which define import and export functionality, you could use this to save files to a naother format.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="user-bindings"><a class="header" href="#user-bindings">user bindings</a></h1>
-<p>The bindings can be changed in your user configuration. File '$HOME/.config/Asciio/Asciio.ini' points at the</p>
-<p>Here's and example of binding:</p>
-<pre><code class="language-perl">'Change elements foreground color' =&gt; ['000-c',  \&amp;App::Asciio::Actions::Colors::change_elements_colors, 0 ],
-</code></pre>
-<p>Bindings are composed of:</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h1>
+<h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
+<p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
+<p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a shortcut.</p>
+<h2 id="bindings-3"><a class="header" href="#bindings-3">Bindings</a></h2>
+<p>Registration of shortcuts that execute actions.</p>
+<p>The default Bindings are setup by the <strong>register_action_handlers</strong> in the following files:</p>
 <ul>
-<li>a command name</li>
-<li>a set of keyboard shortcuts</li>
+<li>setup/actions/default_bindings.pl</li>
+<li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
 </ul>
-<p>To change a binding:</p>
-<ul>
-<li>Find the command name for the binding you want to change</li>
-<li>decide a new keyboard shortcuts</li>
-<li>add your binding to your configuration file</li>
-</ul>
-<p>Your configuration file has this format:</p>
-<pre><code class="language-perl">{
-...
-ACTION_FILES =&gt;
-	[
-	'actions/colors.pl', # new configuration file where you want to put your color bindings
-	],
-...
-}
-
-</code></pre>
-<p>Create '$HOME/.config/Asciio/actions/colors.pl' and add:</p>
-<pre><code class="language-perl">register_action_handlers
-	(
-	'Change elements foreground color' =&gt; ['000-Z'],
-	) ;
-</code></pre>
+<h2 id="user-defined-bindings"><a class="header" href="#user-defined-bindings">User defined bindings</a></h2>
+<p>The bindings can be changed in your user configuration.</p>
+<p>Set the <strong>ACTION_FILES</strong> section of file '$HOME/.config/Asciio/Asciio.ini' to point at one
+or more files that will be loaded by <strong>asciio</strong>.</p>
+<p>The files contain bindings override but can also contain actions code.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="binding-format"><a class="header" href="#binding-format">Binding format</a></h1>
 <p>A binding contains:</p>
 <ul>
@@ -2242,6 +2225,31 @@ ACTION_FILES =&gt;
     \&amp;App::Asciio::Actions::ElementsManipulation::edit_selected_element,
     1
     ],
+
+</code></pre>
+<h2 id="binding-override-in-your-user-configuration"><a class="header" href="#binding-override-in-your-user-configuration">binding override in your user configuration</a></h2>
+<ul>
+<li>Find the command name for the binding you want to change</li>
+<li>decide a new keyboard shortcuts</li>
+<li>add your binding to your configuration file</li>
+</ul>
+<h3 id="example-2"><a class="header" href="#example-2">example</a></h3>
+<p>Change the shortcut for setting element color.</p>
+<p>Create '$HOME/.config/Asciio/actions/colors.pl' and add:</p>
+<pre><code class="language-perl">register_action_handlers
+	(
+	'Change elements foreground color' =&gt; ['000-Z'],
+	) ;
+</code></pre>
+<p>Add it to yout <strong>'$HOME/.config/Asciio/Asciio.ini'</strong></p>
+<pre><code class="language-perl">{
+...
+ACTION_FILES =&gt;
+	[
+	'actions/colors.pl', # new configuration file where you want to put your color bindings
+	],
+...
+}
 
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="group-bindings"><a class="header" href="#group-bindings">Group bindings</a></h1>
@@ -2283,97 +2291,6 @@ ACTION_FILES =&gt;
         old was 'Redo' defined in file 'actions/default_bindings.pl'
 </code></pre>
 <p><img src="config/user_bindings/warning.svg" alt="warning" /> Don't use the same shortcut multiple times in the <em>same</em> file, the order of registration in the <em>same</em> file not guaranteed.</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="capturing-groups-with-overlay"><a class="header" href="#capturing-groups-with-overlay">Capturing groups with overlay</a></h1>
-<p><img src="config/user_bindings/capture_overlay.gif" alt="capture with overlay" /></p>
-<h2 id="define--overlays"><a class="header" href="#define--overlays">Define  overlays</a></h2>
-<pre><code class="language-perl">my $click_choice_element = ['Asciio/box', 0] ;
-my $box_overlay =
-	[
-	[0, 0, '.'],
-	[1, 0, '-'],
-	[2, 0, '-'],
-	[3, 0, '-'],
-	[4, 0, '.'],
-	
-	[0, 1, '|'],
-	[4, 1, '|'],
-	
-	[0, 2, "'"],
-	[1, 2, '-'],
-	[2, 2, '-'],
-	[3, 2, '-'],
-	[4, 2, "'"],
-	] ;
-
-my $text_overlay =
-	[
-	[0, 0, 'T.'],
-	[1, 0, 'e'],
-	[2, 0, 'x'],
-	[3, 0, 't'],
-	] ;
-
-my $arrow_overlay =
-	[
-	[2, -2, '.'],
-	[3, -2, '-'],
-	[1, -1, '/'],
-	[0, 0,  "'"],
-	] ;
-
-</code></pre>
-<h2 id="declare-callbacks"><a class="header" href="#declare-callbacks">Declare callbacks</a></h2>
-<pre><code class="language-perl">my $click_element_overlay = $box_overlay ;
-
-sub click_choice_add_element { App::Asciio::Actions::Elements::add_element($_[0], $click_choice_element) ; }
-
-sub click_element_choice
-{
-my ($asciio, $args) = @_ ;
-($click_element_overlay, $click_choice_element) = $args-&gt;@* ;
-$asciio-&gt;update_display ;
-}
-
-sub click_element_enter { print "enter!!\n" ; my ($asciio) = @_ ; $asciio-&gt;set_overlays_sub(\&amp;click_element_overlay) ; $asciio-&gt;update_display ; }
-sub click_element_escape { my ($asciio) = @_ ; $asciio-&gt;set_overlays_sub(undef) ; $asciio-&gt;update_display ; }
-
-sub click_element_mouse_motion 
-{
-my ($asciio, $event) = @_ ;
-
-App::Asciio::Actions::Mouse::mouse_motion($asciio, $event) ;
-$asciio-&gt;update_display() ; 
-}
-
-sub click_element_overlay
-{
-my ($asciio) = @_ ;
-my @overlays = map { [ $asciio-&gt;{MOUSE_X} + $_-&gt;[0], $asciio-&gt;{MOUSE_Y} + $_-&gt;[1], $_-&gt;[2] ] } @$click_element_overlay ;
-
-@overlays
-}
-</code></pre>
-<h2 id="declare-bindings"><a class="header" href="#declare-bindings">Declare bindings</a></h2>
-<pre><code class="language-perl">
-register_action_handlers
-(
-'insert on click' =&gt;
-	{
-	SHORTCUTS =&gt; '0A0-i',
-	ENTER_GROUP =&gt; \&amp;click_element_enter,
-	ESCAPE_KEY =&gt; '000-Escape',
-	
-	'click element escape'  =&gt; [ '000-Escape',          \&amp;click_element_escape                                               ],
-	'click element motion'  =&gt; [ '000-motion_notify',   \&amp;click_element_mouse_motion                                         ], 
-	
-	'click element insert'  =&gt; [ '000-button-press-1',  \&amp;click_choice_add_element                                           ],
-	'click element arrow'   =&gt; [ '000-a',               \&amp;click_element_choice, [$arrow_overlay, ['Asciio/angled_arrow', 0]] ],
-	'click element box'     =&gt; [ '000-b',               \&amp;click_element_choice, [$box_overlay,   ['Asciio/box', 0]]          ],
-	'click element text'    =&gt; [ '000-t',               \&amp;click_element_choice, [$text_overlay,  ['Asciio/text', 0]]         ],
-	
-	},
-) ;
-</code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="for-developers"><a class="header" href="#for-developers">For Developers</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="scripting"><a class="header" href="#scripting">Scripting</a></h1>
 <pre><code># Generated by documentation/scripting/multi_wirl.pl
@@ -2555,6 +2472,7 @@ xh  -f POST http://localhost:4444/script script="delete_by_name '1' ;"
 
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="simplified-scripting-api"><a class="header" href="#simplified-scripting-api">Simplified Scripting API</a></h1>
+<p>APIs are defined in <strong>lib/App/Asciio/Scripting.pm</strong></p>
 <h2 id="stop_updating_display"><a class="header" href="#stop_updating_display">stop_updating_display</a></h2>
 <p>Stops updating the display until <em>start_updating_display</em> is called; this can be used to reduce flickering.</p>
 <pre><code>stop_updating_display
@@ -2685,24 +2603,7 @@ new_box(TEXT_ONLY =&gt;'text') ;
 <pre><code>ascii_out ;
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="modifying-asciio-1"><a class="header" href="#modifying-asciio-1">Modifying Asciio</a></h1>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h1>
-<p>Bindings consists of</p>
-<ul>
-<li>
-<p>a descriptive but short name</p>
-</li>
-<li>
-<p>one or more key to assign the binding</p>
-</li>
-<li>
-<p>a reference to a handler</p>
-</li>
-<li>
-<p>possible arguments for the handler</p>
-</li>
-</ul>
-<pre><code class="language-perl">'Mouse quick link git' =&gt; [['0A0-button-press-3', '00S-semicolon'],  \&amp;App::Asciio::Actions::Git::quick_link]
-</code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-4"><a class="header" href="#bindings-4">Bindings</a></h1>
 <p>Goals when adding bindings:</p>
 <ul>
 <li>
@@ -2741,25 +2642,96 @@ new_box(TEXT_ONLY =&gt;'text') ;
 <p>sort by name or key if possible</p>
 </li>
 </ul>
-<h2 id="binding-groups"><a class="header" href="#binding-groups">Binding Groups</a></h2>
-<pre><code class="language-perl">'&lt;&lt; selection leader &gt;&gt;' =&gt;
-	{
-	SHORTCUTS   =&gt; '000-r',                                               # also accepts multiple entries in an array ref
-	ENTER_GROUP =&gt; \&amp;App::Asciio::Actions::Selection::selection_enter,
-	ESCAPE_KEYS =&gt; [ '000-r', '000-Escape' ],                             # also accepts single entry
-
-	# ESCAPE_KEYS need to be define of group will catch input untill an action is selected 
+<div style="break-before: page; page-break-before: always;"></div><h1 id="capturing-groups-with-overlay"><a class="header" href="#capturing-groups-with-overlay">Capturing groups with overlay</a></h1>
+<p><img src="config/user_bindings/capture_overlay.gif" alt="capture with overlay" /></p>
+<h2 id="define--overlays"><a class="header" href="#define--overlays">Define  overlays</a></h2>
+<pre><code class="language-perl">my $click_choice_element = ['Asciio/box', 0] ;
+my $box_overlay =
+	[
+	[0, 0, '.'],
+	[1, 0, '-'],
+	[2, 0, '-'],
+	[3, 0, '-'],
+	[4, 0, '.'],
 	
-	# same keys as the ESCAPE_KEYS, will be called on exit
-	'Selection escape'               =&gt; [ '000-r',             \&amp;App::Asciio::Actions::Selection::selection_escape                      ],
-	'Selection escape2'              =&gt; [ '000-Escape',        \&amp;App::Asciio::Actions::Selection::selection_escape                      ],
+	[0, 1, '|'],
+	[4, 1, '|'],
+	
+	[0, 2, "'"],
+	[1, 2, '-'],
+	[2, 2, '-'],
+	[3, 2, '-'],
+	[4, 2, "'"],
+	] ;
 
-	# simple action 
-	'select flip mode'               =&gt; [ '000-f',             \&amp;App::Asciio::Actions::Selection::selection_mode_flip                   ],
+my $text_overlay =
+	[
+	[0, 0, 'T.'],
+	[1, 0, 'e'],
+	[2, 0, 'x'],
+	[3, 0, 't'],
+	] ;
 
-	# handle mouse movement
-	'select motion'                  =&gt; [ '000-motion_notify', \&amp;App::Asciio::Actions::Selection::select_elements                       ],
+my $arrow_overlay =
+	[
+	[2, -2, '.'],
+	[3, -2, '-'],
+	[1, -1, '/'],
+	[0, 0,  "'"],
+	] ;
+
+</code></pre>
+<h2 id="declare-callbacks"><a class="header" href="#declare-callbacks">Declare callbacks</a></h2>
+<pre><code class="language-perl">my $click_element_overlay = $box_overlay ;
+
+sub click_choice_add_element { App::Asciio::Actions::Elements::add_element($_[0], $click_choice_element) ; }
+
+sub click_element_choice
+{
+my ($asciio, $args) = @_ ;
+($click_element_overlay, $click_choice_element) = $args-&gt;@* ;
+$asciio-&gt;update_display ;
+}
+
+sub click_element_enter { print "enter!!\n" ; my ($asciio) = @_ ; $asciio-&gt;set_overlays_sub(\&amp;click_element_overlay) ; $asciio-&gt;update_display ; }
+sub click_element_escape { my ($asciio) = @_ ; $asciio-&gt;set_overlays_sub(undef) ; $asciio-&gt;update_display ; }
+
+sub click_element_mouse_motion 
+{
+my ($asciio, $event) = @_ ;
+
+App::Asciio::Actions::Mouse::mouse_motion($asciio, $event) ;
+$asciio-&gt;update_display() ; 
+}
+
+sub click_element_overlay
+{
+my ($asciio) = @_ ;
+my @overlays = map { [ $asciio-&gt;{MOUSE_X} + $_-&gt;[0], $asciio-&gt;{MOUSE_Y} + $_-&gt;[1], $_-&gt;[2] ] } @$click_element_overlay ;
+
+@overlays
+}
+</code></pre>
+<h2 id="declare-bindings"><a class="header" href="#declare-bindings">Declare bindings</a></h2>
+<pre><code class="language-perl">
+register_action_handlers
+(
+'insert on click' =&gt;
+	{
+	SHORTCUTS =&gt; '0A0-i',
+	ENTER_GROUP =&gt; \&amp;click_element_enter,
+	ESCAPE_KEY =&gt; '000-Escape',
+	
+	'click element escape'  =&gt; [ '000-Escape',          \&amp;click_element_escape                                               ],
+	'click element motion'  =&gt; [ '000-motion_notify',   \&amp;click_element_mouse_motion                                         ], 
+	
+	'click element insert'  =&gt; [ '000-button-press-1',  \&amp;click_choice_add_element                                           ],
+	'click element arrow'   =&gt; [ '000-a',               \&amp;click_element_choice, [$arrow_overlay, ['Asciio/angled_arrow', 0]] ],
+	'click element box'     =&gt; [ '000-b',               \&amp;click_element_choice, [$box_overlay,   ['Asciio/box', 0]]          ],
+	'click element text'    =&gt; [ '000-t',               \&amp;click_element_choice, [$text_overlay,  ['Asciio/text', 0]]         ],
+	
 	},
+) ;
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="debugging"><a class="header" href="#debugging">Debugging</a></h1>
 <p>See the Debugging bindings.</p>

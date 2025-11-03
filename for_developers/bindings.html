@@ -176,23 +176,6 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="bindings"><a class="header" href="#bindings">Bindings</a></h1>
-<p>Bindings consists of</p>
-<ul>
-<li>
-<p>a descriptive but short name</p>
-</li>
-<li>
-<p>one or more key to assign the binding</p>
-</li>
-<li>
-<p>a reference to a handler</p>
-</li>
-<li>
-<p>possible arguments for the handler</p>
-</li>
-</ul>
-<pre><code class="language-perl">'Mouse quick link git' =&gt; [['0A0-button-press-3', '00S-semicolon'],  \&amp;App::Asciio::Actions::Git::quick_link]
-</code></pre>
 <p>Goals when adding bindings:</p>
 <ul>
 <li>
@@ -231,26 +214,6 @@
 <p>sort by name or key if possible</p>
 </li>
 </ul>
-<h2 id="binding-groups"><a class="header" href="#binding-groups">Binding Groups</a></h2>
-<pre><code class="language-perl">'&lt;&lt; selection leader &gt;&gt;' =&gt;
-	{
-	SHORTCUTS   =&gt; '000-r',                                               # also accepts multiple entries in an array ref
-	ENTER_GROUP =&gt; \&amp;App::Asciio::Actions::Selection::selection_enter,
-	ESCAPE_KEYS =&gt; [ '000-r', '000-Escape' ],                             # also accepts single entry
-
-	# ESCAPE_KEYS need to be define of group will catch input untill an action is selected 
-	
-	# same keys as the ESCAPE_KEYS, will be called on exit
-	'Selection escape'               =&gt; [ '000-r',             \&amp;App::Asciio::Actions::Selection::selection_escape                      ],
-	'Selection escape2'              =&gt; [ '000-Escape',        \&amp;App::Asciio::Actions::Selection::selection_escape                      ],
-
-	# simple action 
-	'select flip mode'               =&gt; [ '000-f',             \&amp;App::Asciio::Actions::Selection::selection_mode_flip                   ],
-
-	# handle mouse movement
-	'select motion'                  =&gt; [ '000-motion_notify', \&amp;App::Asciio::Actions::Selection::select_elements                       ],
-	},
-</code></pre>
 
                     </main>
 
@@ -260,7 +223,7 @@
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../for_developers/debugging.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../config/user_bindings/capturing_groups_overlay.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -274,7 +237,7 @@
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../for_developers/debugging.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../config/user_bindings/capturing_groups_overlay.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>user bindings - Asciio</title>
+        <title>Bindings - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -175,39 +175,22 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="user-bindings"><a class="header" href="#user-bindings">user bindings</a></h1>
-<p>The bindings can be changed in your user configuration. File '$HOME/.config/Asciio/Asciio.ini' points at the</p>
-<p>Here's and example of binding:</p>
-<pre><code class="language-perl">'Change elements foreground color' =&gt; ['000-c',  \&amp;App::Asciio::Actions::Colors::change_elements_colors, 0 ],
-</code></pre>
-<p>Bindings are composed of:</p>
+                        <h1 id="bindings"><a class="header" href="#bindings">Bindings</a></h1>
+<h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
+<p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
+<p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a shortcut.</p>
+<h2 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h2>
+<p>Registration of shortcuts that execute actions.</p>
+<p>The default Bindings are setup by the <strong>register_action_handlers</strong> in the following files:</p>
 <ul>
-<li>a command name</li>
-<li>a set of keyboard shortcuts</li>
+<li>setup/actions/default_bindings.pl</li>
+<li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
 </ul>
-<p>To change a binding:</p>
-<ul>
-<li>Find the command name for the binding you want to change</li>
-<li>decide a new keyboard shortcuts</li>
-<li>add your binding to your configuration file</li>
-</ul>
-<p>Your configuration file has this format:</p>
-<pre><code class="language-perl">{
-...
-ACTION_FILES =&gt;
-	[
-	'actions/colors.pl', # new configuration file where you want to put your color bindings
-	],
-...
-}
-
-</code></pre>
-<p>Create '$HOME/.config/Asciio/actions/colors.pl' and add:</p>
-<pre><code class="language-perl">register_action_handlers
-	(
-	'Change elements foreground color' =&gt; ['000-Z'],
-	) ;
-</code></pre>
+<h2 id="user-defined-bindings"><a class="header" href="#user-defined-bindings">User defined bindings</a></h2>
+<p>The bindings can be changed in your user configuration.</p>
+<p>Set the <strong>ACTION_FILES</strong> section of file '$HOME/.config/Asciio/Asciio.ini' to point at one
+or more files that will be loaded by <strong>asciio</strong>.</p>
+<p>The files contain bindings override but can also contain actions code.</p>
 
                     </main>
 

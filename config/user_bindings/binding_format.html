@@ -194,6 +194,31 @@
     ],
 
 </code></pre>
+<h2 id="binding-override-in-your-user-configuration"><a class="header" href="#binding-override-in-your-user-configuration">binding override in your user configuration</a></h2>
+<ul>
+<li>Find the command name for the binding you want to change</li>
+<li>decide a new keyboard shortcuts</li>
+<li>add your binding to your configuration file</li>
+</ul>
+<h3 id="example"><a class="header" href="#example">example</a></h3>
+<p>Change the shortcut for setting element color.</p>
+<p>Create '$HOME/.config/Asciio/actions/colors.pl' and add:</p>
+<pre><code class="language-perl">register_action_handlers
+	(
+	'Change elements foreground color' =&gt; ['000-Z'],
+	) ;
+</code></pre>
+<p>Add it to yout <strong>'$HOME/.config/Asciio/Asciio.ini'</strong></p>
+<pre><code class="language-perl">{
+...
+ACTION_FILES =&gt;
+	[
+	'actions/colors.pl', # new configuration file where you want to put your color bindings
+	],
+...
+}
+
+</code></pre>
 
                     </main>
 
