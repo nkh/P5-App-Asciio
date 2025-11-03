@@ -1,16 +1,15 @@
 # «A» align group
 
-     «A» align group:
+«A» align group:
 
+    «t»                Align top
 
-	 «t»                Align top
+    «l»                Align left
 
-         «l»                Align left
+    «b»                Align bottom
 
-	 «b»                Align bottom
+    «r»                Align right
 
-         «r»                Align right
+    «h»                Align horizontally
 
-	 «h»                Align horizontally
-
-	 «v»                Align vertically
+    «v»                Align vertically

@@ -107,15 +107,17 @@ t/003_multi_wirl_diagonal_connection.t
 t/004_angled_arrows.t
 xt/author/dist/000_prereq.t
 
-documentation/scripting/connected_boxes.pl
-documentation/scripting/if_objects.pl
-documentation/scripting/manual_connect.pl
-documentation/scripting/multi_wirl.pl
-documentation/scripting/objects.pl
-documentation/scripting/three_boxes.pl
+documentation/scripting/from_command_line/connected_boxes.pl
+documentation/scripting/from_command_line/if_objects.pl
+documentation/scripting/from_command_line/manual_connect.pl
+documentation/scripting/from_command_line/multi_wirl.pl
+documentation/scripting/from_command_line/objects.pl
+documentation/scripting/from_command_line/three_boxes.pl
 
 documentation/scripting/web_interface/stdin_to_asciio_web_example
 documentation/scripting/web_interface/asciio_web_example
+
+documentation/scripting/from_within_asciio/asciio_script.pl
 
 documentation/text/depend_and_build.txt
 documentation/text/permissions.txt
