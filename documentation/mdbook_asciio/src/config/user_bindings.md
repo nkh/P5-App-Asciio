@@ -1,44 +1,27 @@
-# user bindings
+# Bindings
 
-The bindings can be changed in your user configuration. File '$HOME/.config/Asciio/Asciio.ini' points at the 
+## Actions 
 
+Code that is added to **asciio** (a plugin is another term).
 
-Here's and example of binding:
+**Asciio** provides many actions but you can write your own and bind it to a shortcut.
 
-```perl
-'Change elements foreground color' => ['000-c',  \&App::Asciio::Actions::Colors::change_elements_colors, 0 ],
-```
+## Bindings
 
-Bindings are composed of:
+Registration of shortcuts that execute actions.
 
-- a command name
-- a set of keyboard shortcuts
+The default Bindings are setup by the **register_action_handlers** in the following files:
 
-To change a binding:
-- Find the command name for the binding you want to change
-- decide a new keyboard shortcuts
-- add your binding to your configuration file
+- setup/actions/default_bindings.pl
+- setup/Text/actions/vim_bindings.pl (which overrides default bindings)
 
-Your configuration file has this format:
+## User defined bindings
 
-```perl
-{
-...
-ACTION_FILES =>
-	[
-	'actions/colors.pl', # new configuration file where you want to put your color bindings
-	],
-...
-}
+The bindings can be changed in your user configuration. 
 
-```
+Set the **ACTION_FILES** section of file '$HOME/.config/Asciio/Asciio.ini' to point at one 
+or more files that will be loaded by **asciio**.
 
-Create '$HOME/.config/Asciio/actions/colors.pl' and add:
+The files contain bindings override but can also contain actions code.
 
-```perl
-register_action_handlers
-	(
-	'Change elements foreground color' => ['000-Z'],
-	) ;
-```
 

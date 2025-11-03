@@ -1,5 +1,8 @@
 # Simplified Scripting API
 
+APIs are defined in **lib/App/Asciio/Scripting.pm**
+
+
 ## stop_updating_display  
 
 Stops updating the display until *start_updating_display* is called; this can be used to reduce flickering.

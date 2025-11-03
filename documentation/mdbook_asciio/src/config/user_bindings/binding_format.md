@@ -21,3 +21,37 @@ Example:
 
 ```
 
+## binding override in your user configuration
+
+- Find the command name for the binding you want to change
+- decide a new keyboard shortcuts
+- add your binding to your configuration file
+
+### example
+
+Change the shortcut for setting element color.
+
+Create '$HOME/.config/Asciio/actions/colors.pl' and add:
+
+```perl
+register_action_handlers
+	(
+	'Change elements foreground color' => ['000-Z'],
+	) ;
+```
+
+Add it to yout **'$HOME/.config/Asciio/Asciio.ini'**
+
+```perl
+{
+...
+ACTION_FILES =>
+	[
+	'actions/colors.pl', # new configuration file where you want to put your color bindings
+	],
+...
+}
+
+```
+
+

@@ -81,12 +81,11 @@
 # Configuration
 
 - [Configuration](configuration.md)
-	- [user bindings](config/user_bindings.md)
+	- [Bindings](config/user_bindings.md)
 		- [Binding format](config/user_bindings/binding_format.md)
 		- [Group bindings](config/user_bindings/group_bindings.md)
 		- [Capturing groups](config/user_bindings/capturing_groups.md)
 		- [Binding override](config/user_bindings/binding_override.md)
-		- [Capturing groups with overlay](config/user_bindings/capturing_groups_overlay.md)
 
 -----------
 
@@ -95,9 +94,10 @@
 - [For Developers](for_developers/README.md)
 	- [Scripting](for_developers/scripting.md)
 	    - [Execute](for_developers/scripting_execute.md)
-	    - [API](for_developers/scripting_api.md)
+	    - [Simplified API](for_developers/scripting_api.md)
 	- [Modifying Asciio](for_developers/modify_Asciio.md)
 		- [Bindings](for_developers/bindings.md)
+		- [Capturing groups with overlay](config/user_bindings/capturing_groups_overlay.md)
 
 	- [Debugging](for_developers/debugging.md)
 	- [Cross algorithm](for_developers/cross_algorithm.md)
