@@ -225,7 +225,8 @@ if($self->{DISPLAY_RULERS})
 	{
 	for my $line (@{$self->{RULER_LINES}})
 		{
-		$gc->set_source_rgb(@{$self->get_color('ruler_line')});
+		my @rgb = exists $line->{COLOR} ? @{$line->{COLOR}} : @{$self->get_color('ruler_line')} ;
+		$gc->set_source_rgb(@rgb) ;
 		
 		if($line->{TYPE} eq 'VERTICAL')
 			{
@@ -237,9 +238,9 @@ if($self->{DISPLAY_RULERS})
 			$gc->move_to(0, $line->{POSITION} * $character_height) ;
 			$gc->line_to($widget_width, $line->{POSITION} * $character_height);
 			}
+		
+		$gc->stroke() ;
 		}
-	
-	$gc->stroke() ;
 	}
 
 # draw connections
