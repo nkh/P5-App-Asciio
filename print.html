@@ -2065,8 +2065,9 @@ accessed with shortcuts that start with the same letter.</p>
      «t»                Display numbered objects
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
-<p>Your user configuration is '$HOME/.config/Asciio/Asciio.ini'</p>
-<p>Your configuration file has this format:</p>
+<p>Your user configuration is '$HOME/.config/Asciio/Asciio.ini' it contains
+links to files that are used to setup different aspects of <strong>asciio</strong>.</p>
+<p>The file has this format:</p>
 <pre><code class="language-perl">{
 STENCILS =&gt;
 	[
@@ -2095,103 +2096,77 @@ IMPORT_EXPORT =&gt;
 </code></pre>
 <h2 id="sections"><a class="header" href="#sections">Sections</a></h2>
 <h3 id="stencils-2"><a class="header" href="#stencils-2">STENCILS</a></h3>
-<p>contains:</p>
+<p>Contains:</p>
 <ul>
 <li>files defining stencils present in the popup menuwes</li>
 <li>stencil files that you can drag drop from</li>
 </ul>
 <h3 id="action_files"><a class="header" href="#action_files">ACTION_FILES</a></h3>
-<p>contains:</p>
+<p>Contains:</p>
 <ul>
 <li>your keyboard bindings</li>
 <li>functionality you want add to asciio (that you bind keys to), plugins</li>
 </ul>
 <h3 id="hook_files"><a class="header" href="#hook_files">HOOK_FILES</a></h3>
-<p>contains:</p>
-<p>hooks called after elements have been modifie and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.</p>
+<p>Contains:</p>
+<ul>
+<li>hooks called after elements have been modifie and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.</li>
+</ul>
 <h3 id="asciio_object_setup"><a class="header" href="#asciio_object_setup">ASCIIO_OBJECT_SETUP</a></h3>
-<p>file containing setting that influence asciio behavior and look</p>
+<p>Contains:</p>
+<ul>
+<li>setup variables that influence asciio behavior and look</li>
+</ul>
+<p><strong>asciio</strong> will first read the settings in 'setup/asciio_object/basic.pl' then read
+the settings in the files contained in this section.</p>
+<p>Some of the default settings are listed below, refer to 'setup/asciio_object/basic.pl' for a complete list</p>
 <pre><code class="language-perl">
-FONT_FAMILY =&gt; 'Monospace',
-FONT_SIZE =&gt; 12,
-FONT_MIN =&gt; 3,
-
-ZOOM_STEP =&gt; 3,
-ZOOM_UPPER_LIMIT =&gt; 28,
-ZOOM_LOWER_LIMIT =&gt; 0,
-CANVAS_WIDTH =&gt; 200,
-CANVAS_HEIGHT =&gt; 150,
-
-USE_MARKUP_MODE =&gt; '',
-
-EDIT_TEXT_INLINE =&gt; 0,
-GIT_MODE_CONNECTOR_CHAR_LIST =&gt; ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
-
-TAB_AS_SPACES =&gt; '    ',
-USE_BINDINGS_COMPLETION =&gt; 0,
-
-DISPLAY_RULERS =&gt; 1,
-DISPLAY_GRID =&gt; 1,
-DISPLAY_GRID2 =&gt; 1,
-COPY_OFFSET_X =&gt; 1,
-COPY_OFFSET_Y =&gt; 1,
-MOUSE_X =&gt; 0,
-MOUSE_Y =&gt; 0,
-
-DRAG_SELECTS_ARROWS =&gt; 0,
-
-COLORS =&gt; {},
-
-USE_CROSS_MODE =&gt; 0,
-
-COLOR_SCHEMES =&gt;
+COLOR_SCHEMES =&gt; # asciio has two color schemes, and a binding to flip between them
 	{
 	'night' =&gt;
 		{
 		background =&gt; [0.04, 0.04, 0.04],
 		grid =&gt; [0.12, 0.12, 0.12],
+		grid_2 =&gt; [0.22, 0.22, 0.22],
 		...
-		}, 
+        }, 
 	'system' =&gt;
 		{
 		background =&gt; [1.00, 1.00, 1.00],
 		grid =&gt; [0.89, 0.92, 1.00],
+		grid_2 =&gt; [0.79, 0.82, 0.90],
+		ruler_line =&gt; [0.33, 0.61, 0.88],
+		hint_line =&gt; [0.5, 0.80, 1],
+		hint_line2 =&gt; [0.4, 0.7, 0.9],
+		element_background =&gt; [1.00, 1.00, 1.00],
+		element_foreground =&gt; [0.00, 0.00, 0.00] ,
+		selected_element_background =&gt; [0.70, 0.95, 1.00],
+		selection_rectangle =&gt; [1.00, 0.00, 1.00],
 		...
-		} 
+        } 
 	},
 
-RULER_LINES =&gt;
+COPY_OFFSET_X                    =&gt; 1,  # x offset for paste
+COPY_OFFSET_Y                    =&gt; 1,  # y offset for paste
+CREATE_BACKUP                    =&gt; 1,  # create a '.bak' backup file when set
+DISPLAY_GRID                     =&gt; 1,  # display the asciio grid
+DISPLAY_GRID2                    =&gt; 1,  # display every tenth grid line in grid_2 color
+DISPLAY_RULERS                   =&gt; 1,  # display the ascioo ruler lines
+DISPLAY_SETUP_INFORMATION        =&gt; 0,  # displays which setup files are used
+DISPLAY_SETUP_INFORMATION_ACTION =&gt; 1,  # display which actions are registered
+DRAG_SELECTS_ARROWS              =&gt; 0,  # selection rectangle also selects arrows when set
+...
+
+RULER_LINES =&gt; # default ruler lines
 	[
-		{
-		TYPE =&gt; 'VERTICAL',
-		COLOR =&gt; [0.86, 0.78, 0.78],
-		POSITION =&gt; 80,
-		NAME =&gt; 'RIGHT_80',
-		},
-		
-		{
-		TYPE =&gt; 'VERTICAL',
-		COLOR =&gt; [0.86, 0.78, 0.78],
-		POSITION =&gt; 120,
-		NAME =&gt; 'RIGHT_120',
-		},
-		
-		{
-		TYPE =&gt; 'HORIZONTAL',
-		COLOR =&gt; [0.86, 0.78, 0.78],
-		POSITION =&gt; 50,
-		NAME =&gt; 'BOTTOM_50',
-		},
+	...
 	],
 
-WORK_DIRECTORY =&gt; '.asciio_work_dir',
-CREATE_BACKUP =&gt; 1,
-DISPLAY_SETUP_INFORMATION =&gt; 0,
-DISPLAY_SETUP_ACTION_INFORMATION =&gt; 1,
+...
 
 </code></pre>
 <h3 id="import_export"><a class="header" href="#import_export">IMPORT_EXPORT</a></h3>
-<p>Links to files which define import and export functionality, you could use this to save files to a naother format.</p>
+<p>Links to files which define import and export functionality, you could use this to save files to a another format.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h1>
 <h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
 <p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
