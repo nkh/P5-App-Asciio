@@ -1,9 +1,10 @@
 # Configuration
 
 
-Your user configuration is '$HOME/.config/Asciio/Asciio.ini'
+Your user configuration is '$HOME/.config/Asciio/Asciio.ini' it contains
+links to files that are used to setup different aspects of **asciio**.
 
-Your configuration file has this format:
+The file has this format:
 
 ```perl
 {
@@ -37,7 +38,7 @@ IMPORT_EXPORT =>
 
 ### STENCILS
 
-contains:
+Contains:
 
 - files defining stencils present in the popup menuwes
 - stencil files that you can drag drop from
@@ -45,102 +46,76 @@ contains:
 
 ### ACTION_FILES
 
-contains:
+Contains:
 
 - your keyboard bindings
 - functionality you want add to asciio (that you bind keys to), plugins
 
 ### HOOK_FILES
 
-contains:
+Contains:
 
-hooks called after elements have been modifie and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.
+- hooks called after elements have been modifie and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.
 
 ### ASCIIO_OBJECT_SETUP
 
-file containing setting that influence asciio behavior and look
+Contains:
 
+- setup variables that influence asciio behavior and look
+
+**asciio** will first read the settings in 'setup/asciio_object/basic.pl' then read
+the settings in the files contained in this section.
+
+Some of the default settings are listed below, refer to 'setup/asciio_object/basic.pl' for a complete list
 
 ```perl
 
-FONT_FAMILY => 'Monospace',
-FONT_SIZE => 12,
-FONT_MIN => 3,
-
-ZOOM_STEP => 3,
-ZOOM_UPPER_LIMIT => 28,
-ZOOM_LOWER_LIMIT => 0,
-CANVAS_WIDTH => 200,
-CANVAS_HEIGHT => 150,
-
-USE_MARKUP_MODE => '',
-
-EDIT_TEXT_INLINE => 0,
-GIT_MODE_CONNECTOR_CHAR_LIST => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
-
-TAB_AS_SPACES => '    ',
-USE_BINDINGS_COMPLETION => 0,
-
-DISPLAY_RULERS => 1,
-DISPLAY_GRID => 1,
-DISPLAY_GRID2 => 1,
-COPY_OFFSET_X => 1,
-COPY_OFFSET_Y => 1,
-MOUSE_X => 0,
-MOUSE_Y => 0,
-
-DRAG_SELECTS_ARROWS => 0,
-
-COLORS => {},
-
-USE_CROSS_MODE => 0,
-
-COLOR_SCHEMES =>
+COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between them
 	{
 	'night' =>
 		{
 		background => [0.04, 0.04, 0.04],
 		grid => [0.12, 0.12, 0.12],
+		grid_2 => [0.22, 0.22, 0.22],
 		...
-		}, 
+        }, 
 	'system' =>
 		{
 		background => [1.00, 1.00, 1.00],
 		grid => [0.89, 0.92, 1.00],
+		grid_2 => [0.79, 0.82, 0.90],
+		ruler_line => [0.33, 0.61, 0.88],
+		hint_line => [0.5, 0.80, 1],
+		hint_line2 => [0.4, 0.7, 0.9],
+		element_background => [1.00, 1.00, 1.00],
+		element_foreground => [0.00, 0.00, 0.00] ,
+		selected_element_background => [0.70, 0.95, 1.00],
+		selection_rectangle => [1.00, 0.00, 1.00],
 		...
-		} 
+        } 
 	},
 
-RULER_LINES =>
+COPY_OFFSET_X                    => 1,  # x offset for paste
+COPY_OFFSET_Y                    => 1,  # y offset for paste
+CREATE_BACKUP                    => 1,  # create a '.bak' backup file when set
+DISPLAY_GRID                     => 1,  # display the asciio grid
+DISPLAY_GRID2                    => 1,  # display every tenth grid line in grid_2 color
+DISPLAY_RULERS                   => 1,  # display the ascioo ruler lines
+DISPLAY_SETUP_INFORMATION        => 0,  # displays which setup files are used
+DISPLAY_SETUP_INFORMATION_ACTION => 1,  # display which actions are registered
+DRAG_SELECTS_ARROWS              => 0,  # selection rectangle also selects arrows when set
+...
+
+RULER_LINES => # default ruler lines
 	[
-		{
-		TYPE => 'VERTICAL',
-		COLOR => [0.86, 0.78, 0.78],
-		POSITION => 80,
-		NAME => 'RIGHT_80',
-		},
-		
-		{
-		TYPE => 'VERTICAL',
-		COLOR => [0.86, 0.78, 0.78],
-		POSITION => 120,
-		NAME => 'RIGHT_120',
-		},
-		
-		{
-		TYPE => 'HORIZONTAL',
-		COLOR => [0.86, 0.78, 0.78],
-		POSITION => 50,
-		NAME => 'BOTTOM_50',
-		},
+	...
 	],
 
-WORK_DIRECTORY => '.asciio_work_dir',
-CREATE_BACKUP => 1,
-DISPLAY_SETUP_INFORMATION => 0,
-DISPLAY_SETUP_ACTION_INFORMATION => 1,
+...
 
 ```
+
 ### IMPORT_EXPORT
 
-Links to files which define import and export functionality, you could use this to save files to a naother format.
+Links to files which define import and export functionality, you could use this to save files to a another format.
+

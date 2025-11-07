@@ -615,38 +615,45 @@ my ($class) = @_ ;
 my $self = 
 	bless 
 		{
-		ELEMENT_TYPES => [],
-		ELEMENTS => [],
-		CONNECTIONS => [],
-		CLIPBOARD => {},
-		FONT_FAMILY => 'Monospace',
-		FONT_SIZE => '11',
-		FONT_BINDINGS_SIZE => 11,
-		TAB_AS_SPACES => '   ',
-		OPAQUE_ELEMENTS => 1,
-		DISPLAY_GRID => 1,
-		DISPLAY_GRID2 => 1,
+		# user configurations
+		COPY_OFFSET_X             => 1,           # x offset for paste
+		COPY_OFFSET_Y             => 1,           # y offset for paste
+		CREATE_BACKUP             => 1,           # create a '.bak' file when set
 		
+		DISPLAY_GRID              => 1,           # display the asciio grid
+		DISPLAY_GRID2             => 1,           # display every 10th grid line in grid_2 color
+		DISPLAY_RULERS            => 1,           # display the ascioo ruler lines
+		FONT_BINDINGS_SIZE        => 11,          # font size for the popup which shows bindings
+		FONT_SIZE                 => 11,          # font size for characters
+		OPAQUE_ELEMENTS           => 1,           # clear the background behind the strips when set, for debugging
+		TAB_AS_SPACES             => '   ',       # replacement for \t
+		USE_BINDINGS_COMPLETION   => 0,           # show binding completion popup
 		
-		PREVIOUS_X => 0, PREVIOUS_Y => 0,
-		MOUSE_X => 0, MOUSE_Y => 0,
-		DRAGGING => undef,
-		SELECTION_RECTANGLE =>{START_X => 0, START_Y => 0},
+		# internal configurations
+		ACTIONS                   => {},          # bindings
+		CLIPBOARD                 => {},          # internal clipboard
+		COLORS                    => {},          # colors asciio uses to draw
+		CONNECTIONS               => [],          # connections between the objects
 		
-		ACTIONS => {},
+		DISPLAY_SETUP_INFORMATION => 1,
+		DO_STACK                  => [],          # undo stack
+		DO_STACK_POINTER          => 0,           # undo stack
+		DRAGGING                  => undef,       # set if mouse is dragging
+		ELEMENTS                  => [],          # objects present in asciio
+		ELEMENT_TYPES             => [],          # stencils
+		FONT_FAMILY               => 'Monospace', # alway use monospace fonts
+		MODIFIED                  => 0,           # has this asciio been modified
 		
-		COPY_OFFSET_X => 1,
-		COPY_OFFSET_Y => 1,
-		COLORS => {},
-		
-		NEXT_GROUP_COLOR => 0, 
-		
-		WORK_DIRECTORY => '.asciio_work_dir',
-		CREATE_BACKUP => 1,
-		MODIFIED => 0,
-		
-		DO_STACK_POINTER => 0,
-		DO_STACK => [] ,
+		MOUSE_X                   => 0,           # mouse position
+		MOUSE_Y                   => 0,           # mouse position
+		NEXT_GROUP_COLOR          => 0,           # groups get colors from a list of colors
+		PREVIOUS_X                => 0,           # used for mouse drag
+		PREVIOUS_Y                => 0,           # used for mouse drag
+		SELECTION_RECTANGLE     =>              # used for mouse drag selection
+			{
+			START_X => 0,
+			START_Y => 0
+			},
 		}, $class ;
 
 
@@ -955,6 +962,7 @@ sub get_color
 {
 my ($self, $name) = @_;
 
+print "missing color '$name'\n" unless exists $self->{COLORS}{$name} ;
 return($self->{COLORS}{$name} // [1, 0, 0]) ;
 }
 

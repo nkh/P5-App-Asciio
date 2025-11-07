@@ -29,7 +29,7 @@ if (defined $object_overrides)
 
 for my $setup_file (@{$setup_ini_files})
 	{
-	$self->{WARN}("Initializing with '$setup_file'\n") if $self->{DISPLAY_SETUP_INFORMATION} ;
+	$self->{WARN}("Initializing with '$setup_file'\n") ;
 	$self->{WARN}("Asciio: Warning: can't find setup data '$setup_file'\n") and next unless -e $setup_file ;
 	
 	push @{$self->{SETUP_PATHS}}, $setup_file ;
@@ -338,7 +338,7 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 	{
 	my $reused = '' ;
 	$self->{ACTION_VERBOSE}("\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown'))
-		if $self->{DISPLAY_SETUP_ACTION_INFORMATION} ;
+		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
 
 	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
 	
@@ -429,7 +429,7 @@ for my $name (grep { $_ ne 'SHORTCUTS' && $_ ne 'ESCAPE_KEYS' } keys %{$group_de
 	for my $shortcut ('ARRAY' eq ref $shortcuts_definition ? @$shortcuts_definition : ($shortcuts_definition))
 		{
 		$self->{ACTION_VERBOSE}("Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n")
-			if exists $handler{$shortcut} && $self->{DISPLAY_SETUP_ACTION_INFORMATION} ;
+			if exists $handler{$shortcut} && $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
 		
 		# $self->{ACTION_VERBOSE}("\e[32maction_handler: '$name' shortcut: $shortcut\e[m\n") ;
 		$handler{$shortcut} = $action_handler ;
@@ -506,12 +506,12 @@ for my $options_file (@{ $options_files })
 			CODE_FROM_FILE => "$setup_path/$options_file",
 			) ;
 	
-	for my $option_name (keys %options)
+	for my $option_name (sort keys %options)
 		{
 		$self->{$option_name} = $options{$option_name} ;
 		}
 	
-	$self->{COLORS} = $options{COLOR_SCHEMES}{system} ;
+	$self->{COLORS} = $options{COLOR_SCHEMES}{system} if exists $options{COLOR_SCHEMES}{system} ;
 	
 	die "Asciio: can't load setup file '$options_file': $! $@\n" if $@ ;
 	}

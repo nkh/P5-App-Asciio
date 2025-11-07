@@ -47,7 +47,7 @@ else
 		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
 		] ;
 		
-	$asciio->setup($setup_paths, { %object_override, DISPLAY_SETUP_ACTION_INFORMATION => 0 }) ;
+	$asciio->setup($setup_paths, { %object_override, DISPLAY_SETUP_INFORMATION_ACTION => 0 }) ;
 	}
 
 if(defined $asciio_config->{TARGETS}[0])
