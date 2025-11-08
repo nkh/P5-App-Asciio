@@ -1,15 +1,12 @@
 use utf8 ;
 
-#TODO: QinQing please document, please separate into internal variables and use modifiable variables
-
-CANVAS_HEIGHT                  => 150,
-CANVAS_WIDTH                   => 200,
-EDIT_TEXT_INLINE               => 0,
-GIT_MODE_CONNECTOR_CHAR_LIST   => ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
-USE_CROSS_MODE                 => 0,
-USE_MARKUP_MODE                => '',
-ZOOM_LOWER_LIMIT               => 0,
-ZOOM_UPPER_LIMIT               => 28, #is it the font size? how can the limit be less than FONT_MIN and why isn't FONT_MIN used?
+CANVAS_HEIGHT                  => 150,  # the height of the canvas container
+CANVAS_WIDTH                   => 200,  # the width of the canvas container
+EDIT_TEXT_INLINE               => 0,    # whether to enable inline editing
+										#     (An editing method in which the input box is embedded in the element)
+GIT_MODE_CONNECTOR_CHAR_LIST   => ['*', 'o'],
+										# Linker style in git mode
+USE_MARKUP_MODE                => '',   # Classes using markup mode
 
 MIDDLE_BUTTON_SELECTION_FILTER =>
 				sub
@@ -97,9 +94,9 @@ DRAG_SELECTS_ARROWS              => 0,  # selection rectangle also selects arrow
 DRAW_HINT_LINES                  => 0,  # displays thicker lines around the selected elements
 FONT_BINDINGS_SIZE               => 11, # font size for the popup which shows bindings
 FONT_BINDINGS_SIZE               => 11, # font size for the popup which shows bindings
-FONT_MIN                         => 3,  # minimum font size,
+FONT_MIN                         => 3,  # minimum font size
+FONT_MAX                         => 28, # maximum font size
 FONT_SIZE                        => 11, # font size for characters
-FONT_SIZE                        => 12, # size of the element characters
 OPAQUE_ELEMENTS                  => 1,  # clear the background behind the strips when set, for debugging
 
 RULER_LINES => # default ruler lines
