@@ -92,7 +92,7 @@ my ($self, $direction) = @_ ;
 
 my ($family, $size) = $self->get_font() ;
 
-my ($zoom_lower_limit, $zoom_upper_limit) = ($self->{ZOOM_LOWER_LIMIT} // 0, $self->{ZOOM_UPPER_LIMIT} // 28) ;
+my ($zoom_lower_limit, $zoom_upper_limit) = ($self->{FONT_MIN} // 0, $self->{FONT_MAX} // 28) ;
 
 if($direction > 0) 
 	{

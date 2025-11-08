@@ -155,7 +155,7 @@ for my $action_file (@{ $action_files })
 	
 	my (%action_handlers, $remove_old_shortcuts) ;
 	
-	if($action_file =~ /^$asciio_setup_path/)
+	if($action_file =~ /^\Q$asciio_setup_path\E/)
 		{
 		$setup_path = $asciio_setup_path ;
 		substr($action_file, 0, length("$asciio_setup_path/")) = '' 
