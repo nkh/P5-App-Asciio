@@ -281,11 +281,13 @@ export DISPLAY=:0.0
 asciio
 </code></pre>
 <h1 id="running-asciio"><a class="header" href="#running-asciio">Running asciio</a></h1>
-<pre><code>$&gt; asciio [file.asciio] # GUI application using Gtk3
+<pre><code>$&gt; asciio [file.asciio]       # GUI application using Gtk3
 
-$&gt; tasciio [file.asciio] # TUI application
+$&gt; tasciio [file.asciio]      # TUI application
 
 $&gt; asciio_to_text file.asciio # converts asciio files to ASCII
+
+$&gt; text_to_asciio ...         # makes an asciio file from text
 </code></pre>
 <h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
 <p>Asciio is developed on both Linux and Windows (cygwin).</p>
@@ -429,6 +431,47 @@ be aligned, you can download a font that can align them.</p>
         redraw!
     endfunction
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="cli"><a class="header" href="#cli">CLI</a></h1>
+<p><strong>asciio</strong> can be used and controlled from the command line.</p>
+<h2 id="asciio_to_text"><a class="header" href="#asciio_to_text">asciio_to_text</a></h2>
+<p>Converts an existing '.asciio' file to ASCII and display it in the terminal</p>
+<h2 id="text_to_asciio"><a class="header" href="#text_to_asciio">text_to_asciio</a></h2>
+<p>Converts files, or text, to asciio elements.</p>
+<h3 id="converting-files"><a class="header" href="#converting-files">Converting Files</a></h3>
+<pre><code class="language-bash">text_to_asciio filename.asciio file [file ...]
+</code></pre>
+<p>The command will create a box elements containing the content each file and save it in 'filename.asciio'.</p>
+<h3 id="converting-text"><a class="header" href="#converting-text">Converting text</a></h3>
+<p>A text stream is read from STDIN, split into chunks, and converted into asciio elements.</p>
+<p>The resulting <strong>asciio</strong> file is output to STDOUT.</p>
+<pre><code class="language-bash">some_command | text_to_asciio &gt; file.asciio
+
+</code></pre>
+<p>In this mode, text_to_asciio accepts the following options:</p>
+<div class="table-wrapper"><table><thead><tr><th>option</th><th></th><th>default</th></tr></thead><tbody>
+<tr><td>-b</td><td>create a box element</td><td>create a text element</td></tr>
+<tr><td>text_separator</td><td>perl regular expression used to split</td><td>"\n"</td></tr>
+</tbody></table>
+</div>
+<h2 id="scripting-interface"><a class="header" href="#scripting-interface">scripting interface</a></h2>
+<p>You can create these types of scripts for asciio:</p>
+<ul>
+<li>
+<p>a script that modifies a running <strong>asciio</strong></p>
+<ul>
+<li>you can send script to it via a POST to <strong>asciio</strong> web server</li>
+<li>you can, from the UI, choose a script to be run</li>
+</ul>
+</li>
+<li>
+<p>a script in which you can create an asciio, without UI, and insert elements in it</p>
+<ul>
+<li>the result can be saved in an '.asciio' file</li>
+<li>the result can be printed as ASCII in your terminal</li>
+</ul>
+</li>
+</ul>
+<p>See the <a href="UI/../for_developers/scripting.html">Scripting</a> section for detailed information.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="stencils"><a class="header" href="#stencils">Stencils</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-boxes"><a class="header" href="#asciio-boxes">Asciio boxes</a></h1>
 <h2 id="elements"><a class="header" href="#elements">Elements</a></h2>
@@ -2152,7 +2195,6 @@ CREATE_BACKUP                    =&gt; 1,  # create a '.bak' backup file when se
 DISPLAY_GRID                     =&gt; 1,  # display the asciio grid
 DISPLAY_GRID2                    =&gt; 1,  # display every tenth grid line in grid_2 color
 DISPLAY_RULERS                   =&gt; 1,  # display the ascioo ruler lines
-DISPLAY_SETUP_INFORMATION        =&gt; 0,  # displays which setup files are used
 DISPLAY_SETUP_INFORMATION_ACTION =&gt; 1,  # display which actions are registered
 DRAG_SELECTS_ARROWS              =&gt; 0,  # selection rectangle also selects arrows when set
 ...
@@ -2303,7 +2345,7 @@ ACTION_FILES =&gt;
 <li>'box', if you want the data to be boxed</li>
 <li>start_level, 0/1: 0 meanss no start tree grlyph</li>
 </ul>
-<pre><code>&lt;coordinates_json ./script/json_dtd_to_asciio_script '' 10 10 box 0 | stdin_to_asciio 
+<pre><code>&lt;coordinates_json ./script/json_dtd_to_asciio_script '' 10 10 box 0 | stdin_to_asciio # send json element to running asciio
 </code></pre>
 <h2 id="simplified-scripting-interface"><a class="header" href="#simplified-scripting-interface">Simplified scripting interface</a></h2>
 <p>The simplified scripting interface is an API which hides some of the scripting details for you.</p>

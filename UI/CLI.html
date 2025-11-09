@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>TUI - Asciio</title>
+        <title>CLI - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -175,52 +175,57 @@
 
                 <div id="content" class="content">
                     <main>
-                        <h1 id="tui"><a class="header" href="#tui">TUI</a></h1>
-<p><img src="tasciio.png" alt="TUI" /></p>
-<p>The TUI interface is a work in progress. Drawing graphs in a terminal (without mouse) is more difficult than it seem, I'm actively working on creating better bindings to make as smooth as when using a mouse.</p>
+                        <h1 id="cli"><a class="header" href="#cli">CLI</a></h1>
+<p><strong>asciio</strong> can be used and controlled from the command line.</p>
+<h2 id="asciio_to_text"><a class="header" href="#asciio_to_text">asciio_to_text</a></h2>
+<p>Converts an existing '.asciio' file to ASCII and display it in the terminal</p>
+<h2 id="text_to_asciio"><a class="header" href="#text_to_asciio">text_to_asciio</a></h2>
+<p>Converts files, or text, to asciio elements.</p>
+<h3 id="converting-files"><a class="header" href="#converting-files">Converting Files</a></h3>
+<pre><code class="language-bash">text_to_asciio filename.asciio file [file ...]
+</code></pre>
+<p>The command will create a box elements containing the content each file and save it in 'filename.asciio'.</p>
+<h3 id="converting-text"><a class="header" href="#converting-text">Converting text</a></h3>
+<p>A text stream is read from STDIN, split into chunks, and converted into asciio elements.</p>
+<p>The resulting <strong>asciio</strong> file is output to STDOUT.</p>
+<pre><code class="language-bash">some_command | text_to_asciio &gt; file.asciio
+
+</code></pre>
+<p>In this mode, text_to_asciio accepts the following options:</p>
+<div class="table-wrapper"><table><thead><tr><th>option</th><th></th><th>default</th></tr></thead><tbody>
+<tr><td>-b</td><td>create a box element</td><td>create a text element</td></tr>
+<tr><td>text_separator</td><td>perl regular expression used to split</td><td>"\n"</td></tr>
+</tbody></table>
+</div>
+<h2 id="scripting-interface"><a class="header" href="#scripting-interface">scripting interface</a></h2>
+<p>You can create these types of scripts for asciio:</p>
 <ul>
-<li>mouse emulation</li>
-<li>differences
+<li>
+<p>a script that modifies a running <strong>asciio</strong></p>
 <ul>
-<li>dialogs</li>
-<li>manpage</li>
+<li>you can send script to it via a POST to <strong>asciio</strong> web server</li>
+<li>you can, from the UI, choose a script to be run</li>
+</ul>
+</li>
+<li>
+<p>a script in which you can create an asciio, without UI, and insert elements in it</p>
+<ul>
+<li>the result can be saved in an '.asciio' file</li>
+<li>the result can be printed as ASCII in your terminal</li>
 </ul>
 </li>
 </ul>
-<p><img src="tui_demo.gif" alt="TUI demo" /></p>
-<h2 id="asciio-tui-and-vim"><a class="header" href="#asciio-tui-and-vim">Asciio TUI and Vim</a></h2>
-<p>You can call Asciio from vim and insert your diagram.</p>
-<pre><code>    map  &lt;leader&gt;&lt;leader&gt;a :call TAsciio()&lt;cr&gt;
-
-    function! TAsciio()
-        let line = getline('.')
-
-        let tempn = tempname()
-        let tempnt = tempn . '.txt'
-        let temp = shellescape(tempn)
-        let tempt = shellescape(tempnt)
-
-        exec "normal i Asciio_file:" . tempn . "\&lt;Esc&gt;"
-
-        if ! has("gui_running")
-        exec "silent !mkdir -p $(dirname " . temp . ")" 
-        exec "silent !cp ~/.config/Asciio/templates/empty.asciio ". temp . "; tasciio " . temp . "; asciio_to_text " . temp . " &gt;" . tempt 
-        exec "read " . tempnt
-        endif
-
-        redraw!
-    endfunction
-</code></pre>
+<p>See the <a href="../for_developers/scripting.html">Scripting</a> section for detailed information.</p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../UI/GUI.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../UI/TUI.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <i class="fa fa-angle-left"></i>
                             </a>
 
-                            <a rel="next prefetch" href="../UI/CLI.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../stencils.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <i class="fa fa-angle-right"></i>
                             </a>
 
@@ -230,11 +235,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../UI/GUI.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../UI/TUI.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <i class="fa fa-angle-left"></i>
                     </a>
 
-                    <a rel="next prefetch" href="../UI/CLI.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../stencils.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <i class="fa fa-angle-right"></i>
                     </a>
             </nav>
