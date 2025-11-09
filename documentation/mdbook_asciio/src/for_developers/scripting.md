@@ -42,7 +42,7 @@ It takes the following arguments:
 
 
 ```
-<coordinates_json ./script/json_dtd_to_asciio_script '' 10 10 box 0 | stdin_to_asciio 
+<coordinates_json ./script/json_dtd_to_asciio_script '' 10 10 box 0 | stdin_to_asciio # send json element to running asciio
 ```
 
 ## Simplified scripting interface

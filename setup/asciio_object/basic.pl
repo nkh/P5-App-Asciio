@@ -92,7 +92,6 @@ CREATE_BACKUP                    => 1,  # create a '.bak' backup file when set
 DISPLAY_GRID                     => 1,  # display the asciio grid
 DISPLAY_GRID2                    => 1,  # display every tenth grid line in grid_2 color
 DISPLAY_RULERS                   => 1,  # display the ascioo ruler lines
-DISPLAY_SETUP_INFORMATION        => 0,  # displays which setup files are used
 DISPLAY_SETUP_INFORMATION_ACTION => 1,  # display which actions are registered
 DRAG_SELECTS_ARROWS              => 0,  # selection rectangle also selects arrows when set
 DRAW_HINT_LINES                  => 0,  # displays thicker lines around the selected elements

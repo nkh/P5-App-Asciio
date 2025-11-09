@@ -48,6 +48,8 @@ $> tasciio [file.asciio]              # TUI application
 
 $> asciio_to_text file.asciio         # converts asciio files to ASCII
 
+$> text_to_asciio ...                 # makes an asciio file from text
+
 =head1 DESCRIPTION
 
 Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams can be
@@ -635,7 +637,6 @@ my $self =
 		COLORS                    => {},          # colors asciio uses to draw
 		CONNECTIONS               => [],          # connections between the objects
 		
-		DISPLAY_SETUP_INFORMATION => 1,
 		DO_STACK                  => [],          # undo stack
 		DO_STACK_POINTER          => 0,           # undo stack
 		DRAGGING                  => undef,       # set if mouse is dragging

@@ -29,7 +29,7 @@ if (defined $object_overrides)
 
 for my $setup_file (@{$setup_ini_files})
 	{
-	$self->{WARN}("Initializing with '$setup_file'\n") ;
+	$self->{WARN}("Initializing with '$setup_file'\n") if $self->{DISPLAY_SETUP_INFORMATION} ;
 	$self->{WARN}("Asciio: Warning: can't find setup data '$setup_file'\n") and next unless -e $setup_file ;
 	
 	push @{$self->{SETUP_PATHS}}, $setup_file ;
@@ -56,6 +56,7 @@ for my $setup_file (@{$setup_ini_files})
 		while( my ($k, $v) = each $object_overrides->%* )
 			{
 			$self->{$k} = $v ;
+			print "object_override $k => $v\n" if $self->{DISPLAY_SETUP_INFORMATION} ;
 			}
 		}
 	
@@ -509,6 +510,7 @@ for my $options_file (@{ $options_files })
 	for my $option_name (sort keys %options)
 		{
 		$self->{$option_name} = $options{$option_name} ;
+		print "$option_name => $options{$option_name}\n" if $self->{DISPLAY_SETUP_INFORMATION} ;
 		}
 	
 	$self->{COLORS} = $options{COLOR_SCHEMES}{system} if exists $options{COLOR_SCHEMES}{system} ;

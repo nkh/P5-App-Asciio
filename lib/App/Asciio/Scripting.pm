@@ -5,6 +5,8 @@ require Exporter ;
 
 our @ISA = qw(Exporter) ;
 our @EXPORT = qw(
+	get_option
+	
 	update_display
 	start_updating_display  
 	stop_updating_display  
@@ -38,6 +40,7 @@ our @EXPORT = qw(
 	
 	save_to
 	to_ascii
+	to_asciio
 	ascii_out
 	
 	optimize_connections
@@ -84,6 +87,13 @@ our $script_asciio ; # make script non OO
 #------------------------------------------------------------------------------------------------------
 
 my $external_script_run = 0 ;
+
+sub get_option
+{
+my ($name) = $_[0] // '' ;
+
+$script_asciio->{OPTIONS}{$name} ;
+}
 
 sub run_external_script_text
 {
@@ -137,6 +147,8 @@ else
 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
 	$script_asciio->setup([$path . $basename . '/setup/setup.ini'], \%object_override) ;
 	}
+
+$script_asciio->{OPTIONS} = $asciio_config ;
 }
 
 # initialize object when module is loaded
@@ -294,7 +306,9 @@ $script_asciio->add_ruler_lines({NAME => 'from script', %{$data}}) ;
 
 sub save_to                   { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
 sub to_ascii                  { $script_asciio->transform_elements_to_ascii_buffer() ; }
+sub to_asciio                 { $script_asciio->get_compressed_asciio() ; }
 sub ascii_out                 { print $script_asciio->transform_elements_to_ascii_buffer() ; }
+
 sub optimize                  { $script_asciio->call_hook('CANONIZE_CONNECTIONS', $script_asciio->{CONNECTIONS}) ; }
 
 sub generate_keyboard_mapping { App::Asciio::Actions::Unsorted::get_keyboard_mapping_file($script_asciio, @_) ; }

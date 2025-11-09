@@ -34,11 +34,11 @@ do
 		# print "target => $ARGV[0] \n" ;
 		push @targets, shift @ARGV ;
 		}
-		
+	
 	$contains_switch = @ARGV ;
 	
 	local $SIG{__WARN__} = sub { print STDERR $_[0] unless $ignore_error ; } ;
-			
+	
 	unless(GetOptions(@flags))
 		{
 		return(0, "Try perl asciio -h.", $asciio_config, @ARGV) unless $ignore_error;
@@ -81,19 +81,31 @@ $asciio_config->{SETUP_PATHS} = [] ;
 
 my @flags_and_help =
 	(
-	'setup_path=s'  => $asciio_config->{SETUP_PATHS},
+	'b'                         => \$asciio_config->{TEXT_TO_ASCIIO_BOX_INPUT},
+		'put the input in a boxed element',
+		'',
+		
+	'text_separator=s'          => \$asciio_config->{TEXT_TO_ASCIIO_SEPARATOR},
+		'put the input in a boxed element',
+		'',
+		
+	'display_setup_information' => \$asciio_config->{DISPLAY_SETUP_INFORMATION},
+		'show which setup files are used.',
+		'',
+		
+	'setup_path=s'              => \$asciio_config->{SETUP_PATHS},
 		'sets the root of the setup directory.',
 		'',
 		
-	's|script=s'    => \$asciio_config->{SCRIPT},
+	's|script=s'                => \$asciio_config->{SCRIPT},
 		'script to be run at Asciio start.',
 		'',
 		
-	'p|web_port=s'  => \$asciio_config->{WEB_PORT},
+	'p|web_port=s'              => \$asciio_config->{WEB_PORT},
 		'port for web server.',
 		'',
 	
-	'debug_fd=i'    => \$asciio_config->{DEBUG_FD},
+	'debug_fd=i'                => \$asciio_config->{DEBUG_FD},
 		'debug file descriptor number.',
 		'',
 	) ;

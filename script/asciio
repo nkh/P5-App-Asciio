@@ -54,6 +54,8 @@ else
 
 my $setup_paths = [] ;
 
+$asciio->{DISPLAY_SETUP_INFORMATION}++ if $asciio_config->{DISPLAY_SETUP_INFORMATION} ;
+
 if(@{$asciio_config->{SETUP_PATHS}})
 	{
 	$setup_paths = $asciio_config->{SETUP_PATHS} ;

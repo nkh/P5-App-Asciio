@@ -308,10 +308,19 @@ else
 		}
 		
 	$title = $file_name ;
-	write_file($file_name, $ASCIIO_MIME_TYPE . compress($self->serialize_self() .'$VAR1 ;')) or $title = undef ;
+	write_file($file_name, $self->get_compressed_asciio) or $title = undef ;
 	}
 	
 return $title ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_compressed_asciio
+{
+my ($self) = @_ ;
+
+return $ASCIIO_MIME_TYPE . compress($self->serialize_self() .' $VAR1 ;') ;
 }
 
 #-----------------------------------------------------------------------------

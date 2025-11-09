@@ -14,11 +14,13 @@
       / ___ |(__  ) /__/ / / /_/ /
      /_/  |_/____/\___/_/_/\____/
 
-    $> asciio [file.asciio] # GUI application using Gtk3
+    $> asciio [file.asciio]       # GUI application using Gtk3
 
-    $> tasciio [file.asciio] # TUI application
+    $> tasciio [file.asciio]      # TUI application
 
     $> asciio_to_text file.asciio # converts asciio files to ASCII
+
+    $> text_to_asciio ...         # makes an asciio file from text
 
 # DESCRIPTION
 

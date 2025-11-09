@@ -15,6 +15,7 @@
 - [UIs](UIs.md)
 	- [GUI](UI/GUI.md)
 	- [TUI](UI/TUI.md)
+	- [CLI](UI/CLI.md)
 
 - [Stencils](stencils.md)
 	- [Asciio boxes and text](stencils/asciio_boxes.md)
