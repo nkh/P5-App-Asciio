@@ -54,8 +54,11 @@ if
 			$file_name,
 			) ;
 	
-	$self->load_self($saved_self) ; # resurrect from mummified
-	$self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} = $handler_data ;
+	if(defined $saved_self)
+		{
+		$self->load_self($saved_self) ; # resurrect from mummified
+		$self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} = $handler_data ;
+		}
 	}
 else
 	{
@@ -301,6 +304,8 @@ if
 	}
 else
 	{
+	$self->{WARN}("unknonwn type '$type', savin in asciio format\n") ;
+	
 	if($self->{CREATE_BACKUP} && -e $file_name)
 		{
 		use File::Copy;
@@ -321,6 +326,19 @@ sub get_compressed_asciio
 my ($self) = @_ ;
 
 return $ASCIIO_MIME_TYPE . compress($self->serialize_self() .' $VAR1 ;') ;
+}
+
+#-----------------------------------------------------------------------------
+#
+sub get_decompressed_asciio
+{
+my ($self, $header_diagram) = @_ ;
+
+my $decoder = get_sereal_decoder() ;
+my $magic   = substr($header_diagram, 0, length($ASCIIO_MIME_TYPE)) ;
+my $diagram = $magic eq $ASCIIO_MIME_TYPE ? substr($header_diagram, length($ASCIIO_MIME_TYPE)) : $header_diagram ;
+
+return $decoder->decode(decompress($diagram)) ;
 }
 
 #-----------------------------------------------------------------------------
