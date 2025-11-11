@@ -24,6 +24,6 @@ if($self->{CREATE_BACKUP} && -e $file)
 
 my $saved = write_file($file, {binmode => ':utf8'}, $self->transform_elements_to_ascii_buffer()) ;
 
-return $saved ;
+return $file ;
 }
 
