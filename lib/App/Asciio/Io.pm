@@ -122,6 +122,7 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		COLORS
 		ACTION_VERBOSE
 		DO_STACK_POINTER DO_STACK
+		WARN
 		) ;
 
 sub load_self
@@ -304,7 +305,7 @@ if
 	}
 else
 	{
-	$self->{WARN}("unknonwn type '$type', savin in asciio format\n") ;
+	$self->{WARN}->("no exporters for type '$type', saving in internal asciio format\n") ;
 	
 	if($self->{CREATE_BACKUP} && -e $file_name)
 		{
