@@ -40,8 +40,11 @@
 
 - [Export/Save](exporting.md)
 	- [Asciio format](export/asciio.md)
+	- [Asciio embedded in PNG](export/embedded_png.md)
+	- [PNG](export/png.md)
 	- [text](export/text.md)
 	- [SVG](export/svg.md)
+	- [JSON](export/json.md)
 	- [Clipboard](export/clipboard.md)
 
 - [Modes](modes.md)

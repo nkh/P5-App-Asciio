@@ -9,13 +9,14 @@ Tree generation:
 ASCII Math and other:
 [Diagon](https://github.com/ArthurSonzogni/Diagon)
 
-Fun! [AACircuit](https://github.com/Blokkendoos/AACircuit)
+
+[AACircuit](https://github.com/Blokkendoos/AACircuit), fun!
 
 [schemascii](https://github.com/dragoncoder047/schemascii)
 
 [asciidiagram](https://github.com/Twinside/asciidiagram)
 
-Impressive [shaape](https://github.com/christiangoltz/shaape )
+[shaape](https://github.com/christiangoltz/shaape ), quite impressive!
 
 [ditaa](https://github.com/stathissideris/ditaa)
 
