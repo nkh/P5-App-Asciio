@@ -1323,6 +1323,17 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="strip-groups"><a class="header" href="#strip-groups">Strip groups</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="exportsave"><a class="header" href="#exportsave">Export/Save</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-format"><a class="header" href="#asciio-format">Asciio format</a></h1>
+<p>The default format asciio uses when not saved in one of the other supported formats.</p>
+<p>This is the format that allows you to reload your diagram as objects and continue editing it.</p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="asciio-emedded-in-a-png-file"><a class="header" href="#asciio-emedded-in-a-png-file">Asciio emedded in a PNG file</a></h1>
+<p>You can save your asciio document as a PNG, it will be recognized by image viewers; that also allows you to have a preview in your file manager.</p>
+<p>You need to give the <strong>.pnge</strong> extension to the file you save (please note the final 'e'), this lets asciio know what you want to do. Your file will have the <strong>.png</strong> extension.</p>
+<p>When opening a <strong>PNG</strong> file, asciio looks for its data and opens the file if it's present.</p>
+<p><img src="https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio_embedded_in_png.gif" alt="Example" /></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="png"><a class="header" href="#png">PNG</a></h1>
+<p>Asciio export directly to PNG.</p>
+<p>Save your file with a <strong>.png</strong> extension.</p>
+<p>it will save the current display from 0,0 to the extent of the elements in the diagram plus one row and one line.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="exporting-to-ascii"><a class="header" href="#exporting-to-ascii">Exporting to ASCII</a></h1>
 <p>You can export to a file in ASCII by using a '.txt' file extension.</p>
 <p>You can also export the selection, in ASCII, to the Primary clipboard.</p>
@@ -1339,6 +1350,10 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
 <p><img src="export/hand_drawn.png" alt="hand drawn" /></p>
 <p>The <em>svg2roughj</em> sproject is here</p>
 <p><a href="https://github.com/fskpf/svg2roughjs"><img src="https://github-readme-stats.vercel.app/api/pin/?username=fskpf&amp;repo=svg2roughjs" alt="svg2roughjs" /></a></p>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="json"><a class="header" href="#json">JSON</a></h1>
+<p>asciio has an experimental JSON exporter and no JSON importer.</p>
+<p>I'm not using it as I script directly with the Scripting API.</p>
+<p>If you need a full JSON exporter/importer, open a ticket and explain why (I'll try to convince you that you don't need it :) )</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="clipboard"><a class="header" href="#clipboard">Clipboard</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="git"><a class="header" href="#git">git</a></h1>
@@ -3116,10 +3131,10 @@ under the same terms as Perl itself or GPL3.
 <a href="https://github.com/yzhong52/ascii_tree">ascii_tree</a></p>
 <p>ASCII Math and other:
 <a href="https://github.com/ArthurSonzogni/Diagon">Diagon</a></p>
-<p>Fun! <a href="https://github.com/Blokkendoos/AACircuit">AACircuit</a></p>
+<p><a href="https://github.com/Blokkendoos/AACircuit">AACircuit</a>, fun!</p>
 <p><a href="https://github.com/dragoncoder047/schemascii">schemascii</a></p>
 <p><a href="https://github.com/Twinside/asciidiagram">asciidiagram</a></p>
-<p>Impressive <a href="https://github.com/christiangoltz/shaape">shaape</a></p>
+<p><a href="https://github.com/christiangoltz/shaape">shaape</a>, quite impressive!</p>
 <p><a href="https://github.com/stathissideris/ditaa">ditaa</a></p>
 <p>Stencils <a href="https://github.com/oguma/asciio-ditaa">Asciio ditaa</a></p>
 <p><a href="http://search.cpan.org/~jpierce/Text-FIGlet-1.06/FIGlet.pm">Figlet</a></p>
