@@ -176,16 +176,22 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="clipboard"><a class="header" href="#clipboard">Clipboard</a></h1>
-<pre><code>     «y»                Copy to clipboard
-
-     «p»                Insert from clipboard
-
-     «Y»                Export to clipboard &amp; primary as ascii
-
-     «P»                Import from primary to box
-
-     «A-P»              Import from primary to text
-</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>command</th><th>bindings</th></tr></thead><tbody>
+<tr><td>Copy to clipboard</td><td>'C00-c' or 'C00-Insert'</td></tr>
+<tr><td>Insert from clipboard</td><td>'C00-v' or '00S-Insert'</td></tr>
+<tr><td>-</td><td>-</td></tr>
+<tr><td>Copy to clipboard</td><td>'000-y'+'000-y'</td></tr>
+<tr><td>Export to clipboard &amp; primary as ascii</td><td>'000-y'+'00S-Y'</td></tr>
+<tr><td>Export to clipboard &amp; primary as markup</td><td>'000-y'+'000-m'</td></tr>
+<tr><td>-</td><td>-</td></tr>
+<tr><td>Insert from clipboard</td><td>'000-p'+'000-p'</td></tr>
+<tr><td>Import from primary to box</td><td>'000-p'+'00S-P'</td></tr>
+<tr><td>Import from primary to text</td><td>'000-p'+'0A0-p'</td></tr>
+<tr><td>Import from clipboard to box</td><td>'000-p'+'000-b'</td></tr>
+<tr><td>Import from clipboard to text</td><td>'000-p'+'000-t'</td></tr>
+</tbody></table>
+</div>
+<p>Some clipboard commands are using the <strong>xsel</strong> command.</p>
 
                     </main>
 

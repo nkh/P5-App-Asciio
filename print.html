@@ -1973,16 +1973,22 @@ accessed with shortcuts that start with the same letter.</p>
 <p>Binding: <em>«iB»</em> Add auto-shrink box:</p>
 <p><img src="bindings/asciio_auto_shrink_box.png" alt="auto shrink_box" /></p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="clipboard-1"><a class="header" href="#clipboard-1">Clipboard</a></h1>
-<pre><code>     «y»                Copy to clipboard
-
-     «p»                Insert from clipboard
-
-     «Y»                Export to clipboard &amp; primary as ascii
-
-     «P»                Import from primary to box
-
-     «A-P»              Import from primary to text
-</code></pre>
+<div class="table-wrapper"><table><thead><tr><th>command</th><th>bindings</th></tr></thead><tbody>
+<tr><td>Copy to clipboard</td><td>'C00-c' or 'C00-Insert'</td></tr>
+<tr><td>Insert from clipboard</td><td>'C00-v' or '00S-Insert'</td></tr>
+<tr><td>-</td><td>-</td></tr>
+<tr><td>Copy to clipboard</td><td>'000-y'+'000-y'</td></tr>
+<tr><td>Export to clipboard &amp; primary as ascii</td><td>'000-y'+'00S-Y'</td></tr>
+<tr><td>Export to clipboard &amp; primary as markup</td><td>'000-y'+'000-m'</td></tr>
+<tr><td>-</td><td>-</td></tr>
+<tr><td>Insert from clipboard</td><td>'000-p'+'000-p'</td></tr>
+<tr><td>Import from primary to box</td><td>'000-p'+'00S-P'</td></tr>
+<tr><td>Import from primary to text</td><td>'000-p'+'0A0-p'</td></tr>
+<tr><td>Import from clipboard to box</td><td>'000-p'+'000-b'</td></tr>
+<tr><td>Import from clipboard to text</td><td>'000-p'+'000-t'</td></tr>
+</tbody></table>
+</div>
+<p>Some clipboard commands are using the <strong>xsel</strong> command.</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="multiple-key-bindings"><a class="header" href="#multiple-key-bindings">multiple key bindings</a></h1>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="-command-group"><a class="header" href="#-command-group">«:» command group:</a></h1>
 <pre><code> «:» command group:
