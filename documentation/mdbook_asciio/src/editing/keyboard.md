@@ -8,10 +8,10 @@ Asciio has many bindings which let you work effectively, a list of all the bindi
 
 | action                | binding            |
 | -----                 | --------           |
-| insert a box          | ib                 |
+| insert a box          | ibb                |
 | resize it             | 2, 4               |
 | move it               | hjkl/Arrows        |
-| insert a new box      | ib                 |
+| insert a new box      | ibb                |
 | insert an arrow       | ia                 |
 | connect other box     | Alt+A, hjkl/Arrows |
 | escape arrow end mode | Escape             |

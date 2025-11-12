@@ -1,4 +1,4 @@
-# Asciio emedded in a PNG file
+# Asciio embedded in a PNG file
 
 You can save your asciio document as a PNG, it will be recognized by image viewers; that also allows you to have a preview in your file manager.
 
