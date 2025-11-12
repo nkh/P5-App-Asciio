@@ -176,6 +176,22 @@
                 <div id="content" class="content">
                     <main>
                         <h1 id="clipboard"><a class="header" href="#clipboard">Clipboard</a></h1>
+<div class="table-wrapper"><table><thead><tr><th>command</th><th>bindings</th></tr></thead><tbody>
+<tr><td>Copy to clipboard</td><td>'C00-c' or 'C00-Insert'</td></tr>
+<tr><td>Insert from clipboard</td><td>'C00-v' or '00S-Insert'</td></tr>
+</tbody></table>
+</div>
+<p>|
+|Copy to clipboard                       | '000-y'+'000-y'|
+|Export to clipboard &amp; primary as ascii  | '000-y'+'00S-Y'|
+|Export to clipboard &amp; primary as markup | '000-y'+'000-m'|
+|
+|Insert from clipboard                   | '000-p'+'000-p'|
+|Import from primary to box              | '000-p'+'00S-P'|
+|Import from primary to text             | '000-p'+'0A0-p'|
+|Import from clipboard to box            | '000-p'+'000-b'|
+|Import from clipboard to text           | '000-p'+'000-t'|</p>
+<p>Some clipboard commands are using the <strong>xsel</strong> command.</p>
 
                     </main>
 
