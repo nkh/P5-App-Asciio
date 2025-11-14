@@ -1,23 +1,10 @@
 use utf8 ;
 
-CANVAS_HEIGHT                  => 150,  # the height of the canvas container
-CANVAS_WIDTH                   => 200,  # the width of the canvas container
-EDIT_TEXT_INLINE               => 0,    # whether to enable inline editing
-										#     (An editing method in which the input box is embedded in the element)
-GIT_MODE_CONNECTOR_CHAR_LIST   => ['*', 'o'],
-										# Linker style in git mode
-USE_MARKUP_MODE                => '',   # Classes using markup mode
-
-MIDDLE_BUTTON_SELECTION_FILTER =>
-				sub
-				{
-					ref $_[0] ne 'App::Asciio::stripes::section_wirl_arrow'
-					&& ref $_[0] ne 'App::Asciio::stripes::angled_arrow'
-				},
-
-
 # default user configuration for asciio GUI
 # this configuration can be overridden by your configuration files
+
+CANVAS_HEIGHT                  => 150,  # the height of the canvas
+CANVAS_WIDTH                   => 200,  # the width of the canvas
 
 COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between them
 	{
@@ -92,11 +79,13 @@ DISPLAY_RULERS                   => 1,  # display the ascioo ruler lines
 DISPLAY_SETUP_INFORMATION_ACTION => 1,  # display which actions are registered
 DRAG_SELECTS_ARROWS              => 0,  # selection rectangle also selects arrows when set
 DRAW_HINT_LINES                  => 0,  # displays thicker lines around the selected elements
+EDIT_TEXT_INLINE                 => 0,  # whether to enable inline editing
 FONT_BINDINGS_SIZE               => 11, # font size for the popup which shows bindings
 FONT_BINDINGS_SIZE               => 11, # font size for the popup which shows bindings
 FONT_MIN                         => 3,  # minimum font size
 FONT_MAX                         => 28, # maximum font size
 FONT_SIZE                        => 11, # font size for characters
+GIT_MODE_CONNECTOR_CHAR_LIST     => ['*', 'o'], # Linker style in git mode
 OPAQUE_ELEMENTS                  => 1,  # clear the background behind the strips when set, for debugging
 
 RULER_LINES => # default ruler lines
@@ -123,7 +112,8 @@ RULER_LINES => # default ruler lines
 		},
 	],
 
-TAB_AS_SPACES           => '   ', # replacement for \t
-USE_BINDINGS_COMPLETION => 1,     # show binding completion popup
-ZOOM_STEP               => 3,     # increment for font size
+TAB_AS_SPACES            => '   ', # replacement for \t
+USE_MARKUP_MODE          => '',    # enable editing text directly on the canvas
+USE_BINDINGS_COMPLETION  => 1,     # show binding completion popup
+ZOOM_STEP                => 3,     # increment for font size
 

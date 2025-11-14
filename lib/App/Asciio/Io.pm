@@ -117,7 +117,6 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		TITLE
 		ELEMENT_TYPES_BY_NAME
 		ELEMENT_TYPES
-		MIDDLE_BUTTON_SELECTION_FILTER
 		CACHE
 		COLORS
 		ACTION_VERBOSE
@@ -254,7 +253,6 @@ local $self->{IMPORT_EXPORT_HANDLERS} = undef ;
 local $self->{MODIFIED} => 0 ;
 local $self->{TITLE} = '' ;
 local $self->{CREATE_BACKUP} = undef ;
-local $self->{MIDDLE_BUTTON_SELECTION_FILTER} = undef ;
 local $self->{ELEMENT_TYPES} = undef ;
 local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
