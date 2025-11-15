@@ -40,6 +40,7 @@ lib/App/Asciio/Actions/Colors.pm
 lib/App/Asciio/Actions/Debug.pm
 lib/App/Asciio/Actions/Elements.pm
 lib/App/Asciio/Actions/ElementsManipulation.pm
+lib/App/Asciio/Actions/ElementAttributes.pm
 lib/App/Asciio/Actions/Eraser.pm
 lib/App/Asciio/Actions/File.pm
 lib/App/Asciio/Actions/Git.pm

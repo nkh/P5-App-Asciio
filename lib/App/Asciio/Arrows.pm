@@ -30,25 +30,25 @@ my %arrow_types =
 		['225',         '/',  '/',   '',  '', 'v', 1],
 		['315',        '\\', '\\',   '',  '', '^', 1],
 	],
-	dash_no_arrow =>
+	dash_line =>
 	[
-		['origin',      '',  '*',   '',  '',  '', 1],
-		['up',         '|',  '|',   '',  '', '.', 1],
-		['down',       '|',  '|',   '',  '', '.', 1],
-		['left',       '-',  '-',   '',  '', '.', 1],
-		['upleft',     '|',  '|',  '.', '-', '.', 1],
-		['leftup',     '-',  '-', '\'', '|', '.', 1],
-		['downleft',   '|',  '|', '\'', '-', '.', 1],
-		['leftdown',   '-',  '-',  '.', '|', '.', 1],
-		['right',      '-',  '-',   '',  '', '.', 1],
-		['upright',    '|',  '|',  '.', '-', '.', 1],
-		['rightup',    '-',  '-', '\'', '|', '.', 1],
-		['downright',  '|',  '|', '\'', '-', '.', 1],
-		['rightdown',  '-',  '-',  '.', '|', '.', 1],
-		['45',         '/',  '/',   '',  '', '.', 1],
-		['135',       '\\', '\\',   '',  '', '.', 1],
-		['225',        '/',  '/',   '',  '', '.', 1],
-		['315',      ' \\', '\\',   '',  '', '.', 1],
+		['origin',       '',  '*',   '',  '',  '', 1],
+		['up',          '|',  '|',   '',  '', '|', 1],
+		['down',        '|',  '|',   '',  '', '|', 1],
+		['left',        '-',  '-',   '',  '', '-', 1],
+		['up-left',     '|',  '|',  '.', '-', '-', 1],
+		['left-up',     '-',  '-', '\'', '|', '|', 1],
+		['down-left',   '|',  '|', '\'', '-', '-', 1],
+		['left-down',   '-',  '-',  '.', '|', '|', 1],
+		['right',       '-',  '-',   '',  '', '-', 1],
+		['up-right',    '|',  '|',  '.', '-', '-', 1],
+		['right-up',    '-',  '-', '\'', '|', '|', 1],
+		['down-right',  '|',  '|', '\'', '-', '-', 1],
+		['right-down',  '-',  '-',  '.', '|', '|', 1],
+		['45',          '/',  '/',   '',  '', '/', 1],
+		['135',        '\\', '\\',   '',  '', '\\', 1],
+		['225',         '/',  '/',   '',  '', '/', 1],
+		['315',        '\\', '\\',   '',  '', '\\', 1],
 	],
 	dot =>
 	[
@@ -150,6 +150,66 @@ my %arrow_types =
 		['225',        '/',  '/',  '',  '', 'v', 1],
 		['315',       '\\', '\\',  '',  '', '^', 1],
 	],
+	unicode_line =>
+	[
+		['origin',      '',  '*',  '',  '',  '', 1],
+		['up',         '│',  '│',  '',  '', '│', 1],
+		['down',       '│',  '│',  '',  '', '│', 1],
+		['left',       '─',  '─',  '',  '', '─', 1],
+		['upleft',     '│',  '│', '╮', '─', '─', 1],
+		['leftup',     '─',  '─', '╰', '│', '│', 1],
+		['downleft',   '│',  '│', '╯', '─', '─', 1],
+		['leftdown',   '─',  '─', '╭', '│', '│', 1],
+		['right',      '─',  '─',  '',  '', '─', 1],
+		['upright',    '│',  '│', '╭', '─', '─', 1],
+		['rightup',    '─',  '─', '╯', '│', '│', 1],
+		['downright',  '│',  '│', '╰', '─', '─', 1],
+		['rightdown',  '─',  '─', '╮', '│', '│', 1],
+		['45',         '/',  '/',  '',  '', '/', 1],
+		['135',       '\\', '\\',  '',  '', '\\', 1],
+		['225',        '/',  '/',  '',  '', '/', 1],
+		['315',       '\\', '\\',  '',  '', '\\', 1],
+	],
+	unicode_imaginary =>
+	[
+		['origin',      '',  '*',  '',  '',  '', 1],
+		['up',         '┆',  '┆',  '',  '', '^', 1],
+		['down',       '┆',  '┆',  '',  '', 'v', 1],
+		['left',       '┄',  '┄',  '',  '', '<', 1],
+		['upleft',     '┆',  '┆', '┐', '┄', '<', 1],
+		['leftup',     '┄',  '┄', '└', '┆', '^', 1],
+		['downleft',   '┆',  '┆', '┘', '┄', '<', 1],
+		['leftdown',   '┄',  '┄', '┌', '┆', 'v', 1],
+		['right',      '┄',  '┄',  '',  '', '>', 1],
+		['upright',    '┆',  '┆', '┌', '┄', '>', 1],
+		['rightup',    '┄',  '┄', '┘', '┆', '^', 1],
+		['downright',  '┆',  '┆', '└', '┄', '>', 1],
+		['rightdown',  '┄',  '┄', '┐', '┆', 'v', 1],
+		['45',         '/',  '/',  '',  '', '^', 1],
+		['135',       '\\', '\\',  '',  '', 'v', 1],
+		['225',        '/',  '/',  '',  '', 'v', 1],
+		['315',       '\\', '\\',  '',  '', '^', 1],
+	],
+	unicode_imaginary_line =>
+	[
+		['origin',      '',  '*',  '',  '',  '', 1],
+		['up',         '┆',  '┆',  '',  '', '┆', 1],
+		['down',       '┆',  '┆',  '',  '', '┆', 1],
+		['left',       '┄',  '┄',  '',  '', '┄', 1],
+		['upleft',     '┆',  '┆', '┐', '┄', '┄', 1],
+		['leftup',     '┄',  '┄', '└', '┆', '┆', 1],
+		['downleft',   '┆',  '┆', '┘', '┄', '┄', 1],
+		['leftdown',   '┄',  '┄', '┌', '┆', '┆', 1],
+		['right',      '┄',  '┄',  '',  '', '┄', 1],
+		['upright',    '┆',  '┆', '┌', '┄', '┄', 1],
+		['rightup',    '┄',  '┄', '┘', '┆', '┆', 1],
+		['downright',  '┆',  '┆', '└', '┄', '┄', 1],
+		['rightdown',  '┄',  '┄', '┐', '┆', '┆', 1],
+		['45',         '/',  '/',  '',  '', '/', 1],
+		['135',       '\\', '\\',  '',  '', '\\', 1],
+		['225',        '/',  '/',  '',  '', '/', 1],
+		['315',       '\\', '\\',  '',  '', '\\', 1],
+	],
 	unicode_bold =>
 	[
 		['origin',      '',  '*',  '',  '',  '', 1],
@@ -170,7 +230,27 @@ my %arrow_types =
 		['225',        '/',  '/',  '',  '', 'v', 1],
 		['315',       '\\', '\\',  '',  '', '^', 1],
 	],
-	unicode_double_line =>
+	unicode_bold_line =>
+	[
+		['origin',      '',  '*',  '',  '',  '', 1],
+		['up',         '┃',  '┃',  '',  '', '┃', 1],
+		['down',       '┃',  '┃',  '',  '', '┃', 1],
+		['left',       '━',  '━',  '',  '', '━', 1],
+		['upleft',     '┃',  '┃', '┓', '━', '━', 1],
+		['leftup',     '━',  '━', '┗', '┃', '┃', 1],
+		['downleft',   '┃',  '┃', '┛', '━', '━', 1],
+		['leftdown',   '━',  '━', '┏', '┃', '┃', 1],
+		['right',      '━',  '━',  '',  '', '━', 1],
+		['upright',    '┃',  '┃', '┏', '━', '━', 1],
+		['rightup',    '━',  '━', '┛', '┃', '┃', 1],
+		['downright',  '┃',  '┃', '┗', '━', '━', 1],
+		['rightdown',  '━',  '━', '┓', '┃', '┃', 1],
+		['45',         '/',  '/',  '',  '', '/', 1],
+		['135',       '\\', '\\',  '',  '', '\\', 1],
+		['225',        '/',  '/',  '',  '', '/', 1],
+		['315',       '\\', '\\',  '',  '', '\\', 1],
+	],
+	unicode_double =>
 	[
 		['origin',      '',  '*',  '',  '',  '', 1],
 		['up',         '║',  '║',  '',  '', '^', 1],
@@ -190,21 +270,21 @@ my %arrow_types =
 		['225',        '/',  '/',  '',  '', 'v', 1],
 		['315',       '\\', '\\',  '',  '', '^', 1],
 	],
-	unicode_no_arrow =>
+	unicode_double_line =>
 	[
 		['origin',      '',  '*',  '',  '',  '', 1],
-		['up',         '│',  '│',  '',  '', '│', 1],
-		['down',       '│',  '│',  '',  '', '│', 1],
-		['left',       '─',  '─',  '',  '', '─', 1],
-		['upleft',     '│',  '│', '╮', '─', '─', 1],
-		['leftup',     '─',  '─', '╰', '│', '│', 1],
-		['downleft',   '│',  '│', '╯', '─', '─', 1],
-		['leftdown',   '─',  '─', '╭', '│', '│', 1],
-		['right',      '─',  '─',  '',  '', '─', 1],
-		['upright',    '│',  '│', '╭', '─', '─', 1],
-		['rightup',    '─',  '─', '╯', '│', '│', 1],
-		['downright',  '│',  '│', '╰', '─', '─', 1],
-		['rightdown',  '─',  '─', '╮', '│', '│', 1],
+		['up',         '║',  '║',  '',  '', '║', 1],
+		['down',       '║',  '║',  '',  '', '║', 1],
+		['left',       '═',  '═',  '',  '', '═', 1],
+		['upleft',     '║',  '║', '╗', '═', '═', 1],
+		['leftup',     '═',  '═', '╚', '║', '║', 1],
+		['downleft',   '║',  '║', '╝', '═', '═', 1],
+		['leftdown',   '═',  '═', '╔', '║', '║', 1],
+		['right',      '═',  '═',  '',  '', '═', 1],
+		['upright',    '║',  '║', '╔', '═', '═', 1],
+		['rightup',    '═',  '═', '╝', '║', '║', 1],
+		['downright',  '║',  '║', '╚', '═', '═', 1],
+		['rightdown',  '═',  '═', '╗', '║', '║', 1],
 		['45',         '/',  '/',  '',  '', '/', 1],
 		['135',       '\\', '\\',  '',  '', '\\', 1],
 		['225',        '/',  '/',  '',  '', '/', 1],
@@ -267,17 +347,29 @@ my %arrow_types =
 
 sub change_type
 {
-my ($self, $data, $create_undo_snapshot) = @_ ;
+my ($self, $type_definition, $create_undo_snapshot) = @_ ;
 
 $create_undo_snapshot //= 1 ;
 
-if(exists $arrow_types{$data->{TYPE}})
+my $new_type = defined $type_definition->{USER_TYPE}
+			? $type_definition->{USER_TYPE}          # use the type passed as argument
+			: $arrow_types{$type_definition->{TYPE}} ; # use a predefined type
+
+if(defined $new_type)
 	{
 	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
-	my $new_type = Clone::clone($arrow_types{$data->{TYPE}}) ;
+	my $new_type = Clone::clone($new_type) ;
 	
-	$data->{ELEMENT}->set_arrow_type($new_type) ;
+	my $is_autoconnect_enabled      = $type_definition->{ELEMENT}->is_autoconnect_enabled()       if $type_definition->{ELEMENT}->can('is_autoconnect_enabled') ;
+	my $is_connection_allowed_start = $type_definition->{ELEMENT}->is_connection_allowed('start') if $type_definition->{ELEMENT}->can('is_connection_allowed') ;
+	my $is_connection_allowed_end   = $type_definition->{ELEMENT}->is_connection_allowed('end')   if $type_definition->{ELEMENT}->can('is_connection_allowed') ;
+	
+	$type_definition->{ELEMENT}->set_arrow_type($new_type) ;
+	
+	$type_definition->{ELEMENT}->enable_autoconnect($is_autoconnect_enabled)             if $type_definition->{ELEMENT}->can('is_autoconnect_enabled') ;
+	$type_definition->{ELEMENT}->allow_connection('start', $is_connection_allowed_start) if $type_definition->{ELEMENT}->can('is_connection_allowed') ;
+	$type_definition->{ELEMENT}->allow_connection('end', $is_connection_allowed_end)     if $type_definition->{ELEMENT}->can('is_connection_allowed') ;
 	
 	$self->update_display() if $create_undo_snapshot ;
 	}

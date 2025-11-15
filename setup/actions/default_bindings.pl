@@ -10,6 +10,7 @@ use App::Asciio::Actions::Colors ;
 use App::Asciio::Actions::Debug ;
 use App::Asciio::Actions::Elements ;
 use App::Asciio::Actions::ElementsManipulation ;
+use App::Asciio::Actions::ElementAttributes ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
@@ -135,7 +136,7 @@ register_action_handlers
 '<< paste leader >>' =>
 	{
 	SHORTCUTS   => '000-p',
-
+	
 	'Insert from clipboard'         => ['000-p', \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard],
 	'Import from primary to box'    => ['00S-P', \&App::Asciio::Actions::Clipboard::import_from_primary_to_box           ],
 	'Import from primary to text'   => ['0A0-p', \&App::Asciio::Actions::Clipboard::import_from_primary_to_text          ],
@@ -192,18 +193,18 @@ register_action_handlers
 	'Flip show/hide connectors'           => ['000-v', \&App::Asciio::Actions::Unsorted::flip_connector_display                ], 
 	},
 
-'group_color' => 
-	{
-	SHORTCUTS   => 'group_color',
-	
-	'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme         ] ,
-	
-	'Change elements foreground color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0 ] ,
-	'Change elements background color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1 ] ,
-	
-	'Change Asciio background color'      => ['00S-B', \&App::Asciio::Actions::Colors::change_background_color   ] ,
-	'Change grid color'                   => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color         ] ,
-	},
+		'group_color' => 
+			{
+			SHORTCUTS   => 'group_color',
+			
+			'Flip color scheme'                   => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme         ] ,
+			
+			'Change elements foreground color'    => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0 ] ,
+			'Change elements background color'    => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1 ] ,
+			
+			'Change Asciio background color'      => ['00S-B', \&App::Asciio::Actions::Colors::change_background_color   ] ,
+			'Change grid color'                   => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color         ] ,
+			},
 
 '<< arrow leader >>' => 
 	{
@@ -282,105 +283,200 @@ register_action_handlers
 	'<< Connected >>'                     => ['000-k', sub { $_[0]->use_action_group('group_insert_connected') ; }                           ] ,
 	},
 
-'group_insert_stencil' => 
-	{
-	SHORTCUTS   => 'group_insert_stencil',
-	
-	'From user stencils'                  => ['000-s', \&App::Asciio::Actions::Elements::open_user_stencil                                   ], 
-	'From default_stencil'                => ['000-d', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'              ], 
-	'From any stencil'                    => ['000-a', \&App::Asciio::Actions::Elements::open_stencil                                        ], 
-	
-	'From user elements'                  => ['000-0', \&App::Asciio::Actions::Elements::open_user_stencil, 'elements.asciio'                ], 
-	'From user computer'                  => ['000-1', \&App::Asciio::Actions::Elements::open_user_stencil, 'computer.asciio'                ], 
-	'From user people'                    => ['000-2', \&App::Asciio::Actions::Elements::open_user_stencil, 'people.asciio'                  ], 
-	'From user buildings'                 => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio'               ], 
-	},
+		'group_insert_stencil' => 
+			{
+			SHORTCUTS   => 'group_insert_stencil',
+			
+			'From user stencils'                  => ['000-s', \&App::Asciio::Actions::Elements::open_user_stencil                                   ], 
+			'From default_stencil'                => ['000-d', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'              ], 
+			'From any stencil'                    => ['000-a', \&App::Asciio::Actions::Elements::open_stencil                                        ], 
+			
+			'From user elements'                  => ['000-0', \&App::Asciio::Actions::Elements::open_user_stencil, 'elements.asciio'                ], 
+			'From user computer'                  => ['000-1', \&App::Asciio::Actions::Elements::open_user_stencil, 'computer.asciio'                ], 
+			'From user people'                    => ['000-2', \&App::Asciio::Actions::Elements::open_user_stencil, 'people.asciio'                  ], 
+			'From user buildings'                 => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio'               ], 
+			},
 
-'group_insert_multiple' => 
-	{
-	SHORTCUTS   => 'group_insert_multiple',
-	
-	'Add multiple texts'                  => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'                ],
-	'Add multiple boxes'                  => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box'                 ],
-	},
+		'group_insert_multiple' => 
+			{
+			SHORTCUTS   => 'group_insert_multiple',
+			
+			'Add multiple texts'                  => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'                ],
+			'Add multiple boxes'                  => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box'                 ],
+			},
 
-'group_insert_ruler' => 
-	{
-	SHORTCUTS   => 'group_insert_ruler',
-	
-	'Add vertical ruler'                  => ['000-v', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}                        ],
-	'Add horizontal ruler'                => ['000-h', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'HORIZONTAL'}                      ],
-	'delete rulers'                       => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                                           ],
-	},
+		'group_insert_ruler' => 
+			{
+			SHORTCUTS   => 'group_insert_ruler',
+			
+			'Add vertical ruler'                  => ['000-v', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}                        ],
+			'Add horizontal ruler'                => ['000-h', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'HORIZONTAL'}                      ],
+			'delete rulers'                       => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                                           ],
+			},
 
-'group_insert_line' => 
-	{
-	SHORTCUTS   => 'group_insert_line',
+		'group_insert_line' => 
+			{
+			SHORTCUTS   => 'group_insert_line',
 
-	'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
-	'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
-	},
+			'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
+			'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
+			},
 
-'group_insert_connected' => 
-	{
-	SHORTCUTS   => 'group_insert_connected',
+		'group_insert_connected' => 
+			{
+			SHORTCUTS   => 'group_insert_connected',
 
-	'Add connected box edit'              => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]             ], 
-	'Add multiple connected box edit'     => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1]    ], 
-	'Add connected text edit'             => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]            ], 
-	'Add multiple connected text edit'     => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]   ], 
-	},
+			'Add connected box edit'              => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]             ], 
+			'Add multiple connected box edit'     => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1]    ], 
+			'Add connected text edit'             => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]            ], 
+			'Add multiple connected text edit'     => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]   ], 
+			},
 
-'group_insert_element' => 
-	{
-	SHORTCUTS   => 'group_insert_element',
-	
-	'Add connector type 2'                => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector2', 0]               ],
-	'Add if'                              => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/if', 1]                 ],
-	'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]            ],
-	'Add rhombus'                         => ['0A0-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],
-	'Add ellipse'                         => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
-	},
+		'group_insert_element' => 
+			{
+			SHORTCUTS   => 'group_insert_element',
+			
+			'Add connector type 2'                => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector2', 0]               ],
+			'Add if'                              => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/if', 1]                 ],
+			'Add process'                         => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]            ],
+			'Add rhombus'                         => ['0A0-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]            ],
+			'Add ellipse'                         => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]            ],
+			},
 
-'group_insert_box' => 
-	{
-	SHORTCUTS   => 'group_insert_box',
-	
-	'Add box'                             => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                      ],
-	'Add shrink box'                      => ['000-s', \&App::Asciio::Actions::Elements::add_element, ['Asciio/shrink_box', 1]               ],
-	
-	'Add exec box'                        => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]               ],
-	'Add exec box verbatim'               => ['C00-v', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim', 1]      ],
-	'Add exec box verbatim once'          => ['C00-o', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim once', 1] ],
-	'Add line numbered box'               => ['C00-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]     ],
-	},
+		'group_insert_box' => 
+			{
+			SHORTCUTS   => 'group_insert_box',
+			
+			'Add box'                             => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                      ],
+			'Add shrink box'                      => ['000-s', \&App::Asciio::Actions::Elements::add_element, ['Asciio/shrink_box', 1]               ],
+			
+			'Add exec box'                        => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]               ],
+			'Add exec box verbatim'               => ['C00-v', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim', 1]      ],
+			'Add exec box verbatim once'          => ['C00-o', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim once', 1] ],
+			'Add line numbered box'               => ['C00-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]     ],
+			},
 
-'group_insert_unicode' => 
-	{
-	SHORTCUTS   => 'group_insert_unicode',
-	
-	'Add unicode box'                     => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box unicode', 0]              ],
-	'Add unicode arrow'                   => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow unicode', 0]       ],
-	'Add unicode angled arrow'            => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow unicode', 0]     ],
-	'Add unicode line'                    => ['000-l', \&App::Asciio::Actions::Elements::add_line, 1                                         ],
-	
-	'Add unicode bold line'               => ['00S-L', \&App::Asciio::Actions::Elements::add_line, 2                                         ],
-	'Add unicode double line'             => ['0A0-l', \&App::Asciio::Actions::Elements::add_line, 3                                         ],
-	
-	'Add unicode no-connect line'         => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 1                          ],
-	'Add unicode no-connect bold line'    => ['00S-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 2                          ],
-	'Add unicode no-connect double line'  => ['0A0-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 3                          ],
-	},
+		'group_insert_unicode' => 
+			{
+			SHORTCUTS   => 'group_insert_unicode',
+			
+			'Add unicode box'                     => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box unicode', 0]              ],
+			'Add unicode arrow'                   => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow unicode', 0]       ],
+			'Add unicode angled arrow'            => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow unicode', 0]     ],
+			'Add unicode line'                    => ['000-l', \&App::Asciio::Actions::Elements::add_line, 1                                         ],
+			
+			'Add unicode bold line'               => ['00S-L', \&App::Asciio::Actions::Elements::add_line, 2                                         ],
+			'Add unicode double line'             => ['0A0-l', \&App::Asciio::Actions::Elements::add_line, 3                                         ],
+			
+			'Add unicode no-connect line'         => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 1                          ],
+			'Add unicode no-connect bold line'    => ['00S-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 2                          ],
+			'Add unicode no-connect double line'  => ['0A0-K', \&App::Asciio::Actions::Elements::add_non_connecting_line, 3                          ],
+			},
 
 '<< element leader >>' => 
 	{
 	SHORTCUTS   => '000-e',
 	
-	'Shrink box'                     => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                              ],
+	'Shrink box'                => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                     ],
 	
-	'Make elements Unicode'          => ['C00-u',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 1                            ],
-	'Make elements not Unicode'      => ['C0S-U',  \&App::Asciio::Actions::Asciio::make_selection_unicode, 0                            ],
+	'Make elements Unicode'     => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1        ],
+	'Make elements not Unicode' => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0        ],
+
+	'copy element attributes'   => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_element_attributes          ],
+	'paste element attributes'  => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_element_attributes         ],
+
+	'<< Box >>'                 => ['000-b', sub { $_[0]->use_action_group('group_box_type_change') ; }                   ] ,
+	'<< Wirl Arrow >>'          => ['000-w', sub { $_[0]->use_action_group('group_wirl_arrow_type_change') ; }            ] ,
+	'<< Angled Arrow >>'        => ['000-a', sub { $_[0]->use_action_group('group_angled_arrow_type_change') ; }          ] ,
+	'<< Ellipse >>'             => ['000-e', sub { $_[0]->use_action_group('group_ellipse_type_change') ; }               ] ,
+	'<< Rhombus >>'             => ['000-r', sub { $_[0]->use_action_group('group_rhombus_type_change') ; }               ] ,
+	'<< Triangle Up >>'         => ['000-u', sub { $_[0]->use_action_group('group_triangle_up_type_change') ; }           ] ,
+	'<< Triangle Down>>'        => ['000-d', sub { $_[0]->use_action_group('group_triangle_down_type_change') ; }         ] ,
 	},
+
+		'group_box_type_change' => 
+			{
+			SHORTCUTS   => 'group_box_type_change',
+		
+			'box dash'                      => ['000-d', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'dash'                           ],
+			'box dot'                       => ['00S-D', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'dot'                            ],
+			'box star'                      => ['000-s', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'star'                           ],
+			'box math parantheses'          => ['000-m', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'math_parantheses'               ],
+			'box unicode'                   => ['000-u', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode'                        ],
+			'box unicode imaginary'         => ['000-i', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_imaginary'              ],
+			'box unicode bold'              => ['00S-U', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_bold'                   ],
+			'box unicode bold imaginary'    => ['00S-I', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_bold_imaginary'         ],
+			'box unicode double'            => ['000-l', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_double'                 ],
+			'box unicode with filler type1' => ['000-1', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type1'      ],
+			'box unicode with filler type2' => ['000-2', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type2'      ],
+			'box unicode with filler type3' => ['000-3', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type3'      ],
+			'box unicode with filler type4' => ['000-4', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type4'      ],
+			'box unicode hollow dot'        => ['000-h', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_hollow_dot'             ],
+			'box unicode math parantheses'  => ['00S-M', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_math_paranthesesar'     ],
+			},
+		
+		'group_wirl_arrow_type_change' => 
+			{
+			SHORTCUTS   => 'group_wirl_arrow_type_change',
+			
+			'wirl dash'                           => ['000-d', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dash'                   ],
+			'wirl dash line'                      => ['00S-D', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dash_line'              ],
+			'wirl dot'                            => ['C00-d', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dot'                    ],
+			'wirl dot_no_arrow'                   => ['0A0-d', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dot_no_arrow'           ],
+			'wirl star'                           => ['000-s', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'star'                   ],
+			'wirl octo'                           => ['000-o', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'octo'                   ],
+			'wirl unicode'                        => ['000-1', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode'                ],
+			'wirl unicode line'                   => ['000-u', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_line'           ],
+			'wirl unicode bold'                   => ['000-2', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_bold'           ],
+			'wirl unicode bold line'              => ['000-b', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_bold_line'      ],
+			'wirl unicode_double'                 => ['000-3', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_double'         ],
+			'wirl unicode double line'            => ['00S-B', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_double_line'    ],
+			'wirl unicode unicode imaginary'      => ['000-4', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_imaginary'      ],
+			'wirl unicode unicode imaginary line' => ['000-i', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_imaginary_line' ],
+			'wirl unicode hollow dot'             => ['000-h', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_hollow_dot'     ],
+			},
+		
+		'group_angled_arrow_type_change' => 
+			{
+			SHORTCUTS   => 'group_angled_arrow_type_change',
+			
+			'angled dash'              => ['000-d', \&App::Asciio::Actions::ElementAttributes::angled_arrow_elements_change_type, 'angled_arrow_dash'    ],
+			'angled unicode'           => ['000-u', \&App::Asciio::Actions::ElementAttributes::angled_arrow_elements_change_type, 'angled_arrow_unicode' ],
+			},
+		
+		'group_ellipse_type_change' => 
+			{
+			SHORTCUTS   => 'group_ellipse_type_change',
+			
+			'ellipse normal'                 => ['000-n', \&App::Asciio::Actions::ElementAttributes::ellipse_elements_change_type, 'ellipse_normal'                 ],
+			'ellipse filler star'            => ['000-s', \&App::Asciio::Actions::ElementAttributes::ellipse_elements_change_type, 'ellipse_normal_with_filler_star'],
+			},
+		
+		'group_rhombus_type_change' => 
+			{
+			SHORTCUTS   => 'group_rhombus_type_change',
+			
+			'rohmbus normal'                 => ['000-n', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_normal'                 ],
+			'rohmbus filler star'            => ['000-s', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_normal_with_filler_star'],
+			'rohmbus sparseness'             => ['00S-S', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_sparseness'             ],
+			'rohmbus unicode_slash'          => ['000-u', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_unicode_slash'          ],
+			},
+		
+		'group_triangle_up_type_change' => 
+			{
+			SHORTCUTS   => 'group_triangle_up_type_change',
+			
+			'triangle up normal'             => ['000-n', \&App::Asciio::Actions::ElementAttributes::triangle_up_elements_change_type, 'triangle_up_normal'         ],
+			'triangle up dot'                => ['000-s', \&App::Asciio::Actions::ElementAttributes::triangle_up_elements_change_type, 'triangle_up_dot'            ],
+			},
+		
+		'group_triangle_down_type_change' => 
+			{
+			SHORTCUTS   => 'group_triangle_down_type_change',
+			
+			'tringle down normal'          => ['000-n', \&App::Asciio::Actions::ElementAttributes::triangle_down_elements_change_type,  'triangle_down_normal'     ],
+			'tringle down dot'             => ['000-s', \&App::Asciio::Actions::ElementAttributes::triangle_down_elements_change_type,  'triangle_down_dot'        ],
+			},
 
 '<< selection leader >>' =>
 	{
@@ -390,7 +486,7 @@ register_action_handlers
 	
 	'Selection escape'               => [ '000-s',             \&App::Asciio::Actions::Selection::selection_escape                      ],
 	'Selection escape2'              => [ '000-Escape',        \&App::Asciio::Actions::Selection::selection_escape                      ],
-
+	
 	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
 	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
 	'<< polygon selection >>'        => [ '000-x',             sub { $_[0]->use_action_group('group_polygon') ; }                       ] ,
@@ -401,7 +497,7 @@ register_action_handlers
 	SHORTCUTS => 'group_polygon',
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::polygon_selection_enter,
 	ESCAPE_KEYS => [ '000-x', '000-Escape' ],
-
+	
 	'Polygon selection escape'               => [ '000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape             ],
 	'Polygon selection escape2'              => [ '000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape             ],
 	'Polygon select motion'                  => [ '000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1          ],
@@ -491,13 +587,13 @@ register_action_handlers
 	'<< run script >>'               => ['000-s', sub { $_[0]->use_action_group('group_slides_script') ; }   ] ,
 	},
 
-'group_slides_script' => 
-	{
-	SHORTCUTS   => 'group_slides_script',
-	ESCAPE_KEYS => '000-Escape',
-	
-	map { my $name =  "slides script $_" ; $name => ["000-$_", \&App::Asciio::Actions::Presentation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
-	},
+		'group_slides_script' => 
+			{
+			SHORTCUTS   => 'group_slides_script',
+			ESCAPE_KEYS => '000-Escape',
+			
+			map { my $name =  "slides script $_" ; $name => ["000-$_", \&App::Asciio::Actions::Presentation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
+			},
 
 '<< move arrow ends leader >>' =>
 	{

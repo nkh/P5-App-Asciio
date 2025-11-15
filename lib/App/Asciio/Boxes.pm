@@ -66,6 +66,14 @@ my %box_types =
 			[1, 'bottom',          '╰', '─',   '╯', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
+	unicode_imaginary =>
+		[
+			[1, 'top',             '┌', '┄',   '┐', 1, ],
+			[0, 'title separator', '┆', '┄',   '┆', 1, ],
+			[1, 'body separator',  '┆ ', '┆', ' ┆', 1, ], 
+			[1, 'bottom',          '└', '┄',   '┘', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
 	unicode_with_filler_type1 =>
 		[
 			[1, 'top',             '╭', '─',   '╮', 1, ],
@@ -106,7 +114,15 @@ my %box_types =
 			[1, 'bottom',          '┗', '━',   '┛', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
-	unicode_double_line =>
+	unicode_bold_imaginary =>
+		[
+			[1, 'top',             '┏', '┅',   '┓', 1, ],
+			[0, 'title separator', '┇', '┅',   '┇', 1, ],
+			[1, 'body separator',  '┇ ', '┇', ' ┇', 1, ], 
+			[1, 'bottom',          '┗', '┅',   '┛', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_double =>
 		[
 			[1, 'top',             '╔', '═',   '╗', 1, ],
 			[0, 'title separator', '║', '═',   '║', 1, ],
@@ -231,24 +247,28 @@ my %box_types =
 
 sub change_type
 {
-my ($self, $data, $create_undo_snapshot) = @_ ;
+my ($self, $type_definition, $create_undo_snapshot) = @_ ;
 
 $create_undo_snapshot //= 1 ;
 
-if(exists $box_types{$data->{TYPE}})
+my $new_type = defined $type_definition->{USER_TYPE}
+			? $type_definition->{USER_TYPE}          # use the type passed as argument
+			: $box_types{$type_definition->{TYPE}} ; # use a predefined type
+
+if(defined $new_type)
 	{
 	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
-	my $element_type = $data->{ELEMENT}->get_box_type() ;
+	my $element_type = $type_definition->{ELEMENT}->get_box_type() ;
 	
-	my $new_type = Clone::clone($box_types{$data->{TYPE}}) ;
+	my $new_type = Clone::clone($new_type) ;
 	
 	for (my $frame_element_index = 0 ; $frame_element_index < @{$new_type} ; $frame_element_index++)
 		{
 		$new_type->[$frame_element_index][DISPLAY] = $element_type->[$frame_element_index][DISPLAY] 
 		}
 		
-	$data->{ELEMENT}->set_box_type($new_type) ;
+	$type_definition->{ELEMENT}->set_box_type($new_type) ;
 	
 	$self->update_display() if $create_undo_snapshot ;
 	}
