@@ -122,6 +122,7 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		ACTION_VERBOSE
 		DO_STACK_POINTER DO_STACK
 		WARN
+		FORMAT_PAINTER
 		) ;
 
 sub load_self
@@ -249,6 +250,7 @@ local $self->{CURRENT_ACTIONS} = [] ;
 local $self->{ACTIONS_BY_NAME} = [] ;
 local $self->{DO_STACK} = undef ;
 local $self->{DO_STACK_POINTER} = undef ;
+local $self->{FORMAT_PAINTER} = undef ;
 local $self->{IMPORT_EXPORT_HANDLERS} = undef ;
 local $self->{MODIFIED} => 0 ;
 local $self->{TITLE} = '' ;

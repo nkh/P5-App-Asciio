@@ -8,6 +8,7 @@ use utf8 ;
 
 use List::Util qw(max) ;
 use Readonly ;
+use Clone ;
 
 Readonly my $DEFAULT_BOX_TYPE =>
 [
@@ -524,6 +525,16 @@ $text_only =~ s/\t/$tab_as_space/g ;
 $text_only = make_vertical_text($text_only)  if $self->{VERTICAL_TEXT} ;
 
 $self->set_text($text_only) ;
+}
+
+#-----------------------------------------------------------------------------
+sub copy_type
+{
+my ($self, $asciio) = @_ ;
+
+$asciio->{FORMAT_PAINTER}{NAME} = "rhombus" ;
+$asciio->{FORMAT_PAINTER}{TYPE} = Clone::clone($self->get_box_type()) ;
+
 }
 
 #-----------------------------------------------------------------------------

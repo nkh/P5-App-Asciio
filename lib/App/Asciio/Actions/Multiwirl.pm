@@ -196,15 +196,19 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 	for 
 		(qw(
 		dash               
-		dash_no_arrow      
+		dash_line
 		dot                
 		dot_no_arrow       
 		octo               
 		star               
 		unicode            
+		unicode_line
+		unicode_imaginary
+		unicode_imaginary_line
 		unicode_bold       
+		unicode_bold_line
+		unicode_double
 		unicode_double_line
-		unicode_no_arrow   
 		unicode_hollow_dot 
 		))
 		{

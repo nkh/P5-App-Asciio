@@ -529,5 +529,15 @@ $self->setup
 }
 
 #-----------------------------------------------------------------------------
+sub copy_type
+{
+my ($self, $asciio) = @_ ;
+
+$asciio->{FORMAT_PAINTER}{NAME} = "editable_box2" ;
+$asciio->{FORMAT_PAINTER}{TYPE} = Clone::clone($self->get_box_type()) ;
+
+}
+
+#-----------------------------------------------------------------------------
 
 1 ;

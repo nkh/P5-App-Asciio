@@ -37,6 +37,7 @@
 	- [Cloning](editing/cloning.md)
 	- [Stencils and "Drag and Drop"](editing/drag_drop.md)
 	- [Strip groups](editing/strip-groups.md)
+    - [change element type](editing/change_element_type.md)
 
 - [Export/Save](exporting.md)
 	- [Asciio format](export/asciio.md)

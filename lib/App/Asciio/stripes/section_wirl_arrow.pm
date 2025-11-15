@@ -1152,6 +1152,16 @@ $self->display_arrow_edit_dialog() ;
 }
 
 #-----------------------------------------------------------------------------
+sub copy_type
+{
+my ($self, $asciio) = @_ ;
+
+$asciio->{FORMAT_PAINTER}{NAME} = "section_wirl_arrow" ;
+$asciio->{FORMAT_PAINTER}{TYPE} = Clone::clone($self->get_arrow_type()) ;
+
+}
+
+#-----------------------------------------------------------------------------
 
 1 ;
 

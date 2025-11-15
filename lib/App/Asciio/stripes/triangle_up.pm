@@ -352,5 +352,15 @@ $self->set_text($text_only) ;
 }
 
 #-----------------------------------------------------------------------------
+sub copy_type
+{
+my ($self, $asciio) = @_ ;
+
+$asciio->{FORMAT_PAINTER}{NAME} = "triangle_up" ;
+$asciio->{FORMAT_PAINTER}{TYPE} = Clone::clone($self->get_box_type()) ;
+
+}
+
+#-----------------------------------------------------------------------------
 
 1 ;

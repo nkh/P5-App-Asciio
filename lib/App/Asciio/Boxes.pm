@@ -66,6 +66,14 @@ my %box_types =
 			[1, 'bottom',          '╰', '─',   '╯', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
+	unicode_imaginary =>
+		[
+			[1, 'top',             '┌', '┄',   '┐', 1, ],
+			[0, 'title separator', '┆', '┄',   '┆', 1, ],
+			[1, 'body separator',  '┆ ', '┆', ' ┆', 1, ], 
+			[1, 'bottom',          '└', '┄',   '┘', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
 	unicode_with_filler_type1 =>
 		[
 			[1, 'top',             '╭', '─',   '╮', 1, ],
@@ -106,7 +114,15 @@ my %box_types =
 			[1, 'bottom',          '┗', '━',   '┛', 1, ],
 			[1, 'fill-character',  '',   ' ', '',   1, ],
 		],
-	unicode_double_line =>
+	unicode_bold_imaginary =>
+		[
+			[1, 'top',             '┏', '┅',   '┓', 1, ],
+			[0, 'title separator', '┇', '┅',   '┇', 1, ],
+			[1, 'body separator',  '┇ ', '┇', ' ┇', 1, ], 
+			[1, 'bottom',          '┗', '┅',   '┛', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_double =>
 		[
 			[1, 'top',             '╔', '═',   '╗', 1, ],
 			[0, 'title separator', '║', '═',   '║', 1, ],
@@ -235,13 +251,22 @@ my ($self, $data, $create_undo_snapshot) = @_ ;
 
 $create_undo_snapshot //= 1 ;
 
-if(exists $box_types{$data->{TYPE}})
+# :TO_BE_DELETED:	The meaning of this change is that users can change to their 
+#					own box type through this function, and it does not have to
+#					be a predefined type.
+my $use_type = defined $data->{USER_TYPE} 
+					? $data->{USER_TYPE} 
+					: exists $box_types{$data->{TYPE}}
+						? $box_types{$data->{TYPE}}
+						: undef	;
+
+if(defined $use_type)
 	{
 	$self->create_undo_snapshot() if $create_undo_snapshot ;
 	
 	my $element_type = $data->{ELEMENT}->get_box_type() ;
 	
-	my $new_type = Clone::clone($box_types{$data->{TYPE}}) ;
+	my $new_type = Clone::clone($use_type) ;
 	
 	for (my $frame_element_index = 0 ; $frame_element_index < @{$new_type} ; $frame_element_index++)
 		{
