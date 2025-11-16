@@ -21,8 +21,6 @@ if(@selected_elements == 1)
 	$self->create_undo_snapshot() ;
 	$self->edit_element($selected_elements[0]) ;
 	
-	delete $selected_elements[0]{CACHE}{RENDERING} ;
-	
 	# In gtk3's minimalist input mode, mouse clicks will cause elements to move, 
 	# and this phenomenon is prevented by consuming semaphores
 	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{EDIT_TEXT_INLINE}) && ($self->{EDIT_TEXT_INLINE} != 0)) ;

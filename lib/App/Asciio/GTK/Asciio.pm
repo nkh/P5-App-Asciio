@@ -717,13 +717,13 @@ unless (defined $renderings)
 			$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
 			}
 		
-		$color_set .= $strip_background_color . $strip_foreground_color ;
+		my $strip_color_set .= $strip_background_color . $strip_foreground_color ;
 		
 		for my $line (split /\n/, $strip->{TEXT})
 			{
 			$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
 			
-			unless (exists $self->{CACHE}{STRIPS}{$color_set}{$line})
+			unless (exists $self->{CACHE}{STRIPS}{$strip_color_set}{$line})
 				{
 				my $surface = Cairo::ImageSurface->create('argb32', $strip->{WIDTH} * $character_width, $character_height);
 				
@@ -755,10 +755,10 @@ unless (defined $renderings)
 					Pango::Cairo::show_layout($gc, $layout);
 					}
 				
-				$self->{CACHE}{STRIPS}{$color_set}{$line} = $surface ; # keep reference
+				$self->{CACHE}{STRIPS}{$strip_color_set}{$line} = $surface ; # keep reference
 				}
 			
-			my $strip_rendering = $self->{CACHE}{STRIPS}{$color_set}{$line} ;
+			my $strip_rendering = $self->{CACHE}{STRIPS}{$strip_color_set}{$line} ;
 			push @renderings, [$strip_rendering, $strip->{X_OFFSET}, $strip->{Y_OFFSET} + $line_index++] ;
 			}
 		}

@@ -160,7 +160,7 @@ while (my ($key, $value) = each %key_values)
 	$self->{$key} = ${value} ;
 	}
 
-delete $self->{CACHE};
+delete $self->{CACHE}{RENDERING} ;
 }
 
 #-----------------------------------------------------------------------------
