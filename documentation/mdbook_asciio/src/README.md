@@ -31,7 +31,7 @@ I've used it a lot to draw trees and graphs when my hand drawn pictures were not
 
 ## History
 
-Asciio was born ... as a dare; someone coined a cool name at a conference in Oslo and it's been under development for 20 years. It allows you to embed graphs in code, documentation, requirements, ... 
+Asciio was born ... as a dare; someone coined a cool name at a conference in Oslo and it's been under development for 20 years. It allows you to embed graphs in code, documentation, requirements ... 
 
 
 ```
