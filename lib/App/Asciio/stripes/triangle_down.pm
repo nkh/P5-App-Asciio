@@ -16,6 +16,22 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	['bottom', '\'', ] ,
 ] ;
 
+my %box_types = 
+	(
+	triangle_down_normal =>
+		[
+			['top',     '.', '-', '.', ], 
+			['middle', '\\', '/',      ],
+			['bottom', '\'',           ] ,
+		] ,
+	triangle_down_dot =>
+		[
+			['top',    '.', '.', '.', ], 
+			['middle', '.', '.',      ],
+			['bottom', '\'',          ] ,
+		] ,
+	) ;
+
 use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
@@ -280,6 +296,19 @@ return(0, 0, $self->{WIDTH}, $self->{HEIGHT}) ;
 #-----------------------------------------------------------------------------
 
 sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
+
+#-----------------------------------------------------------------------------
+
+sub change_attributes
+{
+my ($self, $type) = @_ ;
+
+return unless defined $type  ;
+
+my $new_box_type = $box_types{$type} // $type ;
+
+$self->set_box_type(Clone::clone($new_box_type)) ;
+}
 
 #-----------------------------------------------------------------------------
 sub set_box_type

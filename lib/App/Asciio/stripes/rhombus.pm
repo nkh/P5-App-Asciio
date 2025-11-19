@@ -9,6 +9,7 @@ use utf8 ;
 use List::Util qw(max) ;
 use Readonly ;
 use Clone ;
+use utf8 ;
 
 Readonly my $DEFAULT_BOX_TYPE =>
 [
@@ -19,6 +20,46 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[1, 'bottom',        '\'',   ',', '\'',  1, ] ,
 	[1, 'fill-character','',     ' ', '',    1, ] ,
 ] ;
+
+my %box_types = 
+	(
+	rhombus_normal =>
+		[
+			[1, 'top',             ',', '\'',   ',', 1, ], 
+			[1, 'top-middle',    ',\'',   '', '\',', 1, ],
+			[1, 'middle',          ':',   '',   ':', 1, ],
+			[1, 'middle-bottom', '\',',   '', ',\'', 1, ],
+			[1, 'bottom',         '\'',  ',',  '\'', 1, ] ,
+			[1, 'fill-character','',     ' ', '',    1, ] ,
+		],
+	rhombus_normal_with_filler_star =>
+		[
+			[1, 'top',             ',', '\'',   ',', 1, ], 
+			[1, 'top-middle',    ',\'',   '', '\',', 1, ],
+			[1, 'middle',          ':',   '',   ':', 1, ],
+			[1, 'middle-bottom', '\',',   '', ',\'', 1, ],
+			[1, 'bottom',         '\'',  ',',  '\'', 1, ] ,
+			[1, 'fill-character','',     '*', '',    1, ] ,
+		],
+	rhombus_sparseness =>
+		[
+			[1, 'top',            ',', '\'',  ',', 1, ], 
+			[1, 'top-middle',    ', ',   '', ' ,', 1, ],
+			[1, 'middle',         ':',   '',  ':', 1, ],
+			[1, 'middle-bottom', ' ,',   '', ', ', 1, ],
+			[1, 'bottom',        '\'',  ',', '\'', 1, ] ,
+			[1, 'fill-character','',     ' ', '',    1, ] ,
+		],
+	rhombus_unicode_slash =>
+		[
+			[1, 'top',            ' ',  ',',  ' ', 1, ], 
+			[1, 'top-middle',    '／',   '', '＼', 1, ],
+			[1, 'middle',         '❬',   '',  '❭', 1, ],
+			[1, 'middle-bottom', '＼',   '', '／', 1, ],
+			[1, 'bottom',         ' ', '\'',  ' ', 1, ] ,
+			[1, 'fill-character','',     ' ', '',    1, ] ,
+		],
+	) ;
 
 use App::Asciio::String ;
 
@@ -434,6 +475,19 @@ sub get_text { my ($self) = @_ ; return($self->{TEXT_ONLY}) ; }
 #-----------------------------------------------------------------------------
 
 sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
+
+#-----------------------------------------------------------------------------
+
+sub change_attributes
+{
+my ($self, $type) = @_ ;
+
+return unless defined $type  ;
+
+my $new_box_type = $box_types{$type} // $type ;
+
+$self->set_box_type(Clone::clone($new_box_type)) ;
+}
 
 #-----------------------------------------------------------------------------
 

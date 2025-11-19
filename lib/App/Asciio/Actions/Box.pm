@@ -46,7 +46,11 @@ if(@selected_elements == 1 && $element->isa('App::Asciio::stripes::editable_box2
 		unicode_math_parantheses
 		))
 		{
-		push @context_menu_entries, [ "/box type/$_", \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => $_ } ] ,
+		push @context_menu_entries, [
+			"/box attribute/$_",
+			\&App::Asciio::Actions::ElementAttributes::change_attributes,
+			[ 'editable_box2', $_ ],
+			] ;
 		}
 	}
 

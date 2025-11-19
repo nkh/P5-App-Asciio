@@ -212,7 +212,11 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 		unicode_hollow_dot 
 		))
 		{
-		push @context_menu_entries, [ "/arrow type/$_", \&App::Asciio::Arrows::change_type, { ELEMENT => $element, TYPE => $_ } ] ,
+		push @context_menu_entries, [
+			"/arrow attribute/$_",
+			\&App::Asciio::Actions::ElementAttributes::change_attributes,
+			[ 'section_wirl_arrow', $_ ],
+			] ;
 		}
 	}
 
@@ -256,7 +260,11 @@ if(defined $element && 'App::Asciio::stripes::angled_arrow' eq ref $element)
 		angled_arrow_unicode      
 		))
 		{
-		push @context_menu_entries, [ "/arrow type/$_", \&App::Asciio::Arrows::change_type, { ELEMENT => $element, TYPE => $_ } ] ,
+		push @context_menu_entries, [
+			"/arrow attribute/$_",
+			\&App::Asciio::Actions::ElementAttributes::change_attributes,
+			[ 'angled_arrow', $_ ],
+			] ;
 		}
 	}
 
