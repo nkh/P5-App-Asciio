@@ -81,8 +81,8 @@ else
 	if(@selected_elements)
 		{
 		push @context_menu_entries,
-			[ '/make ASCII',   \&make_selection_unicode, 0 ],
-			[ '/make Unicode', \&make_selection_unicode, 1 ] ;
+			[ '/make ASCII',   \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0 ],
+			[ '/make Unicode', \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1 ] ;
 		}
 	}
 

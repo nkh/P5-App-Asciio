@@ -85,25 +85,9 @@ if(@destination_connections)
 #----------------------------------------------------------------------------------------------
 {
 
-my $git_arrow =
-	[
-		# name: start, body, connection, body_2, end, vertical, diagonal_connection
-		['origin'     , '*',  '?', '?', '?', '?', '?', '?', 1],
-		['up'         , "'",  '|', '?', '?', '.', '?', '?', 1],
-		['down'       , '.',  '|', '?', '?', "'", '?', '?', 1],
-		['left'       , '-',  '-', '?', '?', '-', '?', '?', 1],
-		['right'      , '-',  '-', '?', '?', '-', '?', '?', 1],
-		['up-left'    , "'", '\\', '.', '-', '-', '|', "'", 1],
-		['left-up'    , '-', '\\', "'", '-', '.', '|', "'", 1],
-		['down-left'  , '.',  '/', "'", '-', '-', '|', "'", 1],
-		['left-down'  , '-',  '/', '.', '-', "'", '|', "'", 1],
-		['up-right'   , "'",  '/', '.', '-', '-', '|', "'", 1],
-		['right-up'   , '-',  '/', "'", '-', '.', '|', "'", 1],
-		['down-right' , '.', '\\', "'", '-', '-', '|', "'", 1],
-		['right-down' , '-', '\\', '.', '-', "'", '|', "'", 1],
-	] ;
+my $git_arrow = 'angled_arrow_dash' ;
 
-sub set_default_arrow { my ($self, $type) = @_ ; $git_arrow = App::Asciio::Arrows::clone($type) ; }
+sub set_default_arrow { my ($self, $type) = @_ ; $git_arrow = $type ; }
 
 #----------------------------------------------------------------------------------------------
 
@@ -134,7 +118,7 @@ my $angled_arrow = new App::Asciio::stripes::angled_arrow
 					RESIZABLE => 1,
 					}) ;
 
-$angled_arrow->set_arrow_type($git_arrow) ;
+$angled_arrow->change_attributes($git_arrow) ;
 $angled_arrow->enable_autoconnect(0) ;
 
 $self->add_element_at_no_connection

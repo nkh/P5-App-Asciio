@@ -370,8 +370,9 @@ register_action_handlers
 	'Shrink box'                => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                     ],
 	'Make elements Unicode'     => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1        ],
 	'Make elements not Unicode' => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0        ],
-	'copy element attributes'   => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_element_attributes          ],
-	'paste element attributes'  => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_element_attributes         ],
+
+	'copy element attributes'   => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_attributes                  ],
+	'paste element attributes'  => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_attributes                 ],
 
 	'<< Box >>'                 => ['000-b', ACTION_GROUP('box_type_change')                                              ] ,
 	'<< Wirl Arrow >>'          => ['000-w', ACTION_GROUP('wirl_arrow_type_change')                                       ] ,
@@ -385,85 +386,106 @@ register_action_handlers
 		'group_box_type_change' => 
 			{
 			SHORTCUTS   => 'group_box_type_change',
-		
-			'box dash'                      => ['000-d', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'dash'                           ],
-			'box dot'                       => ['00S-D', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'dot'                            ],
-			'box star'                      => ['000-s', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'star'                           ],
-			'box math parantheses'          => ['000-m', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'math_parantheses'               ],
-			'box unicode'                   => ['000-u', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode'                        ],
-			'box unicode imaginary'         => ['000-i', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_imaginary'              ],
-			'box unicode bold'              => ['00S-U', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_bold'                   ],
-			'box unicode bold imaginary'    => ['00S-I', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_bold_imaginary'         ],
-			'box unicode double'            => ['000-l', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_double'                 ],
-			'box unicode with filler type1' => ['000-1', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type1'      ],
-			'box unicode with filler type2' => ['000-2', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type2'      ],
-			'box unicode with filler type3' => ['000-3', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type3'      ],
-			'box unicode with filler type4' => ['000-4', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_with_filler_type4'      ],
-			'box unicode hollow dot'        => ['000-h', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_hollow_dot'             ],
-			'box unicode math parantheses'  => ['00S-M', \&App::Asciio::Actions::ElementAttributes::box_elements_change_type, 'unicode_math_paranthesesar'     ],
-			},
-		
-		'group_wirl_arrow_type_change' => 
-			{
-			SHORTCUTS   => 'group_wirl_arrow_type_change',
 			
-			'wirl dash'                           => ['000-d', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dash'                   ],
-			'wirl dash line'                      => ['00S-D', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dash_line'              ],
-			'wirl dot'                            => ['C00-d', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dot'                    ],
-			'wirl dot_no_arrow'                   => ['0A0-d', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'dot_no_arrow'           ],
-			'wirl star'                           => ['000-s', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'star'                   ],
-			'wirl octo'                           => ['000-o', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'octo'                   ],
-			'wirl unicode'                        => ['000-1', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode'                ],
-			'wirl unicode line'                   => ['000-u', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_line'           ],
-			'wirl unicode bold'                   => ['000-2', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_bold'           ],
-			'wirl unicode bold line'              => ['000-b', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_bold_line'      ],
-			'wirl unicode_double'                 => ['000-3', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_double'         ],
-			'wirl unicode double line'            => ['00S-B', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_double_line'    ],
-			'wirl unicode unicode imaginary'      => ['000-4', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_imaginary'      ],
-			'wirl unicode unicode imaginary line' => ['000-i', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_imaginary_line' ],
-			'wirl unicode hollow dot'             => ['000-h', \&App::Asciio::Actions::ElementAttributes::wirl_arrow_elements_change_type, 'unicode_hollow_dot'     ],
-			},
-		
-		'group_angled_arrow_type_change' => 
-			{
-			SHORTCUTS   => 'group_angled_arrow_type_change',
-			
-			'angled dash'              => ['000-d', \&App::Asciio::Actions::ElementAttributes::angled_arrow_elements_change_type, 'angled_arrow_dash'    ],
-			'angled unicode'           => ['000-u', \&App::Asciio::Actions::ElementAttributes::angled_arrow_elements_change_type, 'angled_arrow_unicode' ],
+			map { ( "box $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['editable_box2', $_->[0]] ] ) } 
+				(
+				['dash'                       , '000-d' ],
+				['dot'                        , '00S-D' ],
+				['star'                       , '000-s' ],
+				['math_parantheses'           , '000-m' ],
+				['unicode'                    , '000-u' ],
+				['unicode_imaginary'          , '000-i' ],
+				['unicode_bold'               , '00S-U' ],
+				['unicode_bold_imaginary'     , '00S-I' ],
+				['unicode_double'             , '000-l' ],
+				['unicode_with_filler_type1'  , '000-1' ],
+				['unicode_with_filler_type2'  , '000-2' ],
+				['unicode_with_filler_type3'  , '000-3' ],
+				['unicode_with_filler_type4'  , '000-4' ],
+				['unicode_hollow_dot'         , '000-h' ],
+				['unicode_math_paranthesesar' , '00S-M' ]
+				),
 			},
 		
 		'group_ellipse_type_change' => 
 			{
 			SHORTCUTS   => 'group_ellipse_type_change',
 			
-			'ellipse normal'                 => ['000-n', \&App::Asciio::Actions::ElementAttributes::ellipse_elements_change_type, 'ellipse_normal'                 ],
-			'ellipse filler star'            => ['000-s', \&App::Asciio::Actions::ElementAttributes::ellipse_elements_change_type, 'ellipse_normal_with_filler_star'],
+			map { ( "ellipse $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['ellipse', $_->[0]] ] ) } 
+				(
+				['ellipse_normal'                       , '000-n' ],
+				['ellipse_normal_with_filler_star'      , '000-s' ],
+				),
 			},
-		
+
 		'group_rhombus_type_change' => 
 			{
 			SHORTCUTS   => 'group_rhombus_type_change',
 			
-			'rohmbus normal'                 => ['000-n', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_normal'                 ],
-			'rohmbus filler star'            => ['000-s', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_normal_with_filler_star'],
-			'rohmbus sparseness'             => ['00S-S', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_sparseness'             ],
-			'rohmbus unicode_slash'          => ['000-u', \&App::Asciio::Actions::ElementAttributes::rhombus_elements_change_type, 'rhombus_unicode_slash'          ],
+			map { ( "rhombus $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['rhombus', $_->[0]] ] ) } 
+				(
+				['rhombus_normal'                       , '000-n' ],
+				['rhombus_normal_with_filler_star'      , '000-s' ],
+				['rhombus_sparseness'                   , '00S-S' ],
+				['rhombus_unicode_slash'                , '000-u' ],
+				)
 			},
-		
+
 		'group_triangle_up_type_change' => 
 			{
 			SHORTCUTS   => 'group_triangle_up_type_change',
 			
-			'triangle up normal'             => ['000-n', \&App::Asciio::Actions::ElementAttributes::triangle_up_elements_change_type, 'triangle_up_normal'         ],
-			'triangle up dot'                => ['000-s', \&App::Asciio::Actions::ElementAttributes::triangle_up_elements_change_type, 'triangle_up_dot'            ],
+			map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_up', $_->[0]] ] ) } 
+				(
+				['triangle_up_normal'                    , '000-n' ],
+				['triangle_up_dot'                       , '000-s' ],
+				),
 			},
-		
+
 		'group_triangle_down_type_change' => 
 			{
 			SHORTCUTS   => 'group_triangle_down_type_change',
 			
-			'tringle down normal'          => ['000-n', \&App::Asciio::Actions::ElementAttributes::triangle_down_elements_change_type,  'triangle_down_normal'     ],
-			'tringle down dot'             => ['000-s', \&App::Asciio::Actions::ElementAttributes::triangle_down_elements_change_type,  'triangle_down_dot'        ],
+			map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_down', $_->[0]] ] ) } 
+				(
+				['triangle_down_normal'                    , '000-n' ],
+				['triangle_down_dot'                       , '000-s' ],
+				),
+			},
+
+		'group_wirl_arrow_type_change' => 
+			{
+			SHORTCUTS   => 'group_wirl_arrow_type_change',
+			
+			map { ( "wirl arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['section_wirl_arrow', $_->[0]] ] ) } 
+				(
+				['dash'                   , '000-d'] ,
+				['dash_line'              , '00S-D'] ,
+				['dot'                    , 'C00-d'] ,
+				['dot_no_arrow'           , '0A0-d'] ,
+				['star'                   , '000-s'] ,
+				['octo'                   , '000-o'] ,
+				['unicode'                , '000-1'] ,
+				['unicode_line'           , '000-u'] ,
+				['unicode_bold'           , '000-2'] ,
+				['unicode_bold_line'      , '000-b'] ,
+				['unicode_double'         , '000-3'] ,
+				['unicode_double_line'    , '00S-B'] ,
+				['unicode_imaginary'      , '000-4'] ,
+				['unicode_imaginary_line' , '000-i'] ,
+				['unicode_hollow_dot'     , '000-h'] ,
+				),
+			},
+
+		'group_angled_arrow_type_change' => 
+			{
+			SHORTCUTS   => 'group_angled_arrow_type_change',
+			
+			map { ( "angled arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['angled_arrow', $_->[0]] ] ) } 
+				(
+				['angled_arrow_dash'    , '000-d'] ,
+				['angled_arrow_unicode' , '000-u'] ,
+				),
 			},
 
 '<< selection leader >>' =>

@@ -11,7 +11,6 @@ my @pm_files = qw(
 lib/App/Asciio.pm
 
 lib/App/Asciio/Actions.pm
-lib/App/Asciio/Arrows.pm
 lib/App/Asciio/Ascii.pm
 lib/App/Asciio/Boxes.pm
 lib/App/Asciio/Connections.pm

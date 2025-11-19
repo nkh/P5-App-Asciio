@@ -24,6 +24,36 @@ Readonly my $DEFAULT_BOX_TYPE =>
 
 ] ;
 
+my %box_types = 
+	(
+	ellipse_normal =>
+		[
+			#~  default bottom low middle high fix single
+			[1, 'up-center-point',    '-', '', '', '', '', '_', '',  1, ], 
+			[1, 'down-center-point',  '.', '', '', '', '', '\'', '-',  1, ], 
+			[1, 'left-center-point',  '|', '', '', '', '', '(', '',  1, ], 
+			[1, 'rigth-center-point', '|', '', '', '', '', ')', '',  1, ], 
+			[1, 'left-up-area',       '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'right-up-area',      '\\', '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'left-down-area',     '\\', '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'right-down-area',    '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'fill-character',     ' ',  '', '', '', '', '', '',  1, ], 
+		] ,
+	ellipse_normal_with_filler_star =>
+		[
+			#~  default bottom low middle high fix single
+			[1, 'up-center-point',    '-', '', '', '', '', '_', '',  1, ], 
+			[1, 'down-center-point',  '.', '', '', '', '', '\'', '-',  1, ], 
+			[1, 'left-center-point',  '|', '', '', '', '', '(', '',  1, ], 
+			[1, 'rigth-center-point', '|', '', '', '', '', ')', '',  1, ], 
+			[1, 'left-up-area',       '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'right-up-area',      '\\', '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'left-down-area',     '\\', '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'right-down-area',    '/',  '_', '.', '-', '\'', ':', '!',  1, ], 
+			[1, 'fill-character',     '*',  '', '', '', '', '', '',  1, ], 
+		] ,
+	) ;
+
 use App::Asciio::String ;
 
 #-----------------------------------------------------------------------------
@@ -843,6 +873,19 @@ sub get_text { my ($self) = @_ ; return($self->{TEXT_ONLY}) ; }
 #-----------------------------------------------------------------------------
 
 sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
+
+#-----------------------------------------------------------------------------
+
+sub change_attributes
+{
+my ($self, $type) = @_ ;
+
+return unless defined $type  ;
+
+my $new_box_type = $box_types{$type} // $type ;
+
+$self->set_box_type(Clone::clone($new_box_type)) ;
+}
 
 #-----------------------------------------------------------------------------
 

@@ -14,33 +14,41 @@ my @context_menu_entries ;
 my @selected_elements = $self->get_selected_elements(1) ;
 my $element = $selected_elements[0] ;
 
-if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_up' eq ref $element))
-	{
-	push @context_menu_entries, 
-		[ '/box type/normal',                  \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'triangle_up_normal' }              ], 
-		[ '/box type/dot',                     \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'triangle_up_dot' }                 ] ;
-	}
+my %menu_map = (
+	triangle_up => [
+		[ 'normal', 'triangle_up_normal' ],
+		[ 'dot',    'triangle_up_dot'    ],
+	],
+	triangle_down => [
+		[ 'normal', 'triangle_down_normal' ],
+		[ 'dot',    'triangle_down_dot'    ],
+	],
+	rhombus => [
+		[ 'normal',                  'rhombus_normal' ],
+		[ 'normal_with_filler_star', 'rhombus_normal_with_filler_star' ],
+		[ 'unicode_slash',           'rhombus_unicode_slash' ],
+		[ 'sparseness',              'rhombus_sparseness' ],
+	],
+	ellipse => [
+		[ 'normal',                  'ellipse_normal' ],
+		[ 'normal_with_filler_star', 'ellipse_normal_with_filler_star' ],
+	],
+);
 
-if (@selected_elements == 1 && ('App::Asciio::stripes::triangle_down' eq ref $element))
+for my $class_name (keys %menu_map)
 	{
-	push @context_menu_entries, 
-		[ '/box type/normal',                  \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'triangle_down_normal' }            ], 
-		[ '/box type/dot',                     \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'triangle_down_dot' }               ] ;
-	}
-
-if(@selected_elements == 1 && 'App::Asciio::stripes::rhombus' eq ref $element)
-	{
-	push @context_menu_entries, 
-		[ '/box type/normal',                  \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'rhombus_normal' }                  ], 
-		[ '/box type/normal_with_filler_star', \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'rhombus_normal_with_filler_star' } ], 
-		[ '/box type/unicode_slash',           \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'rhombus_unicode_slash' }           ], 
-		[ '/box type/sparseness',              \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'rhombus_sparseness' }              ] ;
-	}
-if(@selected_elements == 1 && 'App::Asciio::stripes::ellipse' eq ref $element)
-	{
-	push @context_menu_entries, 
-		[ '/box type/normal',                  \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'ellipse_normal' }                  ], 
-		[ '/box type/normal_with_filler_star', \&App::Asciio::Boxes::change_type, { ELEMENT => $element, TYPE => 'ellipse_normal_with_filler_star' } ] ;
+	if (@selected_elements == 1 && ("App::Asciio::stripes::$class_name" eq ref $element))
+		{
+		for my $entry (@{ $menu_map{$class_name} })
+			{
+			my ($label, $attribute) = @$entry ;
+			push @context_menu_entries, [
+				"/box attribute/$label",
+				\&App::Asciio::Actions::ElementAttributes::change_attributes,
+				[ $class_name, $attribute ],
+				];
+			}
+		}
 	}
 
 return @context_menu_entries ;

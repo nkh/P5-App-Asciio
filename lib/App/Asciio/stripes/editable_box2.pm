@@ -8,6 +8,7 @@ use warnings;
 use List::Util qw(min max) ;
 use Readonly ;
 use Clone ;
+use utf8 ;
 
 use App::Asciio::String ;
 
@@ -21,6 +22,130 @@ Readonly my $DEFAULT_BOX_TYPE =>
 	[1, 'bottom',          '\'', '-', '\'', 1, ],
 	[1, 'fill-character',  '',   ' ', '',   1, ],
 	]  ;
+
+my %box_types = 
+	(
+	dash =>
+		[
+			[1, 'top',             '.', '-',   '.', 1, ],
+			[0, 'title separator', '|', '-',   '|', 1, ],
+			[1, 'body separator',  '| ', '|', ' |', 1, ], 
+			[1, 'bottom',          '\'', '-', '\'', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	dot =>
+		[
+			[1, 'top',             '.',  '.',  '.', 1, ],
+			[0, 'title separator', '.',  '.',  '.', 1, ],
+			[1, 'body separator',  '. ', '.', ' .', 1, ], 
+			[1, 'bottom',          '.',  '.',  '.', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	star =>
+		[
+			[1, 'top',             '*',  '*',  '*', 1, ],
+			[0, 'title separator', '*',  '*',  '*', 1, ],
+			[1, 'body separator',  '* ', '*', ' *', 1, ], 
+			[1, 'bottom',          '*',  '*',  '*', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_imaginary =>
+		[
+			[1, 'top',             '┌', '┄',   '┐', 1, ],
+			[0, 'title separator', '┆', '┄',   '┆', 1, ],
+			[1, 'body separator',  '┆ ', '┆', ' ┆', 1, ], 
+			[1, 'bottom',          '└', '┄',   '┘', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_with_filler_type1 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '█', '',   1, ],
+		],
+	unicode_with_filler_type2 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '▒', '',   1, ],
+		],
+	unicode_with_filler_type3 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '░', '',   1, ],
+		],
+	unicode_with_filler_type4 =>
+		[
+			[1, 'top',             '╭', '─',   '╮', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '╰', '─',   '╯', 1, ],
+			[1, 'fill-character',  '',   '▚', '',   1, ],
+		],
+	unicode_bold =>
+		[
+			[1, 'top',             '┏', '━',   '┓', 1, ],
+			[0, 'title separator', '┃', '━',   '┃', 1, ],
+			[1, 'body separator',  '┃ ', '┃', ' ┃', 1, ], 
+			[1, 'bottom',          '┗', '━',   '┛', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_bold_imaginary =>
+		[
+			[1, 'top',             '┏', '┅',   '┓', 1, ],
+			[0, 'title separator', '┇', '┅',   '┇', 1, ],
+			[1, 'body separator',  '┇ ', '┇', ' ┇', 1, ], 
+			[1, 'bottom',          '┗', '┅',   '┛', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_double =>
+		[
+			[1, 'top',             '╔', '═',   '╗', 1, ],
+			[0, 'title separator', '║', '═',   '║', 1, ],
+			[1, 'body separator',  '║ ', '║', ' ║', 1, ], 
+			[1, 'bottom',          '╚', '═',   '╝', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_hollow_dot =>
+		[
+			[1, 'top',             '∘',  '∘',  '∘', 1, ],
+			[0, 'title separator', '∘',  '∘',  '∘', 1, ],
+			[1, 'body separator',  '∘ ', '∘', ' ∘', 1, ], 
+			[1, 'bottom',          '∘',  '∘',  '∘', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	unicode_math_parantheses =>
+		[
+			[1, 'top',             '⎛', ' ',   '⎞', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '⎜ ', '│', ' ⎟', 1, ], 
+			[1, 'bottom',          '⎝', ' ',   '⎠', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	math_parantheses =>
+		[
+			[1, 'top',             '/', ' ',  '\\', 1, ],
+			[0, 'title separator', '│', '─',   '│', 1, ],
+			[1, 'body separator',  '│ ', '│', ' │', 1, ], 
+			[1, 'bottom',          '\\', ' ',  '/', 1, ],
+			[1, 'fill-character',  '',   ' ', '',   1, ],
+		],
+	) ;
 
 sub new
 {
@@ -454,6 +579,19 @@ $self->setup
 #-----------------------------------------------------------------------------
 
 sub get_box_type { my ($self) = @_ ; return($self->{BOX_TYPE})  ; }
+
+#-----------------------------------------------------------------------------
+
+sub change_attributes
+{
+my ($self, $type) = @_ ;
+
+return unless defined $type  ;
+
+my $new_box_type = $box_types{$type} // $type ;
+
+$self->set_box_type(Clone::clone($new_box_type)) ;
+}
 
 #-----------------------------------------------------------------------------
 
