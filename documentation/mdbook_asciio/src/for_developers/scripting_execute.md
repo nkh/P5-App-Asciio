@@ -38,11 +38,12 @@ POST http://localhost:4444/script_file script="path_to_script"
 
 ### connecting to Asciio Web server
 
-- directly from your application
-- via a command line application like xh (https://github.com/ducaale/xh) or httpie.
-- piping to *stdin_to_asciio* script which is installed with asciio (uses xh).
+- directly from your application for visualisation ([python example](https://github.com/ThomasAstley/ortho-graph/blob/main/src/ortho_graph/asciio.py))
 
-Example:
+![Animation](algorithm_animation.gif)
+
+- via a command line application like [xh](https://github.com/ducaale/xh) or httpie.
+- piping to *stdin_to_asciio* script which is installed with asciio (uses xh).
 
 ```bash
 
