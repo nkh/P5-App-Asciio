@@ -170,6 +170,7 @@ for my $action_file (@{ $action_files })
 				register_action_handlers                      => sub { %action_handlers = @_ ; },
 				register_action_handlers_remove_old_shortcuts => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
 				register_first_level_group                    => sub { %first_level_group = (%first_level_group, @_) ; },
+				ACTION_GROUP                                  => sub { my $group = shift ; return sub { $_[0]->use_action_group("group_$group") ; } }
 				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		CODE_FROM_FILE => $location,

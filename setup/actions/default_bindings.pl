@@ -83,7 +83,6 @@ register_action_handlers
 'Mouse left-release3'                => ['00S-button-release-1',                   \&App::Asciio::Actions::Mouse::mouse_left_release                                   ],
 'Mouse left-release4'                => ['C0S-button-release-1',                   \&App::Asciio::Actions::Mouse::mouse_left_release                                   ],
 
-# 'Mouse expand selection'             => ['',                     \&App::Asciio::Actions::Mouse::expand_selection                                     ],
 'Mouse selection flip'               => ['00S-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
 
 'Mouse quick link'                   => [['0A0-button-press-1', '000-period'],     \&App::Asciio::Actions::Mouse::quick_link                                           ],
@@ -98,7 +97,6 @@ register_action_handlers
 
 'Mouse motion'                       => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                         ], 
 'Mouse motion 2'                     => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                         ],
-#'Mouse drag canvas'                  => ['C00-motion_notify', see drag-and-drop    \&App::Asciio::Actions::Mouse::mouse_drag_canvas                                    ],         
 
 # mouse emulation
 'Mouse emulation toggle'             => [['000-apostrophe', "'"],                  \&App::Asciio::Actions::Mouse::toggle_mouse                                         ],
@@ -181,7 +179,7 @@ register_action_handlers
 	SHORTCUTS   => '000-z',
 	
 	'Change font'                         => ['000-f', \&App::Asciio::Actions::Unsorted::change_font                           ],
-	'<< Change color >>'                  => ['000-c', sub { $_[0]->use_action_group('group_color') ; }                        ] ,
+	'<< Change color >>'                  => ['000-c', ACTION_GROUP('color')                                                   ] ,
 	
 	'Flip binding completion'             => ['000-b', sub { $_[0]->{USE_BINDINGS_COMPLETION} ^= 1 ; $_[0]->update_display() ;}],
 	'Flip cross mode'                     => ['000-x', sub { $_[0]->{USE_CROSS_MODE} ^= 1 ; $_[0]->update_display ; }          ],
@@ -239,7 +237,7 @@ register_action_handlers
 	SHORTCUTS   => '00S-colon',
 	
 	'Help'                                => ['000-h', \&App::Asciio::Actions::Unsorted::display_help                       ],
-	'Add help box'                        => ['00S-H', \&App::Asciio::Actions::Elements::add_help_box,                                       ],
+	'Add help box'                        => ['00S-H', \&App::Asciio::Actions::Elements::add_help_box,                      ],
 	
 	'Display keyboard mapping'            => ['000-k', \&App::Asciio::Actions::Unsorted::display_keyboard_mapping_in_browser],
 	'Display commands'                    => ['000-c', \&App::Asciio::Actions::Unsorted::display_commands                   ],
@@ -263,73 +261,65 @@ register_action_handlers
 	'Add connector'                       => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]                ],
 	'Add text'                            => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]                     ],
 	'Add arrow'                           => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]               ],
-	# 'Add arrow'                           => ['000-a',
-	# 						sub
-	# 						{
-	# 						App::Asciio::Actions::Elements::add_element($_[0], ['Asciio/wirl_arrow', 0]) ;
-	# 						$_[0]->use_action_group('0A0-a') ;
-	# 						}
-	# 					] ,
-	
 	'Add angled arrow'                    => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]             ],
 	
-	'<< Stencil >>'                       => ['000-s', sub { $_[0]->use_action_group('group_insert_stencil') ; }                             ] ,
-	'<< Multiple >>'                      => ['000-m', sub { $_[0]->use_action_group('group_insert_multiple') ; }                            ] ,
-	'<< Unicode >>'                       => ['000-u', sub { $_[0]->use_action_group('group_insert_unicode') ; }                             ] ,
-	'<< Box >>'                           => ['000-b', sub { $_[0]->use_action_group('group_insert_box') ; }                                 ] ,
-	'<< Elements >>'                      => ['000-e', sub { $_[0]->use_action_group('group_insert_element') ; }                             ] ,
-	'<< Ruler >>'                         => ['000-r', sub { $_[0]->use_action_group('group_insert_ruler') ; }                               ] ,
-	'<< Line >>'                          => ['000-l', sub { $_[0]->use_action_group('group_insert_line') ; }                                ] ,
-	'<< Connected >>'                     => ['000-k', sub { $_[0]->use_action_group('group_insert_connected') ; }                           ] ,
+	'<< Stencil >>'                       => ['000-s', ACTION_GROUP('insert_stencil')                                                        ] ,
+	'<< Multiple >>'                      => ['000-m', ACTION_GROUP('insert_multiple')                                                       ] ,
+	'<< Unicode >>'                       => ['000-u', ACTION_GROUP('insert_unicode')                                                        ] ,
+	'<< Box >>'                           => ['000-b', ACTION_GROUP('insert_box')                                                            ] ,
+	'<< Elements >>'                      => ['000-e', ACTION_GROUP('insert_element')                                                        ] ,
+	'<< Ruler >>'                         => ['000-r', ACTION_GROUP('insert_ruler')                                                          ] ,
+	'<< Line >>'                          => ['000-l', ACTION_GROUP('insert_line')                                                           ] ,
+	'<< Connected >>'                     => ['000-k', ACTION_GROUP('insert_connected')                                                      ] ,
 	},
 
 		'group_insert_stencil' => 
 			{
 			SHORTCUTS   => 'group_insert_stencil',
 			
-			'From user stencils'                  => ['000-s', \&App::Asciio::Actions::Elements::open_user_stencil                                   ], 
-			'From default_stencil'                => ['000-d', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'              ], 
-			'From any stencil'                    => ['000-a', \&App::Asciio::Actions::Elements::open_stencil                                        ], 
+			'From user stencils'                  => ['000-s', \&App::Asciio::Actions::Elements::open_user_stencil                     ], 
+			'From default_stencil'                => ['000-d', \&App::Asciio::Actions::Elements::open_stencil, 'default_stencil.asciio'], 
+			'From any stencil'                    => ['000-a', \&App::Asciio::Actions::Elements::open_stencil                          ], 
 			
-			'From user elements'                  => ['000-0', \&App::Asciio::Actions::Elements::open_user_stencil, 'elements.asciio'                ], 
-			'From user computer'                  => ['000-1', \&App::Asciio::Actions::Elements::open_user_stencil, 'computer.asciio'                ], 
-			'From user people'                    => ['000-2', \&App::Asciio::Actions::Elements::open_user_stencil, 'people.asciio'                  ], 
-			'From user buildings'                 => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio'               ], 
+			'From user elements'                  => ['000-0', \&App::Asciio::Actions::Elements::open_user_stencil, 'elements.asciio'  ], 
+			'From user computer'                  => ['000-1', \&App::Asciio::Actions::Elements::open_user_stencil, 'computer.asciio'  ], 
+			'From user people'                    => ['000-2', \&App::Asciio::Actions::Elements::open_user_stencil, 'people.asciio'    ], 
+			'From user buildings'                 => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio' ], 
 			},
 
 		'group_insert_multiple' => 
 			{
 			SHORTCUTS   => 'group_insert_multiple',
 			
-			'Add multiple texts'                  => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'                ],
-			'Add multiple boxes'                  => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box'                 ],
+			'Add multiple texts'                  => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'  ],
+			'Add multiple boxes'                  => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box'   ],
 			},
 
 		'group_insert_ruler' => 
 			{
 			SHORTCUTS   => 'group_insert_ruler',
 			
-			'Add vertical ruler'                  => ['000-v', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}                        ],
-			'Add horizontal ruler'                => ['000-h', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'HORIZONTAL'}                      ],
-			'delete rulers'                       => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                                           ],
+			'Add vertical ruler'                  => ['000-v', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}          ],
+			'Add horizontal ruler'                => ['000-h', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'HORIZONTAL'}        ],
+			'delete rulers'                       => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                             ],
 			},
 
 		'group_insert_line' => 
 			{
 			SHORTCUTS   => 'group_insert_line',
 
-			'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                                         ], 
-			'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0                          ], 
+			'Add ascii line'                      => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0                           ], 
+			'Add ascii no-connect line'           => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0            ], 
 			},
 
 		'group_insert_connected' => 
 			{
 			SHORTCUTS   => 'group_insert_connected',
 
-			'Add connected box edit'              => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]             ], 
-			'Add multiple connected box edit'     => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1]    ], 
-			'Add connected text edit'             => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]            ], 
-			'Add multiple connected text edit'     => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]   ], 
+			'Add connected box edit'              => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]            ], 
+			'Add multiple connected box edit'     => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1]   ], 
+			'Add connected text edit'             => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]           ], 
+			'Add multiple connected text edit'     => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1] ], 
 			},
 
 		'group_insert_element' => 
@@ -378,20 +368,18 @@ register_action_handlers
 	SHORTCUTS   => '000-e',
 	
 	'Shrink box'                => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                     ],
-	
 	'Make elements Unicode'     => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1        ],
 	'Make elements not Unicode' => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0        ],
-
 	'copy element attributes'   => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_element_attributes          ],
 	'paste element attributes'  => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_element_attributes         ],
 
-	'<< Box >>'                 => ['000-b', sub { $_[0]->use_action_group('group_box_type_change') ; }                   ] ,
-	'<< Wirl Arrow >>'          => ['000-w', sub { $_[0]->use_action_group('group_wirl_arrow_type_change') ; }            ] ,
-	'<< Angled Arrow >>'        => ['000-a', sub { $_[0]->use_action_group('group_angled_arrow_type_change') ; }          ] ,
-	'<< Ellipse >>'             => ['000-e', sub { $_[0]->use_action_group('group_ellipse_type_change') ; }               ] ,
-	'<< Rhombus >>'             => ['000-r', sub { $_[0]->use_action_group('group_rhombus_type_change') ; }               ] ,
-	'<< Triangle Up >>'         => ['000-u', sub { $_[0]->use_action_group('group_triangle_up_type_change') ; }           ] ,
-	'<< Triangle Down>>'        => ['000-d', sub { $_[0]->use_action_group('group_triangle_down_type_change') ; }         ] ,
+	'<< Box >>'                 => ['000-b', ACTION_GROUP('box_type_change')                                              ] ,
+	'<< Wirl Arrow >>'          => ['000-w', ACTION_GROUP('wirl_arrow_type_change')                                       ] ,
+	'<< Angled Arrow >>'        => ['000-a', ACTION_GROUP('angled_arrow_type_change')                                     ] ,
+	'<< Ellipse >>'             => ['000-e', ACTION_GROUP('ellipse_type_change')                                          ] ,
+	'<< Rhombus >>'             => ['000-r', ACTION_GROUP('rhombus_type_change')                                          ] ,
+	'<< Triangle Up >>'         => ['000-u', ACTION_GROUP('triangle_up_type_change')                                      ] ,
+	'<< Triangle Down>>'        => ['000-d', ACTION_GROUP('triangle_down_type_change')                                    ] ,
 	},
 
 		'group_box_type_change' => 
@@ -489,7 +477,7 @@ register_action_handlers
 	
 	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
 	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
-	'<< polygon selection >>'        => [ '000-x',             sub { $_[0]->use_action_group('group_polygon') ; }                       ] ,
+	'<< polygon selection >>'        => [ '000-x',             ACTION_GROUP('polygon')                                                  ] ,
 	},
 
 'group_polygon' =>
@@ -498,12 +486,12 @@ register_action_handlers
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::polygon_selection_enter,
 	ESCAPE_KEYS => [ '000-x', '000-Escape' ],
 	
-	'Polygon selection escape'               => [ '000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape             ],
-	'Polygon selection escape2'              => [ '000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape             ],
-	'Polygon select motion'                  => [ '000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1          ],
-	'Polygon deselect motion'                => [ 'C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0          ],
-	'Polygon select left-release'            => [ '000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release     ],
-	'Polygon select left-release 2'          => [ 'C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release     ],
+	'Polygon selection escape'               => [ '000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape           ],
+	'Polygon selection escape2'              => [ '000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape           ],
+	'Polygon select motion'                  => [ '000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1        ],
+	'Polygon deselect motion'                => [ 'C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0        ],
+	'Polygon select left-release'            => [ '000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release   ],
+	'Polygon select left-release 2'          => [ 'C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release   ],
 	},
 
 '<< eraser leader >>' =>
@@ -532,7 +520,6 @@ register_action_handlers
 	'clone box'                      => [ '000-b',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box', 0]          ],
 	'clone text'                     => [ '000-t',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]         ],
 	'clone flip hint lines'          => [ '000-h',               \&App::Asciio::Actions::Unsorted::flip_hint_lines                            ],
-	
 	'clone left'                     => ['000-Left',             \&App::Asciio::Actions::ElementsManipulation::move_selection_left            ],
 	'clone right'                    => ['000-Right',            \&App::Asciio::Actions::ElementsManipulation::move_selection_right           ],
 	'clone up'                       => ['000-Up',               \&App::Asciio::Actions::ElementsManipulation::move_selection_up              ],
@@ -584,7 +571,7 @@ register_action_handlers
 	'first slide'                    => ['000-g', \&App::Asciio::Actions::Presentation::first_slide          ],
 	'show previous message'          => ['000-m', \&App::Asciio::Actions::Presentation::show_previous_message],
 	'show next message'              => ['00S-M', \&App::Asciio::Actions::Presentation::show_next_message    ],
-	'<< run script >>'               => ['000-s', sub { $_[0]->use_action_group('group_slides_script') ; }   ] ,
+	'<< run script >>'               => ['000-s', ACTION_GROUP('slides_script')   ] ,
 	},
 
 		'group_slides_script' => 
@@ -618,12 +605,12 @@ register_action_handlers
 	'arrow end left2'                => [ '00S-H',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0] ],
 	},
 
-'Asciio context_menu'                    => ['as_context_menu', undef, undef,          \&App::Asciio::Actions::Asciio::context_menu                                        ],
-'Box context_menu'                       => ['bo_context_menu', undef, undef,          \&App::Asciio::Actions::Box::context_menu                                           ] ,
-'Multi_wirl context_menu'                => ['mw_context_menu', undef, undef,          \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu                          ],
-'Angled arrow context_menu'              => ['aa_ontext menu',  undef, undef,          \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu                        ],
-'Ruler context_menu'                     => ['ru_context_menu', undef, undef,          \&App::Asciio::Actions::Ruler::context_menu                                         ],
-'Shapes context_menu'                    => ['sh_context_menu', undef, undef,          \&App::Asciio::Actions::Shapes::context_menu                                        ],
+'Asciio context_menu'                    => ['as_context_menu', undef, undef,          \&App::Asciio::Actions::Asciio::context_menu                ],
+'Box context_menu'                       => ['bo_context_menu', undef, undef,          \&App::Asciio::Actions::Box::context_menu                   ] ,
+'Multi_wirl context_menu'                => ['mw_context_menu', undef, undef,          \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu  ],
+'Angled arrow context_menu'              => ['aa_ontext menu',  undef, undef,          \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu],
+'Ruler context_menu'                     => ['ru_context_menu', undef, undef,          \&App::Asciio::Actions::Ruler::context_menu                 ],
+'Shapes context_menu'                    => ['sh_context_menu', undef, undef,          \&App::Asciio::Actions::Shapes::context_menu                ],
 ) ;
 
 register_first_level_group
