@@ -131,9 +131,7 @@ if($answer eq 'save_and_quit')
 		}
 	}
 
-$asciios[0]->exit() ;
-
-# return $answer eq 'cancel';
+return $answer eq 'cancel';
 }
 
 #--------------------------------------------------------------------------
