@@ -11,32 +11,9 @@ sub make_selection_unicode
 {
 my ($asciio, $unicode) = @_ ;
 
-$asciio->create_undo_snapshot() ;
-
-for ($asciio->get_selected_elements(1))
-	{
-	if($_->isa('App::Asciio::stripes::editable_box2'))
-		{
-		App::Asciio::Boxes::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'unicode' : 'dash'}, 0) ;
-		}
-	elsif($_->isa('App::Asciio::stripes::section_wirl_arrow'))
-		{
-		App::Asciio::Arrows::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'unicode' : 'dash'}, 0) ;
-		}
-	elsif($_->isa('App::Asciio::stripes::angled_arrow'))
-		{
-		App::Asciio::Arrows::change_type($asciio, { ELEMENT => $_, TYPE => $unicode ? 'angled_arrow_unicode' : 'angled_arrow_dash' }, 0) ;
-		}
-	#elsif
-		# || 'App::Asciio::stripes::rhombus' eq ref $element
-		# || 'App::Asciio::stripes::ellipse' eq ref $element
-		# || 'App::Asciio::stripes::triangle_down' eq ref $element
-		# || 'App::Asciio::stripes::triangle_up' eq ref $element)
-	
-	delete $_->{CACHE} ;
-	}
-
-$asciio->update_display() ;
+change_attributes($asciio,['editable_box2'      => $unicode ? 'unicode' : 'dash']) ;
+change_attributes($asciio,['section_wirl_arrow' => $unicode ? 'unicode' : 'dash']) ;
+change_attributes($asciio,['angled_arrow'       => $unicode ? 'angled_arrow_unicode' : 'angled_arrow_dash']) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -65,8 +42,8 @@ change_attributes($asciio, [ @{$asciio->{COPIED_ATTRIBUTES}}{'NAME', 'TYPE'}]) ;
 
 sub change_attributes
 {
-my ($asciio, $args) = @_ ;
-my ($class, $type) = @$args;
+my ($asciio, $class_and_type) = @_ ;
+my ($class, $type) = @$class_and_type ;
 
 $asciio->create_undo_snapshot() ;
 
