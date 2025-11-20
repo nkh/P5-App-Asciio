@@ -35,7 +35,7 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-ec21682f.js";
+            window.path_to_searchindex_js = "../../searchindex-41b3808f.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../../toc-99a09f14.js"></script>
@@ -178,19 +178,19 @@
 <p>Bindings can be grouped so you can use multiple key presses (vim-like) to reach an action.</p>
 <pre><code class="language-perl">
 'group name' =&gt;
-	{
-	SHORTCUTS =&gt; 'C00-x',
-	
-	'sub group name' =&gt; 
-		{
-		SHORTCUTS =&gt; 'C00-x',
-		
-		'binding in sub group' =&gt; ['C00-x', sub { print "you're in x/x/x\n" ; } ],  
-		} ,
-	
-	'binding 1' =&gt; ['000-1', sub { print "you're in x/1\n" ; } ],  
-	'binding 2' =&gt; ['000-2', sub { print "you're in x/2\n" ; } ],  
-	},
+    {
+    SHORTCUTS =&gt; 'C00-x',
+
+    'binding group' =&gt; ['C00-x', ACTION_GROUP('next_level') ] ,
+    'binding 1'     =&gt; ['000-1', sub { print "you're in x/1\n" ; } ],  
+    },
+
+'group_next_level' =&gt; # need to be prefixed with 'group_'
+    {
+    SHORTCUTS =&gt; 'C00-y', # can be accessed directly
+
+    'binding in sub group' =&gt; ['C00-x', sub { print "you're in x/x/x\n" ; } ],  
+    } ,
 
 </code></pre>
 
