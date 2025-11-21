@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Installation and running - Asciio</title>
+        <title>Running Asciio, Installation - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-b26413e5.js";
+            window.path_to_searchindex_js = "../searchindex-c57bf517.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-99a09f14.js"></script>
+        <script src="../toc-39e71692.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,7 +174,39 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
+                        <h1 id="running-asciio"><a class="header" href="#running-asciio">Running asciio</a></h1>
+<pre><code>$&gt; asciio [file.asciio]       # GUI application using Gtk3
+
+$&gt; tasciio [file.asciio]      # TUI application
+
+$&gt; asciio_to_text file.asciio # converts asciio files to ASCII
+
+$&gt; text_to_asciio ...         # makes an asciio file from text
+</code></pre>
+<h1 id="command-line-options"><a class="header" href="#command-line-options">Command line options</a></h1>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>option</th><th></th><th></th></tr>
+</thead>
+<tbody>
+<tr><td>b</td><td>put the input in a box element</td><td>text_to_asciio</td></tr>
+<tr><td>text_separator=s</td><td>put the input in a boxed element</td><td>text_to_ascioo</td></tr>
+<tr><td>display_setup_information</td><td>verbose setup information</td><td></td></tr>
+<tr><td>setup_path=s</td><td>sets the root of the setup directory</td><td></td></tr>
+<tr><td>s,script=s</td><td>script to be run at Asciio start</td><td></td></tr>
+<tr><td>p,web_port=s</td><td>port for web server</td><td></td></tr>
+<tr><td>debug_fd=i</td><td>debug file descriptor number</td><td></td></tr>
+<tr><td>add_binding=s</td><td>file containing bindings to embedd</td><td></td></tr>
+<tr><td>reset_bindings</td><td>remove all embedded bindings from document</td><td></td></tr>
+<tr><td>dump_bindings</td><td>write the embedded bindings to files</td><td></td></tr>
+<tr><td>dump_binding_names</td><td>display name of embbeded bindings</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
+<p>Asciio is developed on both Linux and Windows (cygwin).</p>
+<h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>asciio’s is hosted on  <a href="https://github.com/nkh/P5-App-Asciio">github</a></p>
 <h2 id="debianubuntu-package"><a class="header" href="#debianubuntu-package">Debian/Ubuntu package</a></h2>
 <p>No packages pre-build for distributions yet, work is ongoing.</p>
@@ -237,17 +269,6 @@ cpan, but some cannot, and can only be installed manually.</p>
 export DISPLAY=:0.0
 asciio
 </code></pre>
-<h1 id="running-asciio"><a class="header" href="#running-asciio">Running asciio</a></h1>
-<pre><code>$&gt; asciio [file.asciio]       # GUI application using Gtk3
-
-$&gt; tasciio [file.asciio]      # TUI application
-
-$&gt; asciio_to_text file.asciio # converts asciio files to ASCII
-
-$&gt; text_to_asciio ...         # makes an asciio file from text
-</code></pre>
-<h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
-<p>Asciio is developed on both Linux and Windows (cygwin).</p>
 
                     </main>
 
