@@ -56,7 +56,11 @@ podman run -it --net=host --env="DISPLAY" --volume="$HOME:<PATH_YOU_WANT_TO_SHAR
 
 ## Windows
 
-In the windows environment, you can use asciio through WSL or cygwin.
+In the windows environment, you can use asciio through msys2 or WSL or cygwin.
+
+### windows msys2 package
+
+[P5-App-Asciio-msys2](https://github.com/qindapao/P5-App-Asciio-msys2), Here are the complete packaging and installation instructions.
 
 ### WSL
 
