@@ -11,7 +11,7 @@ use warnings;
 use Pango ;
 use Glib qw(TRUE FALSE);
 use List::Util qw(max) ;
-use File::Slurp ;
+use File::Slurper qw(write_text) ;
 
 #-----------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ sub save_on_edit
 {
 my ($self, $new_text, $new_title) = @_ ;
 
-write_file($self->{SAVE_ON_EDIT}, {binmode => ':utf8'}, "$new_title$new_text") if exists $self->{SAVE_ON_EDIT} ;
+write_text($self->{SAVE_ON_EDIT}, "$new_title$new_text") if exists $self->{SAVE_ON_EDIT} ;
 }
 
 #-----------------------------------------------------------------------------

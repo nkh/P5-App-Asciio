@@ -1,5 +1,5 @@
 
-use File::Slurp ;
+use File::Slurper qw(read_text write_text) ;
 use JSON ;
 
 register_import_export_handlers 
@@ -20,9 +20,6 @@ if($self->{CREATE_BACKUP} && -e $file)
 	use File::Copy;
 	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!";		
 	}
-
-# use Data::TreeDumper ;
-# write_file($file.'.ddt', {binmode => ':utf8'}, DumpTree($self)) ;
 
 my $to_json = {} ;
 my %element_to_index ;
@@ -48,12 +45,7 @@ for my $element ($self->{ELEMENTS}->@*)
 
 serialize_connections($self->{CONNECTIONS}, $to_json->{CONNECTIONS} = [], \%element_to_index) ;
 
-my $saved = write_file
-		(
-		$file,
-		{binmode => ':utf8'},
-		JSON::XS->new->pretty(1)->canonical(1)->utf8->encode($to_json)
-		) ;
+my $saved = write_text($file, JSON::XS->new->pretty(1)->canonical(1)->utf8->encode($to_json)) ;
 
 return $file ;
 }

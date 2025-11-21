@@ -12,6 +12,8 @@ use Eval::Context ;
 use Carp ;
 use Module::Util qw(find_installed) ;
 use File::Basename ;
+use File::Slurper qw(read_text write_text) ;
+use File::Temp qw(tempfile) ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -138,7 +140,7 @@ for my $hook_file (@{ $hook_files })
 
 sub setup_action_handlers
 {
-my($self, $setup_path, $action_files) = @_ ;
+my($self, $setup_path, $action_files, $from_code) = @_ ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
@@ -173,7 +175,7 @@ for my $action_file (@{ $action_files })
 				ACTION_GROUP                                  => sub { my $group = shift ; return sub { $_[0]->use_action_group("group_$group") ; } }
 				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
-		CODE_FROM_FILE => $location,
+		(defined $from_code ? (CODE => $from_code) : (CODE_FROM_FILE => $location)) ,
 		) ;
 	
 	die "Asciio: can't load setup file '$action_file': $! $@\n" if $@ ;
@@ -338,16 +340,21 @@ my $name = $action_handler->{NAME} ;
 
 if(exists $self->{ACTIONS_BY_NAME}{$name})
 	{
-	my $reused = '' ;
-	$self->{ACTION_VERBOSE}("\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown'))
-		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
-
-	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
-	
 	if(! defined $action_handler->{SHORTCUTS}) 
 		{
 		die "\tno shortcuts in definition\n" ;
 		}
+	
+	$self->{ACTION_VERBOSE}("\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown'))
+		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
+	
+	my $shortcuts = '' eq ref $action_handler->{SHORTCUTS} ? [$action_handler->{SHORTCUTS}] : $action_handler->{SHORTCUTS} ;
+	
+	$self->{ACTION_VERBOSE}(DumpTree $shortcuts, 'shortcuts:', DISPLAY_CALLER_LOCATION => 0)
+		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
+	
+	my $reused = '' ;
+	my $old_handler = $self->{ACTIONS_BY_NAME}{$name} ;
 	
 	if(! defined $action_handler->{CODE} && defined $old_handler->{CODE}) 
 		{
@@ -373,7 +380,7 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 		$action_handler->{CONTEXT_MENU_ARGUMENTS} = $old_handler->{CONTEXT_MENU_ARGUMENTS}  ;
 		}
 	
-	$self->{ACTION_VERBOSE}("$reused\e[m\n") ;
+	$self->{ACTION_VERBOSE}("$reused\e[m\n") if $reused ne '' ;
 	}
 }
 
@@ -520,6 +527,61 @@ for my $options_file (@{ $options_files })
 	}
 
 $self->event_options_changed() ;
+}
+
+#------------------------------------------------------------------------------------------------------
+
+sub setup_embedded_bindings
+{
+my ($asciio, $asciio_config) = @_ ;
+
+for my $file ($asciio_config->{BINDING_FILES}->@*)
+	{
+	print STDERR "Asciio: adding binding '$file' to document\n" ;
+	
+	my $code = read_text($file) ;
+	
+	$asciio->setup_action_handlers
+		(
+		'file',
+		["EMBEDDED_$file"], # can only pass one "file" at a time when evaluating perl code
+		$code
+		) ;
+	
+	push $asciio->{EMBEDDED_BINDINGS}->@*,
+			{
+			NAME => "EMBEDDED_$file",
+			CODE => $code,
+			DATE => scalar localtime(),
+			} ;
+	}
+
+if(defined $asciio_config->{RESET_BINDINGS})
+	{
+	delete $asciio->{EMBEDDED_BINDINGS} ;
+	$asciio->run_actions_by_name(['Save']) ;
+	print STDERR "Asciio: reset embedded bindings\n" ;
+	exit ;
+	}
+
+if(defined $asciio_config->{DUMP_BINDING_NAMES})
+	{
+	for my $binding ($asciio->{EMBEDDED_BINDINGS}->@*)
+		{
+		print STDERR "Asciio: using binding '$binding->{NAME}' from $binding->{DATE}\n" ;
+		}
+	}
+
+if(defined $asciio_config->{DUMP_BINDINGS})
+	{
+	for my $binding ($asciio->{EMBEDDED_BINDINGS}->@*)
+		{
+		my $binding_dump_file = (tempfile())[1] ;
+		
+		print STDERR "Asciio: writing binding '$binding->{NAME}' from $binding->{DATE} to '$binding_dump_file'\n" ;
+		write_text($binding_dump_file, $binding->{CODE}) ;
+		}
+	}
 }
 
 #------------------------------------------------------------------------------------------------------

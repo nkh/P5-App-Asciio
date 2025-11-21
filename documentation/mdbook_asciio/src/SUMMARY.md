@@ -4,7 +4,7 @@
 
 # User Guide
 
-- [Installation and running](guide/installation.md)
+- [Running Asciio, Installation](guide/installation.md)
 
 - [Asciio's interface](Interface.md)
 

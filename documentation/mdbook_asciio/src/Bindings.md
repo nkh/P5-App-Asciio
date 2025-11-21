@@ -23,7 +23,18 @@ USE_BINDINGS_COMPLETION => 1,
 
 ## Bindings map
 
-*bindings change truth is in the config not this snapshot*
+**bindings change, truth is in the config not this snapshot**
 
 ![bindings](asciio_bindings.png)
+
+## Embedded bindings
+
+Extra bindings can be embedded in an asciio document with command line options
+
+| option                    |                                            |                |
+| -                         | -                                          | -              |
+| add_binding=s             | file containing bindings to embedd         |                |
+| reset_bindings            | remove all embedded bindings from document |                |
+| dump_bindings             | write the embedded bindings to files       |                |
+| dump_binding_names        | display name of embbeded bindings          |                |
 

@@ -9,7 +9,7 @@ use utf8;
 use Carp ;
 
 use Data::TreeDumper ;
-use File::Slurp ;
+use File::Slurper qw(read_text) ;
 use Clone;
 use List::Util qw(min max) ;
 use List::MoreUtils qw(any minmax first_value) ;

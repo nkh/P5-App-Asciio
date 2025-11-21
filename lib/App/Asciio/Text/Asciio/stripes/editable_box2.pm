@@ -6,7 +6,7 @@ use strict;
 use warnings;
 
 use IO::Prompter;
-use File::Slurp ;
+use File::Slurper qw(write_text) ;
 use File::Temp ;
  
 #-----------------------------------------------------------------------------
@@ -21,10 +21,10 @@ if(defined $asciio->{DIALOGS}{BOX_EDIT})
 	{
 	my $file = File::Temp->new()->filename ;
 	
-	write_file($file, "$title\n\n" . ($title_separator->[0] // 0) . "\n\n$text\n") ;
+	write_text($file, "$title\n\n" . ($title_separator->[0] // 0) . "\n\n$text\n") ;
 	
 	system "$asciio->{DIALOGS}{BOX_EDIT} $file" ;
-	my $user_input = read_file $file ;
+	my $user_input = read_text $file ;
 	
 	($title, $title_separator->[0], $text) = split /\n\n\n?/, $user_input ;
 	

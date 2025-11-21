@@ -9,7 +9,7 @@ use warnings;
 my $ASCIIO_MIME_TYPE = "application/x-asciio" ;
 
 use Data::TreeDumper ;
-use File::Slurp ;
+use File::Slurper qw(read_text write_text read_binary write_binary) ;
 use Readonly ;
 use Compress::Bzip2 qw(:all :utilities :gzip) ;
 
@@ -64,7 +64,7 @@ else
 	{
 	if(-e $file_name && -s $file_name)
 		{
-		my $header_diagram  = read_file($file_name) ;
+		my $header_diagram  = read_binary($file_name) ;
 		
 		my $magic           = substr($header_diagram, 0, length($ASCIIO_MIME_TYPE)) ;
 		my $diagram         = $magic eq $ASCIIO_MIME_TYPE ? substr($header_diagram, length($ASCIIO_MIME_TYPE)) : $header_diagram ;
@@ -75,7 +75,7 @@ else
 		
 		if($@)
 			{
-			write_file("failed_resurection_source.pl", {binmode => ':utf8'}, $serialized_self) ;
+			write_text("failed_resurection_source.pl", $serialized_self) ;
 			die "load_file: can't load file '$file_name': $! $@\n" ;
 			}
 		
@@ -135,6 +135,21 @@ delete @{$new_self}{@ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT} ;
 
 my @keys = keys %{$new_self} ;
 @{$self}{@keys} = @{$new_self}{@keys} ;
+
+$self->setup_self() ;
+}
+
+sub setup_self
+{
+my ($self) = @_ ;
+
+if(exists $self->{EMBEDDED_BINDINGS})
+	{
+	for my $binding ($self->{EMBEDDED_BINDINGS}->@*)
+		{
+		$self->setup_action_handlers('from_file', [$binding->{NAME}], $binding->{CODE}) ;
+		}
+	}
 }
 
 #-----------------------------------------------------------------------------
@@ -232,7 +247,7 @@ if(defined $name && $name ne q[])
 		delete $stencil->{Y} ;
 		$stencil->{NAME} = $name;
 		
-		write_file($file_name, {binmode => ':utf8'}, Dumper [$stencil]) ;
+		write_text($file_name, Dumper [$stencil]) ;
 		}
 	}
 }
@@ -314,7 +329,13 @@ else
 		}
 		
 	$title = $file_name ;
-	write_file($file_name, $self->get_compressed_asciio) or $title = undef ;
+
+	eval
+		{
+		write_binary($file_name, $self->get_compressed_asciio) ;
+		} ;
+	
+	$title = '' if($@) ;
 	}
 	
 return $title ;

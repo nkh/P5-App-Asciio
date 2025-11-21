@@ -2,7 +2,7 @@
 
 use strict; use warnings;
 
-use File::Slurp ;
+use File::Slurper qw(read_text) ;
 use App::Asciio::Scripting ;
 
 binmode(STDOUT) ;
@@ -46,7 +46,7 @@ else
 		
 		add "box$pos", new_box
 				(
-				TEXT_ONLY => scalar read_file($text_to_import_file),
+				TEXT_ONLY => scalar read_text($text_to_import_file),
 				BOX_TYPE =>
 					[
 					[0, 'top',              '.', '-',  '.', 1, ],

@@ -78,35 +78,52 @@ sub GetSwitches
 my $asciio_config = shift || {} ;
 
 $asciio_config->{SETUP_PATHS} = [] ;
+$asciio_config->{BINDING_FILES} = [] ;
 
 my @flags_and_help =
 	(
 	'b'                         => \$asciio_config->{TEXT_TO_ASCIIO_BOX_INPUT},
 		'put the input in a boxed element',
 		'',
-		
+	
 	'text_separator=s'          => \$asciio_config->{TEXT_TO_ASCIIO_SEPARATOR},
 		'put the input in a boxed element',
 		'',
-		
+	
 	'display_setup_information' => \$asciio_config->{DISPLAY_SETUP_INFORMATION},
 		'show which setup files are used.',
 		'',
-		
-	'setup_path=s'              => \$asciio_config->{SETUP_PATHS},
+	
+	'setup_path=s'              => $asciio_config->{SETUP_PATHS},
 		'sets the root of the setup directory.',
 		'',
-		
+	
 	's|script=s'                => \$asciio_config->{SCRIPT},
 		'script to be run at Asciio start.',
 		'',
-		
+	
 	'p|web_port=s'              => \$asciio_config->{WEB_PORT},
 		'port for web server.',
 		'',
 	
 	'debug_fd=i'                => \$asciio_config->{DEBUG_FD},
 		'debug file descriptor number.',
+		'',
+	
+	'add_binding=s'             => $asciio_config->{BINDING_FILES},
+		'',
+		'',
+	
+	'reset_bindings'            => \$asciio_config->{RESET_BINDINGS},
+		'',
+		'',
+	
+	'dump_bindings'             => \$asciio_config->{DUMP_BINDINGS},
+		'',
+		'',
+	
+	'dump_binding_names'        => \$asciio_config->{DUMP_BINDING_NAMES},
+		'',
 		'',
 	) ;
 	

@@ -1,5 +1,5 @@
 
-use File::Slurp ;
+use File::Slurper qw(write_text) ;
 
 register_import_export_handlers 
 	(
@@ -9,8 +9,6 @@ register_import_export_handlers
 		EXPORT => \&export_ascii,
 		},
 	) ;
-
-use File::Slurp ;
 
 sub export_ascii
 {
@@ -22,7 +20,7 @@ if($self->{CREATE_BACKUP} && -e $file)
 	copy($file,"$file.bak") or die "export_pod: Copy failed while making backup copy: $!";		
 	}
 
-my $saved = write_file($file, {binmode => ':utf8'}, $self->transform_elements_to_ascii_buffer()) ;
+my $saved = write_text($file, $self->transform_elements_to_ascii_buffer()) ;
 
 return $file ;
 }

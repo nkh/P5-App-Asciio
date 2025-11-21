@@ -7,7 +7,7 @@ use utf8 ;
 use Encode ;
 
 use File::Temp qw/ tempfile / ;
-use File::Slurp ;
+use File::Slurper qw/ write_text / ;
 use Data::TreeDumper ;
 use List::Util qw(min max) ;
 
@@ -199,7 +199,7 @@ for my $group (sort { $a->[0] cmp $b->[0] } @groups)
 	}
 
 my $mapping_file = $file_name // (tempfile())[1] ;
-write_file($mapping_file, @key_actions, "\n\n", sort @action_keys) ;
+write_text($mapping_file, "@key_actions\n\n" . join("\n", sort(@action_keys))) ;
 
 return $mapping_file ;
 }

@@ -2,7 +2,7 @@
 package App::Asciio::Actions::Presentation ;
 
 use strict ; use warnings ;
-use File::Slurp ;
+use File::Slurper qw(read_text) ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -211,7 +211,7 @@ $asciio->delete_elements($message_element) ;
 
 if(defined $ENV{ASCIIO_MESSAGES} && -d $ENV{ASCIIO_MESSAGES} && -f "$ENV{ASCIIO_MESSAGES}/$counter")
 	{
-	my @lines = read_file "$ENV{ASCIIO_MESSAGES}/$counter" ;
+	my @lines = read_text "$ENV{ASCIIO_MESSAGES}/$counter" ;
 	
 	chomp(my $title = $lines[0]) ;
 	my $text = join '', grep { defined $_ } @lines[1 .. @lines] ;

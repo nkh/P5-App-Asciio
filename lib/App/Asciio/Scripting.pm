@@ -57,7 +57,6 @@ use utf8 ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
-use File::Slurp ;
 
 use App::Asciio ;
 use App::Asciio::Connections ;

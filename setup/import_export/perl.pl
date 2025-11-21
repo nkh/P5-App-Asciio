@@ -6,7 +6,7 @@ use utf8 ;
 use Compress::Bzip2 qw(:all :utilities :gzip);
 use MIME::Base64 ();
 
-use File::Slurp ;
+use File::Slurper qw(read_text) ;
 use Data::Dumper ;
 use List::Util qw(max);
 use File::Basename ;
@@ -108,7 +108,7 @@ my $asciio_header = shift @asciio_lines ;
 #~ use Data::TreeDumper ;
 #~ print STDERR DumpTree \@asciio_lines, 'asciio_lines' ;
 
-my $whole_file = read_file($file_name) ;
+my $whole_file = read_text($file_name) ;
 
 if($whole_file =~ /(.*)$asciio_header.*?(\n=.*)/sm)
 	{
