@@ -36,7 +36,7 @@ my ($self, $slide) = @_ ;
 # use Data::TreeDumper ;
 # print STDERR DumpTree \@stack, 'stack:' ;
 
-if(defined $slide)
+if(defined $slide and 'ARRAY' eq ref $slide)
 	{
 	for my $element ($slide->@*)
 		{

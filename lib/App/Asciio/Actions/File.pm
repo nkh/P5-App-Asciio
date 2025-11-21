@@ -155,7 +155,8 @@ if(defined $file_name && $file_name ne q[])
 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
 	my $setup_path = $path . $basename . '/setup/' ;
 	
-	$asciio->setup([$setup_path .  'setup.ini', ] ) ;
+	%object_override = (WARN => sub { print STDERR "@_\n" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
+	$asciio->setup([$setup_path .  'setup.ini', ], \%object_override ) ;
 	
 	$asciio->load_file($file_name) ;
 	$asciio->run_actions_by_name('Select all elements', 'Copy to clipboard') ;

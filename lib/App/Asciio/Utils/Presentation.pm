@@ -25,6 +25,7 @@ return
 		{
 		my ($self) = @_ ;
 		$self->run_actions_by_name(['Insert', $x_offset, $y_offset, $file]) ;
+		return ;
 		} ;
 }
 

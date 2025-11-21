@@ -26,7 +26,7 @@ use App::Asciio::Utils::Presentation ;
 	[ clear_and_box_at(0, 0, "2"), ], 
 	
 	[ 
-		load(0, 0, 'path/file.asciio'),
+		load(0, 0, './default_stencil.asciio'),
 		box(10, 20, 'title', '3', 0),
 	],
 	
