@@ -187,7 +187,7 @@ register_action_handlers
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
 	'Flip rulers display'                 => ['000-r', \&App::Asciio::Actions::Unsorted::flip_rulers_display                   ],
 	'Flip hint lines'                     => ['000-h', \&App::Asciio::Actions::Unsorted::flip_hint_lines                       ],
-	'Flip edit inline'                    => ['000-i', \&App::Asciio::GTK::Asciio::switch_gtk_popup_box_type                   ], 
+	'Flip edit inline'                    => ['000-i', \&App::Asciio::Actions::Unsorted::toggle_edit_inline                    ], 
 	'Flip show/hide connectors'           => ['000-v', \&App::Asciio::Actions::Unsorted::flip_connector_display                ], 
 	},
 
@@ -319,7 +319,7 @@ register_action_handlers
 			'Add connected box edit'              => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]            ], 
 			'Add multiple connected box edit'     => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1]   ], 
 			'Add connected text edit'             => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]           ], 
-			'Add multiple connected text edit'     => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1] ], 
+			'Add multiple connected text edit'    => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1] ], 
 			},
 
 		'group_insert_element' => 

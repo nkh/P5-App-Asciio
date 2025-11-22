@@ -100,9 +100,16 @@ for my $action (@actions)
 				$self->{CURRENT_ACTIONS}{$action}{ORIGIN}
 				)
 			) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion' ;
+				
 		
 		# Note: action sub is what changes $self->{CURRENT_ACTIONS} to a new action group
 		my $start_actions = $self->{CURRENT_ACTIONS} ;
+		
+		if($self->{BINDINGS_COMPLETION})
+			{
+			delete $self->{BINDINGS_COMPLETION} ;
+			$self->update_display() ;
+			}
 		
 		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
 			{

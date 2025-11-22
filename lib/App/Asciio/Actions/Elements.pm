@@ -54,7 +54,7 @@ my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // 
 if($edit)
 	{
 	$element->edit($self);
-	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{EDIT_TEXT_INLINE}) && ($self->{EDIT_TEXT_INLINE} != 0)) ;
+	$self->{EDIT_SEMAPHORE} = 3 if defined $self->{EDIT_TEXT_INLINE} && $self->{EDIT_TEXT_INLINE} != 0 ;
 	}
 
 use App::Asciio::Actions::Mouse ;

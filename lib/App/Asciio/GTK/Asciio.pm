@@ -3,8 +3,6 @@ package App::Asciio::GTK::Asciio ;
 
 use base qw(App::Asciio) ;
 
-$|++ ;
-
 use strict;
 use warnings;
 
@@ -14,59 +12,42 @@ use Pango ;
 
 use List::Util qw(min) ;
 
-use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
-use App::Asciio::GTK::Asciio::stripes::editable_box2;
-use App::Asciio::GTK::Asciio::stripes::rhombus;
-use App::Asciio::GTK::Asciio::stripes::ellipse;
-
-use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
-use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
-use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
-use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
-
-use App::Asciio::GTK::Asciio::Dialogs ;
-use App::Asciio::GTK::Asciio::Menues ;
-use App::Asciio::GTK::Asciio::DnD ;
 use App::Asciio::GTK::Asciio::Selection ;
 
 use App::Asciio::Cross ;
-use App::Asciio::String ;
 use App::Asciio::Markup ;
+use App::Asciio::String ;
 use App::Asciio::ZBuffer ;
 
-our $VERSION = '0.01' ;
+our $VERSION = '0.10' ;
 
 #-----------------------------------------------------------------------------
-
-=head1 NAME 
-
-=cut
 
 sub new
 {
 my ($class, $window, $width, $height, $sc_window) = @_ ;
 
 my $self = App::Asciio::new($class) ;
-$self->{UI} = 'GUI' ;
-
 bless $self, $class ;
 
-$window->signal_connect(key_press_event => \&key_press_event, $self);
-$window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
-$window->signal_connect(button_press_event => \&button_press_event, $self);
-$window->signal_connect(button_release_event => \&button_release_event, $self);
+$self->{UI} = 'GUI' ;
 
-$window->signal_connect(configure_event => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
-$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
-$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+$window->signal_connect(key_press_event => \&key_press_event, $self) ;
+$window->signal_connect(motion_notify_event => \&motion_notify_event, $self) ;
+$window->signal_connect(button_press_event => \&button_press_event, $self) ;
+$window->signal_connect(button_release_event => \&button_release_event, $self) ;
+$window->signal_connect(configure_event => sub { $self->update_display() ; }) ;
+
+$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
+$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
 $sc_window->add_events(['GDK_SCROLL_MASK']) ;
 $sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
 
-my $drawing_area = Gtk3::DrawingArea->new;
+my $drawing_area = Gtk3::DrawingArea->new ;
 
-$self->{widget} = $drawing_area ;
-$self->{root_window} = $window ;
-$self->{sc_window} = $sc_window ;
+$self->{widget}      = $drawing_area ;
+$self->{ROOT_WINDOW} = $window ;
+$self->{SC_WINDOW}   = $sc_window ;
 
 $drawing_area->signal_connect(draw => \&expose_event, $self);
 
@@ -101,10 +82,7 @@ my ($self, $title) = @_;
 
 $self->SUPER::set_title($title) ;
 
-if(defined $title)
-	{
-	$self->{widget}->get_toplevel()->set_title($title . ' - asciio') ;
-	}
+$self->{widget}->get_toplevel()->set_title($title . ' - asciio') if defined $title ;
 }
 
 #-----------------------------------------------------------------------------
@@ -114,14 +92,6 @@ sub set_font
 my ($self, $font_family, $font_size) = @_;
 
 $self->SUPER::set_font($font_family, $font_size) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub switch_gtk_popup_box_type
-{
-my ($self) = @_ ;
-$self->{EDIT_TEXT_INLINE} ^= 1 ;
 }
 
 #-----------------------------------------------------------------------------
@@ -136,7 +106,7 @@ my ($self) = @_;
 if (!$self->{NO_UPDATE_DISPLAY})
 	{
 	$self->SUPER::update_display() ;
-
+	
 	my $widget = $self->{widget} ;
 	$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
 	}
@@ -146,108 +116,318 @@ if (!$self->{NO_UPDATE_DISPLAY})
 
 sub expose_event
 {
-my ( $widget, $gc, $self ) = @_;
+my ($widget, $gc, $self) = @_;
 
-$gc->set_line_width(1);
-
+my ($widget_width, $widget_height)       = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
+my ($window_width, $window_height)       = $self->{ROOT_WINDOW}->get_size() ;
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
+my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
+my $grid_width                           = (int ($window_width / $character_width) + 2)   * $character_width ;
+my $grid_height                          = (int ($window_height / $character_height) + 2) * $character_height ;
 
-# my $zbuffer = App::Asciio::ZBuffer->new(1, $self->{ELEMENTS}->@*) ;
-
-# while( my($coordinate, $elements) = each $zbuffer->{intersecting_elements}->%*) 
-# 	{ 
-# 	use App::Asciio::ZBuffer ;
-# 	use Data::TreeDumper ; 
-
-# 	my $neighbors = $zbuffer->get_neighbors_stack($coordinate) ; 
-# 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
-# 	} 
-
-my $grid_rendering = $self->{CACHE}{GRID} ;
-
-unless (defined $grid_rendering)
+my $expose_data =
 	{
-	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
-	my $gc = Cairo::Context->create($surface);
-		
+	gc               => $gc,
+	
+	character_height => $character_height,
+	character_width  => $character_width,
+	font_description => Pango::FontDescription->from_string($self->get_font_as_string()),
+	grid_height      => $grid_height,
+	grid_width       => $grid_width,
+	scroll_h_value   => $h_value,
+	scroll_v_value   => $v_value,
+	viewport         => $self->get_viewport_info($window_width, $window_height, $h_value, $v_value, $character_width, $character_height),
+	widget_height    => $widget_height,
+	widget_width     => $widget_width,
+	} ;
+
+$gc->set_line_width(1) ;
+
+$self->draw_background_and_grid    ($expose_data) ;
+$self->draw_elements               ($expose_data) ;
+$self->draw_cross_overlays         ($expose_data) if $self->{USE_CROSS_MODE} ;
+$self->draw_overlay                ($expose_data) ;
+$self->draw_ruler_lines            ($expose_data) if $self->{DISPLAY_RULERS} ;
+$self->draw_connections            ($expose_data) ;
+$self->draw_new_connection         ($expose_data) ;
+$self->draw_selection              ($expose_data) ;
+$self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
+$self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
+$self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
+
+return TRUE ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_background_and_grid
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $grid_width, $grid_height, $scroll_h_value, $scroll_v_value, $character_width, $character_height, $widget_width, $widget_height)
+	= @{$expose_data}{qw/ gc grid_width grid_height scroll_h_value scroll_v_value character_width character_height widget_width widget_height /} ;
+
+my ($background_and_grid_rendering, $draw_start_x, $draw_start_y, $grid_cache_key) ;
+
+if($self->{GTK_MEMORY_OVER_SPEED})
+	{
+	$grid_cache_key = "$grid_width-$grid_height-" . ($self->get_color('background') // '') . '-' . ($self->get_color('grid') // '') . '-' . ($self->get_color('grid_2') // '') ;
+	$background_and_grid_rendering = $self->{CACHE}{BACKGROUND_AND_GRID}{$grid_cache_key} ;
+	($draw_start_x, $draw_start_y) = (int($scroll_h_value / $character_width) * $character_width, int($scroll_v_value / $character_height) * $character_height) ;
+	}
+else
+	{
+	($grid_width, $grid_height) = ($widget_width, $widget_height) ;
+	$background_and_grid_rendering = $self->{CACHE}{BACKGROUND_AND_GRID} ;
+	($draw_start_x, $draw_start_y) = (0, 0) ;
+	}
+
+unless (defined $background_and_grid_rendering)
+	{
+	delete $self->{CACHE}{BACKGROUND_AND_GRID} ;
+	my $surface = Cairo::ImageSurface->create('argb32', $grid_width, $grid_height) ;
+	my $gc = Cairo::Context->create($surface) ;
+	
 	$gc->set_source_rgb(@{$self->get_color('background')});
-	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+	$gc->rectangle(0, 0, $grid_width, $grid_height);
 	$gc->fill;
 	
 	if($self->{DISPLAY_GRID})
 		{
-		$gc->set_line_width(1);
+		$gc->set_line_width(1) ;
 		
-		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
+		for my $horizontal (0 .. ($grid_height/$character_height) + 1)
 			{
 			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
 			$gc->set_source_rgb(@{$self->get_color($color)});
 			
 			$gc->move_to(0,  $horizontal * $character_height);
-			$gc->line_to($widget_width, $horizontal * $character_height);
+			$gc->line_to($grid_width, $horizontal * $character_height);
 			$gc->stroke;
 			}
 		
-		for my $vertical(0 .. ($widget_width/$character_width) + 1)
+		for my $vertical(0 .. ($grid_width/$character_width) + 1)
 			{
 			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
 			$gc->set_source_rgb(@{$self->get_color($color)});
 			
 			$gc->move_to($vertical * $character_width, 0) ;
-			$gc->line_to($vertical * $character_width, $widget_height);
+			$gc->line_to($vertical * $character_width, $grid_height);
 			$gc->stroke;
 			}
 		}
 		
-	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
+	if($self->{GTK_MEMORY_OVER_SPEED})
+		{
+		$background_and_grid_rendering = $self->{CACHE}{BACKGROUND_AND_GRID}{$grid_cache_key} = $surface ;
+		}
+	else
+		{
+		$background_and_grid_rendering = $self->{CACHE}{BACKGROUND_AND_GRID} = $surface ;
+		}
 	}
 
-$gc->set_source_surface($grid_rendering, 0, 0);
+$gc->set_source_surface($background_and_grid_rendering, $draw_start_x, $draw_start_y) ;
 $gc->paint;
+}
 
-# draw elements
+#-----------------------------------------------------------------------------
+
+sub draw_elements
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $font_description, $character_width, $character_height, $viewport)
+	= @{$expose_data}{qw/ gc font_description character_width character_height viewport /} ;
+
+for my $element (@{$expose_data->{viewport}{drawing_order}})
+	{
+	$self->draw_element
+		(
+		$element,
+		$viewport->{elements_indexs}{$element},
+		$gc,
+		$font_description,
+		$character_width,
+		$character_height,
+		) ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_cross_overlays
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height, $viewport)
+	= @{$expose_data}{qw/ gc character_width character_height viewport /} ;
+
+my $zbuffer = App::Asciio::ZBuffer->new(1, @{$viewport->{drawing_order}}) ;
+
+my ($default_background_color, $default_foreground_color) = (
+	$self->get_color('element_background'), $self->get_color('element_foreground')) ;
+
+for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
+	{
+	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+	
+	$background_color //= $default_background_color ;
+	$foreground_color //= $default_foreground_color ;
+	
+	my $cache_key = $background_color . $foreground_color . $overlay ;
+	
+	unless(exists $self->{CACHE}{CROSS_OVERLAY}{$cache_key})
+		{
+		my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+		my $gco = Cairo::Context->create($surface) ;
+		
+		my $layout = Pango::Cairo::create_layout($gco) ;
+		$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
+		
+		$gco->set_source_rgb(@{$background_color});
+		$gco->rectangle(0, 0, $character_width, $character_height) ;
+		$gco->fill();
+		
+		$gco->set_source_rgb(@{$foreground_color});
+		
+		$layout->set_text($overlay) ;
+		Pango::Cairo::show_layout($gco, $layout) ;
+		
+		$self->{CACHE}{CROSS_OVERLAY}{$cache_key} = $surface ;
+		}
+	
+	$gc->set_source_surface($self->{CACHE}{CROSS_OVERLAY}{$cache_key}, $x * $character_width, $y * $character_height) ;
+	$gc->paint ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_overlay
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height, $widget_width, $widget_height)
+	= @{$expose_data}{qw/ gc character_width character_height widget_width widget_height /} ;
+
+my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+my $gco = Cairo::Context->create($surface) ;
+
+my $layout = Pango::Cairo::create_layout($gco) ;
+my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+$layout->set_font_description($font_description) ;
+
 my $element_index = 0 ;
 
-my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
-
-for my $element (@{$self->{ELEMENTS}})
+my @overlay_elements = $self->get_overlays('GUI', $gc, $widget_width, $widget_height, $character_width, $character_height) ;
+for (@overlay_elements)
 	{
-	$element_index++ ;
-	$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+	if(! defined $_)
+		{
+		print STDERR "GTK::Asciio: got undef\n" ;
+		}
+	elsif(ref $_ eq 'ARRAY')
+		{
+		my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+		
+		$background_color //= $self->get_color('element_background');
+		$foreground_color //= $self->get_color('element_foreground') ;
+		
+		$gco->set_source_rgb(@{$background_color});
+		$gco->rectangle(0, 0, $character_width, $character_height) ;
+		$gco->fill();
+		
+		$gco->set_source_rgb(@{$foreground_color});
+		
+		$layout->set_text($overlay) ;
+		Pango::Cairo::show_layout($gco, $layout) ;
+		
+		$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
+		$gc->paint;
+		}
+	elsif(ref($_) =~ /^App::Asciio::stripes/)
+		{
+		$self->draw_element($_, $element_index, $gc, $font_description, $character_width, $character_height) ;
+		$element_index++ ; # should overlay stripes have number?
+		}
+	else
+		{
+		print STDERR "GTK::Asciio: got someting else " . ref($_) . "\n" ;
+		}
 	}
 
-$self->draw_cross_overlays($gc, $widget_width, $widget_height, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
-$self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
-
-# draw ruler lines
-if($self->{DISPLAY_RULERS})
+# draw hint_lines
+if(@overlay_elements and $self->{DRAW_HINT_LINES})
 	{
-	for my $line (@{$self->{RULER_LINES}})
+	my ($xs, $ys, $xe, $ye, $has_extents) = $self->get_selected_elements_extents(@overlay_elements) ; 
+	
+	if($has_extents)
 		{
-		my @rgb = exists $line->{COLOR} ? @{$line->{COLOR}} : @{$self->get_color('ruler_line')} ;
-		$gc->set_source_rgb(@rgb) ;
+		$gc->set_line_width(1);
+		$gc->set_source_rgb(@{$self->get_color('hint_line2')});
 		
-		if($line->{TYPE} eq 'VERTICAL')
-			{
-			$gc->move_to($line->{POSITION} * $character_width, 0) ;
-			$gc->line_to($line->{POSITION} * $character_width, $widget_height) ;
-			}
-		else
-			{
-			$gc->move_to(0, $line->{POSITION} * $character_height) ;
-			$gc->line_to($widget_width, $line->{POSITION} * $character_height);
-			}
+		$gc->move_to($xs * $character_width, 0) ;
+		$gc->line_to($xs * $character_width, $widget_height) ;
+		
+		$gc->move_to(0, $ys * $character_height) ;
+		$gc->line_to($widget_width, $ys * $character_height);
+		
+		$gc->move_to($xe * $character_width, 0) ;
+		$gc->line_to($xe * $character_width, $widget_height) ;
+		
+		$gc->move_to(0, $ye * $character_height) ;
+		$gc->line_to($widget_width, $ye * $character_height);
 		
 		$gc->stroke() ;
 		}
 	}
+}
 
-# draw connections
+#-----------------------------------------------------------------------------
+
+sub draw_ruler_lines
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height, $widget_width, $widget_height)
+	= @{$expose_data}{qw/ gc character_width character_height widget_width widget_height /} ;
+
+for my $line (@{$self->{RULER_LINES}})
+	{
+	my @rgb = exists $line->{COLOR} ? @{$line->{COLOR}} : @{$self->get_color('ruler_line')} ;
+	$gc->set_source_rgb(@rgb) ;
+	
+	if($line->{TYPE} eq 'VERTICAL')
+		{
+		$gc->move_to($line->{POSITION} * $character_width, 0) ;
+		$gc->line_to($line->{POSITION} * $character_width, $widget_height) ;
+		}
+	else
+		{
+		$gc->move_to(0, $line->{POSITION} * $character_height) ;
+		$gc->line_to($widget_width, $line->{POSITION} * $character_height);
+		}
+	
+	$gc->stroke() ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_connections
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height, $viewport)
+	= @{$expose_data}{qw/ gc character_width character_height viewport /} ;
+
 my (%connected_connections, %connected_connectors) ;
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
+	next unless exists $viewport->{elements_indexs}{$connection->{CONNECTED}} ;
+	
 	my $draw_connection ;
 	my $connector  ;
 	
@@ -347,12 +527,12 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{ELEMENTS}}
-			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}}
+			? @{$viewport->{drawing_order}}
+			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$viewport->{drawing_order}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
-	{
+		{
 		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
 		
 		$gc->set_source_surface
@@ -397,8 +577,17 @@ for my $element (
 	
 	$gc->show_page;
 	}
+}
 
-# draw new connections
+#-----------------------------------------------------------------------------
+
+sub draw_new_connection
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc character_width character_height /} ;
+
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 	{
 	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
@@ -412,255 +601,137 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 		);
 	}
 
+$gc->stroke() ;
+
 delete $self->{NEW_CONNECTIONS} ;
-	
-# draw selection rectangle
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub draw_selection
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc character_width character_height /} ;
+
 if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	{
-	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} * $character_width ;
-	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} * $character_height ;
-	my $width = ($self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X}) * $character_width ;
-	my $height = ($self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y}) * $character_height; 
-	
-	if($width < 0)
-		{
-		$width *= -1 ;
-		$start_x -= $width ;
-		}
-		
-	if($height < 0)
-		{
-		$height *= -1 ;
-		$start_y -= $height ;
-		}
-		
-	$gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
-	$gc->rectangle($start_x, $start_y, $width, $height) ;
-	$gc->stroke() ;
-	
-	delete $self->{SELECTION_RECTANGLE}{END_X} ;
+	$self->draw_rectangle_selection($gc, $character_width, $character_height) ;
 	}
-
-$self->draw_polygon_selection($gc, $character_width, $character_height) ;
-
-if ($self->{MOUSE_TOGGLE})
+elsif(@{$self->{SELECTION_POLYGON}//[]} > 0)
 	{
-	my $start_x = $self->{MOUSE_X} * $character_width ;
-	my $start_y = $self->{MOUSE_Y} * $character_height ;
-	
-	$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
-	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
-	$gc->fill() ;
-	$gc->stroke() ;
+	$self->draw_polygon_selection($gc, $character_width, $character_height) ;
 	}
+}
 
-# draw hint_lines
-if($self->{DRAW_HINT_LINES})
+#-----------------------------------------------------------------------------
+
+sub display_mouse_cursor
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc character_width character_height /} ;
+
+my $start_x = $self->{MOUSE_X} * $character_width ;
+my $start_y = $self->{MOUSE_Y} * $character_height ;
+
+$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
+$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
+$gc->fill() ;
+$gc->stroke() ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_hint_lines()
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height, $widget_width, $widget_height)
+	= @{$expose_data}{qw/ gc character_width character_height widget_width widget_height /} ;
+
+my ($xs, $ys, $xe, $ye, $has_extents) = $self->get_selected_elements_extents() ; 
+
+if($has_extents)
 	{
-	my ($xs, $ys, $xe, $ye) = $self->get_extent_box() ; 
-
 	$gc->set_line_width(1);
 	$gc->set_source_rgb(@{$self->get_color('hint_line')});
-
+	
 	$gc->move_to($xs * $character_width, 0) ;
 	$gc->line_to($xs * $character_width, $widget_height) ;
-
+	
 	$gc->move_to(0, $ys * $character_height) ;
 	$gc->line_to($widget_width, $ys * $character_height);
-
+	
 	$gc->move_to($xe * $character_width, 0) ;
 	$gc->line_to($xe * $character_width, $widget_height) ;
-
+	
 	$gc->move_to(0, $ye * $character_height) ;
 	$gc->line_to($widget_width, $ye * $character_height);
-
+	
 	$gc->stroke() ;
 	}
-
-$self->display_bindings_completion($gc, $character_width, $character_height) ;
-
-return TRUE;
 }
 
 #-----------------------------------------------------------------------------
 
 sub display_bindings_completion
 {
-my ($self, $gc, $character_width, $character_height) = @_ ;
+my ($self, $expose_data) = @_ ;
 
-if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
+my ($gc, $character_width, $character_height )
+	= @{$expose_data}{qw/ gc character_width character_height /} ;
+
+$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
+
+my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
+
+my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
+$width += $font_character_width / 2 ;
+
+my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
+my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
+my $window_end                     = $window_width + $scroll_bar_x ;
+
+my $start_x ;
+if ( $window_end < ($self->{MOUSE_X} * $character_width) + $width)
 	{
-	$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
-	
-	my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
-	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
-	$width += $font_character_width / 2 ;
-	
-	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
-	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
-	my $window_end                     = $window_width + $scroll_bar_x ;
-	
-	my $start_x ;
-	if ( $window_end < ($self->{MOUSE_X} * $character_width) + $width)
-		{
-		$start_x = (($self->{MOUSE_X} + 1) * $character_width) - $width ; # place left
-		}
-	else
-		{
-		$start_x = ($self->{MOUSE_X} + 1) * $character_width ;
-		}
-	
-	my $start_y = min($window_height + $scroll_bar_y - $height , ($self->{MOUSE_Y} + 1) * $character_height) ;
-	
-	$gc->rectangle($start_x, $start_y, $width, $height) ;
-	$gc->fill() ;
-	
-	my $surface = Cairo::ImageSurface->create('argb32', $width, $height) ;
-	my $gco = Cairo::Context->create($surface) ;
-	
-	my $layout = Pango::Cairo::create_layout($gco) ;
-	my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} $self->{FONT_BINDINGS_SIZE}") ;
-	$layout->set_font_description($font_description) ;
-	
-	$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
-	Pango::Cairo::show_layout($gco, $layout) ;
-	
-	$gc->set_source_surface($surface, $start_x, $start_y) ;
-	$gc->paint;
-	
-	$gc->stroke() ;
+	$start_x = (($self->{MOUSE_X} + 1) * $character_width) - $width ; # place left
 	}
-}
+else
+	{
+	$start_x = ($self->{MOUSE_X} + 1) * $character_width ;
+	}
 
-#-----------------------------------------------------------------------------
+my $start_y = min($window_height + $scroll_bar_y - $height , ($self->{MOUSE_Y} + 1) * $character_height) ;
 
-sub draw_cross_overlays
-{
-my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+$gc->rectangle($start_x, $start_y, $width, $height) ;
+$gc->fill() ;
 
-my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+my $surface = Cairo::ImageSurface->create('argb32', $width, $height) ;
 my $gco = Cairo::Context->create($surface) ;
 
 my $layout = Pango::Cairo::create_layout($gco) ;
-$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
-
-my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
-my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), $self->{sc_window}->get_hadjustment()->get_value()) ;
-
-my ($start_x, $end_x, $start_y, $end_y) = 
-	(
-	int( $h_value / $character_width - 2 ), 
-	int( ($h_value + $windows_width) / $character_width + 2),
-	int( $v_value / $character_height - 2),
-	int( ($v_value + $windows_height) / $character_height + 2)
-	) ;
-
-my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
-
-for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer, $start_x, $end_x, $start_y, $end_y))
-	{
-	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
-	
-	$background_color //= $self->get_color('element_background');
-	$foreground_color //= $self->get_color('element_foreground') ;
-	
-	$gco->set_source_rgb(@{$background_color});
-	$gco->rectangle(0, 0, $character_width, $character_height) ;
-	$gco->fill();
-	
-	$gco->set_source_rgb(@{$foreground_color});
-	
-	$layout->set_text($overlay) ;
-	Pango::Cairo::show_layout($gco, $layout) ;
-	
-	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
-	$gc->paint;
-	}
-}
-
-#-----------------------------------------------------------------------------
-
-sub draw_overlay
-{
-my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
-
-my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
-my $gco = Cairo::Context->create($surface) ;
-
-my $layout = Pango::Cairo::create_layout($gco) ;
-my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
+my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} $self->{FONT_BINDINGS_SIZE}") ;
 $layout->set_font_description($font_description) ;
 
-my $element_index = 0 ;
+$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
+Pango::Cairo::show_layout($gco, $layout) ;
 
-my @overlay_elements = $self->get_overlays('GUI', $gc, $widget_width, $widget_height, $character_width, $character_height) ;
-for (@overlay_elements)
-	{
-	if(! defined $_)
-		{
-		print STDERR "GTK::Asciio: got undef\n" ;
-		}
-	elsif(ref $_ eq 'ARRAY')
-		{
-		my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
-		
-		$background_color //= $self->get_color('element_background');
-		$foreground_color //= $self->get_color('element_foreground') ;
-		
-		$gco->set_source_rgb(@{$background_color});
-		$gco->rectangle(0, 0, $character_width, $character_height) ;
-		$gco->fill();
-		
-		$gco->set_source_rgb(@{$foreground_color});
-		
-		$layout->set_text($overlay) ;
-		Pango::Cairo::show_layout($gco, $layout) ;
-		
-		$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
-		$gc->paint;
-		}
-	elsif(ref($_) =~ /^App::Asciio::stripes/)
-		{
-		$self->draw_element($_, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
-		$element_index++ ; # should overlay stripes have number?
-		}
-	else
-		{
-		print STDERR "GTK::Asciio: got someting else " . ref($_) . "\n" ;
-		}
-	}
-# draw hint_lines
-if(@overlay_elements and $self->{DRAW_HINT_LINES})
-	{
-	my ($xs, $ys, $xe, $ye) = $self->get_extent_box(@overlay_elements) ; 
-
-	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('hint_line2')});
-
-	$gc->move_to($xs * $character_width, 0) ;
-	$gc->line_to($xs * $character_width, $widget_height) ;
-
-	$gc->move_to(0, $ys * $character_height) ;
-	$gc->line_to($widget_width, $ys * $character_height);
-
-	$gc->move_to($xe * $character_width, 0) ;
-	$gc->line_to($xe * $character_width, $widget_height) ;
-
-	$gc->move_to(0, $ye * $character_height) ;
-	$gc->line_to($widget_width, $ye * $character_height);
-
-	$gc->stroke() ;
-	}
+$gc->set_source_surface($surface, $start_x, $start_y) ;
+$gc->paint;
 }
 
 # ------------------------------------------------------------------------------
 
 sub draw_element
 {
-my ($self, $element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
 
 my $is_selected = $element->{SELECTED} // 0 ;
-$is_selected = 1 if $is_selected > 0 ;
+   $is_selected = 1 if $is_selected > 0 ;
 
 my ($background_color, $foreground_color) =  $element->get_colors() ;
 
@@ -689,7 +760,7 @@ else
 			}
 		}
 	}
-		
+
 $foreground_color //= $self->get_color('element_foreground') ;
 
 my $color_set = $is_selected . '-'
@@ -781,8 +852,12 @@ for my $rendering (@$renderings)
 
 #-----------------------------------------------------------------------------
 
+sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
+
 sub button_release_event { my (undef, $event, $self) = @_ ; $self->SUPER::button_release_event($self->create_asciio_event($event)) ; }
 sub button_press_event   { my (undef, $event, $self) = @_ ; $self->SUPER::button_press_event($self->create_asciio_event($event)) ; }
+
+#-----------------------------------------------------------------------------
 
 sub motion_notify_event  {
 
@@ -805,7 +880,6 @@ if
 $self->SUPER::motion_notify_event($self->create_asciio_event($event)) ; 
 }
 
-sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
 sub mouse_scroll_event   { my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; }
 
 #-----------------------------------------------------------------------------
@@ -862,8 +936,8 @@ my $asciio_mouse_scroll_event =
 	{
 	MODIFIERS => get_key_modifiers($event),
 	DIRECTION => 'scroll-' . ($event->direction ne 'smooth'
-									? $event->direction
-									: ($event->get_scroll_deltas())[1] < 0 ? 'up' : 'down'),
+					? $event->direction
+					: ($event->get_scroll_deltas())[1] < 0 ? 'up' : 'down'),
 	} ;
 
 return $asciio_mouse_scroll_event ;
@@ -946,11 +1020,55 @@ $self->{widget}->get_parent_window()->set_cursor($cursor) ;
 #-----------------------------------------------------------------------------
 
 sub hide_cursor { my ($self) = @_ ; $self->change_cursor('blank-cursor') ; }
-
-#-----------------------------------------------------------------------------
-
 sub show_cursor { my ($self) = @_ ; $self->change_cursor('left_ptr') ; }
     
+#-----------------------------------------------------------------------------
+
+sub get_viewport_info
+{
+my ($self, $window_width, $window_height, $h_value, $v_value, $character_width, $character_height) = @_;
+
+my ($min_x, $max_x, $min_y, $max_y) = 
+	(
+	int ($h_value / $character_width - 2),
+	int (($h_value + $window_width) / $character_width + 2),
+	int ($v_value / $character_height - 2),
+	int (($v_value + $window_height) / $character_height + 2)
+	) ;
+
+my (%elements_in_viewport, @elements_in_drawing_order) ;
+
+my $element_index = 0 ;
+
+for my $element (@{$self->{ELEMENTS}})
+	{
+	$element_index++ ;
+	my ($emin_x, $emin_y, $emax_x, $emax_y) = @{ $element->{EXTENTS} } ;
+	
+	if 
+		(
+		   $emin_x + $element->{X} <= $max_x
+		&& $emax_x + $element->{X} >= $min_x
+		&& $emin_y + $element->{Y} <= $max_y
+		&& $emax_y + $element->{Y} >= $min_y
+		)
+		{
+		push @elements_in_drawing_order, $element ;
+		$elements_in_viewport{$element} = $element_index;
+		}
+	}
+
+return
+	{ 
+	min_x           => $min_x,
+	max_x           => $max_x,
+	min_y           => $min_y,
+	max_y           => $max_y,
+	elements_indexs => \%elements_in_viewport,
+	drawing_order   => \@elements_in_drawing_order,
+	} ;
+}
+
 #-----------------------------------------------------------------------------
 
 =head1 DEPENDENCIES

@@ -999,7 +999,6 @@ Please report errors at  https://github.com/nkh/P5-App-Asciio/issues.
 
 	Qin Qing
 	northisland2017@gmail.com
-	unicode support, scroll bar, and rhombus object
  
 =head1 LICENSE AND COPYRIGHT
 

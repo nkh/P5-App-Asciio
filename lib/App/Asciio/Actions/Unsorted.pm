@@ -123,8 +123,8 @@ $self->set_font($family, $size);
 # resize canvas
 if($self->{UI} eq 'GUI')
 	{
-	my $h_value = $self->{sc_window}->get_hadjustment()->get_value() ;
-	my $v_value = $self->{sc_window}->get_vadjustment()->get_value() ;
+	my $h_value = $self->{SC_WINDOW}->get_hadjustment()->get_value() ;
+	my $v_value = $self->{SC_WINDOW}->get_vadjustment()->get_value() ;
 
 	$self->invalidate_rendering_cache() ;
 
@@ -143,8 +143,8 @@ if($self->{UI} eq 'GUI')
 	$new_h_value = max(0, min($canvas_width, $new_h_value)) ;
 	$new_v_value = max(0, min($canvas_height, $new_v_value)) ;
 
-	$self->{sc_window}->get_hadjustment()->set_value($new_h_value) ;
-	$self->{sc_window}->get_vadjustment()->set_value($new_v_value) ;
+	$self->{SC_WINDOW}->get_hadjustment()->set_value($new_h_value) ;
+	$self->{SC_WINDOW}->get_vadjustment()->set_value($new_v_value) ;
 
 	}
 
@@ -400,7 +400,7 @@ sub flip_grid_display
 {
 my ($self) = @_ ;
 $self->{DISPLAY_GRID} ^=1 ;
-delete $self->{CACHE}{GRID} ;
+delete $self->{CACHE}{BACKGROUND_AND_GRID} ;
 $self->update_display() ;
 }
 
@@ -453,6 +453,14 @@ else
 
 $self->invalidate_rendering_cache() ;
 $self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub toggle_edit_inline
+{
+my ($self) = @_ ;
+$self->{EDIT_TEXT_INLINE} ^= 1 ;
 }
 
 #----------------------------------------------------------------------------------------------

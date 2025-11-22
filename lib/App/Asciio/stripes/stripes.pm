@@ -45,7 +45,7 @@ for my $stripe (@{$element_definition->{STRIPES}})
 return bless  
 	{
 	STRIPES => \@stripes,
-	EXTENTS => [$min_x, $max_x, $min_y, $max_y],
+	EXTENTS => [$min_x, $min_y, $max_x, $max_y],
 	WIDTH => $total_width,
 	HEIGHT => $total_height,
 	}, __PACKAGE__ ;

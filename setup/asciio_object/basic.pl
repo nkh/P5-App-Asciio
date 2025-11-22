@@ -86,8 +86,12 @@ FONT_MIN                         => 3,  # minimum font size
 FONT_MAX                         => 28, # maximum font size
 FONT_SIZE                        => 11, # font size for characters
 GIT_MODE_CONNECTOR_CHAR_LIST     => ['*', 'o'], # Linker style in git mode
-OPAQUE_ELEMENTS                  => 1,  # clear the background behind the strips when set, for debugging
 
+GTK_MEMORY_OVER_SPEED            => 0,  # draw the entire canvas or just the viewport
+						# 0: Draw the entire canvas (more memory)
+						# 1: Only draw the viewport (less memory, more cache updatds)
+
+OPAQUE_ELEMENTS                  => 1,  # clear the background behind the strips when set, for debugging
 RULER_LINES => # default ruler lines
 	[
 		{

@@ -379,15 +379,15 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	{
 	my ($character_width, $character_height) = $self->get_character_size() ;
 	
-	my $h_value = $self->{sc_window}->get_hadjustment()->get_value() ;
-	my $v_value = $self->{sc_window}->get_vadjustment()->get_value() ;
+	my $h_value = $self->{SC_WINDOW}->get_hadjustment()->get_value() ;
+	my $v_value = $self->{SC_WINDOW}->get_vadjustment()->get_value() ;
 	
 	my $new_h_value = $h_value - (($x - $self->{PREVIOUS_X}) * $character_width) ;
 	my $new_v_value = $v_value - (($y - $self->{PREVIOUS_Y}) * $character_height) ;
 	
 	if($new_h_value >= 0)
 		{
-		$self->{sc_window}->get_hadjustment()->set_value($new_h_value) ;
+		$self->{SC_WINDOW}->get_hadjustment()->set_value($new_h_value) ;
 		}
 	else
 		{
@@ -396,7 +396,7 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	
 	if($new_v_value >= 0)
 		{
-		$self->{sc_window}->get_vadjustment()->set_value($new_v_value) ;
+		$self->{SC_WINDOW}->get_vadjustment()->set_value($new_v_value) ;
 		}
 	else
 		{
