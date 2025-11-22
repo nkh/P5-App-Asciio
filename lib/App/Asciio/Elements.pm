@@ -299,7 +299,7 @@ for my $element (@elements)
 		}
 	
 	$self->{MODIFIED }++ ;
-	delete $element->{CACHE}{COORDINATES} ;
+	delete $element->{CACHE}{SELECTION_COORDINATES} ;
 	}
 }
 
@@ -755,23 +755,25 @@ return($is_within) ;
 
 #-----------------------------------------------------------------------------
 
-sub get_extent_box
+sub get_selected_elements_extents
 {
 my ($self, @elements) = @_ ;
 
 @elements = $self->get_selected_elements(1) unless @elements ;
 
-my ($xs, $ys, $xe, $ye) = (10_000, 10_000, 0, 0) ;
+my ($xs, $ys, $xe, $ye, $has_extents) = (10_000, 10_000, 0, 0, 0) ;
 
 for (grep { ref($_) !~ /arrow/ } @elements)
 	{
+	$has_extents++ ;
+	
 	$xs = min($xs//10_000, $_->{X} + $_->{EXTENTS}[0]) ;
 	$ys = min($ys//10_000, $_->{Y} + $_->{EXTENTS}[1]) ;
 	$xe = max($xe//0, $_->{X} + $_->{EXTENTS}[2]) ;
 	$ye = max($ye//0, $_->{Y} + $_->{EXTENTS}[3]) ;
 	}
 
-($xs // 0, $ys // 0, $xe // 0, $ye // 0) ;
+($xs // 0, $ys // 0, $xe // 0, $ye // 0, $has_extents) ;
 }
 
 #-----------------------------------------------------------------------------

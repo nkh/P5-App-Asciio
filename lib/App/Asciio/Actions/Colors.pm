@@ -40,7 +40,7 @@ my ($color) = $self->get_color_from_user([0, 0, 0]) ;
 
 $self->create_undo_snapshot() ;
 
-delete $self->{CACHE}{GRID} ;
+delete $self->{CACHE}{BACKGROUND_AND_GRID} ;
 $self->{COLORS}{background} = $color ;
 
 $self->update_display() ;
@@ -56,7 +56,7 @@ my ($color) = $self->get_color_from_user([0, 0, 0]) ;
 
 $self->create_undo_snapshot() ;
 
-delete $self->{CACHE}{GRID} ;
+delete $self->{CACHE}{BACKGROUND_AND_GRID} ;
 $self->{COLORS}{grid} = $color ;
 
 $self->update_display() ;
