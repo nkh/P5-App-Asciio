@@ -110,8 +110,9 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 	qw
 		(
 		widget
-		root_window
-		sc_window
+		ROOT_WINDOW
+		SC_WINDOW
+		SEEN_ELEMENTS
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
 		TITLE
@@ -274,6 +275,9 @@ local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
 local $self->{WARN} = undef ;
 local $self->{COPIED_ATTRIBUTES} = undef ;
+local $self->{ROOT_WINDOW} = undef ;
+local $self->{SC_WINDOW} = undef ;
+local $self->{SEEN_ELEMENTS} = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 

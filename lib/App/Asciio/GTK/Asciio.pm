@@ -56,17 +56,18 @@ $window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
 $window->signal_connect(button_press_event => \&button_press_event, $self);
 $window->signal_connect(button_release_event => \&button_release_event, $self);
 
-$window->signal_connect(configure_event => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
-$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
-$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() if($self->{USE_CROSS_MODE}) ; }) ;
+# :QQ: The event should not be bound to the cross mode, so remove it.
+$window->signal_connect(configure_event => sub { $self->update_display() ; }) ;
+$sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
+$sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
 $sc_window->add_events(['GDK_SCROLL_MASK']) ;
 $sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
 
 my $drawing_area = Gtk3::DrawingArea->new;
 
 $self->{widget} = $drawing_area ;
-$self->{root_window} = $window ;
-$self->{sc_window} = $sc_window ;
+$self->{ROOT_WINDOW} = $window ;
+$self->{SC_WINDOW} = $sc_window ;
 
 $drawing_area->signal_connect(draw => \&expose_event, $self);
 
@@ -142,6 +143,30 @@ if (!$self->{NO_UPDATE_DISPLAY})
 	}
 }
 
+# :QQ: Returns the canvas boundary, grid and scroll bar information for use elsewhere.
+#-----------------------------------------------------------------------------
+sub get_canvas_bounds
+{
+my ($self) = @_;
+
+my ($windows_width, $windows_height) = $self->{ROOT_WINDOW}->get_size() ;
+my ($character_width, $character_height) = $self->get_character_size() ;
+my ($v_value, $h_value) = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
+my ($min_x, $max_x, $min_y, $max_y) = 
+	(
+	int($h_value / $character_width - 2),
+	int(($h_value + $windows_width) / $character_width + 2),
+	int($v_value / $character_height - 2),
+	int(($v_value + $windows_height) / $character_height + 2)
+	) ;
+
+my $grid_width = (int($windows_width / $character_width) + 2) * $character_width ;
+my $grid_height = (int($windows_height / $character_height) + 2) * $character_height ;
+
+return ($min_x, $max_x, $min_y, $max_y, $grid_width, $grid_height, $v_value, $h_value)
+}
+
+
 #-----------------------------------------------------------------------------
 
 sub expose_event
@@ -152,6 +177,8 @@ $gc->set_line_width(1);
 
 my ($character_width, $character_height) = $self->get_character_size() ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
+
+my ($canvas_min_x, $canvas_max_x, $canvas_min_y, $canvas_max_y, $grid_width, $grid_height, $v_value, $h_value) = $self->get_canvas_bounds() ;
 
 # my $zbuffer = App::Asciio::ZBuffer->new(1, $self->{ELEMENTS}->@*) ;
 
@@ -164,60 +191,83 @@ my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->g
 # 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
 # 	} 
 
-my $grid_rendering = $self->{CACHE}{GRID} ;
+# :QQ: The grid can also only draw what the user can see, preventing the user from defining a super large canvas and drawing too much.
+my $grid_cache_key =
+	$grid_width . '-'
+	. $grid_height . '-'
+	. ($self->get_color('background') // '') . '-'
+	. ($self->get_color('grid') // '') . '-'
+	. ($self->get_color('grid_2') // '') ;
+my $grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} ;
 
 unless (defined $grid_rendering)
 	{
-	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
+	delete $self->{CACHE}{GRID} ;
+	my $surface = Cairo::ImageSurface->create('argb32', $grid_width, $grid_height);
 	my $gc = Cairo::Context->create($surface);
 		
 	$gc->set_source_rgb(@{$self->get_color('background')});
-	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+	$gc->rectangle(0, 0, $grid_width, $grid_height);
 	$gc->fill;
 	
 	if($self->{DISPLAY_GRID})
 		{
 		$gc->set_line_width(1);
 		
-		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
+		for my $horizontal (0 .. ($grid_height/$character_height) + 1)
 			{
 			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
 			$gc->set_source_rgb(@{$self->get_color($color)});
 			
 			$gc->move_to(0,  $horizontal * $character_height);
-			$gc->line_to($widget_width, $horizontal * $character_height);
+			$gc->line_to($grid_width, $horizontal * $character_height);
 			$gc->stroke;
 			}
 		
-		for my $vertical(0 .. ($widget_width/$character_width) + 1)
+		for my $vertical(0 .. ($grid_width/$character_width) + 1)
 			{
 			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
 			$gc->set_source_rgb(@{$self->get_color($color)});
 			
 			$gc->move_to($vertical * $character_width, 0) ;
-			$gc->line_to($vertical * $character_width, $widget_height);
+			$gc->line_to($vertical * $character_width, $grid_height);
 			$gc->stroke;
 			}
 		}
 		
-	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
+	$grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} = $surface ;
 	}
 
-$gc->set_source_surface($grid_rendering, 0, 0);
+$gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
 $gc->paint;
 
 # draw elements
 my $element_index = 0 ;
+$self->{SEEN_ELEMENTS} = undef ;
+my %seen_elements_hash ;
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
-	$self->draw_element($element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+	my ($min_x, $min_y, $max_x, $max_y) = @{ $element->{EXTENTS} } ;
+	my ($e_x, $e_y) = ($element->{X}, $element->{Y}) ;
+
+	# :QQ: Rectangular intersection and mutual inclusion algorithm
+	if ($min_x+$e_x <= $canvas_max_x &&
+		$max_x+$e_x >= $canvas_min_x &&
+		$min_y+$e_y <= $canvas_max_y &&
+		$max_y+$e_y >= $canvas_min_y)
+		{
+		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
+		push @{$self->{SEEN_ELEMENTS}}, $element ;
+		}
 	}
 
-$self->draw_cross_overlays($gc, $widget_width, $widget_height, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+@seen_elements_hash{@{$self->{SEEN_ELEMENTS}}} = () if (defined $self->{SEEN_ELEMENTS}) ;
+
+$self->draw_cross_overlays($gc, $self->{SEEN_ELEMENTS}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -250,6 +300,8 @@ for my $connection (@{$self->{CONNECTIONS}})
 	{
 	my $draw_connection ;
 	my $connector  ;
+	# :QQ: If this element cannot be seen, then there is no need to draw its link point
+	next unless(exists $seen_elements_hash{$connection->{CONNECTED}}) ;
 	
 	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
 		{
@@ -347,7 +399,7 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{ELEMENTS}}
+			? @{$self->{SEEN_ELEMENTS}}
 			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}}
 		)
 	{
@@ -411,6 +463,8 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 		$character_width, $character_height
 		);
 	}
+# :QQ: This is a small BUG fix, the new linker can display red.
+$gc->stroke() ;
 
 delete $self->{NEW_CONNECTIONS} ;
 	
@@ -496,8 +550,8 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
 	$width += $font_character_width / 2 ;
 	
-	my ($window_width, $window_height) = $self->{root_window}->get_size() ;
-	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{sc_window}->get_hadjustment()->get_value(), $self->{sc_window}->get_vadjustment()->get_value()) ;
+	my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
+	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
 	my $window_end                     = $window_width + $scroll_bar_x ;
 	
 	my $start_x ;
@@ -534,46 +588,47 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 
 #-----------------------------------------------------------------------------
 
+# :QQ: cross overlays can also be cached
 sub draw_cross_overlays
 {
-my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+my ($self, $gc, $seen_elements, $character_width, $character_height) = @_ ;
 
-my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
-my $gco = Cairo::Context->create($surface) ;
+my $zbuffer = App::Asciio::ZBuffer->new(1, @{$seen_elements}) ;
 
-my $layout = Pango::Cairo::create_layout($gco) ;
-$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
+my ($default_background_color, $default_foreground_color) = (
+	$self->get_color('element_background'), $self->get_color('element_foreground')) ;
 
-my ($windows_width, $windows_height) = $self->{root_window}->get_size() ;
-my ($v_value, $h_value) = ($self->{sc_window}->get_vadjustment()->get_value(), $self->{sc_window}->get_hadjustment()->get_value()) ;
-
-my ($start_x, $end_x, $start_y, $end_y) = 
-	(
-	int( $h_value / $character_width - 2 ), 
-	int( ($h_value + $windows_width) / $character_width + 2),
-	int( $v_value / $character_height - 2),
-	int( ($v_value + $windows_height) / $character_height + 2)
-	) ;
-
-my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
-
-for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer, $start_x, $end_x, $start_y, $end_y))
+for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+
+	$background_color //= $default_background_color ;
+	$foreground_color //= $default_foreground_color ;
 	
-	$background_color //= $self->get_color('element_background');
-	$foreground_color //= $self->get_color('element_foreground') ;
+	my $cache_key = $background_color . $foreground_color . $overlay ;
+
+	unless(exists $self->{CACHE}{CROSS_OVERLAY}{$cache_key})
+		{
+		my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
+		my $gco = Cairo::Context->create($surface) ;
+
+		my $layout = Pango::Cairo::create_layout($gco) ;
+		$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
+
+
+		$gco->set_source_rgb(@{$background_color});
+		$gco->rectangle(0, 0, $character_width, $character_height) ;
+		$gco->fill();
+		
+		$gco->set_source_rgb(@{$foreground_color});
+		
+		$layout->set_text($overlay) ;
+		Pango::Cairo::show_layout($gco, $layout) ;
+
+		$self->{CACHE}{CROSS_OVERLAY}{$cache_key} = $surface ;
+		}
 	
-	$gco->set_source_rgb(@{$background_color});
-	$gco->rectangle(0, 0, $character_width, $character_height) ;
-	$gco->fill();
-	
-	$gco->set_source_rgb(@{$foreground_color});
-	
-	$layout->set_text($overlay) ;
-	Pango::Cairo::show_layout($gco, $layout) ;
-	
-	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height);
+	$gc->set_source_surface($self->{CACHE}{CROSS_OVERLAY}{$cache_key}, $x * $character_width, $y * $character_height);
 	$gc->paint;
 	}
 }
@@ -655,9 +710,10 @@ if(@overlay_elements and $self->{DRAW_HINT_LINES})
 
 # ------------------------------------------------------------------------------
 
+# :QQ: Remove two unused parameters
 sub draw_element
 {
-my ($self, $element, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
 
 my $is_selected = $element->{SELECTED} // 0 ;
 $is_selected = 1 if $is_selected > 0 ;
