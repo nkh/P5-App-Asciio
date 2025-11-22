@@ -143,6 +143,8 @@ if (!$self->{NO_UPDATE_DISPLAY})
 	}
 }
 
+# nkh: do you mean the viewport? the canvas is always 0,0 to whateer size was set in the object
+
 # :QQ: Returns the canvas boundary, grid and scroll bar information for use elsewhere.
 #-----------------------------------------------------------------------------
 sub get_canvas_bounds
@@ -190,6 +192,13 @@ my ($canvas_min_x, $canvas_max_x, $canvas_min_y, $canvas_max_y, $grid_width, $gr
 # 	my $neighbors = $zbuffer->get_neighbors_stack($coordinate) ; 
 # 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
 # 	} 
+
+# nkh: the comment shouldn't be here above the the grid_cach_key conputing
+# nkh: there's also no need to have different caches for the the grid
+#      the maximum size the grid can have is the size of the screen, best to compute it onece
+# nkh: when the color of the grid is changes, the CACHE is flushed
+# nkh: is there a case you see for the grid cache to be computed like you did?
+#      I think it was fine and clearer before
 
 # :QQ: The grid can also only draw what the user can see, preventing the user from defining a super large canvas and drawing too much.
 my $grid_cache_key =
@@ -251,7 +260,10 @@ my $font_description = Pango::FontDescription->from_string($self->get_font_as_st
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
+	# nkh: bad variable names
 	my ($min_x, $min_y, $max_x, $max_y) = @{ $element->{EXTENTS} } ;
+	# nkh: use $element->{X}, ... directly
+
 	my ($e_x, $e_y) = ($element->{X}, $element->{Y}) ;
 
 	# :QQ: Rectangular intersection and mutual inclusion algorithm
@@ -264,6 +276,10 @@ for my $element (@{$self->{ELEMENTS}})
 		push @{$self->{SEEN_ELEMENTS}}, $element ;
 		}
 	}
+
+# nkh: what does this do?!
+# nkh: if an element is in the viewport then seen_elements_hash (please don't write have hash in the name for a hash)
+# then the element entry in the hash is emptied ... ?
 
 @seen_elements_hash{@{$self->{SEEN_ELEMENTS}}} = () if (defined $self->{SEEN_ELEMENTS}) ;
 
@@ -301,6 +317,10 @@ for my $connection (@{$self->{CONNECTIONS}})
 	my $draw_connection ;
 	my $connector  ;
 	# :QQ: If this element cannot be seen, then there is no need to draw its link point
+	# nkh: the connector is outsidethe element
+	#      seehttps://nkh.github.io/P5-App-Asciio/stencils/asciio_boxes.html
+	#      but it's an edge case and it's OK to skip the connector drawing
+
 	next unless(exists $seen_elements_hash{$connection->{CONNECTED}}) ;
 	
 	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
@@ -400,6 +420,7 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
 			? @{$self->{SEEN_ELEMENTS}}
+			# nkh: grep should also be over the SEEN_ELEMENTS (which should be VISIBLE_ELEMENT)
 			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}}
 		)
 	{
@@ -463,7 +484,9 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 		$character_width, $character_height
 		);
 	}
+
 # :QQ: This is a small BUG fix, the new linker can display red.
+# nkh: what but ahat does "the new linker can display red" mean?
 $gc->stroke() ;
 
 delete $self->{NEW_CONNECTIONS} ;
