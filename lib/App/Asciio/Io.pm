@@ -275,6 +275,9 @@ local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
 local $self->{WARN} = undef ;
 local $self->{COPIED_ATTRIBUTES} = undef ;
+
+# nkh: why do they need to be set to undef when root_window and sc_window didn't?
+
 local $self->{ROOT_WINDOW} = undef ;
 local $self->{SC_WINDOW} = undef ;
 local $self->{SEEN_ELEMENTS} = undef ;
