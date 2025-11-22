@@ -202,7 +202,7 @@ my @diagonal_char_func = (
 
 sub get_cross_mode_overlays
 {
-my ($zbuffer, $start_x, $end_x, $start_y, $end_y) = @_;
+my ($zbuffer) = @_;
 
 my @overlays ;
 
@@ -233,12 +233,7 @@ while (my ($coordinate, $char_stacks) = each %{ $cross_zbuffer->{intersecting_el
 while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}->%*)
 	{
 	my ($Y, $X) = split ';', $coordinate ;
-
-	if(defined $start_x)
-		{
-		next if(($Y>$end_y) || ($Y<$start_y) || ($X>$end_x) || ($X<$start_x)) ;
-		}
-
+	# :QQ: Because the elements that can be seen have been filtered before, there is no need to filter them here.
 	my $neighbors_stack = $cross_zbuffer->get_neighbors_stack($coordinate) ;
 
 	my ($char_315, $up, $char_45, $right, $char_135, $down, $char_225, $left) = 
@@ -291,16 +286,24 @@ return @overlays ;
 
 #-----------------------------------------------------------------------------
 # +
-sub scene_cross
+# :QQ: A simple function refactor to make the code logic clearer.
+sub scene_cross 
 {
 my ($up, $down, $left, $right, $char_category_indexs) = @_;
 
-return 0 unless defined $up && defined $down && defined $left && defined $right ;
+return 0 unless defined $up && defined $down && defined $left && defined $right;
 
-return ((any {$_ eq '|'} @{$up}) || (any {$_ eq '.'} @{$up}) || (any {$_ eq '\''} @{$up}) || (any {$_ eq '+'} @{$up}) || (any {$_ eq '^'} @{$up}))
-	&& ((any {$_ eq '|'} @{$down}) || (any {$_ eq '.'} @{$down}) || (any {$_ eq '\''} @{$down}) || (any {$_ eq '+'} @{$down}) || (any {$_ eq 'v'} @{$down}))
-	&& ((any {$_ eq '-'} @{$left}) || (any {$_ eq '.'} @{$left}) || (any {$_ eq '\''} @{$left}) || (any {$_ eq '+'} @{$left}) || (any {$_ eq '<'} @{$left}))
-	&& ((any {$_ eq '-'} @{$right}) || (any {$_ eq '.'} @{$right}) || (any {$_ eq '\''} @{$right}) || (any {$_ eq '+'} @{$right}) || (any {$_ eq '>'} @{$right})) ;
+my %valid_chars = (
+	up => { map { $_ => 1 } qw(| . ' + ^) },
+	down => { map { $_ => 1 } qw(| . ' + v) },
+	left => { map { $_ => 1 } qw(- . ' + <) },
+	right => { map { $_ => 1 } qw(- . ' + >) },
+);
+
+return (any { $valid_chars{up}{$_} } @$up) 
+	&& (any { $valid_chars{down}{$_} } @$down) 
+	&& (any { $valid_chars{left}{$_} } @$left) 
+	&& (any { $valid_chars{right}{$_} } @$right);
 }
 
 #-----------------------------------------------------------------------------
