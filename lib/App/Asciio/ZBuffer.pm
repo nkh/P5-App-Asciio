@@ -163,7 +163,7 @@ while ( my ($coordinate, $char) = each $self->{coordinates}->%*)
 	# $rendering .= "${coordinate}->$char\n" ;
 	}
 
-print STDERR "$rendering\e[m" ;
+print STDERR "$rendering\e[0m" ;
 
 # my $t1 = Time::HiRes::gettimeofday();
 # printf STDERR "render time: %0.4f sec.\n", $t1 - $t0 ;

@@ -138,7 +138,7 @@ for my $action (@actions)
 			
 			if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
 				{
-				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
+				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[0m") if $self->{ACTION_VERBOSE} ; 
 				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 				}
 			else
@@ -154,18 +154,18 @@ for my $action (@actions)
 			{
 			if(any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
 				{
-				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[m") if $self->{ACTION_VERBOSE} ; 
+				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[0m") if $self->{ACTION_VERBOSE} ; 
 				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 				}
 			else
 				{
 				my $escape_key = "escape keys: " . join (', ', $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*) ;
-				$self->{ACTION_VERBOSE}->("\e[31m$action, [$self->{CURRENT_ACTIONS}{NAME}], $escape_key\e[m") if $self->{ACTION_VERBOSE} ; 
+				$self->{ACTION_VERBOSE}->("\e[31m$action, [$self->{CURRENT_ACTIONS}{NAME}], $escape_key\e[0m") if $self->{ACTION_VERBOSE} ; 
 				}
 			}
 		else
 			{
-			$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-30s\e[m", "$action") if $self->{ACTION_VERBOSE} ; 
+			$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-30s\e[0m", "$action") if $self->{ACTION_VERBOSE} ; 
 			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 			}
 		

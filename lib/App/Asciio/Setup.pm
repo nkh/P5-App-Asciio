@@ -191,7 +191,7 @@ for my $action_file (@{ $action_files })
 		if('HASH' eq ref $action_handler_definition)
 			{
 			$shortcuts_definition = $action_handler_definition->{SHORTCUTS}  ;
-			# $self->{ACTION_VERBOSE}("\e[31maction_handler: '$name' is group $shortcuts_definition\e[m\n") ;
+			# $self->{ACTION_VERBOSE}("\e[31maction_handler: '$name' is group $shortcuts_definition\e[0m\n") ;
 			
 			$action_handler = $self->get_group_action_handler($setup_path, $action_file, $name, $action_handler_definition) ;
 			}
@@ -278,7 +278,7 @@ for my $action_file (@{ $action_files })
 			
 			if (! defined $action_handler->{CODE} && ! defined $action_handler->{CONTEXT_MENU_SUB})
 				{
-				$self->{ACTION_VERBOSE}("\e[33mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[m\n") ;
+				$self->{ACTION_VERBOSE}("\e[33mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[0m\n") ;
 				delete $self->{ACTIONS}{$shortcut} ;
 				}
 			
@@ -350,7 +350,7 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 	
 	my $shortcuts = '' eq ref $action_handler->{SHORTCUTS} ? [$action_handler->{SHORTCUTS}] : $action_handler->{SHORTCUTS} ;
 	
-	$self->{ACTION_VERBOSE}("\e[33m" . DumpTree($shortcuts, 'shortcuts:', DISPLAY_CALLER_LOCATION => 0) . "\e[m")
+	$self->{ACTION_VERBOSE}("\e[33m" . DumpTree($shortcuts, 'shortcuts:', DISPLAY_CALLER_LOCATION => 0) . "\e[0m")
 		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
 	
 	my $reused = '' ;
@@ -380,7 +380,7 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 		$action_handler->{CONTEXT_MENU_ARGUMENTS} = $old_handler->{CONTEXT_MENU_ARGUMENTS}  ;
 		}
 	
-	$self->{ACTION_VERBOSE}("$reused\e[m\n") if $reused ne '' ;
+	$self->{ACTION_VERBOSE}("$reused\e[0m\n") if $reused ne '' ;
 	}
 }
 
@@ -440,7 +440,7 @@ for my $name (grep { $_ ne 'SHORTCUTS' && $_ ne 'ESCAPE_KEYS' } keys %{$group_de
 		$self->{ACTION_VERBOSE}("Overriding action group '$shortcut' with definition from file '$setup_path/$action_file'!\n")
 			if exists $handler{$shortcut} && $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
 		
-		# $self->{ACTION_VERBOSE}("\e[32maction_handler: '$name' shortcut: $shortcut\e[m\n") ;
+		# $self->{ACTION_VERBOSE}("\e[32maction_handler: '$name' shortcut: $shortcut\e[0m\n") ;
 		$handler{$shortcut} = $action_handler ;
 		
 		$handler{$shortcut}{GROUP_NAME} = $group_name if defined $group_name ;

@@ -64,7 +64,7 @@ for my $line (1 .. $ROWS)
 		{
 		($text, $color) = @{$line_ref->[$character]} ;
 		
-		$rendering .= "\e[m$color" if $color ne $previous_color ;
+		$rendering .= "\e[0m$color" if $color ne $previous_color ;
 		$previous_color = $color ;
 		
 		$rendering .= $text ;
@@ -72,7 +72,7 @@ for my $line (1 .. $ROWS)
 	}
 
 print $rendering ;
-print "\e[m" ;
+print "\e[0m" ;
 }
 
 #-----------------------------------------------------------------------------
