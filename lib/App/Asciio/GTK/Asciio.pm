@@ -3,7 +3,7 @@ package App::Asciio::GTK::Asciio ;
 
 use base qw(App::Asciio) ;
 
-$|++ ;
+# $|++ ;
 
 use strict;
 use warnings;
@@ -14,19 +14,21 @@ use Pango ;
 
 use List::Util qw(min) ;
 
-use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
-use App::Asciio::GTK::Asciio::stripes::editable_box2;
-use App::Asciio::GTK::Asciio::stripes::rhombus;
-use App::Asciio::GTK::Asciio::stripes::ellipse;
+# nkh: don't think any of these are needed
+# use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
+# use App::Asciio::GTK::Asciio::stripes::editable_box2;
+# use App::Asciio::GTK::Asciio::stripes::rhombus;
+# use App::Asciio::GTK::Asciio::stripes::ellipse;
 
-use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
-use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
-use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
-use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
+# use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
+# use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
+# use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
+# use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 
-use App::Asciio::GTK::Asciio::Dialogs ;
-use App::Asciio::GTK::Asciio::Menues ;
-use App::Asciio::GTK::Asciio::DnD ;
+# use App::Asciio::GTK::Asciio::Dialogs ;
+# use App::Asciio::GTK::Asciio::Menues ;
+# use App::Asciio::GTK::Asciio::DnD ;
+
 use App::Asciio::GTK::Asciio::Selection ;
 
 use App::Asciio::Cross ;
@@ -34,7 +36,7 @@ use App::Asciio::String ;
 use App::Asciio::Markup ;
 use App::Asciio::ZBuffer ;
 
-our $VERSION = '0.01' ;
+our $VERSION = '0.02' ;
 
 #-----------------------------------------------------------------------------
 
@@ -51,23 +53,22 @@ $self->{UI} = 'GUI' ;
 
 bless $self, $class ;
 
-$window->signal_connect(key_press_event => \&key_press_event, $self);
-$window->signal_connect(motion_notify_event => \&motion_notify_event, $self);
-$window->signal_connect(button_press_event => \&button_press_event, $self);
-$window->signal_connect(button_release_event => \&button_release_event, $self);
-
-# :QQ: The event should not be bound to the cross mode, so remove it.
+$window->signal_connect(key_press_event => \&key_press_event, $self) ;
+$window->signal_connect(motion_notify_event => \&motion_notify_event, $self) ;
+$window->signal_connect(button_press_event => \&button_press_event, $self) ;
+$window->signal_connect(button_release_event => \&button_release_event, $self) ;
 $window->signal_connect(configure_event => sub { $self->update_display() ; }) ;
+
 $sc_window->get_hadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
 $sc_window->get_vadjustment()->signal_connect(value_changed => sub { $self->update_display() ; }) ;
 $sc_window->add_events(['GDK_SCROLL_MASK']) ;
 $sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
 
-my $drawing_area = Gtk3::DrawingArea->new;
+my $drawing_area = Gtk3::DrawingArea->new ;
 
-$self->{widget} = $drawing_area ;
+$self->{widget}      = $drawing_area ;
 $self->{ROOT_WINDOW} = $window ;
-$self->{SC_WINDOW} = $sc_window ;
+$self->{SC_WINDOW}   = $sc_window ;
 
 $drawing_area->signal_connect(draw => \&expose_event, $self);
 
@@ -102,10 +103,7 @@ my ($self, $title) = @_;
 
 $self->SUPER::set_title($title) ;
 
-if(defined $title)
-	{
-	$self->{widget}->get_toplevel()->set_title($title . ' - asciio') ;
-	}
+$self->{widget}->get_toplevel()->set_title($title . ' - asciio') if defined $title ;
 }
 
 #-----------------------------------------------------------------------------
@@ -119,6 +117,7 @@ $self->SUPER::set_font($font_family, $font_size) ;
 
 #-----------------------------------------------------------------------------
 
+# nkh: this should not be in this file
 sub switch_gtk_popup_box_type
 {
 my ($self) = @_ ;
@@ -143,32 +142,30 @@ if (!$self->{NO_UPDATE_DISPLAY})
 	}
 }
 
-# nkh: do you mean the viewport? the canvas is always 0,0 to whateer size was set in the object
-	# :QQ: The name has been changed to viewport
-
-# :QQ: Returns the canvas boundary, grid and scroll bar information for use elsewhere.
 #-----------------------------------------------------------------------------
-sub get_viewport_bounds
+
+sub get_viewport_info
 {
 my ($self) = @_;
 
-my ($windows_width, $windows_height) = $self->{ROOT_WINDOW}->get_size() ;
+my ($windows_width, $windows_height)     = $self->{ROOT_WINDOW}->get_size() ;
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($v_value, $h_value) = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
+my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
+
 my ($min_x, $max_x, $min_y, $max_y) = 
 	(
-	int($h_value / $character_width - 2),
-	int(($h_value + $windows_width) / $character_width + 2),
-	int($v_value / $character_height - 2),
-	int(($v_value + $windows_height) / $character_height + 2)
+	int ($h_value / $character_width - 2),
+	int (($h_value + $windows_width) / $character_width + 2),
+	int ($v_value / $character_height - 2),
+	int (($v_value + $windows_height) / $character_height + 2)
 	) ;
 
-my $grid_width = (int($windows_width / $character_width) + 2) * $character_width ;
-my $grid_height = (int($windows_height / $character_height) + 2) * $character_height ;
+my $grid_width  = (int ($windows_width / $character_width) + 2)   * $character_width ;
+my $grid_height = (int ($windows_height / $character_height) + 2) * $character_height ;
 
+#       viewport                        grid size                  scroll bar
 return ($min_x, $max_x, $min_y, $max_y, $grid_width, $grid_height, $v_value, $h_value)
 }
-
 
 #-----------------------------------------------------------------------------
 
@@ -181,38 +178,36 @@ $gc->set_line_width(1);
 my ($character_width, $character_height) = $self->get_character_size() ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
-my ($viewport_min_x, $viewport_max_x, $viewport_min_y, $viewport_max_y, $grid_width, $grid_height, $v_value, $h_value) = $self->get_viewport_bounds() ;
+my 
+	(
+	$viewport_min_x, $viewport_max_x, $viewport_min_y, $viewport_max_y,
+	$grid_width, $grid_height,
+	$v_value, $h_value
+	) = $self->get_viewport_info() ;
 
-# my $zbuffer = App::Asciio::ZBuffer->new(1, $self->{ELEMENTS}->@*) ;
 
-# while( my($coordinate, $elements) = each $zbuffer->{intersecting_elements}->%*) 
-# 	{ 
-# 	use App::Asciio::ZBuffer ;
-# 	use Data::TreeDumper ; 
+# nkh: I explain again why your computing of the grid cache is not right and what I believe should be done
+# - changing any of the colors (background , grid and grid_2( which is a bad name I should change)
+#     that ALREADY invalidates {CACHE}{GRID}
+#
+# - grid_width and grid_height change should not invalidate the {CACHE}{GRID}
+#     what you need to do is get the screen size and compute the grid for it
+#     if you have screen that is 1920 * 1420 then use that size
+#     that is the maximum size the grid can ever have (if you don't have two screens and stretch the window over them)
+#     cache the grid for the maximum size and use it WHATEVER the size of window
+#
+# - the two pint above make the calculation of $grid_cache_key unnecessary
+# - if the colors don't change, the grid cache will only be computed ONCE for the whole run
+#     - not every time the window size changes
+#     - not every time the window is scrolled
 
-# 	my $neighbors = $zbuffer->get_neighbors_stack($coordinate) ; 
-# 	print STDERR DumpTree { stack => $elements, neighbors => $neighbors }, $coordinate ; 
-# 	} 
-
-# nkh: the comment shouldn't be here above the the grid_cach_key conputing
-# nkh: there's also no need to have different caches for the the grid
-#      the maximum size the grid can have is the size of the screen, best to compute it onece
-	# :QQ: I added two more rows or columns to each border grid to prevent incomplete display in some edge cases.
-# nkh: when the color of the grid is changes, the CACHE is flushed
-	# :QQ: The condition for cache update is that the size of the grid or the background color or the foreground color changes.
-# nkh: is there a case you see for the grid cache to be computed like you did?
-#      I think it was fine and clearer before
-	# :QQ: If the user sets the canvas to a large size, there will be some improvement; 
-	#	   if the user sets the canvas to a smaller size, the improvement will not be obvious. 
-	#	   Therefore, it is possible to add a judgment, and only enable grid cropping if the canvas set by the user exceeds a certain size.
-
-# :QQ: The grid can also only draw what the user can see, preventing the user from defining a super large canvas and drawing too much.
 my $grid_cache_key =
 	$grid_width . '-'
 	. $grid_height . '-'
 	. ($self->get_color('background') // '') . '-'
 	. ($self->get_color('grid') // '') . '-'
 	. ($self->get_color('grid_2') // '') ;
+
 my $grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} ;
 
 unless (defined $grid_rendering)
@@ -228,6 +223,8 @@ unless (defined $grid_rendering)
 	if($self->{DISPLAY_GRID})
 		{
 		$gc->set_line_width(1);
+		
+		# nkh: use the screen size here instead for the grid size
 		
 		for my $horizontal (0 .. ($grid_height/$character_height) + 1)
 			{
@@ -258,41 +255,29 @@ $gc->paint;
 
 # draw elements
 my $element_index = 0 ;
-$self->{VISIBLE_ELEMENT} = undef ;
-my %visible_element ;
+$self->{CACHE}{VISIBLE_ELEMENTS} = undef ;
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
-	# :QQ: I saw it was named this way in other places, but I couldn’t think of a good name. What do you recommend?
-	# nkh: bad variable names
 	my ($min_x, $min_y, $max_x, $max_y) = @{ $element->{EXTENTS} } ;
-	# nkh: use $element->{X}, ... directly
-		# :QQ: Modified
-
-	# :QQ: Rectangular intersection and mutual inclusion algorithm
-	if ($min_x+$element->{X} <= $viewport_max_x &&
-		$max_x+$element->{X} >= $viewport_min_x &&
-		$min_y+$element->{Y} <= $viewport_max_y &&
-		$max_y+$element->{Y} >= $viewport_min_y)
+	
+	if 
+		(
+		   $min_x + $element->{X} <= $viewport_max_x
+		&& $max_x + $element->{X} >= $viewport_min_x
+		&& $min_y + $element->{Y} <= $viewport_max_y
+		&& $max_y + $element->{Y} >= $viewport_min_y
+		)
 		{
 		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
-		push @{$self->{VISIBLE_ELEMENT}}, $element ;
+		$self->{CACHE}{VISIBLE_ELEMENTS}{$element}++ ;
 		}
 	}
 
-# nkh: what does this do?!
-# nkh: if an element is in the viewport then seen_elements_hash (please don't write have hash in the name for a hash)
-# then the element entry in the hash is emptied ... ?
-	# :QQ: This is to construct a hash using the object address of each element in the array as the key.
-	#      The purpose is to determine whether an element is an element in the viewport.
-	#	   The code behind uses this to determine whether the element is in the viewport more efficient .
-
-@visible_element{@{$self->{VISIBLE_ELEMENT}}} = () if (defined $self->{VISIBLE_ELEMENT}) ;
-
-$self->draw_cross_overlays($gc, $self->{VISIBLE_ELEMENT}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $self->{CACHE}{VISIBLE_ELEMENT}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -323,14 +308,10 @@ my (%connected_connections, %connected_connectors) ;
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
+	next unless exists $self->{CACHE}{VISIBLE_ELEMENTS}{$connection->{CONNECTED}} ;
+	
 	my $draw_connection ;
 	my $connector  ;
-	# :QQ: If this element cannot be seen, then there is no need to draw its link point
-	# nkh: the connector is outsidethe element
-	#      seehttps://nkh.github.io/P5-App-Asciio/stencils/asciio_boxes.html
-	#      but it's an edge case and it's OK to skip the connector drawing
-
-	next unless(exists $visible_element{$connection->{CONNECTED}}) ;
 	
 	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
 		{
@@ -428,14 +409,12 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{VISIBLE_ELEMENT}}
-			# nkh: grep should also be over the SEEN_ELEMENTS (which should be VISIBLE_ELEMENT)
-				# :QQ: The variable name has been changed to VISIBLE_ELEMENT
-			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{VISIBLE_ELEMENT}}
+			? @{$self->{CACHE}{VISIBLE_ELEMENT}}
+			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$self->{CACHE}{VISIBLE_ELEMENT}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
-	{
+		{
 		next if exists $connected_connectors{$element}{$connector->{X}}{$connector->{Y}} ;
 		
 		$gc->set_source_surface
@@ -495,36 +474,22 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 		);
 	}
 
-# :QQ: This is a small BUG fix, the new linker can display red.
-# nkh: what but ahat does "the new linker can display red" mean?
-	# :QQ: When the arrow links to the box, the newly generated connector will temporarily turn red, which is defined in the theme
-	#      It didn’t work before because $gc_>stroke() was missing here;
-	#      COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between them
-	#      	{
-	#      	'night' =>
-	#      		{
-	#            ... ...
-	#      		new_connection              => [1.00, 0.00, 0.00],
-	#      		}, 
-	#      	'system' =>
-	#      		{
-	#      		... ...
-	#      		new_connection              => [1.00, 0.00, 0.00],
-	#        	... ...
-	#      		} 
-	#      	},
-
 $gc->stroke() ;
 
 delete $self->{NEW_CONNECTIONS} ;
-	
+
+# nkh: since you have added a Selection.pm module
+# move the code below  and the call to  drawp_polygon_selection to the module
+# add a draw_selection in it and call it here
+
 # draw selection rectangle
 if(defined $self->{SELECTION_RECTANGLE}{END_X})
 	{
 	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} * $character_width ;
 	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} * $character_height ;
-	my $width = ($self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X}) * $character_width ;
-	my $height = ($self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y}) * $character_height; 
+	
+	my $width   = ($self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X}) * $character_width ;
+	my $height  = ($self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y}) * $character_height; 
 	
 	if($width < 0)
 		{
@@ -562,22 +527,22 @@ if ($self->{MOUSE_TOGGLE})
 if($self->{DRAW_HINT_LINES})
 	{
 	my ($xs, $ys, $xe, $ye) = $self->get_extent_box() ; 
-
+	
 	$gc->set_line_width(1);
 	$gc->set_source_rgb(@{$self->get_color('hint_line')});
-
+	
 	$gc->move_to($xs * $character_width, 0) ;
 	$gc->line_to($xs * $character_width, $widget_height) ;
-
+	
 	$gc->move_to(0, $ys * $character_height) ;
 	$gc->line_to($widget_width, $ys * $character_height);
-
+	
 	$gc->move_to($xe * $character_width, 0) ;
 	$gc->line_to($xe * $character_width, $widget_height) ;
-
+	
 	$gc->move_to(0, $ye * $character_height) ;
 	$gc->line_to($widget_width, $ye * $character_height);
-
+	
 	$gc->stroke() ;
 	}
 
@@ -597,6 +562,7 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 	$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
 	
 	my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
+	
 	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
 	$width += $font_character_width / 2 ;
 	
@@ -638,7 +604,6 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 
 #-----------------------------------------------------------------------------
 
-# :QQ: cross overlays can also be cached
 sub draw_cross_overlays
 {
 my ($self, $gc, $seen_elements, $character_width, $character_height) = @_ ;
@@ -734,33 +699,33 @@ for (@overlay_elements)
 		print STDERR "GTK::Asciio: got someting else " . ref($_) . "\n" ;
 		}
 	}
+
 # draw hint_lines
 if(@overlay_elements and $self->{DRAW_HINT_LINES})
 	{
 	my ($xs, $ys, $xe, $ye) = $self->get_extent_box(@overlay_elements) ; 
-
+	
 	$gc->set_line_width(1);
 	$gc->set_source_rgb(@{$self->get_color('hint_line2')});
-
+	
 	$gc->move_to($xs * $character_width, 0) ;
 	$gc->line_to($xs * $character_width, $widget_height) ;
-
+	
 	$gc->move_to(0, $ys * $character_height) ;
 	$gc->line_to($widget_width, $ys * $character_height);
-
+	
 	$gc->move_to($xe * $character_width, 0) ;
 	$gc->line_to($xe * $character_width, $widget_height) ;
-
+	
 	$gc->move_to(0, $ye * $character_height) ;
 	$gc->line_to($widget_width, $ye * $character_height);
-
+	
 	$gc->stroke() ;
 	}
 }
 
 # ------------------------------------------------------------------------------
 
-# :QQ: Remove two unused parameters
 sub draw_element
 {
 my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;

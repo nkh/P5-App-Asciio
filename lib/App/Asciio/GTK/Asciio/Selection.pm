@@ -5,9 +5,10 @@ use strict ; use warnings ;
 
 use App::Asciio::ZBuffer ;
 
+my %elements_selection_status ; # rename %selected_elements
 
-my %elements_selection_status ;
-
+# nkh: change {CACHE}{COORDINATES} (which means nothing) to {CACHE}{SELECTION_COORDINATES} 
+# nkh: sort your functions in an order that makes sens, high levl first details after
 
 #-----------------------------------------------------------------------------
 
@@ -25,30 +26,34 @@ return 1;
 
 #-----------------------------------------------------------------------------
 
-# determine whether the point is inside the polygon through the ray method
-# https://en.wikipedia.org/wiki/Point_in_polygon
 sub point_in_polygon 
 {
-	my ($point, $polygon) = @_;
+# determine whether the point is inside the polygon through the ray method
+# https://en.wikipedia.org/wiki/Point_in_polygon
 
-	my ($point_x, $point_y) = @$point;
-	my $is_inside = 0;
-	my $vertex_num = scalar(@$polygon);
+my ($point, $polygon) = @_;
 
-	for (my $current_index = 0, my $previous_index = $vertex_num - 1; 
-		$current_index < $vertex_num; 
-		$previous_index = $current_index++) 
+my ($point_x, $point_y) = @$point;
+my $is_inside = 0;
+my $vertex_num = scalar(@$polygon);
+
+for
+	(
+	my $current_index = 0, my $previous_index = $vertex_num - 1; 
+	$current_index < $vertex_num; 
+	$previous_index = $current_index++
+	) 
+	{
+	my ($current_vertex_x, $current_vertex_y) = @{$polygon->[$current_index]};
+	my ($previous_vertex_x, $previous_vertex_y) = @{$polygon->[$previous_index]};
+	
+	if ((($current_vertex_y > $point_y) != ($previous_vertex_y > $point_y)) &&
+		($point_x < ($previous_vertex_x - $current_vertex_x) * ($point_y - $current_vertex_y) / 
+					($previous_vertex_y - $current_vertex_y) + $current_vertex_x)) 
 		{
-		my ($current_vertex_x, $current_vertex_y) = @{$polygon->[$current_index]};
-		my ($previous_vertex_x, $previous_vertex_y) = @{$polygon->[$previous_index]};
-
-		if ((($current_vertex_y > $point_y) != ($previous_vertex_y > $point_y)) &&
-			($point_x < ($previous_vertex_x - $current_vertex_x) * ($point_y - $current_vertex_y) / 
-						($previous_vertex_y - $current_vertex_y) + $current_vertex_x)) 
-			{
-			$is_inside = !$is_inside;
-			}
+		$is_inside = !$is_inside;
 		}
+	}
 
 return $is_inside;
 }
@@ -61,7 +66,6 @@ my ($self) = @_ ;
 
 $self->change_cursor('dot') ;
 %elements_selection_status = () ;
-
 }
 
 #----------------------------------------------------------------------------------------------
@@ -72,7 +76,6 @@ my ($self) = @_ ;
 
 $self->{SELECTION_POLYGON} = [] ;
 $self->change_cursor('left_ptr') ;
-
 }
 
 #----------------------------------------------------------------------------------------------
@@ -83,28 +86,30 @@ my ($self, $gc, $character_width, $character_height) = @_ ;
 
 if(@{$self->{SELECTION_POLYGON}//[]} > 0)
 	{
-    $gc->set_source_rgb(@{$self->get_color('selection_rectangle')});
-    
-    $gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
-    for my $point (@{$self->{SELECTION_POLYGON}})
+	$gc->set_source_rgb(@{$self->get_color('selection_rectangle')});
+	
+	$gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
+	for my $point (@{$self->{SELECTION_POLYGON}})
 		{
 		$gc->line_to($point->[0] * $character_width, $point->[1] * $character_height);
 		}
+	
 	# draw solid line
-    $gc->stroke();
-
-    $gc->set_dash(0, 1, 4);
-    $gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
-    $gc->line_to($self->{SELECTION_POLYGON}[-1][0] * $character_width, $self->{SELECTION_POLYGON}[-1][1] * $character_height);
-    $gc->close_path();
-    
+	$gc->stroke();
+	
+	$gc->set_dash(0, 1, 4);
+	$gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
+	$gc->line_to($self->{SELECTION_POLYGON}[-1][0] * $character_width, $self->{SELECTION_POLYGON}[-1][1] * $character_height);
+	$gc->close_path();
+	
 	# draw dotted line
-    $gc->stroke();
-    $gc->set_dash(0);
+	$gc->stroke();
+	$gc->set_dash(0);
 	}
 }
 
 #-----------------------------------------------------------------------------
+
 sub polygon_selection
 {
 my ($self, $select_type) = @_ ;
@@ -117,6 +122,7 @@ for my $element (@{$self->{ELEMENTS}})
 		@coordinates = map{ [reverse @$_]} @coordinates;
 		$element->{CACHE}{COORDINATES} = \@coordinates;
 		}
+
 	if(all_points_in_polygon($element->{CACHE}{COORDINATES}, $self->{SELECTION_POLYGON}))
 		{
 		$self->select_elements($select_type, $element);
@@ -142,7 +148,7 @@ my ($self, $select_type, $event) = @_;
 my ($x, $y) = @{$event->{COORDINATES}}[0,1] ;
 
 ($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-($self->{MOUSE_X}, $self->{MOUSE_Y}) = ($x, $y) ;
+($self->{MOUSE_X}, $self->{MOUSE_Y})       = ($x, $y) ;
 
 if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y))
 	{
@@ -150,6 +156,7 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 		{
 		%elements_selection_status = () ;
 		$self->{SELECTION_POLYGON} = [[$x, $y]];
+		
 		$self->change_cursor($select_type == 1 ? "dot" : "tcross") ;
 		}
 	else

@@ -112,7 +112,6 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		widget
 		ROOT_WINDOW
 		SC_WINDOW
-		VISIBLE_ELEMENT
 		ACTIONS CURRENT_ACTIONS ACTIONS_BY_NAME
 		HOOKS IMPORT_EXPORT_HANDLERS
 		TITLE
@@ -276,12 +275,10 @@ local $self->{ACTION_VERBOSE} = undef ;
 local $self->{WARN} = undef ;
 local $self->{COPIED_ATTRIBUTES} = undef ;
 
-# nkh: why do they need to be set to undef when root_window and sc_window didn't?
-	# :QQ: they all has been set to undef. They are now in uppercase. Take a closer look.
 
 local $self->{ROOT_WINDOW} = undef ;
 local $self->{SC_WINDOW} = undef ;
-local $self->{VISIBLE_ELEMENT} = undef ;
+local $self->{CACHE}{VISIBLE_ELEMENTS} = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
