@@ -144,10 +144,11 @@ if (!$self->{NO_UPDATE_DISPLAY})
 }
 
 # nkh: do you mean the viewport? the canvas is always 0,0 to whateer size was set in the object
+	# :QQ: The name has been changed to viewport
 
 # :QQ: Returns the canvas boundary, grid and scroll bar information for use elsewhere.
 #-----------------------------------------------------------------------------
-sub get_canvas_bounds
+sub get_viewport_bounds
 {
 my ($self) = @_;
 
@@ -180,7 +181,7 @@ $gc->set_line_width(1);
 my ($character_width, $character_height) = $self->get_character_size() ;
 my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
-my ($canvas_min_x, $canvas_max_x, $canvas_min_y, $canvas_max_y, $grid_width, $grid_height, $v_value, $h_value) = $self->get_canvas_bounds() ;
+my ($viewport_min_x, $viewport_max_x, $viewport_min_y, $viewport_max_y, $grid_width, $grid_height, $v_value, $h_value) = $self->get_viewport_bounds() ;
 
 # my $zbuffer = App::Asciio::ZBuffer->new(1, $self->{ELEMENTS}->@*) ;
 
@@ -196,9 +197,14 @@ my ($canvas_min_x, $canvas_max_x, $canvas_min_y, $canvas_max_y, $grid_width, $gr
 # nkh: the comment shouldn't be here above the the grid_cach_key conputing
 # nkh: there's also no need to have different caches for the the grid
 #      the maximum size the grid can have is the size of the screen, best to compute it onece
+	# :QQ: I added two more rows or columns to each border grid to prevent incomplete display in some edge cases.
 # nkh: when the color of the grid is changes, the CACHE is flushed
+	# :QQ: The condition for cache update is that the size of the grid or the background color or the foreground color changes.
 # nkh: is there a case you see for the grid cache to be computed like you did?
 #      I think it was fine and clearer before
+	# :QQ: If the user sets the canvas to a large size, there will be some improvement; 
+	#	   if the user sets the canvas to a smaller size, the improvement will not be obvious. 
+	#	   Therefore, it is possible to add a judgment, and only enable grid cropping if the canvas set by the user exceeds a certain size.
 
 # :QQ: The grid can also only draw what the user can see, preventing the user from defining a super large canvas and drawing too much.
 my $grid_cache_key =
@@ -252,38 +258,41 @@ $gc->paint;
 
 # draw elements
 my $element_index = 0 ;
-$self->{SEEN_ELEMENTS} = undef ;
-my %seen_elements_hash ;
+$self->{VISIBLE_ELEMENT} = undef ;
+my %visible_element ;
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
+	# :QQ: I saw it was named this way in other places, but I couldn’t think of a good name. What do you recommend?
 	# nkh: bad variable names
 	my ($min_x, $min_y, $max_x, $max_y) = @{ $element->{EXTENTS} } ;
 	# nkh: use $element->{X}, ... directly
-
-	my ($e_x, $e_y) = ($element->{X}, $element->{Y}) ;
+		# :QQ: Modified
 
 	# :QQ: Rectangular intersection and mutual inclusion algorithm
-	if ($min_x+$e_x <= $canvas_max_x &&
-		$max_x+$e_x >= $canvas_min_x &&
-		$min_y+$e_y <= $canvas_max_y &&
-		$max_y+$e_y >= $canvas_min_y)
+	if ($min_x+$element->{X} <= $viewport_max_x &&
+		$max_x+$element->{X} >= $viewport_min_x &&
+		$min_y+$element->{Y} <= $viewport_max_y &&
+		$max_y+$element->{Y} >= $viewport_min_y)
 		{
 		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
-		push @{$self->{SEEN_ELEMENTS}}, $element ;
+		push @{$self->{VISIBLE_ELEMENT}}, $element ;
 		}
 	}
 
 # nkh: what does this do?!
 # nkh: if an element is in the viewport then seen_elements_hash (please don't write have hash in the name for a hash)
 # then the element entry in the hash is emptied ... ?
+	# :QQ: This is to construct a hash using the object address of each element in the array as the key.
+	#      The purpose is to determine whether an element is an element in the viewport.
+	#	   The code behind uses this to determine whether the element is in the viewport more efficient .
 
-@seen_elements_hash{@{$self->{SEEN_ELEMENTS}}} = () if (defined $self->{SEEN_ELEMENTS}) ;
+@visible_element{@{$self->{VISIBLE_ELEMENT}}} = () if (defined $self->{VISIBLE_ELEMENT}) ;
 
-$self->draw_cross_overlays($gc, $self->{SEEN_ELEMENTS}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $self->{VISIBLE_ELEMENT}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -321,7 +330,7 @@ for my $connection (@{$self->{CONNECTIONS}})
 	#      seehttps://nkh.github.io/P5-App-Asciio/stencils/asciio_boxes.html
 	#      but it's an edge case and it's OK to skip the connector drawing
 
-	next unless(exists $seen_elements_hash{$connection->{CONNECTED}}) ;
+	next unless(exists $visible_element{$connection->{CONNECTED}}) ;
 	
 	if($self->is_over_element($connection->{CONNECTED}, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1))
 		{
@@ -419,9 +428,10 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{SEEN_ELEMENTS}}
+			? @{$self->{VISIBLE_ELEMENT}}
 			# nkh: grep should also be over the SEEN_ELEMENTS (which should be VISIBLE_ELEMENT)
-			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{ELEMENTS}}
+				# :QQ: The variable name has been changed to VISIBLE_ELEMENT
+			: grep {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)} @{$self->{VISIBLE_ELEMENT}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -487,6 +497,23 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 
 # :QQ: This is a small BUG fix, the new linker can display red.
 # nkh: what but ahat does "the new linker can display red" mean?
+	# :QQ: When the arrow links to the box, the newly generated connector will temporarily turn red, which is defined in the theme
+	#      It didn’t work before because $gc_>stroke() was missing here;
+	#      COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between them
+	#      	{
+	#      	'night' =>
+	#      		{
+	#            ... ...
+	#      		new_connection              => [1.00, 0.00, 0.00],
+	#      		}, 
+	#      	'system' =>
+	#      		{
+	#      		... ...
+	#      		new_connection              => [1.00, 0.00, 0.00],
+	#        	... ...
+	#      		} 
+	#      	},
+
 $gc->stroke() ;
 
 delete $self->{NEW_CONNECTIONS} ;
@@ -699,7 +726,7 @@ for (@overlay_elements)
 		}
 	elsif(ref($_) =~ /^App::Asciio::stripes/)
 		{
-		$self->draw_element($_, $element_index, $gc, $font_description, $widget_width, $widget_height, $character_width, $character_height) ;
+		$self->draw_element($_, $element_index, $gc, $font_description, $character_width, $character_height) ;
 		$element_index++ ; # should overlay stripes have number?
 		}
 	else
