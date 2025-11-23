@@ -345,12 +345,12 @@ if(exists $self->{ACTIONS_BY_NAME}{$name})
 		die "\tno shortcuts in definition\n" ;
 		}
 	
-	$self->{ACTION_VERBOSE}("\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown'))
+	$self->{ACTION_VERBOSE}("\e[33mOverriding action: '$name', file: '$action_file', old_file: '" . ($self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} // 'unknown') . "\e[0m" )
 		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
 	
 	my $shortcuts = '' eq ref $action_handler->{SHORTCUTS} ? [$action_handler->{SHORTCUTS}] : $action_handler->{SHORTCUTS} ;
 	
-	$self->{ACTION_VERBOSE}(DumpTree $shortcuts, 'shortcuts:', DISPLAY_CALLER_LOCATION => 0)
+	$self->{ACTION_VERBOSE}("\e[33m" . DumpTree($shortcuts, 'shortcuts:', DISPLAY_CALLER_LOCATION => 0) . "\e[m")
 		if $self->{DISPLAY_SETUP_INFORMATION_ACTION} ;
 	
 	my $reused = '' ;
