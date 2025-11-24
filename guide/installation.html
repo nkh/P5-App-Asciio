@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-c57bf517.js";
+            window.path_to_searchindex_js = "../searchindex-6b8c5ec0.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-39e71692.js"></script>
@@ -222,6 +222,9 @@ $&gt; text_to_asciio ...         # makes an asciio file from text
 <pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:&lt;PATH_YOU_WANT_TO_SHARE&gt;" ghcr.io/nkh/p5-app-asciio:release asciio
 
 </code></pre>
+<h3 id="jypiter-notebook"><a class="header" href="#jypiter-notebook">Jypiter notebook</a></h3>
+<p>Example of installation and testing.</p>
+<p><a href="https://colab.research.google.com/github/nkh/asciio/blob/main/examples/asciio.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
 <h3 id="windows-wsl"><a class="header" href="#windows-wsl">windows wsl</a></h3>
 <p>If using Podman, add github repository to podman in ‘/etc/containers/registries.conf’</p>
 <pre><code>[registries.search]
