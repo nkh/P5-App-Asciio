@@ -59,6 +59,11 @@ Change <PATH_YOU_WANT_TO_SHARE>, if you want to save your files to your file sys
 podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:<PATH_YOU_WANT_TO_SHARE>" ghcr.io/nkh/p5-app-asciio:release asciio
 
 ```
+### Jypiter notebook
+
+Example of installation and testing.
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/nkh/P5-App-Asciio/blob/main/examples/asciio.ipynb)
 
 ### windows wsl
 
