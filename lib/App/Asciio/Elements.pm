@@ -299,7 +299,7 @@ for my $element (@elements)
 		}
 	
 	$self->{MODIFIED }++ ;
-	delete $element->{CACHE}{COORDINATES} ;
+	delete $element->{CACHE}{SELECTION_COORDINATES} ;
 	}
 }
 

@@ -15,20 +15,22 @@ use Pango ;
 use List::Util qw(min) ;
 
 # nkh: don't think any of these are needed
-# use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
-# use App::Asciio::GTK::Asciio::stripes::editable_box2;
-# use App::Asciio::GTK::Asciio::stripes::rhombus;
-# use App::Asciio::GTK::Asciio::stripes::ellipse;
+	# :QQ: If you disable these, the right-click menu of the mouse will not pop up normally.
+	#		The strange thing is that no compilation errors or warnings are generated when running,
+	#		but the function is not normal.
+use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
+use App::Asciio::GTK::Asciio::stripes::editable_box2;
+use App::Asciio::GTK::Asciio::stripes::rhombus;
+use App::Asciio::GTK::Asciio::stripes::ellipse;
 
-# use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
-# use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
-# use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
-# use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
+use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
+use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
+use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
+use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
 
-# use App::Asciio::GTK::Asciio::Dialogs ;
-# use App::Asciio::GTK::Asciio::Menues ;
-# use App::Asciio::GTK::Asciio::DnD ;
-
+use App::Asciio::GTK::Asciio::Dialogs ;
+use App::Asciio::GTK::Asciio::Menues ;
+use App::Asciio::GTK::Asciio::DnD ;
 use App::Asciio::GTK::Asciio::Selection ;
 
 use App::Asciio::Cross ;
@@ -118,12 +120,8 @@ $self->SUPER::set_font($font_family, $font_size) ;
 #-----------------------------------------------------------------------------
 
 # nkh: this should not be in this file
-sub switch_gtk_popup_box_type
-{
-my ($self) = @_ ;
-$self->{EDIT_TEXT_INLINE} ^= 1 ;
-}
-
+	# :QQ: I have moved to lib/App/Asciio/Actions/Unsorted.pm
+	#      and change the name to toggle_edit_inline
 #-----------------------------------------------------------------------------
 
 sub stop_updating_display  { my ($self) = @_ ; $self->{NO_UPDATE_DISPLAY} = 1 ; }
@@ -200,13 +198,23 @@ my
 # - if the colors don't change, the grid cache will only be computed ONCE for the whole run
 #     - not every time the window size changes
 #     - not every time the window is scrolled
+	# :QQ: I believe you didn’t understand me this time. My current drawing starting point is no longer (0, 0), but the
+	#		upper left corner of the current viewport. When the scroll bar is not at the origin, this coordinate is no
+	#		longer (0, 0)
+	#
+	#		This is the following line of code. The drawing of the grid no longer starts from (0, 0).
+	#		$gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
+	#
+	#		So I don't need to draw the grid of the entire canvas, I just need to draw the grid of the viewport.
+	#		So the conditions for cache update become grid width, grid height, grid background color, grid 1 color, grid 2 color, which are determined together, and they form the cache key.
+	#
+	#		My following line of code is correct.
+	#		my $grid_cache_key = $grid_width . '-' . $grid_height . '-' . ($self->get_color('background') // '') . '-' . ($self->get_color('grid') // '') . '-' . ($self->get_color('grid_2') // '') ;
+	#
+	#		My whole purpose is to draw less, because with a 1920 * 1420 canvas, the current window that the user can see may only be 920 * 480
+	#		Drawing less always improves speed a bit, especially within a large canvas.
 
-my $grid_cache_key =
-	$grid_width . '-'
-	. $grid_height . '-'
-	. ($self->get_color('background') // '') . '-'
-	. ($self->get_color('grid') // '') . '-'
-	. ($self->get_color('grid_2') // '') ;
+my $grid_cache_key = $grid_width . '-' . $grid_height . '-' . ($self->get_color('background') // '') . '-' . ($self->get_color('grid') // '') . '-' . ($self->get_color('grid_2') // '') ;
 
 my $grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} ;
 
@@ -255,7 +263,10 @@ $gc->paint;
 
 # draw elements
 my $element_index = 0 ;
-$self->{CACHE}{VISIBLE_ELEMENTS} = undef ;
+$self->{CACHE}{VISIBLE_ELEMENTS} = {
+	DRAW_QUEUE  => [],	# Sequential array to ensure drawing order
+	LOOKUP		=> {},	# Hash, quickly determine whether an element is visible
+	};
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 
@@ -272,12 +283,17 @@ for my $element (@{$self->{ELEMENTS}})
 		&& $max_y + $element->{Y} >= $viewport_min_y
 		)
 		{
+		# :QQ: we must use arrays and not hashes, because the order of drawing elements cannot be messed up.
+		#		Otherwise, when we pass $self->{CACHE}{VISIBLE_ELEMENTS} to other subs for processing later, the order will be confused.
+		#		We can save the array and hash at the same time, so that the drawing order and filtering can be satisfied.
+		#
 		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
-		$self->{CACHE}{VISIBLE_ELEMENTS}{$element}++ ;
+		push @{ $self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE} }, $element ;
+		$self->{CACHE}{VISIBLE_ELEMENTS}{LOOKUP}{$element}++;
 		}
 	}
 
-$self->draw_cross_overlays($gc, $self->{CACHE}{VISIBLE_ELEMENT}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -308,7 +324,7 @@ my (%connected_connections, %connected_connectors) ;
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
-	next unless exists $self->{CACHE}{VISIBLE_ELEMENTS}{$connection->{CONNECTED}} ;
+	next unless exists $self->{CACHE}{VISIBLE_ELEMENTS}{LOOKUP}{$connection->{CONNECTED}} ;
 	
 	my $draw_connection ;
 	my $connector  ;
@@ -409,8 +425,8 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{CACHE}{VISIBLE_ELEMENT}}
-			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$self->{CACHE}{VISIBLE_ELEMENT}}
+			? @{$self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE}}
+			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -481,34 +497,10 @@ delete $self->{NEW_CONNECTIONS} ;
 # nkh: since you have added a Selection.pm module
 # move the code below  and the call to  drawp_polygon_selection to the module
 # add a draw_selection in it and call it here
+	# :QQ: Okay, I've moved to lib\App\Asciio\GTK\Asciio\Selection.pm
+	#		and named draw_rectangle_selection
 
-# draw selection rectangle
-if(defined $self->{SELECTION_RECTANGLE}{END_X})
-	{
-	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} * $character_width ;
-	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} * $character_height ;
-	
-	my $width   = ($self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X}) * $character_width ;
-	my $height  = ($self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y}) * $character_height; 
-	
-	if($width < 0)
-		{
-		$width *= -1 ;
-		$start_x -= $width ;
-		}
-		
-	if($height < 0)
-		{
-		$height *= -1 ;
-		$start_y -= $height ;
-		}
-		
-	$gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
-	$gc->rectangle($start_x, $start_y, $width, $height) ;
-	$gc->stroke() ;
-	
-	delete $self->{SELECTION_RECTANGLE}{END_X} ;
-	}
+$self->draw_rectangle_selection($gc, $character_width, $character_height) ;
 
 $self->draw_polygon_selection($gc, $character_width, $character_height) ;
 
@@ -606,9 +598,9 @@ if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
 
 sub draw_cross_overlays
 {
-my ($self, $gc, $seen_elements, $character_width, $character_height) = @_ ;
+my ($self, $gc, $visible_elements, $character_width, $character_height) = @_ ;
 
-my $zbuffer = App::Asciio::ZBuffer->new(1, @{$seen_elements}) ;
+my $zbuffer = App::Asciio::ZBuffer->new(1, @{$visible_elements}) ;
 
 my ($default_background_color, $default_foreground_color) = (
 	$self->get_color('element_background'), $self->get_color('element_foreground')) ;
