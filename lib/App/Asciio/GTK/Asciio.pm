@@ -14,46 +14,37 @@ use Pango ;
 
 use List::Util qw(min) ;
 
-# nkh: don't think any of these are needed
-	# :QQ: If you disable these, the right-click menu of the mouse will not pop up normally.
-	#		The strange thing is that no compilation errors or warnings are generated when running,
-	#		but the function is not normal.
-use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
-use App::Asciio::GTK::Asciio::stripes::editable_box2;
-use App::Asciio::GTK::Asciio::stripes::rhombus;
-use App::Asciio::GTK::Asciio::stripes::ellipse;
-
-use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
-use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
+use App::Asciio::GTK::Asciio::stripes::editable_arrow2;
+use App::Asciio::GTK::Asciio::stripes::editable_box2;
+use App::Asciio::GTK::Asciio::stripes::editable_exec_box;
+use App::Asciio::GTK::Asciio::stripes::ellipse;
+use App::Asciio::GTK::Asciio::stripes::rhombus;
 use App::Asciio::GTK::Asciio::stripes::section_wirl_arrow ;
+use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
 
 use App::Asciio::GTK::Asciio::Dialogs ;
-use App::Asciio::GTK::Asciio::Menues ;
 use App::Asciio::GTK::Asciio::DnD ;
+use App::Asciio::GTK::Asciio::Menues ;
 use App::Asciio::GTK::Asciio::Selection ;
 
 use App::Asciio::Cross ;
-use App::Asciio::String ;
 use App::Asciio::Markup ;
+use App::Asciio::String ;
 use App::Asciio::ZBuffer ;
 
 our $VERSION = '0.02' ;
 
 #-----------------------------------------------------------------------------
 
-=head1 NAME 
-
-=cut
-
 sub new
 {
 my ($class, $window, $width, $height, $sc_window) = @_ ;
 
 my $self = App::Asciio::new($class) ;
-$self->{UI} = 'GUI' ;
-
 bless $self, $class ;
+
+$self->{UI} = 'GUI' ;
 
 $window->signal_connect(key_press_event => \&key_press_event, $self) ;
 $window->signal_connect(motion_notify_event => \&motion_notify_event, $self) ;
@@ -119,11 +110,6 @@ $self->SUPER::set_font($font_family, $font_size) ;
 
 #-----------------------------------------------------------------------------
 
-# nkh: this should not be in this file
-	# :QQ: I have moved to lib/App/Asciio/Actions/Unsorted.pm
-	#      and change the name to toggle_edit_inline
-#-----------------------------------------------------------------------------
-
 sub stop_updating_display  { my ($self) = @_ ; $self->{NO_UPDATE_DISPLAY} = 1 ; }
 sub start_updating_display { my ($self) = @_ ; $self->{NO_UPDATE_DISPLAY} = 0 ; $self->update_display() }
 
@@ -134,7 +120,7 @@ my ($self) = @_;
 if (!$self->{NO_UPDATE_DISPLAY})
 	{
 	$self->SUPER::update_display() ;
-
+	
 	my $widget = $self->{widget} ;
 	$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
 	}
@@ -142,6 +128,7 @@ if (!$self->{NO_UPDATE_DISPLAY})
 
 #-----------------------------------------------------------------------------
 
+#nkh: detail function, move dwn low or somewhere else
 sub get_viewport_info
 {
 my ($self) = @_;
@@ -175,8 +162,8 @@ my $t0 = Time::HiRes::time() ;
 
 $gc->set_line_width(1);
 
+my ($widget_width, $widget_height)       = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($widget_width, $widget_height) = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
 
 my 
 	(
@@ -215,24 +202,102 @@ my
 	#
 	#		My whole purpose is to draw less, because with a 1920 * 1420 canvas, the current window that the user can see may only be 920 * 480
 	#		Drawing less always improves speed a bit, especially within a large canvas.
-
-my $grid_cache_key = $grid_width . '-' . $grid_height . '-' . ($self->get_color('background') // '') . '-' . ($self->get_color('grid') // '') . '-' . ($self->get_color('grid_2') // '') ;
+		#nkh: I understood
+		#
+		#	improve ** a bit ** is not a figure, please give me the timing figure
+		#	and once the grid is cached, how it the grid drawn faster when it is smaller
+		#		it's an optimized bit-blit, the only difference I can think about is the transfer of
+		#		the memory chunk to the GPU, we're talking micro seconds here
+		#	
+		#	I gather that you now understand that It doesn't matter where you draw the grid!
+		#
+		#	we never draw half character at the top-left of the grid
+		#	the top-left of the grid is always the top-left of a full character cell
+		#
+		#	the grid we cache at 0,0 is the exact same than the one at 123,15 and the same at 17,132, ....
+		#
+		#	the only difference between grids is how wide and tall they are
+		#
+		#	the only difference is the viewport size, which is important of course but more below
+		#	so if we draw and cache the grid so it is the size of the **screen** then we need to
+		#	draw it just **once** and never need to redraw it again if the colors don't change (they invalidate the grid cache)
+		#
+		#	your code re-caches every time 
+		#		a color changes but that is **already** done
+		#		the grid size changes
+		#			how often does that happen?
+		#			and this is **still** not the place to invalidate the grid, do it when the size changes rather than in the drawing loop
+		#
+		#	the only thing $grid_cache_key does is that it lets us know what size of the grid cahe is since there's no other element in it
+		#
+		#	I understand that you want to minimize the memory usage and it's a very good idea
+		#
+		#	I saw you videos about the memory usage, let's use that to compare the different alternatives
+		#		- the old caching which caches the whole canvas, we know that it uses more memory and is wasteful
+		#		- caching for the current viewport size, your new caching
+		#		- one time caching for a size equal to the screen
+		#	
+		#	THREE POINTS:
+		#	
+		#	- implement a one time cache that has the size of the screen
+		#		- provide memory usage figures, usage will obviously be larger
+		#
+		#	- if you want viewport grid caching to be as efficient as possible then it should only be
+		#		recomputed if the new viewport isn't contained in the older size
+		#		if the user changes size, and we get 10 resizing events, we recompute the cache 10 times
+		#		when we didn't need to compute it at all
+		#
+		#	- should the grid be cached at all?
+		#		I implemented caching because you had a lot of elements to display and asciio was too slow for that
+		#		**please provide me with a large anonymized document, I can generate one but I want something realistic**
+		#		we traded memory for speed but the grid rendering is not what take time drawing
+		#			- how long does it take? for both solutions
+		#
+		#		run a test with the grid caching **turned off** with a large document
+		#			- provide memory usage figures
+		#			- provide timing figures
+		#			- provide you feeling about the speed
+		#
+		#			maybe the memory saving will be so large and the grid drawing time so small
+		#			that we don't need to cache it at all (or make it optional)
+		#
+		#	on my machine, with window taking half the screen the timer displays:
+		#		- 'all gui draw time: 0.0152 sec' non cached
+		#		- 'gui draw time: 0.0010 sec." cached
+		#
+		#	Unfortunately... we have a **much larger** optimization problem!
+		#
+		#		mouse_move in Mouse.pm, redraws the document on every event!
+		#		and it's not just there since comment it out doesn't stop the redraws, I found it and it's in your latest change
+		#
+		#		that **needs** to be fixed next if possible
+		#
+		#	there's more optimization possible that I haven't implemented because I didn't have a use case for it
+		#		- clipping the elements to the view port certainly makes a big difference in rendering speed in large documents 
+		#			- good work there!
+		#		- there's more but I don't want to optimize for little gain
+		#			- hidden/overlapped elements
+		#			- clipping which would probably make the drawing 10 times faster
+		#			- a quad tree
+		#			- and ** not redrawing ** when the mouse moves  
+ 
+my $grid_cache_key = "$grid_width-$grid_height-" . ($self->get_color('background') // '') . ($self->get_color('grid') // '') . ($self->get_color('grid_2') // '') ;
 
 my $grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} ;
 
 unless (defined $grid_rendering)
 	{
 	delete $self->{CACHE}{GRID} ;
-	my $surface = Cairo::ImageSurface->create('argb32', $grid_width, $grid_height);
-	my $gc = Cairo::Context->create($surface);
-		
+	my $surface = Cairo::ImageSurface->create('argb32', $grid_width, $grid_height) ;
+	my $gc = Cairo::Context->create($surface) ;
+	
 	$gc->set_source_rgb(@{$self->get_color('background')});
 	$gc->rectangle(0, 0, $grid_width, $grid_height);
 	$gc->fill;
 	
 	if($self->{DISPLAY_GRID})
 		{
-		$gc->set_line_width(1);
+		$gc->set_line_width(1) ;
 		
 		# nkh: use the screen size here instead for the grid size
 		
@@ -267,13 +332,13 @@ my $t1 = Time::HiRes::time() ;
 
 # draw elements
 my $element_index = 0 ;
-$self->{CACHE}{VISIBLE_ELEMENTS} = {
-	DRAW_QUEUE  => [],	# Sequential array to ensure drawing order
-	LOOKUP		=> {},	# Hash, quickly determine whether an element is visible
-	};
+
+#nkh: I renamed the variable to something more palatable
+#	then it hit me ... ** why is this in the cache ** it's just local variables!
+#	I leave it to you to convince me it should be in the cache or change it to local variables
+$self->{CACHE}{VIEWPORT} = { ELEMENTS => {}, DRAW_ORDER => [] };
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
-
 for my $element (@{$self->{ELEMENTS}})
 	{
 	$element_index++ ;
@@ -287,17 +352,15 @@ for my $element (@{$self->{ELEMENTS}})
 		&& $max_y + $element->{Y} >= $viewport_min_y
 		)
 		{
-		# :QQ: we must use arrays and not hashes, because the order of drawing elements cannot be messed up.
-		#		Otherwise, when we pass $self->{CACHE}{VISIBLE_ELEMENTS} to other subs for processing later, the order will be confused.
-		#		We can save the array and hash at the same time, so that the drawing order and filtering can be satisfied.
-		#
+		# element is visible in the viewport
 		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
-		push @{ $self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE} }, $element ;
-		$self->{CACHE}{VISIBLE_ELEMENTS}{LOOKUP}{$element}++;
+		
+		push @{ $self->{CACHE}{VIEWPORT}{DRAW_ORDER} }, $element ;
+		$self->{CACHE}{VIEWPORT}{ELEMENTS}{$element}++;
 		}
 	}
 
-$self->draw_cross_overlays($gc, $self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $self->{CACHE}{VIEWPORT}{DRAW_ORDER}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -323,12 +386,89 @@ if($self->{DISPLAY_RULERS})
 		}
 	}
 
-# draw connections
+#nkh: new sub to reduce the clutter in this function
+$self->draw_connections($gc, $widget_width, $widget_height, $character_width, $character_height) ;
+
+# draw new connections
+for my $new_connection (@{$self->{NEW_CONNECTIONS}})
+	{
+	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
+	
+	$gc->set_source_rgb(@{$self->get_color('new_connection')});
+	$gc->rectangle
+		(
+		($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width , # can be additions
+		($end_connection->{Y} + $new_connection->{CONNECTED}{Y}) * $character_height ,
+		$character_width, $character_height
+		);
+	}
+
+$gc->stroke() ;
+
+delete $self->{NEW_CONNECTIONS} ;
+
+# nkh: since these two can't be on at the same time ...
+# have a draw_selection function that decides which one to use
+$self->draw_rectangle_selection($gc, $character_width, $character_height) ;
+$self->draw_polygon_selection($gc, $character_width, $character_height) ;
+
+if ($self->{MOUSE_TOGGLE})
+	{
+	my $start_x = $self->{MOUSE_X} * $character_width ;
+	my $start_y = $self->{MOUSE_Y} * $character_height ;
+	
+	$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
+	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
+	$gc->fill() ;
+	$gc->stroke() ;
+	}
+
+# draw hint_lines
+if($self->{DRAW_HINT_LINES})
+	{
+	my ($xs, $ys, $xe, $ye, $has_extents) = $self->get_selected_elements_extents() ; 
+	
+	if($has_extents)
+		{
+		$gc->set_line_width(1);
+		$gc->set_source_rgb(@{$self->get_color('hint_line')});
+		
+		$gc->move_to($xs * $character_width, 0) ;
+		$gc->line_to($xs * $character_width, $widget_height) ;
+		
+		$gc->move_to(0, $ys * $character_height) ;
+		$gc->line_to($widget_width, $ys * $character_height);
+		
+		$gc->move_to($xe * $character_width, 0) ;
+		$gc->line_to($xe * $character_width, $widget_height) ;
+		
+		$gc->move_to(0, $ye * $character_height) ;
+		$gc->line_to($widget_width, $ye * $character_height);
+		
+		$gc->stroke() ;
+		}
+	}
+
+$self->display_bindings_completion($gc, $character_width, $character_height) 
+	if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION}) ;
+
+my $t2 = Time::HiRes::time() ;
+printf STDERR "grid draw time: %0.4f sec. all gui draw time: %0.4f sec.\n", $t1 - $t0, $t2 - $t0 ;
+
+return TRUE;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_connections
+{
+my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+
 my (%connected_connections, %connected_connectors) ;
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
-	next unless exists $self->{CACHE}{VISIBLE_ELEMENTS}{LOOKUP}{$connection->{CONNECTED}} ;
+	next unless exists $self->{CACHE}{VIEWPORT}{ELEMENTS}{$connection->{CONNECTED}} ;
 	
 	my $draw_connection ;
 	my $connector  ;
@@ -429,8 +569,8 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE}}
-			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$self->{CACHE}{VISIBLE_ELEMENTS}{DRAW_QUEUE}}
+			? @{$self->{CACHE}{VIEWPORT}{DRAW_ORDER}}
+			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$self->{CACHE}{VIEWPORT}{DRAW_ORDER}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -479,75 +619,6 @@ for my $element (
 	
 	$gc->show_page;
 	}
-
-# draw new connections
-for my $new_connection (@{$self->{NEW_CONNECTIONS}})
-	{
-	my $end_connection = $new_connection->{CONNECTED}->get_named_connection($new_connection->{CONNECTOR}{NAME}) ;
-	
-	$gc->set_source_rgb(@{$self->get_color('new_connection')});
-	$gc->rectangle
-		(
-		($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width , # can be additions
-		($end_connection->{Y} + $new_connection->{CONNECTED}{Y}) * $character_height ,
-		$character_width, $character_height
-		);
-	}
-
-$gc->stroke() ;
-
-delete $self->{NEW_CONNECTIONS} ;
-
-# nkh: since you have added a Selection.pm module
-# move the code below  and the call to  drawp_polygon_selection to the module
-# add a draw_selection in it and call it here
-	# :QQ: Okay, I've moved to lib\App\Asciio\GTK\Asciio\Selection.pm
-	#		and named draw_rectangle_selection
-
-$self->draw_rectangle_selection($gc, $character_width, $character_height) ;
-
-$self->draw_polygon_selection($gc, $character_width, $character_height) ;
-
-if ($self->{MOUSE_TOGGLE})
-	{
-	my $start_x = $self->{MOUSE_X} * $character_width ;
-	my $start_y = $self->{MOUSE_Y} * $character_height ;
-	
-	$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
-	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
-	$gc->fill() ;
-	$gc->stroke() ;
-	}
-
-# draw hint_lines
-if($self->{DRAW_HINT_LINES})
-	{
-	my ($xs, $ys, $xe, $ye) = $self->get_extent_box() ; 
-	
-	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('hint_line')});
-	
-	$gc->move_to($xs * $character_width, 0) ;
-	$gc->line_to($xs * $character_width, $widget_height) ;
-	
-	$gc->move_to(0, $ys * $character_height) ;
-	$gc->line_to($widget_width, $ys * $character_height);
-	
-	$gc->move_to($xe * $character_width, 0) ;
-	$gc->line_to($xe * $character_width, $widget_height) ;
-	
-	$gc->move_to(0, $ye * $character_height) ;
-	$gc->line_to($widget_width, $ye * $character_height);
-	
-	$gc->stroke() ;
-	}
-
-$self->display_bindings_completion($gc, $character_width, $character_height) ;
-
-my $t2 = Time::HiRes::time() ;
-printf STDERR "grid draw time: %0.4f sec. all gui draw time: %0.4f sec.\n", $t1 - $t0, $t2 - $t0 ;
-
-return TRUE;
 }
 
 #-----------------------------------------------------------------------------
@@ -556,49 +627,46 @@ sub display_bindings_completion
 {
 my ($self, $gc, $character_width, $character_height) = @_ ;
 
-if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION})
+$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
+
+my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
+
+my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
+$width += $font_character_width / 2 ;
+
+my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
+my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
+my $window_end                     = $window_width + $scroll_bar_x ;
+
+my $start_x ;
+if ( $window_end < ($self->{MOUSE_X} * $character_width) + $width)
 	{
-	$gc->set_source_rgb(@{$self->get_color('hint_background')}) ;
-	
-	my ($font_character_width, $font_character_height) = $self->get_character_size($self->{FONT_FAMILY}, $self->{FONT_BINDINGS_SIZE}) ;
-	
-	my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
-	$width += $font_character_width / 2 ;
-	
-	my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
-	my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
-	my $window_end                     = $window_width + $scroll_bar_x ;
-	
-	my $start_x ;
-	if ( $window_end < ($self->{MOUSE_X} * $character_width) + $width)
-		{
-		$start_x = (($self->{MOUSE_X} + 1) * $character_width) - $width ; # place left
-		}
-	else
-		{
-		$start_x = ($self->{MOUSE_X} + 1) * $character_width ;
-		}
-	
-	my $start_y = min($window_height + $scroll_bar_y - $height , ($self->{MOUSE_Y} + 1) * $character_height) ;
-	
-	$gc->rectangle($start_x, $start_y, $width, $height) ;
-	$gc->fill() ;
-	
-	my $surface = Cairo::ImageSurface->create('argb32', $width, $height) ;
-	my $gco = Cairo::Context->create($surface) ;
-	
-	my $layout = Pango::Cairo::create_layout($gco) ;
-	my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} $self->{FONT_BINDINGS_SIZE}") ;
-	$layout->set_font_description($font_description) ;
-	
-	$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
-	Pango::Cairo::show_layout($gco, $layout) ;
-	
-	$gc->set_source_surface($surface, $start_x, $start_y) ;
-	$gc->paint;
-	
-	$gc->stroke() ;
+	$start_x = (($self->{MOUSE_X} + 1) * $character_width) - $width ; # place left
 	}
+else
+	{
+	$start_x = ($self->{MOUSE_X} + 1) * $character_width ;
+	}
+
+my $start_y = min($window_height + $scroll_bar_y - $height , ($self->{MOUSE_Y} + 1) * $character_height) ;
+
+$gc->rectangle($start_x, $start_y, $width, $height) ;
+$gc->fill() ;
+
+my $surface = Cairo::ImageSurface->create('argb32', $width, $height) ;
+my $gco = Cairo::Context->create($surface) ;
+
+my $layout = Pango::Cairo::create_layout($gco) ;
+my $font_description = Pango::FontDescription->from_string("$self->{FONT_FAMILY} $self->{FONT_BINDINGS_SIZE}") ;
+$layout->set_font_description($font_description) ;
+
+$layout->set_text(join "\n", $self->{BINDINGS_COMPLETION}->@*) ;
+Pango::Cairo::show_layout($gco, $layout) ;
+
+$gc->set_source_surface($surface, $start_x, $start_y) ;
+$gc->paint;
+
+$gc->stroke() ;
 }
 
 #-----------------------------------------------------------------------------
@@ -615,21 +683,20 @@ my ($default_background_color, $default_foreground_color) = (
 for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
 	{
 	my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
-
+	
 	$background_color //= $default_background_color ;
 	$foreground_color //= $default_foreground_color ;
 	
 	my $cache_key = $background_color . $foreground_color . $overlay ;
-
+	
 	unless(exists $self->{CACHE}{CROSS_OVERLAY}{$cache_key})
 		{
 		my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
 		my $gco = Cairo::Context->create($surface) ;
-
+		
 		my $layout = Pango::Cairo::create_layout($gco) ;
 		$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
-
-
+		
 		$gco->set_source_rgb(@{$background_color});
 		$gco->rectangle(0, 0, $character_width, $character_height) ;
 		$gco->fill();
@@ -638,7 +705,7 @@ for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
 		
 		$layout->set_text($overlay) ;
 		Pango::Cairo::show_layout($gco, $layout) ;
-
+		
 		$self->{CACHE}{CROSS_OVERLAY}{$cache_key} = $surface ;
 		}
 	

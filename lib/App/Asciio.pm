@@ -804,7 +804,26 @@ my $modifiers = $event->{MODIFIERS} ;
 if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	{
 	delete $self->{BINDINGS_COMPLETION} ;
-	$self->update_display() ;
+
+	# nkh: no, no, no
+	# I understand that this is to allow the display of the connectors
+	# when the mouse s close to an element but it shouldn't be called 
+	# if it isn't. ZBuffer may already have that computed for us.
+	#
+	# it's an important optimization
+	#
+	# you may notice that BINDINGS_COMPLETION is deleted but it's still
+	# displayed and I didn't call update_display to avoid the extra drawing
+	# because when bindings completions is displayed there will be another key press or 
+	# an action would be called and it would call update_display
+	#
+	# this works well except in a few cases, one of them being entering the clone function
+	#
+	# in any case, the display should only be updated when necessay
+	# even if it is just to save cpu time, which is battery time on my laptop and reduce pollution!
+
+	#$self->update_display() ;
+
 	
 	$self->run_actions(["${modifiers}motion_notify", $event]) if $self->exists_action("${modifiers}motion_notify") ;
 	}

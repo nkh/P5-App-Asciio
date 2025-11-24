@@ -5,12 +5,7 @@ use strict ; use warnings ;
 
 use App::Asciio::ZBuffer ;
 
-my %selected_elements ; # rename %selected_elements
-
-# nkh: change {CACHE}{COORDINATES} (which means nothing) to {CACHE}{SELECTION_COORDINATES} 
-# nkh: sort your functions in an order that makes sens, high levl first details after
-	# :QQ: COORDINATES have change to SELECTION_COORDINATES
-	#		The order of subs has been rearranged
+my %selected_elements ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -43,6 +38,7 @@ if(@{$self->{SELECTION_POLYGON}//[]} > 0)
 }
 
 #----------------------------------------------------------------------------------------------
+
 sub draw_rectangle_selection
 {
 my ($self, $gc, $character_width, $character_height) = @_ ;
@@ -95,7 +91,6 @@ $self->{SELECTION_POLYGON} = [] ;
 $self->change_cursor('left_ptr') ;
 }
 
-
 #-----------------------------------------------------------------------------
 
 sub polygon_selection
@@ -110,7 +105,7 @@ for my $element (@{$self->{ELEMENTS}})
 		@coordinates = map{ [reverse @$_]} @coordinates;
 		$element->{CACHE}{SELECTION_COORDINATES} = \@coordinates;
 		}
-
+	
 	if(all_points_in_polygon($element->{CACHE}{SELECTION_COORDINATES}, $self->{SELECTION_POLYGON}))
 		{
 		$self->select_elements($select_type, $element);
