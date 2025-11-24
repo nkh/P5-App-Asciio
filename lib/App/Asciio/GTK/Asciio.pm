@@ -171,6 +171,8 @@ sub expose_event
 {
 my ( $widget, $gc, $self ) = @_;
 
+my $t0 = Time::HiRes::time() ;
+
 $gc->set_line_width(1);
 
 my ($character_width, $character_height) = $self->get_character_size() ;
@@ -260,6 +262,8 @@ unless (defined $grid_rendering)
 
 $gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
 $gc->paint;
+
+my $t1 = Time::HiRes::time() ;
 
 # draw elements
 my $element_index = 0 ;
@@ -539,6 +543,9 @@ if($self->{DRAW_HINT_LINES})
 	}
 
 $self->display_bindings_completion($gc, $character_width, $character_height) ;
+
+my $t2 = Time::HiRes::time() ;
+printf STDERR "grid draw time: %0.4f sec. all gui draw time: %0.4f sec.\n", $t1 - $t0, $t2 - $t0 ;
 
 return TRUE;
 }
