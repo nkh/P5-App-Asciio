@@ -233,7 +233,6 @@ while (my ($coordinate, $char_stacks) = each %{ $cross_zbuffer->{intersecting_el
 while( my($coordinate, $elements) = each $cross_zbuffer->{intersecting_elements}->%*)
 	{
 	my ($Y, $X) = split ';', $coordinate ;
-	# :QQ: Because the elements that can be seen have been filtered before, there is no need to filter them here.
 	my $neighbors_stack = $cross_zbuffer->get_neighbors_stack($coordinate) ;
 
 	my ($char_315, $up, $char_45, $right, $char_135, $down, $char_225, $left) = 
@@ -285,8 +284,7 @@ return @overlays ;
 }
 
 #-----------------------------------------------------------------------------
-# +
-# :QQ: A simple function refactor to make the code logic clearer.
+
 sub scene_cross 
 {
 my ($up, $down, $left, $right, $char_category_indexs) = @_;

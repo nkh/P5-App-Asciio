@@ -42,7 +42,6 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	($min_y, $max_y) = minmax($min_y, $max_y, $stripe->{Y_OFFSET}, $stripe->{Y_OFFSET} + $height) ;
 	}
 
-# :QQ: This should be an old BUG, because the other parts of the code are [min_x, min_y, max_x, max_y]
 return bless  
 	{
 	STRIPES => \@stripes,

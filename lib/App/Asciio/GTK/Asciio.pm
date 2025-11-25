@@ -3,8 +3,6 @@ package App::Asciio::GTK::Asciio ;
 
 use base qw(App::Asciio) ;
 
-# $|++ ;
-
 use strict;
 use warnings;
 
@@ -142,123 +140,6 @@ my
 	$viewport_min_x, $viewport_max_x, $viewport_min_y, $viewport_max_y,
 	) = $self->get_viewport_info() ;
 
-# nkh: I explain again why your computing of the grid cache is not right and what I believe should be done
-# - changing any of the colors (background , grid and grid_2( which is a bad name I should change)
-#     that ALREADY invalidates {CACHE}{GRID}
-#
-# - grid_width and grid_height change should not invalidate the {CACHE}{GRID}
-#     what you need to do is get the screen size and compute the grid for it
-#     if you have screen that is 1920 * 1420 then use that size
-#     that is the maximum size the grid can ever have (if you don't have two screens and stretch the window over them)
-#     cache the grid for the maximum size and use it WHATEVER the size of window
-#
-# - the two pint above make the calculation of $grid_cache_key unnecessary
-# - if the colors don't change, the grid cache will only be computed ONCE for the whole run
-#     - not every time the window size changes
-#     - not every time the window is scrolled
-	# :QQ: I believe you didn’t understand me this time. My current drawing starting point is no longer (0, 0), but the
-	#		upper left corner of the current viewport. When the scroll bar is not at the origin, this coordinate is no
-	#		longer (0, 0)
-	#
-	#		This is the following line of code. The drawing of the grid no longer starts from (0, 0).
-	#		$gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
-	#
-	#		So I don't need to draw the grid of the entire canvas, I just need to draw the grid of the viewport.
-	#		So the conditions for cache update become grid width, grid height, grid background color, grid 1 color, grid 2 color, which are determined together, and they form the cache key.
-	#
-	#		My following line of code is correct.
-	#		my $grid_cache_key = $grid_width . '-' . $grid_height . '-' . ($self->get_color('background') // '') . '-' . ($self->get_color('grid') // '') . '-' . ($self->get_color('grid_2') // '') ;
-	#
-	#		My whole purpose is to draw less, because with a 1920 * 1420 canvas, the current window that the user can see may only be 920 * 480
-	#		Drawing less always improves speed a bit, especially within a large canvas.
-		#nkh: I understood
-		#
-		#	improve ** a bit ** is not a figure, please give me the timing figure
-		#	and once the grid is cached, how it the grid drawn faster when it is smaller
-		#		it's an optimized bit-blit, the only difference I can think about is the transfer of
-		#		the memory chunk to the GPU, we're talking micro seconds here
-		#	
-		#	I gather that you now understand that It doesn't matter where you draw the grid!
-		#
-		#	we never draw half character at the top-left of the grid
-		#	the top-left of the grid is always the top-left of a full character cell
-		#
-		#	the grid we cache at 0,0 is the exact same than the one at 123,15 and the same at 17,132, ....
-		#
-		#	the only difference between grids is how wide and tall they are
-		#
-		#	the only difference is the viewport size, which is important of course but more below
-		#	so if we draw and cache the grid so it is the size of the **screen** then we need to
-		#	draw it just **once** and never need to redraw it again if the colors don't change (they invalidate the grid cache)
-		#
-		#	your code re-caches every time 
-		#		a color changes but that is **already** done
-		#		the grid size changes
-		#			how often does that happen?
-		#			and this is **still** not the place to invalidate the grid, do it when the size changes rather than in the drawing loop
-		#
-		#	the only thing $grid_cache_key does is that it lets us know what size of the grid cahe is since there's no other element in it
-		#
-		#	I understand that you want to minimize the memory usage and it's a very good idea
-		#
-		#	I saw you videos about the memory usage, let's use that to compare the different alternatives
-		#		- the old caching which caches the whole canvas, we know that it uses more memory and is wasteful
-		#		- caching for the current viewport size, your new caching
-		#		- one time caching for a size equal to the screen
-		#	
-		#	THREE POINTS:
-		#	
-		#	- implement a one time cache that has the size of the screen
-		#		- provide memory usage figures, usage will obviously be larger
-		#
-		#	- if you want viewport grid caching to be as efficient as possible then it should only be
-		#		recomputed if the new viewport isn't contained in the older size
-		#		if the user changes size, and we get 10 resizing events, we recompute the cache 10 times
-		#		when we didn't need to compute it at all
-		#
-		#	- should the grid be cached at all?
-		#		I implemented caching because you had a lot of elements to display and asciio was too slow for that
-		#		**please provide me with a large anonymized document, I can generate one but I want something realistic**
-		#		we traded memory for speed but the grid rendering is not what take time drawing
-		#			- how long does it take? for both solutions
-		#
-		#		run a test with the grid caching **turned off** with a large document
-		#			- provide memory usage figures
-		#			- provide timing figures
-		#			- provide you feeling about the speed
-		#
-		#			maybe the memory saving will be so large and the grid drawing time so small
-		#			that we don't need to cache it at all (or make it optional)
-		#
-		#	on my machine, with window taking half the screen the timer displays:
-		#		- 'all gui draw time: 0.0152 sec' non cached
-		#		- 'gui draw time: 0.0010 sec." cached
-		#
-		#	Unfortunately... we have a **much larger** optimization problem!
-		#
-		#		mouse_move in Mouse.pm, redraws the document on every event!
-		#		and it's not just there since comment it out doesn't stop the redraws, I found it and it's in your latest change
-		#
-		#		that **needs** to be fixed next if possible
-		#
-		#	there's more optimization possible that I haven't implemented because I didn't have a use case for it
-		#		- clipping the elements to the view port certainly makes a big difference in rendering speed in large documents 
-		#			- good work there!
-		#		- there's more but I don't want to optimize for little gain
-		#			- hidden/overlapped elements
-		#			- clipping which would probably make the drawing 10 times faster
-		#			- a quad tree
-		#			- and ** not redrawing ** when the mouse moves  
-			# :QQ: I rolled back the grid cache code. I have tested it and there is no speed improvement. There is only a difference in memory usage.
-			#		You are right. Although my current solution saves memory, it increases CPU consumption and consumes more power for the laptop battery.
-			#		I would like to add a comment here if we need to consider memory usage later.
-			#		I accept your opinion for now.
-			#		I think the other small optimizations you mentioned are not necessary for the time being, as they have not become bottlenecks yet.
-			#		And it doesn't seem to be a bottleneck.
- 
-# If the width and height of the characters are too large, the grid will become very large and memory usage will increase.
-# But normally it won’t be too big
-# Drawing the grid of the viewport will cause more cache invalidation and recalculation problems, and increase CPU usage.
 my $grid_rendering = $self->{CACHE}{GRID} ;
 
 unless (defined $grid_rendering)
@@ -304,10 +185,6 @@ $gc->paint;
 # draw elements
 my $element_index = 0 ;
 
-#nkh: I renamed the variable to something more palatable
-#	then it hit me ... ** why is this in the cache ** it's just local variables!
-#	I leave it to you to convince me it should be in the cache or change it to local variables
-	# :QQ: Yes, there is no need to put it in the cache. This is a local variable, and I didn't even notice it!
 my $viewport = { elements => {}, draw_order => [] };
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
@@ -358,7 +235,6 @@ if($self->{DISPLAY_RULERS})
 		}
 	}
 
-#nkh: new sub to reduce the clutter in this function
 $self->draw_connections($gc, $widget_width, $widget_height, $character_width, $character_height, $viewport) ;
 
 # draw new connections
@@ -379,9 +255,6 @@ $gc->stroke() ;
 
 delete $self->{NEW_CONNECTIONS} ;
 
-# nkh: since these two can't be on at the same time ...
-# have a draw_selection function that decides which one to use
-	# :QQ: OK
 $self->draw_selection($gc, $character_width, $character_height) ;
 
 if ($self->{MOUSE_TOGGLE})
@@ -1062,8 +935,6 @@ sub show_cursor { my ($self) = @_ ; $self->change_cursor('left_ptr') ; }
     
 #-----------------------------------------------------------------------------
 
-#nkh: detail function, move dwn low or somewhere else
-	# :QQ: move to here
 sub get_viewport_info
 {
 my ($self) = @_;

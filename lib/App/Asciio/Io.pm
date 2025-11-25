@@ -278,8 +278,6 @@ local $self->{COPIED_ATTRIBUTES} = undef ;
 
 local $self->{ROOT_WINDOW} = undef ;
 local $self->{SC_WINDOW} = undef ;
-# :QQ: The code below is already there, so there is no need here
-#		local $self->{CACHE} = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
