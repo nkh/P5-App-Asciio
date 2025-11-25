@@ -251,25 +251,23 @@ my $max_row = max($end_y, $mini_row);
 my $max_col = max($end_x, $mini_col);
 
 
-my @text_lines;
+my @text_lines = defined $text_only && $text_only ne ''
+	? split("\n", $text_only)
+	: ('') ;
 
-if($text_only)
-	{
-	@text_lines = split("\n", $text_only) ;
-	}
 my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_height = @text_lines;
 
 my ($text_begin_y, $text_begin_x);
-if($text_only)
+if(defined $text_only)
     {
     ($max_col, $max_row, $text_begin_y, $text_begin_x) = find_fit_ellipse($max_col, $max_row, $text_width, $text_height);
     }
 else
-{
-    $max_col++ if ($max_col > $mini_col && ($max_col % 2) == 0);
-    $max_row++ if ($max_row > $mini_row && ($max_row % 2) == 0);
-}
+	{
+	$max_col++ if ($max_col > $mini_col && ($max_col % 2) == 0);
+	$max_row++ if ($max_row > $mini_row && ($max_row % 2) == 0);
+	}
 
 my ($half_x, $half_y) = (int($max_col/2), int($max_row/2));
 my @strips = fill_ellipse_strip($half_x, $half_y, $half_x, $half_y);
@@ -439,7 +437,7 @@ for $strip_index(1..$#sigle_strips-1)
     $strip_cnt = abs($now_strip - $pre_strip);
     if($strip_cnt == 0)
     {
-        if($fill_line)
+        if($fill_line ne '')
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
             $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 2 - $padding - $fill_cnt);
@@ -464,7 +462,7 @@ for $strip_index(1..$#sigle_strips-1)
     }
     elsif($strip_cnt == 2)
     {
-        if($fill_line)
+        if($fill_line ne '')
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 1;
             $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 2 - $padding - $fill_cnt);
@@ -508,7 +506,7 @@ for $strip_index(1..$#sigle_strips-1)
     }
     elsif($strip_cnt == 4)
     {
-        if($fill_line)
+        if($fill_line ne '')
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 2;
             $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 4 - $padding - $fill_cnt);
@@ -530,7 +528,7 @@ for $strip_index(1..$#sigle_strips-1)
     }
     elsif($strip_cnt == 6)
     {
-        if($fill_line)
+        if($fill_line ne '')
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - 3;
             $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - 6 - $padding - $fill_cnt);
@@ -596,7 +594,7 @@ for $strip_index(1..$#sigle_strips-1)
 
         }
 
-        if($fill_line)
+        if($fill_line ne '')
         {
             $padding = $text_begin_x - $sigle_strips[$strip_index][0] - ($bottom_mark + $left_mark + $mid_mark + $right_mark);
             $fill_text = $fill_char x $padding . $fill_line . $fill_char x ($now_strip - (2 * $left_mark + 2 * $mid_mark + 2 * $right_mark + 2 * $bottom_mark) - $padding - $fill_cnt);

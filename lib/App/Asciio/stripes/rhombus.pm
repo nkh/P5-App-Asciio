@@ -138,16 +138,9 @@ if($end_y > 3 && ($end_y % 2) == 0)
 	}
 
 my $number_of_lines = max($mini_row, $end_y) ;
-my @text_lines;
-
-if($text_only)
-	{
-	@text_lines = split("\n", $text_only) ;
-	}
-else
-	{
-	@text_lines = ('') ;
-	}
+my @text_lines = defined $text_only && $text_only ne ''
+	? split("\n", $text_only)
+	: ('') ;
 
 my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
