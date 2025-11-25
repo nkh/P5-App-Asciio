@@ -9,32 +9,45 @@ my %selected_elements ;
 
 #----------------------------------------------------------------------------------------------
 
+sub draw_selection
+{
+my ($self, $gc, $character_width, $character_height) = @_ ;
+
+if(defined $self->{SELECTION_RECTANGLE}{END_X})
+	{
+	$self->draw_rectangle_selection($gc, $character_width, $character_height) ;
+	}
+elsif(@{$self->{SELECTION_POLYGON}//[]} > 0)
+	{
+	$self->draw_polygon_selection($gc, $character_width, $character_height) ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
 sub draw_polygon_selection
 {
 my ($self, $gc, $character_width, $character_height) = @_ ;
 
-if(@{$self->{SELECTION_POLYGON}//[]} > 0)
+$gc->set_source_rgb(@{$self->get_color('selection_rectangle')});
+
+$gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
+for my $point (@{$self->{SELECTION_POLYGON}})
 	{
-	$gc->set_source_rgb(@{$self->get_color('selection_rectangle')});
-	
-	$gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
-	for my $point (@{$self->{SELECTION_POLYGON}})
-		{
-		$gc->line_to($point->[0] * $character_width, $point->[1] * $character_height);
-		}
-	
-	# draw solid line
-	$gc->stroke();
-	
-	$gc->set_dash(0, 1, 4);
-	$gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
-	$gc->line_to($self->{SELECTION_POLYGON}[-1][0] * $character_width, $self->{SELECTION_POLYGON}[-1][1] * $character_height);
-	$gc->close_path();
-	
-	# draw dotted line
-	$gc->stroke();
-	$gc->set_dash(0);
+	$gc->line_to($point->[0] * $character_width, $point->[1] * $character_height);
 	}
+
+# draw solid line
+$gc->stroke();
+
+$gc->set_dash(0, 1, 4);
+$gc->move_to($self->{SELECTION_POLYGON}[0][0] * $character_width, $self->{SELECTION_POLYGON}[0][1] * $character_height);
+$gc->line_to($self->{SELECTION_POLYGON}[-1][0] * $character_width, $self->{SELECTION_POLYGON}[-1][1] * $character_height);
+$gc->close_path();
+
+# draw dotted line
+$gc->stroke();
+$gc->set_dash(0);
 }
 
 #----------------------------------------------------------------------------------------------
@@ -43,32 +56,29 @@ sub draw_rectangle_selection
 {
 my ($self, $gc, $character_width, $character_height) = @_ ;
 
-if(defined $self->{SELECTION_RECTANGLE}{END_X})
+my $start_x = $self->{SELECTION_RECTANGLE}{START_X} * $character_width ;
+my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} * $character_height ;
+
+my $width   = ($self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X}) * $character_width ;
+my $height  = ($self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y}) * $character_height; 
+
+if($width < 0)
 	{
-	my $start_x = $self->{SELECTION_RECTANGLE}{START_X} * $character_width ;
-	my $start_y = $self->{SELECTION_RECTANGLE}{START_Y} * $character_height ;
-	
-	my $width   = ($self->{SELECTION_RECTANGLE}{END_X} - $self->{SELECTION_RECTANGLE}{START_X}) * $character_width ;
-	my $height  = ($self->{SELECTION_RECTANGLE}{END_Y} - $self->{SELECTION_RECTANGLE}{START_Y}) * $character_height; 
-	
-	if($width < 0)
-		{
-		$width *= -1 ;
-		$start_x -= $width ;
-		}
-		
-	if($height < 0)
-		{
-		$height *= -1 ;
-		$start_y -= $height ;
-		}
-		
-	$gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
-	$gc->rectangle($start_x, $start_y, $width, $height) ;
-	$gc->stroke() ;
-	
-	delete $self->{SELECTION_RECTANGLE}{END_X} ;
+	$width *= -1 ;
+	$start_x -= $width ;
 	}
+	
+if($height < 0)
+	{
+	$height *= -1 ;
+	$start_y -= $height ;
+	}
+	
+$gc->set_source_rgb(@{$self->get_color('selection_rectangle')}) ;
+$gc->rectangle($start_x, $start_y, $width, $height) ;
+$gc->stroke() ;
+
+delete $self->{SELECTION_RECTANGLE}{END_X} ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -146,12 +156,15 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 		{
 		push @{$self->{SELECTION_POLYGON}}, [$x, $y] ;
 		$self->polygon_selection($select_type) ;
+		# :QQ: motion_notify_event will no longer update the drawing for performance optimization, so we need to actively call it here.
+		$self->update_display() ;
 		}
 	}
 
 if($event->{STATE} ne 'dragging-button1')
 	{
 	$self->{SELECTION_POLYGON} = [] ;
+	$self->update_display() ;
 	}
 }
 

@@ -128,37 +128,9 @@ if (!$self->{NO_UPDATE_DISPLAY})
 
 #-----------------------------------------------------------------------------
 
-#nkh: detail function, move dwn low or somewhere else
-sub get_viewport_info
-{
-my ($self) = @_;
-
-my ($windows_width, $windows_height)     = $self->{ROOT_WINDOW}->get_size() ;
-my ($character_width, $character_height) = $self->get_character_size() ;
-my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
-
-my ($min_x, $max_x, $min_y, $max_y) = 
-	(
-	int ($h_value / $character_width - 2),
-	int (($h_value + $windows_width) / $character_width + 2),
-	int ($v_value / $character_height - 2),
-	int (($v_value + $windows_height) / $character_height + 2)
-	) ;
-
-my $grid_width  = (int ($windows_width / $character_width) + 2)   * $character_width ;
-my $grid_height = (int ($windows_height / $character_height) + 2) * $character_height ;
-
-#       viewport                        grid size                  scroll bar
-return ($min_x, $max_x, $min_y, $max_y, $grid_width, $grid_height, $v_value, $h_value)
-}
-
-#-----------------------------------------------------------------------------
-
 sub expose_event
 {
 my ( $widget, $gc, $self ) = @_;
-
-my $t0 = Time::HiRes::time() ;
 
 $gc->set_line_width(1);
 
@@ -168,10 +140,7 @@ my ($character_width, $character_height) = $self->get_character_size() ;
 my 
 	(
 	$viewport_min_x, $viewport_max_x, $viewport_min_y, $viewport_max_y,
-	$grid_width, $grid_height,
-	$v_value, $h_value
 	) = $self->get_viewport_info() ;
-
 
 # nkh: I explain again why your computing of the grid cache is not right and what I believe should be done
 # - changing any of the colors (background , grid and grid_2( which is a bad name I should change)
@@ -280,55 +249,57 @@ my
 		#			- clipping which would probably make the drawing 10 times faster
 		#			- a quad tree
 		#			- and ** not redrawing ** when the mouse moves  
+			# :QQ: I rolled back the grid cache code. I have tested it and there is no speed improvement. There is only a difference in memory usage.
+			#		You are right. Although my current solution saves memory, it increases CPU consumption and consumes more power for the laptop battery.
+			#		I would like to add a comment here if we need to consider memory usage later.
+			#		I accept your opinion for now.
+			#		I think the other small optimizations you mentioned are not necessary for the time being, as they have not become bottlenecks yet.
+			#		And it doesn't seem to be a bottleneck.
  
-my $grid_cache_key = "$grid_width-$grid_height-" . ($self->get_color('background') // '') . ($self->get_color('grid') // '') . ($self->get_color('grid_2') // '') ;
-
-my $grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} ;
+# If the width and height of the characters are too large, the grid will become very large and memory usage will increase.
+# But normally it won’t be too big
+# Drawing the grid of the viewport will cause more cache invalidation and recalculation problems, and increase CPU usage.
+my $grid_rendering = $self->{CACHE}{GRID} ;
 
 unless (defined $grid_rendering)
 	{
-	delete $self->{CACHE}{GRID} ;
-	my $surface = Cairo::ImageSurface->create('argb32', $grid_width, $grid_height) ;
-	my $gc = Cairo::Context->create($surface) ;
-	
+	my $surface = Cairo::ImageSurface->create('argb32', $widget_width, $widget_height);
+	my $gc = Cairo::Context->create($surface);
+		
 	$gc->set_source_rgb(@{$self->get_color('background')});
-	$gc->rectangle(0, 0, $grid_width, $grid_height);
+	$gc->rectangle(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
 	$gc->fill;
 	
 	if($self->{DISPLAY_GRID})
 		{
-		$gc->set_line_width(1) ;
+		$gc->set_line_width(1);
 		
-		# nkh: use the screen size here instead for the grid size
-		
-		for my $horizontal (0 .. ($grid_height/$character_height) + 1)
+		for my $horizontal (0 .. ($widget_height/$character_height) + 1)
 			{
 			my $color = ($horizontal % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
 			$gc->set_source_rgb(@{$self->get_color($color)});
 			
 			$gc->move_to(0,  $horizontal * $character_height);
-			$gc->line_to($grid_width, $horizontal * $character_height);
+			$gc->line_to($widget_width, $horizontal * $character_height);
 			$gc->stroke;
 			}
 		
-		for my $vertical(0 .. ($grid_width/$character_width) + 1)
+		for my $vertical(0 .. ($widget_width/$character_width) + 1)
 			{
 			my $color = ($vertical % 10 == 0 and $self->{DISPLAY_GRID2}) ? 'grid_2' : 'grid' ;
 			$gc->set_source_rgb(@{$self->get_color($color)});
 			
 			$gc->move_to($vertical * $character_width, 0) ;
-			$gc->line_to($vertical * $character_width, $grid_height);
+			$gc->line_to($vertical * $character_width, $widget_height);
 			$gc->stroke;
 			}
 		}
 		
-	$grid_rendering = $self->{CACHE}{GRID}{$grid_cache_key} = $surface ;
+	$grid_rendering = $self->{CACHE}{GRID} = $surface ;
 	}
 
-$gc->set_source_surface($grid_rendering, int($h_value / $character_width) * $character_width, int($v_value / $character_height) * $character_height);
+$gc->set_source_surface($grid_rendering, 0, 0);
 $gc->paint;
-
-my $t1 = Time::HiRes::time() ;
 
 # draw elements
 my $element_index = 0 ;
@@ -336,7 +307,8 @@ my $element_index = 0 ;
 #nkh: I renamed the variable to something more palatable
 #	then it hit me ... ** why is this in the cache ** it's just local variables!
 #	I leave it to you to convince me it should be in the cache or change it to local variables
-$self->{CACHE}{VIEWPORT} = { ELEMENTS => {}, DRAW_ORDER => [] };
+	# :QQ: Yes, there is no need to put it in the cache. This is a local variable, and I didn't even notice it!
+my $viewport = { elements => {}, draw_order => [] };
 
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 for my $element (@{$self->{ELEMENTS}})
@@ -355,12 +327,12 @@ for my $element (@{$self->{ELEMENTS}})
 		# element is visible in the viewport
 		$self->draw_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
 		
-		push @{ $self->{CACHE}{VIEWPORT}{DRAW_ORDER} }, $element ;
-		$self->{CACHE}{VIEWPORT}{ELEMENTS}{$element}++;
+		push @{ $viewport->{draw_order} }, $element ;
+		$viewport->{elements}{$element}++;
 		}
 	}
 
-$self->draw_cross_overlays($gc, $self->{CACHE}{VIEWPORT}{DRAW_ORDER}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays($gc, $viewport->{draw_order}, $character_width, $character_height) if $self->{USE_CROSS_MODE} ;
 $self->draw_overlay($gc, $widget_width, $widget_height, $character_width, $character_height) ;
 
 # draw ruler lines
@@ -387,7 +359,7 @@ if($self->{DISPLAY_RULERS})
 	}
 
 #nkh: new sub to reduce the clutter in this function
-$self->draw_connections($gc, $widget_width, $widget_height, $character_width, $character_height) ;
+$self->draw_connections($gc, $widget_width, $widget_height, $character_width, $character_height, $viewport) ;
 
 # draw new connections
 for my $new_connection (@{$self->{NEW_CONNECTIONS}})
@@ -409,8 +381,8 @@ delete $self->{NEW_CONNECTIONS} ;
 
 # nkh: since these two can't be on at the same time ...
 # have a draw_selection function that decides which one to use
-$self->draw_rectangle_selection($gc, $character_width, $character_height) ;
-$self->draw_polygon_selection($gc, $character_width, $character_height) ;
+	# :QQ: OK
+$self->draw_selection($gc, $character_width, $character_height) ;
 
 if ($self->{MOUSE_TOGGLE})
 	{
@@ -452,9 +424,6 @@ if($self->{DRAW_HINT_LINES})
 $self->display_bindings_completion($gc, $character_width, $character_height) 
 	if ($self->{USE_BINDINGS_COMPLETION} && defined $self->{BINDINGS_COMPLETION}) ;
 
-my $t2 = Time::HiRes::time() ;
-printf STDERR "grid draw time: %0.4f sec. all gui draw time: %0.4f sec.\n", $t1 - $t0, $t2 - $t0 ;
-
 return TRUE;
 }
 
@@ -462,13 +431,13 @@ return TRUE;
 
 sub draw_connections
 {
-my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height) = @_ ;
+my ($self, $gc, $widget_width, $widget_height, $character_width, $character_height, $viewport) = @_ ;
 
 my (%connected_connections, %connected_connectors) ;
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
-	next unless exists $self->{CACHE}{VIEWPORT}{ELEMENTS}{$connection->{CONNECTED}} ;
+	next unless exists $viewport->{elements}{$connection->{CONNECTED}} ;
 	
 	my $draw_connection ;
 	my $connector  ;
@@ -569,8 +538,8 @@ my $extra_point_rendering = $self->{CACHE}{EXTRA_POINT} ;
 
 for my $element (
 		$self->{DISPLAY_ALL_CONNECTORS} 
-			? @{$self->{CACHE}{VIEWPORT}{DRAW_ORDER}}
-			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$self->{CACHE}{VIEWPORT}{DRAW_ORDER}}
+			? @{$viewport->{draw_order}}
+			: grep { $self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1) } @{$viewport->{draw_order}}
 		)
 	{
 	for my $connector ($element->get_connector_points())
@@ -769,24 +738,27 @@ for (@overlay_elements)
 # draw hint_lines
 if(@overlay_elements and $self->{DRAW_HINT_LINES})
 	{
-	my ($xs, $ys, $xe, $ye) = $self->get_extent_box(@overlay_elements) ; 
+	my ($xs, $ys, $xe, $ye, $has_extents) = $self->get_selected_elements_extents(@overlay_elements) ; 
 	
-	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('hint_line2')});
-	
-	$gc->move_to($xs * $character_width, 0) ;
-	$gc->line_to($xs * $character_width, $widget_height) ;
-	
-	$gc->move_to(0, $ys * $character_height) ;
-	$gc->line_to($widget_width, $ys * $character_height);
-	
-	$gc->move_to($xe * $character_width, 0) ;
-	$gc->line_to($xe * $character_width, $widget_height) ;
-	
-	$gc->move_to(0, $ye * $character_height) ;
-	$gc->line_to($widget_width, $ye * $character_height);
-	
-	$gc->stroke() ;
+	if($has_extents)
+		{
+		$gc->set_line_width(1);
+		$gc->set_source_rgb(@{$self->get_color('hint_line2')});
+		
+		$gc->move_to($xs * $character_width, 0) ;
+		$gc->line_to($xs * $character_width, $widget_height) ;
+		
+		$gc->move_to(0, $ys * $character_height) ;
+		$gc->line_to($widget_width, $ys * $character_height);
+		
+		$gc->move_to($xe * $character_width, 0) ;
+		$gc->line_to($xe * $character_width, $widget_height) ;
+		
+		$gc->move_to(0, $ye * $character_height) ;
+		$gc->line_to($widget_width, $ye * $character_height);
+		
+		$gc->stroke() ;
+		}
 	}
 }
 
@@ -1088,6 +1060,29 @@ sub hide_cursor { my ($self) = @_ ; $self->change_cursor('blank-cursor') ; }
 
 sub show_cursor { my ($self) = @_ ; $self->change_cursor('left_ptr') ; }
     
+#-----------------------------------------------------------------------------
+
+#nkh: detail function, move dwn low or somewhere else
+	# :QQ: move to here
+sub get_viewport_info
+{
+my ($self) = @_;
+
+my ($windows_width, $windows_height)     = $self->{ROOT_WINDOW}->get_size() ;
+my ($character_width, $character_height) = $self->get_character_size() ;
+my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
+
+my ($min_x, $max_x, $min_y, $max_y) = 
+	(
+	int ($h_value / $character_width - 2),
+	int (($h_value + $windows_width) / $character_width + 2),
+	int ($v_value / $character_height - 2),
+	int (($v_value + $windows_height) / $character_height + 2)
+	) ;
+
+return ($min_x, $max_x, $min_y, $max_y)
+}
+
 #-----------------------------------------------------------------------------
 
 =head1 DEPENDENCIES

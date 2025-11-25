@@ -821,6 +821,7 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	#
 	# in any case, the display should only be updated when necessay
 	# even if it is just to save cpu time, which is battery time on my laptop and reduce pollution!
+		# :QQ: Okay, I understand. I actively call the update_display function in the movement event of polygon selection.
 
 	#$self->update_display() ;
 
