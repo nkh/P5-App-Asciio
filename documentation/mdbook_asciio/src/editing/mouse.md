@@ -11,6 +11,15 @@
 
 ![quick link](quick_link.gif)
 
+## Orthogonal quick link
+
+***Binding:*** «shift-alt-left-mouse-click»
+
+Works like a quick link but, when necessary, will create a box that is either aligned 
+horizontally or vertically with the first element of the selection (whichever is closest)
+
+![orthogonal_quick link](orthogonal_quick_link.gif)
+
 ## Quick copy
 
 ***Binding:*** «alt-shift-left-mouse-click»

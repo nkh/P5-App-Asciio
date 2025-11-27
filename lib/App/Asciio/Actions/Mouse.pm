@@ -107,7 +107,7 @@ my ($first_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @
 
 $self->select_elements(1, $first_element) if defined $first_element ;
 
-$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', 0, 0])  ;
+$self->run_actions_by_name('Copy to clipboard', ['Insert from clipboard', $self->{COPY_OFFSET_X} // 1, $self->{COPY_OFFSET_Y} // 1])  ;
 }
 
 
@@ -134,22 +134,52 @@ $self->update_display();
 
 sub quick_link
 {
-my ($self) = @_ ;
-my ($x, $y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
+my ($self, $orthogonal) = @_ ;
+my ($mx, $my) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
 
 $self->create_undo_snapshot() ;
 
-my ($destination_element) = first_value {$self->is_over_element($_, $x, $y)} reverse @{$self->{ELEMENTS}} ;
+my ($destination_element) = first_value {$self->is_over_element($_, $mx, $my)} reverse @{$self->{ELEMENTS}} ;
 
 if($destination_element)
 	{
-	connect_to_destination_element($self, $destination_element, $x, $y) ;
+	connect_to_destination_element($self, $destination_element, $mx, $my) ;
 	}
 else
 	{
-	my $new_box = $self->add_new_element_named('Asciio/box', $x, $y) ;
+	my @selected_elements = $self->get_selected_elements(1) ;
 	
-	connect_to_destination_element($self, $new_box, $x, $y) ;
+	my ($ex, $ey) = @selected_elements 
+				? get_orthogonal_position(@{$selected_elements[0]}{qw/X Y/}, $mx, $my)
+				: ($mx, $my) ;
+	
+	my $new_box = $self->add_new_element_named('Asciio/box', $ex, $ey) ;
+	
+	connect_to_destination_element($self, $new_box, $ex, $ey) ;
+	}
+}
+
+sub get_orthogonal_position
+{
+my ($px, $py, $ax, $ay) = @_;
+
+my $o1_x     = $px;
+my $o1_y     = $ay;
+my $dx1      = $ax - $o1_x;
+my $dist_sq1 = $dx1 * $dx1;
+
+my $o2_x     = $ax;
+my $o2_y     = $py;
+my $dy2      = $ay - $o2_y;
+my $dist_sq2 = $dy2 * $dy2;
+
+if ($dist_sq1 <= $dist_sq2)
+	{
+	return ($o1_x, $o1_y, 'Vertical') ;
+	}
+else
+	{
+	return ($o2_x, $o2_y, 'Horizontal') ;
 	}
 }
 

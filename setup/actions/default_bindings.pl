@@ -85,8 +85,9 @@ register_action_handlers
 
 'Mouse selection flip'               => ['00S-button-press-1',                     \&App::Asciio::Actions::Mouse::mouse_element_selection_flip                         ],
 
+'Mouse quick link orthogonal'        => [['0AS-button-press-1'],                   \&App::Asciio::Actions::Mouse::quick_link, 1                                        ],
 'Mouse quick link'                   => [['0A0-button-press-1', '000-period'],     \&App::Asciio::Actions::Mouse::quick_link                                           ],
-'Mouse duplicate elements'           => [['0AS-button-press-1', '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                              ],
+'Mouse duplicate elements'           => [[                      '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                              ],
 'Mouse quick box'                    => [['C0S-button-press-1'],                   \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                    ],
 
 'Arrow to mouse'                     => ['CA0-motion_notify',                      \&App::Asciio::Actions::Arrow::interactive_to_mouse                                 ], 
@@ -667,7 +668,6 @@ SHORTCUTS => '00S-question',
 'Edit selected element inline' => 1,
 
 'Mouse quick link'             => 1,
-'Mouse duplicate elements'     => 1,
 'Mouse quick box'              => 1,
 
 'Arrow to mouse'               => 1,
