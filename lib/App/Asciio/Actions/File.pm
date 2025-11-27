@@ -1,11 +1,27 @@
 
 package App::Asciio::Actions::File ;
 use utf8;
-use Encode;
+use Encode qw(decode encode FB_CROAK) ;
+
+use File::Basename ;
 
 #----------------------------------------------------------------------------------------------
 
-use File::Basename ;
+sub normalize_file_name
+{
+my ($file_name) = @_;
+return undef unless defined $file_name ;
+
+my $normalized ;
+
+# try UTF-8 decoding
+eval { $normalized = decode('UTF-8', $file_name, FB_CROAK) ; 1 ; } and return $normalized ;
+
+# try CP936/GBK decoding
+eval { $normalized = decode('cp936', $file_name) ; 1 ; } and return $normalized ;
+
+return $file_name ;
+}
 
 #----------------------------------------------------------------------------------------------
 
@@ -93,7 +109,8 @@ return $file_name ;
 sub open
 {
 my ($self, $file_name) = @_ ;
-$file_name = decode('utf-8', $file_name);
+
+$file_name = normalize_file_name($file_name);
 
 my $user_answer = '' ;
 

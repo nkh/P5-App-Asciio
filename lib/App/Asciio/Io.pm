@@ -12,6 +12,7 @@ use Data::TreeDumper ;
 use File::Slurper qw(read_text write_text read_binary write_binary) ;
 use Readonly ;
 use Compress::Bzip2 qw(:all :utilities :gzip) ;
+use Encode qw(encode);
 
 use Sereal qw(
     get_sereal_decoder
@@ -23,6 +24,7 @@ use Sereal qw(
 ) ;
 
 use Sereal::Encoder qw(SRL_SNAPPY SRL_ZLIB SRL_ZSTD) ;
+
 
 #-----------------------------------------------------------------------------
 
@@ -62,7 +64,7 @@ if
 	}
 else
 	{
-	if(-e $file_name && -s $file_name)
+	if(file_exists($file_name))
 		{
 		my $header_diagram  = read_binary($file_name) ;
 		
@@ -365,6 +367,23 @@ my $magic   = substr($header_diagram, 0, length($ASCIIO_MIME_TYPE)) ;
 my $diagram = $magic eq $ASCIIO_MIME_TYPE ? substr($header_diagram, length($ASCIIO_MIME_TYPE)) : $header_diagram ;
 
 return $decoder->decode(decompress($diagram)) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub file_exists
+{
+my ($path) = @_ ;
+return 0 unless defined $path ;
+
+# try the UTF-8 version 
+return 1 if -e $path && -s $path ;
+
+# try with CP936 encoded byte version as Windows Chinese API only recognizes GBK sequences
+my $gbk = eval { encode('cp936', $path) } ;
+return 1 if defined $gbk && -e $gbk && -s $gbk ;
+
+return 0 ;
 }
 
 #-----------------------------------------------------------------------------
