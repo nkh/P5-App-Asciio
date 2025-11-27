@@ -66,3 +66,13 @@ You can quickly create boxes and section by combining ***quick link*** and ***qu
 
 ![quick box and section](quick_box_and_section.gif)
 
+## Mouse dragging canvas
+
+If no element is selected, you can use the mouse to drag the canvas.
+
+If at least one element is selected, other operations are performed. See [drag_drop](drag_drop.md).
+
+***Binding:*** control + left click + drag
+
+![mouse drag canvas](mouse_drag_canvas.gif)
+

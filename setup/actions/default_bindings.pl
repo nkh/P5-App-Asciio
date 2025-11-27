@@ -129,6 +129,7 @@ TOP_LEVEL_GROUP
 
 'Mouse motion'                 => ['000-motion_notify',                  \&App::Asciio::Actions::Mouse::mouse_motion, undef, { HIDE => 1}        ],
 'Mouse motion 2'               => ['0AS-motion_notify',                  \&App::Asciio::Actions::Mouse::mouse_motion, undef, { HIDE => 1}        ],
+'Mouse drag canvas'            => ['C00-motion_notify',                  \&App::Asciio::Actions::Mouse::mouse_drag_canvas                        ],
 
 # mouse emulation
 'Mouse emulation toggle'           => [['000-apostrophe', "'"], \&App::Asciio::Actions::Mouse::toggle_mouse                ],
