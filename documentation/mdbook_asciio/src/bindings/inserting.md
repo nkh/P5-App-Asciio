@@ -2,41 +2,49 @@
 
      «i» Insert group:
 
-         «A»                Add angled arrow
+         «c»                Add connector
+
+         «t»                Add text
 
          «a»                Add arrow
 
-         «A-a»              Add unicode arrow
+         «A»                Add angled arrow
 
-         «B»                Add shrink box
+         «s»                Add Stencil Action Group
 
-         «b»                Add box
+         «m»                Add Multiple Action Group
 
-         «A-b»              Add unicode box
+         «u»                Add Unicode Action Group
 
-         «c»                Add connector
+         «b»                Add Box Action Group
 
-         «E»                Add exec-box no border
+         «e»                Add Elements Action Group
 
-         «e»                Add exec-box
+         «r»                Add Ruler Action Group
 
-         «f»                Insert from file
+         «l»                Add Line Action Group
 
-         «g»                Add group object type 1
+         «k»                Add Connected Action Group
 
-         «h»                Add help box
+## Stencil Action Group
 
-         «i»                Add if-box
+## Multiple Action Group
 
-         «R»                Add horizontal ruler
+## Unicode Action Group
 
-         «x»                External command output in a box
+## Box Action Group
 
-         «X»                External command output in a box no frame
+## Elements Action Group
 
-         «p»                Add process
+## Ruler Action Group
 
-         «r»                Add vertical ruler
+## Line Action Group
 
-         «t»                Add text
+## Connected Action Group
+
+Starting from a box element or starting from a text element, automatically link to one or more new boxes or text.Here are two examples:
+
+![inserting_connected_box](./inserting_connected_box.gif)
+
+![inserting_connected_text](./inserting_connected_text.gif)
 
