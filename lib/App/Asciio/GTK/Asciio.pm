@@ -147,7 +147,7 @@ $gc->set_line_width(1) ;
 
 $self->draw_background_and_grid    ($expose_data) ;
 $self->draw_elements               ($expose_data) ;
-$self->draw_cross_overlays         ($expose_data) if $self->{USE_CROSS_MODE} ;
+$self->draw_cross_overlays         ($expose_data) ;
 $self->draw_overlay                ($expose_data) ;
 $self->draw_ruler_lines            ($expose_data) if $self->{DISPLAY_RULERS} ;
 $self->draw_connections            ($expose_data) ;
@@ -283,7 +283,10 @@ my ($self, $expose_data) = @_ ;
 my ($gc, $character_width, $character_height, $viewport)
 	= @{$expose_data}{qw/ gc character_width character_height viewport /} ;
 
-my $zbuffer = App::Asciio::ZBuffer->new(1, @{$viewport->{drawing_order}}) ;
+my @cross_elements = grep { $_->is_crossover_enabled() } @{$viewport->{drawing_order}} ;
+return unless @cross_elements ;
+
+my $zbuffer = App::Asciio::ZBuffer->new(1, @cross_elements) ;
 
 my ($default_background_color, $default_foreground_color) = (
 	$self->get_color('element_background'), $self->get_color('element_foreground')) ;

@@ -471,7 +471,7 @@ if(@selected_elements >= 1)
 	
 	delete $_->{CACHE}{RENDERING} for @selected_elements ;
 	
-	($strip_group, my $ex, my $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe, $self) ;
+	($strip_group, my $ex, my $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe, $self->get_color('element_background'), $self->get_color('element_foreground')) ;
 	
 	@$strip_group{'X', 'Y', 'SELECTED'} = ($ex, $ey, 1) ;
 	
@@ -514,6 +514,25 @@ if(@selected_elements == 1 && ref $selected_elements[0] eq 'App::Asciio::stripes
 	$self->delete_elements($group) ;
 	
 	$self->update_display();
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub set_elements_crossover
+{
+my ($self, $enable) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot() ;
+	for(@selected_elements)
+		{
+		$_->enable_crossover($enable) ;
+		}
+	$self->update_display() ;
 	}
 }
 

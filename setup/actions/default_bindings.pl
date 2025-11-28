@@ -183,7 +183,6 @@ register_action_handlers
 	'<< Change color >>'                  => ['000-c', ACTION_GROUP('color')                                                   ] ,
 	
 	'Flip binding completion'             => ['000-b', sub { $_[0]->{USE_BINDINGS_COMPLETION} ^= 1 ; $_[0]->update_display() ;}],
-	'Flip cross mode'                     => ['000-x', sub { $_[0]->{USE_CROSS_MODE} ^= 1 ; $_[0]->update_display ; }          ],
 	'Flip transparent element background' => ['000-t', \&App::Asciio::Actions::Unsorted::transparent_elements                  ],
 	'Flip grid display'                   => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
 	'Flip rulers display'                 => ['000-r', \&App::Asciio::Actions::Unsorted::flip_rulers_display                   ],
@@ -412,7 +411,7 @@ register_action_handlers
 	{
 	SHORTCUTS   => '000-e',
 	
-	'Shrink box'                => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                     ],
+	'Shrink box'                => ['000-s',  \&App::Asciio::Actions::ElementsManipulation::shrink_box                    ],
 	'Make elements Unicode'     => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1        ],
 	'Make elements not Unicode' => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0        ],
 	
@@ -421,6 +420,9 @@ register_action_handlers
 	
 	'convert to a big text'     => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element ], 
 	'convert to dots'           => ['00S-D',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements ], 
+	
+	'enable elements cross'     => ['000-x',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1     ], 
+	'disable elements cross'    => ['00S-X',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0     ], 
 	
 	'<< Box >>'                 => ['000-b', ACTION_GROUP('box_type_change')                                              ] ,
 	'<< Wirl Arrow >>'          => ['000-w', ACTION_GROUP('wirl_arrow_type_change')                                       ] ,

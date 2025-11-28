@@ -194,6 +194,13 @@ return ;
 
 sub change_attributes { ; }
 
+#-----------------------------------------------------------------------------
+
+sub is_crossover_enabled { my ($self) = @_ ; return !($self->{CROSSOVER_DISABLED} // 1) ; }
+
+#-----------------------------------------------------------------------------
+
+sub enable_crossover { my ($self, $enable) = @_ ; $self->{CROSSOVER_DISABLED} = !$enable ; }
 
 #-----------------------------------------------------------------------------
 

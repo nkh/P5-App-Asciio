@@ -18,5 +18,7 @@ Version.pm
 _test.asciio
 html/
 errors/
-
 divers/
+*.bat
+*.tmp
+

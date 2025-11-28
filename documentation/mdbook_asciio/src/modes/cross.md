@@ -2,61 +2,55 @@
 
 ## 1 Introduction
 
-In normal mode, elements boundaries are independent of each.
+Previously, crossover was a separate mode. But not anymore, crossover is just an
+attribute of the element. By default, the following shortcut keys are used to
+switch the cross attribute of the element. By default, the element has no cross
+attribute. The intersection of the boundaries of elements with the cross
+attribute will present special visual effects.
 
-![normal_elements](normal_elements.png)
+***Binding:*** 
 
-In cross mode intersections are merged:
+    - «e»     enters the element operation group
 
-![cross_elements](cross_elements.png)
+| action                 | binding       |
+|------------------------|---------------|
+| Enable elements cross  | `<<x>>`       |
+| Disable elements cross | `<<Shift-X>>` |
 
+![cross_effect](cross_effect.gif)
 
 ## 2 Complex graphics
 
-The cross-mode lets you create graphics like this table
+The element cross attribute allows you to draw complex tables like the following:
+
+![cross_complex](cross_complex.gif)
+
 
 ```
 
-        ╔═══════╤══════════════════════════════════════════════════════════════╗
-        ║       │   test scores                                                ║
-        ║       ├──────┬───────┬───────┬────────┬───────┬──────┬────────┬──────╢
-        ║  Name │  Math│Physics│       │        │       │      │        │      ║
-        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
-        ║ Jim   │  A+  │  B    │       │        │       │      │        │      ║
-        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
-        ║Stephen│  B   │  A    │       │        │       │      │        │      ║
-        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
-        ║ Kate  │  A   │  C    │       │        │       │      │        │      ║
-        ╚═══════╧══════╧═══════╧═══════╧════════╧═══════╧══════╧════════╧══════╝
-
+           ╔═══════╤═══════════════════════════════════════════════╗
+           ║       │     test scores                               ║
+           ║ Name  ├───────┬────────┬───────┬───────┬──────┬───────╢
+           ║       │   Math│ Physics│       │       │      │       ║
+           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
+           ║ Jim   │    A+ │  B     │       │       │      │       ║
+           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
+           ║Stephen│    B  │  A     │       │       │      │       ║
+           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
+           ║ Kate  │    A  │  C     │       │       │      │       ║
+           ╚═══════╧═══════╧════════╧═══════╧═══════╧══════╧═══════╝
 ```
 
-## 3 Enabling cross-mode
 
-### 3.1 Globally
+## Stripe group situation
 
-Add this line in your user configuration.
+When we merge elements into a strip group, if the merged elements themself has
+a cross attribute, the merged strip group will also presents the visual effect
+of intersection, but the strip group element itself has no cross attribute.
 
-```perl
-USE_CROSS_MODE => 1,
-```
+![cross_stripes](cross_stripes.gif)
 
-### 3.2 Dynamically
-
-Binding: «z-x» 'Switch cross mode'
-
-## 4 Line and Box
-
-![cross_lines](cross_lines.gif)
-
-![cross_boxs](cross_boxs.gif)
-
-## 5 Lines and boxes
-
-![cross_box_line](cross_box_line.gif)
-
-
-## 6 Exported to text
+## Exported to text
 
 ```
         .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗

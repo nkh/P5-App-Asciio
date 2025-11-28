@@ -16,7 +16,7 @@ use App::Asciio::String ;
 
 sub new
 {
-my ($class, $elements, $connections, $as_one_strip, $asciio_handle) = @_ ;
+my ($class, $elements, $connections, $as_one_strip, $default_background_color, $default_foreground_color) = @_ ;
 
 my  @stripes ;
 
@@ -85,6 +85,37 @@ for my $element (@{$elements})
 		}
 	}
 
+# Save the cross overlay of the cross elements
+if(! $as_one_strip)
+	{
+	my @cross_elements = grep { $_->is_crossover_enabled() } @{$elements} ;
+	if(@cross_elements)
+		{
+		my $zbuffer = App::Asciio::ZBuffer->new(1, @cross_elements) ;
+
+		for (App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
+			{
+			my ($x, $y, $overlay, $background_color, $foreground_color) = @$_ ;
+			
+			$background_color //= $default_background_color ;
+			$foreground_color //= $default_foreground_color ;
+			
+			push @stripes, 
+				{
+				TEXT => $overlay,
+				X_OFFSET => $x-$min_x-$min_ex,
+				Y_OFFSET => $y-$min_y-$min_ey,
+				WIDTH => 1, 
+				HEIGHT => 1, 
+				@{$background_color},
+				@{$foreground_color},
+				} ;
+			
+			}
+		}
+	}
+	
+
 $total_width -= $min_x ;
 $total_height -= $min_y ;
 
@@ -92,7 +123,6 @@ if ($as_one_strip)
 	{
 	my $asciio = App::Asciio->new() ;
 	$asciio->add_elements(@{$elements}) ;
-	$asciio->{USE_CROSS_MODE} = $asciio_handle->{USE_CROSS_MODE} if(defined $asciio_handle->{USE_CROSS_MODE}) ;
 	
 	my $text = $asciio->transform_elements_to_ascii_buffer() ;
 	

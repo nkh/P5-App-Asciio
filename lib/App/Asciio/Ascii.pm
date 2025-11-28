@@ -120,9 +120,11 @@ for my $element (@elements)
 	}
 
 # If there is cross overlay, the characters of the cross need to be exported
-if($self->{USE_CROSS_MODE})
+my @cross_elements = grep { $_->is_crossover_enabled() } @{$self->{ELEMENTS}} ;
+
+if(@cross_elements)
 	{
-	my $zbuffer = App::Asciio::ZBuffer->new(1, @{$self->{ELEMENTS}}) ;
+	my $zbuffer = App::Asciio::ZBuffer->new(1, @cross_elements) ;
 
 	for(App::Asciio::Cross::get_cross_mode_overlays($zbuffer))
 		{
