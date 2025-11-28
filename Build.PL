@@ -51,6 +51,7 @@ lib/App/Asciio/Actions/Selection.pm
 lib/App/Asciio/Actions/Shapes.pm
 lib/App/Asciio/Actions/Unsorted.pm
 lib/App/Asciio/Actions/ZBuffer.pm
+lib/App/Asciio/Actions/Tabs.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/stripes/center_connect_box.pm
@@ -73,6 +74,9 @@ lib/App/Asciio/Utils/Presentation.pm
 lib/App/Asciio/Utils/Scripting.pm
 
 lib/App/Asciio/GTK/Asciio.pm
+lib/App/Asciio/GTK/Asciio/HelpWidget.pm
+lib/App/Asciio/GTK/Asciio/TabbedAsciio.pm
+lib/App/Asciio/GTK/Asciio/TabManager.pm
 
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
@@ -322,6 +326,7 @@ my $build = $class->new
 			script/asciio_to_text
 			script/text_to_asciio
 			script/A
+			script/TA
 			script/AV
 			script/T
 			script/stdin_to_asciio

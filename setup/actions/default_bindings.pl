@@ -22,6 +22,7 @@ use App::Asciio::Actions::Selection ;
 use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
 use App::Asciio::Actions::ZBuffer ;
+use App::Asciio::Actions::Tabs ;
 
 use App::Asciio::Utils::Scripting ;
 
@@ -122,6 +123,28 @@ register_action_handlers
 
 'Copy to clipboard'                  => [['C00-c', 'C00-Insert'],                  \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard              ],
 'Insert from clipboard'              => [['C00-v', '00S-Insert'],                  \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard            ],
+
+'<< tab leader >>' => 
+	{
+	SHORTCUTS   => '000-t',
+	
+	'show help tab'     => ['00S-H',      \ &App::Asciio::Actions::Tabs::show_help_tab     ] ,
+	'toggle tab labels' => ['00S-L',      \ &App::Asciio::Actions::Tabs::toggle_tab_labels ] ,
+	'toggle toolbar'    => ['00S-X',      \ &App::Asciio::Actions::Tabs::toggle_toolbar    ] ,
+	'rename'            => ['00S-R',      \ &App::Asciio::Actions::Tabs::rename            ] ,
+	
+	'new tab'           => ['000-n',      \ &App::Asciio::Actions::Tabs::new_tab           ] ,
+	'copy tab'          => ['000-c',      \ &App::Asciio::Actions::Tabs::copy_tab          ] ,
+	'delete tab'        => ['000-d',      \ &App::Asciio::Actions::Tabs::delete_tab        ] ,
+	'next tab'          => ['000-f',      \ &App::Asciio::Actions::Tabs::next_tab          ] ,
+	'previous tab'      => ['000-b',      \ &App::Asciio::Actions::Tabs::previous_tab      ] ,
+	'last tab'          => ['000-dollar', \ &App::Asciio::Actions::Tabs::last_tab          ] ,
+	'move tab right'    => ['000-r',      \ &App::Asciio::Actions::Tabs::move_tab_right    ] ,
+	'move tab left'     => ['000-l',      \ &App::Asciio::Actions::Tabs::move_tab_left     ] ,
+	'quit all'          => ['000-q',      \ &App::Asciio::Actions::Tabs::quit_all          ] ,
+	
+	map { ("tab $_"     => ["000-$_", \&App::Asciio::Actions::Tabs::focus_tab, $_, undef, undef, { HIDDEN => 1 } ] ) } (0..9), 
+	},
 
 '<< yank leader >>' =>
 	{

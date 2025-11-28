@@ -260,26 +260,27 @@ sub serialize_self
 {
 my ($self, $indent) = @_ ;
 
-local $self->{widget} = undef ;
-local $self->{ACTIONS} = [] ;
-local $self->{HOOKS} = [] ;
-local $self->{CURRENT_ACTIONS} = [] ;
-local $self->{ACTIONS_BY_NAME} = [] ;
-local $self->{DO_STACK} = undef ;
-local $self->{DO_STACK_POINTER} = undef ;
-local $self->{IMPORT_EXPORT_HANDLERS} = undef ;
-local $self->{MODIFIED} => 0 ;
-local $self->{TITLE} = '' ;
-local $self->{CREATE_BACKUP} = undef ;
-local $self->{ELEMENT_TYPES} = undef ;
-local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
-local $self->{ACTION_VERBOSE} = undef ;
-local $self->{WARN} = undef ;
-local $self->{COPIED_ATTRIBUTES} = undef ;
+local $self->{widget}                      = undef ;
+local $self->{ACTIONS}                     = [] ;
+local $self->{HOOKS}                       = [] ;
+local $self->{CURRENT_ACTIONS}             = [] ;
+local $self->{ACTIONS_BY_NAME}             = [] ;
+local $self->{DO_STACK}                    = undef ;
+local $self->{DO_STACK_POINTER}            = undef ;
+local $self->{IMPORT_EXPORT_HANDLERS}      = undef ;
+local $self->{MODIFIED}                    = 0 ;
+local $self->{TITLE}                       = '' ;
+local $self->{CREATE_BACKUP}               = undef ;
+local $self->{ELEMENT_TYPES}               = undef ;
+local $self->{ELEMENT_TYPES_BY_NAME}       = undef ;
+local $self->{ACTION_VERBOSE}              = undef ;
+local $self->{WARN}                        = undef ;
+local $self->{COPIED_ATTRIBUTES}           = undef ;
+local $self->{BINDINGS_COMPLETION}         = undef ;
+local $self->{BINDINGS_COMPLETION_LENGTH}  = undef ;
 
-
-local $self->{ROOT_WINDOW} = undef ;
-local $self->{SC_WINDOW} = undef ;
+local $self->{ROOT_WINDOW}                 = undef ;
+local $self->{SC_WINDOW}                   = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
