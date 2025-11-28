@@ -1,4 +1,4 @@
-
+#!/bin/bash
 # bash script that adds an element to an asciio instance, offsets it, and deletes it
 
 # create a script to add one element, the script can contain many scripting commands

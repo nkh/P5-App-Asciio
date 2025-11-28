@@ -71,32 +71,52 @@ else
 		my $magic           = substr($header_diagram, 0, length($ASCIIO_MIME_TYPE)) ;
 		my $diagram         = $magic eq $ASCIIO_MIME_TYPE ? substr($header_diagram, length($ASCIIO_MIME_TYPE)) : $header_diagram ;
 		
-		my $serialized_self = decompress($diagram) ;
-		my $decoder         = get_sereal_decoder() ;
-		my $saved_self      = $serialized_self = $decoder->decode($serialized_self) ;
+		my ($serialized_self, $saved_self) ; 
+		
+		eval
+			{
+			   $serialized_self = decompress($diagram) ;
+			my $decoder         = get_sereal_decoder() ;
+			
+			$saved_self = $serialized_self = $decoder->decode($serialized_self) ; 
+			} ;
 		
 		if($@)
 			{
-			write_text("failed_resurection_source.pl", $serialized_self) ;
-			die "load_file: can't load file '$file_name': $! $@\n" ;
+			write_text("failed_resurection_source.pl", $serialized_self // 'no serialized sefl!') ;
+			print STDERR "error: load_file: can't load file '$file_name': $! $@\n" ;
+			
+			my $element  = $self->add_new_element_named('Asciio/box', 0, 0) ;
+			my $box_type = $element->get_box_type() ;
+			$box_type->[1][0] = 1 ; # title separator
+			$element->set_box_type($box_type) ;
+			$element->set_background_color([1, 0.4, 0.4]) ;
+			
+			$element->set_text('Warning!', "'$file_name' isn't a valid asciio file.");
+			
+			$self->update_display() ;
+			
+			$title = $file_name ;
 			}
-		
-		$self->load_self($saved_self) ; # resurrect
-		delete $self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} ;
-		delete $self->{CACHE} ;
-		
-		$title = $file_name ;
+		else
+			{
+			$self->load_self($saved_self) ; # resurrect
+			delete $self->{IMPORT_EXPORT_HANDLERS}{HANDLER_DATA} ;
+			delete $self->{CACHE} ;
+			
+			$title = $file_name ;
+			}
 		}
 	else
 		{
-		my $element = $self->add_new_element_named('Asciio/box', 0, 0) ;
+		my $element  = $self->add_new_element_named('Asciio/box', 0, 0) ;
 		my $box_type = $element->get_box_type() ;
 		$box_type->[1][0] = 1 ; # title separator
 		$element->set_box_type($box_type) ;
+		$element->set_background_color([1, 0.4, 0.4]) ;
 		
 		$element->set_text('Warning!', "'$file_name' has no content.");
 		
-		$self->select_elements(1, $element) ;
 		$self->update_display() ;
 		
 		$title = $file_name ;
@@ -127,6 +147,15 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		COPIED_ATTRIBUTES
 		COPIED_CONTROL_ATTRIBUTES
 		) ;
+
+sub load_serialized_self 
+{
+my ($self, $serialized_self)  = @_;
+
+return unless defined $serialized_self ;
+
+return $self->load_self(get_sereal_decoder()->decode($serialized_self)) ;
+}
 
 sub load_self
 {
@@ -261,28 +290,30 @@ sub serialize_self
 {
 my ($self, $indent) = @_ ;
 
-local $self->{widget}                    = undef ;
-local $self->{ACTIONS}                   = undef ;
-local $self->{ACTIONS_ORDERED}           = undef ;
-local $self->{HOOKS}                     = undef ;
-local $self->{CURRENT_ACTIONS}           = undef ;
-local $self->{ACTIONS_BY_NAME}           = undef ;
-local $self->{DO_STACK}                  = undef ;
-local $self->{DO_STACK_POINTER}          = undef ;
-local $self->{IMPORT_EXPORT_HANDLERS}    = undef ;
-local $self->{MODIFIED}                  = 0 ;
-local $self->{TITLE}                     = '' ;
-local $self->{CREATE_BACKUP}             = undef ;
-local $self->{ELEMENT_TYPES}             = undef ;
-local $self->{ELEMENT_TYPES_BY_NAME}     = undef ;
-local $self->{ACTION_VERBOSE}            = undef ;
-local $self->{WARN}                      = undef ;
-local $self->{COPIED_ATTRIBUTES}         = undef ;
-local $self->{COPIED_CONTROL_ATTRIBUTES} = undef ;
+local $self->{widget}                     = undef ;
+local $self->{ACTIONS}                    = [] ;
+local $self->{HOOKS}                      = [] ;
+local $self->{CURRENT_ACTIONS}            = [] ;
+local $self->{ACTIONS_ORDERED}            = [] ;
+local $self->{ACTIONS_BY_NAME}            = [] ;
+local $self->{DO_STACK}                   = undef ;
+local $self->{DO_STACK_POINTER}           = undef ;
+local $self->{IMPORT_EXPORT_HANDLERS}     = undef ;
+local $self->{MODIFIED}                   = 0 ;
+local $self->{TITLE}                      = '' ;
+local $self->{CREATE_BACKUP}              = undef ;
+local $self->{ELEMENT_TYPES}              = undef ;
+local $self->{ELEMENT_TYPES_BY_NAME}      = undef ;
+local $self->{ACTION_VERBOSE}             = undef ;
+local $self->{WARN}                       = undef ;
+local $self->{COPIED_ATTRIBUTES}          = undef ;
+local $self->{BINDINGS_COMPLETION}        = undef ;
+local $self->{BINDINGS_COMPLETION_LENGTH} = undef ;
+local $self->{COPIED_ATTRIBUTES}          = undef ;
+local $self->{COPIED_CONTROL_ATTRIBUTES}  = undef ;
 
-
-local $self->{ROOT_WINDOW} = undef ;
-local $self->{SC_WINDOW}   = undef ;
+local $self->{ROOT_WINDOW}                = undef ;
+local $self->{SC_WINDOW}                  = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 

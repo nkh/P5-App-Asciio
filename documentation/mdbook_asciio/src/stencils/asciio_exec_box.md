@@ -4,7 +4,7 @@ An "exec-box" is and object that lets you run an external command and put its ou
 
 ## Multi command
 
-Binding: «ie» Add exec box              
+***Binding:*** «ib» «ctl-e» Add exec box              
 
 The simplest exec-box accepts multiple commands, one per line. It will redirect stderr for each command.
 
@@ -14,7 +14,7 @@ Editing the box will let you edit the command.
 
 ## Verbatim 
 
-Binding: «iv» Add exec box verbatim     
+***Binding:*** «ib» «ctl-v» Add exec box verbatim     
 
 This exec-box doesn't redirect stderr, you can use it for commands that span multiple line or commands that take a multi line input
 
@@ -24,7 +24,7 @@ Editing the box will let you edit the command.
 
 ## Once
 
-Binding: «io» Add exec box verbatim once
+***Binding:* «ib» «ctl-o» Add exec box verbatim once
 
 This exec-box will run your commands once, editing the box will let you edit the command's output.
 
@@ -32,7 +32,7 @@ This exec-box will run your commands once, editing the box will let you edit the
 
 ## Add line numbers
 
-Binding: «i + c-l» Add line numbered box     
+***Binding:*** «ib» «ctl-l» Add line numbered box     
 
 This is an example of a custom stencil which will add line numbers to your input.
 

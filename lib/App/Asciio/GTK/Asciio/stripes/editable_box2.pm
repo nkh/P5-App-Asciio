@@ -126,7 +126,8 @@ sub display_box_edit_dialog_inline_mode
 {
 my ($self, $title, $text, $asciio, $X, $Y, $text_begin_x, $text_begin_y, $title_separator_exist) = @_ ;
 
-$text ='' unless defined $text ;
+$text //= '' ;
+
 my @text_lines ;
 if($text)
 	{
@@ -163,7 +164,8 @@ my $final_heigh = $text_heigh + $title_heigh + 1;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 my ($root_x, $root_y) = $asciio->{ROOT_WINDOW}->get_window()->get_origin() ;
-my ($v_value, $h_value) = ($asciio->{SC_WINDOW}->get_vadjustment()->get_value(), $asciio->{SC_WINDOW}->get_hadjustment()->get_value());
+# my ($v_value, $h_value) = ($asciio->{SC_WINDOW}->get_vadjustment()->get_value(), $asciio->{SC_WINDOW}->get_hadjustment()->get_value());
+my ($v_value, $h_value) = (0, 0) ;
 
 
 my $window = new Gtk3::Window() ;

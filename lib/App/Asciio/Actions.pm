@@ -128,11 +128,7 @@ for my $action (@actions)
 		# Note: action sub is what changes $self->{CURRENT_ACTIONS} to a new action group
 		my $start_actions = $self->{CURRENT_ACTIONS} ;
 		
-		if($self->{BINDINGS_COMPLETION})
-			{
-			delete $self->{BINDINGS_COMPLETION} ;
-			$self->update_display() ;
-			}
+		delete $self->{BINDINGS_COMPLETION} unless $self->{KEEP_BINDINGS_COMPLETION} ;
 		
 		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
 			{

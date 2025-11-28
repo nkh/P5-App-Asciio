@@ -3,7 +3,7 @@
 | element           | binding   |
 | ---------------   | --------- |
 | Add arrow         | «ia»      |
-| Add Unicode arrow | «i+Alt-a» |
+| Add Unicode arrow | «iua»     |
 | Add angled arrow  | «iA»      |
 
 ![insert arrows](insert_arrows.gif)

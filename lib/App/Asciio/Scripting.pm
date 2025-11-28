@@ -138,6 +138,11 @@ else
 	%object_override = (WARN => sub { print STDERR "@_\n" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
 	}
 
+#todo:
+{
+my $action_verbose = $object_override{ACTION_VERBOSE} ;
+$object_override{ACTION_VERBOSE} = sub { ; } unless $asciio_config->{SHOW_BINDING_OVERRIDE} ;
+
 if(@{$asciio_config->{SETUP_PATHS}})
 	{
 	$script_asciio->setup($asciio_config->{SETUP_PATHS}, \%object_override) ;
@@ -147,6 +152,9 @@ else
 	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
 	$script_asciio->setup([$path . $basename . '/setup/setup.ini'], \%object_override) ;
 	}
+
+$script_asciio->{ACTION_VERBOSE} = $action_verbose ;
+}
 
 $script_asciio->{OPTIONS} = $asciio_config ;
 }
@@ -184,7 +192,7 @@ sub move
 {
 my ($name, $x, $y) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
 	{
 	@$element{'X', 'Y'} = ($x, $y) if defined $x && defined $y ;
 	}
@@ -194,7 +202,7 @@ sub offset
 {
 my ($name, $x_offset, $y_offset) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
 	{
 	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset)
 		if defined $x_offset && defined $y_offset ;
@@ -205,7 +213,7 @@ sub select_by_name
 {
 my ($name) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
 	{
 	$script_asciio->select_elements(1, $element) ;
 	}
@@ -215,7 +223,7 @@ sub delete_by_name
 {
 my ($name) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
 	{
 	$script_asciio->delete_elements($element) ;
 	}

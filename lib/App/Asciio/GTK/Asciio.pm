@@ -78,17 +78,6 @@ $self->{widget}->get_toplevel()->destroy() ;
 
 #-----------------------------------------------------------------------------
 
-sub set_title
-{
-my ($self, $title) = @_;
-
-$self->SUPER::set_title($title) ;
-
-$self->{widget}->get_toplevel()->set_title($title . ' - asciio') if defined $title ;
-}
-
-#-----------------------------------------------------------------------------
-
 sub set_font
 {
 my ($self, $font_family, $font_size) = @_;
@@ -121,7 +110,7 @@ sub expose_event
 my ($widget, $gc, $self) = @_;
 
 my ($widget_width, $widget_height)       = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
-my ($window_width, $window_height)       = $self->{ROOT_WINDOW}->get_size() ;
+my ($window_width, $window_height)       = ($widget_width, $widget_height) ; #$self->{ROOT_WINDOW}->get_size() ;
 my ($character_width, $character_height) = $self->get_character_size() ;
 my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
 my $grid_width                           = (int ($window_width / $character_width) + 2)   * $character_width ;
@@ -143,7 +132,14 @@ my $expose_data =
 	widget_width     => $widget_width,
 	} ;
 
-$gc->set_line_width(1) ;
+$self->draw_asciio($expose_data) ;
+}
+
+sub draw_asciio
+{
+my ($self, $expose_data) = @_ ;
+
+$expose_data->{gc}->set_line_width(1) ;
 
 $self->draw_background_and_grid    ($expose_data) ;
 $self->draw_elements               ($expose_data) ;
@@ -727,8 +723,11 @@ my ($font_character_width, $font_character_height) = $self->get_character_size($
 my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_width, $font_character_height * $self->{BINDINGS_COMPLETION}->@*) ;
 $width += $font_character_width / 2 ;
 
-my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
-my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
+my ($window_width, $window_height) = ($self->get_allocated_width, $self->get_allocated_height);
+my ($scroll_bar_x, $scroll_bar_y)  = (0, 0) ;
+
+# my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
+# my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
 my $window_end                     = $window_width + $scroll_bar_x ;
 
 my $start_x ;
@@ -895,8 +894,8 @@ sub button_press_event   { my (undef, $event, $self) = @_ ; $self->SUPER::button
 
 #-----------------------------------------------------------------------------
 
-sub motion_notify_event  {
-
+sub motion_notify_event
+{
 my (undef, $event, $self) = @_ ;
 
 my $event_type = $event->type() ;

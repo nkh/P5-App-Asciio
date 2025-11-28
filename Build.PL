@@ -52,6 +52,7 @@ lib/App/Asciio/Actions/Selection.pm
 lib/App/Asciio/Actions/Shapes.pm
 lib/App/Asciio/Actions/Unsorted.pm
 lib/App/Asciio/Actions/ZBuffer.pm
+lib/App/Asciio/Actions/Tabs.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/stripes/center_connect_box.pm
@@ -75,6 +76,10 @@ lib/App/Asciio/Utils/Presentation.pm
 lib/App/Asciio/Utils/Scripting.pm
 
 lib/App/Asciio/GTK/Asciio.pm
+lib/App/Asciio/GTK/Asciio/HelpWidget.pm
+lib/App/Asciio/GTK/Asciio/TabbedAsciio.pm
+lib/App/Asciio/GTK/Asciio/TabManager.pm
+lib/App/Asciio/GTK/Asciio/TabManager/WebApi.pm
 
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
@@ -276,47 +281,48 @@ my $build = $class->new
 	
 	requires => 
 		{
-		'Clone'                 => 0,
-		'Compress::Bzip2'       => 0,
-		'Cwd'                   => 0,
-		'Data::Compare'         => 0,
-		'Data::TreeDumper'      => 0.41,
-		'Digest::MD5'           => 0,
-		'Eval::Context'         => 0,
-		'ExtUtils::PkgConfig'   => 0,
-		'Image::ExifTool'       => 0,
-		'File::Basename'        => 0,
-		'File::Copy'            => 0,
-		'File::HomeDir'         => 0,
-		'File::Slurper'         => 0,
-		'File::Spec'            => 0,
-		'Glib'                  => 0,
-		'Gtk3'                  => 0,
-		'Data::TreeDumper::Renderer::GTK' => 0, 
-		'IO::Prompter'          => 0,
-		'List::MoreUtils'       => 0,
-		'List::Util'            => 0,
-		'MIME::Base64'          => 0,
-		'Module::Build::Compat' => 0,
-		'Module::Util'          => 0,
-		'Number::Compare'       => 0,
-		'Readonly'              => 0,
-		'Sereal'                => 5.004,
-		'Sub::Exporter'         => 0,
-		'Sub::Util'             => 0,
-		'Term::ReadKey'         => 0,
-		'Term::Size::Any'       => 0,
-		'Term::TermKey'         => 0,
-		'Test::Block'           => 0,
-		'Gtk3::Helper'          => 0,
-		'HTTP::Request::Params' => 0,
-		'Module::Install'       => 0,
-		'Hash::Slice'           => 0,
-		'Gtk3::Helper'          => 0,
-		'HTTP::Daemon'          => 0,
-		'HTTP::Request::Params' => 0,
-		'JSON'                  => 0,
-		'version'               => 0.50,
+		'Archive::Tar'                    => 0,
+		'Clone'                           => 0,
+		'Compress::Bzip2'                 => 0,
+		'Cwd'                             => 0,
+		'Data::Compare'                   => 0,
+		'Data::TreeDumper'                => 0.41,
+		'Digest::MD5'                     => 0,
+		'Eval::Context'                   => 0,
+		'ExtUtils::PkgConfig'             => 0,
+		'Image::ExifTool'                 => 0,
+		'File::Basename'                  => 0,
+		'File::Copy'                      => 0,
+		'File::HomeDir'                   => 0,
+		'File::Slurper'                   => 0,
+		'File::Spec'                      => 0,
+		'Glib'                            => 0,
+		'Gtk3'                            => 0,
+		'Data::TreeDumper::Renderer::GTK' => 0,
+		'IO::Prompter'                    => 0,
+		'List::MoreUtils'                 => 0,
+		'List::Util'                      => 0,
+		'MIME::Base64'                    => 0,
+		'Module::Build::Compat'           => 0,
+		'Module::Util'                    => 0,
+		'Number::Compare'                 => 0,
+		'Readonly'                        => 0,
+		'Sereal'                          => 5.004,
+		'Sub::Exporter'                   => 0,
+		'Sub::Util'                       => 0,
+		'Term::ReadKey'                   => 0,
+		'Term::Size::Any'                 => 0,
+		'Term::TermKey'                   => 0,
+		'Test::Block'                     => 0,
+		'Gtk3::Helper'                    => 0,
+		'HTTP::Request::Params'           => 0,
+		'Module::Install'                 => 0,
+		'Hash::Slice'                     => 0,
+		'Gtk3::Helper'                    => 0,
+		'HTTP::Daemon'                    => 0,
+		'HTTP::Request::Params'           => 0,
+		'JSON'                            => 0,
+		'version'                         => 0.50,
 		},
 		
 	pm_files     => \%all_modules,
@@ -327,6 +333,7 @@ my $build = $class->new
 			script/asciio_to_text
 			script/text_to_asciio
 			script/A
+			script/TA
 			script/AV
 			script/T
 			script/stdin_to_asciio

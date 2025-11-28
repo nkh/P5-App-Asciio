@@ -1,5 +1,6 @@
 
 package App::Asciio::Actions::File ;
+
 use utf8;
 use Encode qw(decode encode FB_CROAK) ;
 
@@ -28,7 +29,10 @@ return $file_name ;
 sub save
 {
 my ($self, $as, $type, $file_name) = @_ ;
-Encode::_utf8_on($file_name);
+
+return $self->get_title // 1 unless $self->get_modified_state() ;
+
+Encode::_utf8_on($file_name) ;
 
 unless(defined $file_name)
 	{

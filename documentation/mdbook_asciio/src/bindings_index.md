@@ -10,13 +10,39 @@ It's faster and easier to work with keyboard shortcuts than the mouse plus the n
 
 Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be user modified. See configuration/user_bindings 
 
-## Bindings help
+## Actions 
+
+Code that is added to **asciio** (a plugin is another term).
+
+**Asciio** provides many actions but you can write your own and bind it to a shortcut.
+
+## Bindings
+
+Registration of shortcuts that execute actions.
+
+The default Bindings are setup by the **register_action_handlers** in the following files:
+
+- setup/actions/default_bindings.pl
+- setup/Text/actions/vim_bindings.pl (which overrides default bindings)
+
+## User defined bindings
+
+The bindings can be changed in your user configuration. 
+
+Set the **ACTION_FILES** section of file '$HOME/.config/Asciio/Asciio.ini' to point at one 
+or more files that will be loaded by **asciio**.
+
+The files contain bindings override but can also contain actions code.
+
+## Show Bindings Completion
 
 ***Binding:*** «zb»
 
 ![bindings_help](bindings_help.gif)
 
-You can get a pop up showing the current bindings or you can add it in your config:
+Makes Asciio show the current bindings iwhile you type.
+
+You can add it in your config:
 
 ```
 USE_BINDINGS_COMPLETION => 1,

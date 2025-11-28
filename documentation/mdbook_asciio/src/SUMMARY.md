@@ -4,9 +4,12 @@
 
 # User Guide
 
-- [Running Asciio, Installation](guide/installation.md)
+- [Running Asciio](guide/running_asciio.md)
+
+- [Installation](guide/installation.md)
 
 - [Asciio's interface](Interface.md)
+    - [Tabs](tabs.md)
 
 - [Unicode support](unicode_support.md)
 
@@ -68,7 +71,7 @@
 	- [Why vim-like bindings](bindings/vim-like.md)
     - [Root level bindings](root_level_bindings.md)
 		- [GUI bindings](bindings/gui.md)
-        #- [Tab Management](bindings_group_tabs.md)
+        - [Tab Management](bindings_group_tabs.md)
     - [Insert operations](insert_operation.md)
 		- [box variants](bindings_group_insert_box.md)            
         - [multiple elements](bindings_group_insert_multiple.md)  

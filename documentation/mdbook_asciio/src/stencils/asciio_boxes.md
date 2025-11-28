@@ -38,23 +38,23 @@ Allow connection to be made anywhere inside the element borders , not just the c
 
 ### A box
 
-Binding: «b»                Add box
+***Binding:*** «ibb»              Add box
 
 ### A box with the frame drawn with Unicode characters
 
-***Binding:*** «A-b»              Add unicode box
+***Binding:*** «iub»              Add unicode box
 
 
 ### A text
 
 Texts are just boxes without frames.
 
-Binding: «t»                Add text
+***Binding:*** «it»               Add text
 
 ### A shrink-box 
 
 A box which is already has auto-shrink set
 
-Binding: «B»                Add shrink box
+***Binding:*** «ibs»              Add shrink box
 
 

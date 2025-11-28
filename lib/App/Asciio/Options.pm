@@ -46,6 +46,24 @@ do
 	}
 while($contains_switch) ;
 
+if($asciio_config->{HELP})
+	{
+	print STDERR "Asciio options:\n" ;
+	
+	my @flags_and_help = GetSwitches($asciio_config) ;
+	
+	my $flag_element_counter = 0 ;
+	my @getoptlong_data ;
+	
+	for (my $i = 0 ; $i < @flags_and_help; $i += 4)
+		{
+		my ($flag, $help) = ($flags_and_help[$i], $flags_and_help[$i + 2]) ;
+		printf STDERR "\t%-30s\t%s\n", $flag, $help ;
+		}
+	
+	exit(1) ;
+	}
+
 $asciio_config->{TARGETS} = \@targets ;
 
 return(1, '', $asciio_config) ;
@@ -94,6 +112,10 @@ my @flags_and_help =
 		'show which setup files are used.',
 		'',
 	
+	'show_binding_override'     => \$asciio_config->{SHOW_BINDING_OVERRIDE},
+		"display binding overrides in terminal",
+		'',
+	
 	'setup_path=s'              => $asciio_config->{SETUP_PATHS},
 		'sets the root of the setup directory.',
 		'',
@@ -111,19 +133,23 @@ my @flags_and_help =
 		'',
 	
 	'add_binding=s'             => $asciio_config->{BINDING_FILES},
-		'',
+		'add bindings to the document',
 		'',
 	
 	'reset_bindings'            => \$asciio_config->{RESET_BINDINGS},
-		'',
+		'remove bindings from the document',
 		'',
 	
 	'dump_bindings'             => \$asciio_config->{DUMP_BINDINGS},
-		'',
+		'dumps the bindings found in the document',
 		'',
 	
 	'dump_binding_names'        => \$asciio_config->{DUMP_BINDING_NAMES},
+		'dumps the name of the bindings found in the document',
 		'',
+	
+	'help|h'                    => \$asciio_config->{HELP},
+		'display asciio options',
 		'',
 	) ;
 	

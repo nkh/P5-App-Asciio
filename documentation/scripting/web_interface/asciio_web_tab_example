@@ -1,0 +1,19 @@
+#!/bin/bash
+
+script1="add '1', new_box(TEXT_ONLY =>'1'), 0, 0 ;"
+xh -f POST http://localhost:4444/script script="$script1"
+
+TAB_ID=$(xh -f GET http://localhost:4444/get_current_tab_id)
+xh -f POST http://localhost:4444/set_title new_title="title_from_script"
+
+# new tab
+xh  -f POST http://localhost:4444/new_tab 
+
+# execute the script in specific tab
+script2="add '2', new_box(TEXT_ONLY =>'2'), 10, 10 ;"
+xh -f POST http://localhost:4444/script script="$script2" tab_id="${TAB_ID#tab_id=}"
+
+# copy a specific tab
+xh -f POST http://localhost:4444/copy_tab tab_id="${TAB_ID#tab_id=}"
+
+

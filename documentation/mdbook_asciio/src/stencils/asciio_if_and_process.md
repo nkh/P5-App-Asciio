@@ -2,8 +2,8 @@
 
 | element         | binding   |
 | --------------- | --------- |
-| Add if box      | «ib»      |
-| Add process box | «ib»      |
+| Add if box      | «iei»      |
+| Add process box | «iep»      |
 
    
 ## if-box and process-box

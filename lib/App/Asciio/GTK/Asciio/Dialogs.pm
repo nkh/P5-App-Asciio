@@ -19,14 +19,14 @@ sub get_color_from_user
 {
 my ($self, $previous_color) = @_ ;
 
-my $color = Gtk3::Gdk::Color->new (map { $_ * 65535 } @{$previous_color});
-my $dialog = Gtk3::ColorSelectionDialog->new ("Changing color");
+my $color = Gtk3::Gdk::Color->new (map { $_ * 65535 } @{$previous_color}) ;
+my $dialog = Gtk3::ColorSelectionDialog->new ("Changing color") ;
 
 my $colorsel = $dialog->get_color_selection;
 
-$colorsel->set_previous_color($color);
-$colorsel->set_current_color($color);
-$colorsel->set_has_palette(TRUE);
+$colorsel->set_previous_color($color) ;
+$colorsel->set_current_color($color) ;
+$colorsel->set_has_palette(TRUE) ;
 
 my $response = $dialog->run;
 
@@ -49,31 +49,31 @@ my ($self, $data, $title, @dumper_setup) = @_ ;
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
-$dialog->set_default_size(600, 800);
+$dialog->set_default_size(600, 800) ;
 
-my $vbox = Gtk3::VBox->new(FALSE, 5);
-$vbox->pack_start(Gtk3::Label->new (""), FALSE, FALSE, 0);
-$vbox->add(Gtk3::Label->new (""));
+my $vbox = Gtk3::VBox->new(FALSE, 5) ;
+$vbox->pack_start(Gtk3::Label->new (""), FALSE, FALSE, 0) ;
+$vbox->add(Gtk3::Label->new ("")) ;
 
 # tree
 my $treedumper = Data::TreeDumper::Renderer::GTK->new
 				(
 				data => $data,
 				dumper_setup => {@dumper_setup}
-				);
+				) ;
 
 $treedumper->collapse_all;
 $treedumper->set_hexpand(TRUE) ;
 $treedumper->set_vexpand(TRUE) ;
 
-my $scroller = Gtk3::ScrolledWindow->new();
+my $scroller = Gtk3::ScrolledWindow->new() ;
 $scroller->set_hexpand(TRUE) ;
 $scroller->set_vexpand(TRUE) ;
-$scroller->add($treedumper);
+$scroller->add($treedumper) ;
 
 $vbox->add ($scroller) ;
 $treedumper->show() ;
-$scroller->show();
+$scroller->show() ;
 $vbox->show() ;
 
 $dialog->get_content_area()->add($vbox) ;
@@ -100,7 +100,7 @@ my $dialog = Gtk3::MessageDialog->new
 	$message ,
 	) ;
 
-$dialog->modify_font(Pango::FontDescription->from_string($self->get_font_as_string()));
+$dialog->modify_font(Pango::FontDescription->from_string($self->get_font_as_string())) ;
 
 $dialog->signal_connect(response => sub { $dialog->destroy ; 1 }) ;
 $dialog->run() ;
@@ -115,13 +115,13 @@ my ($self, $title, $text) = @_ ;
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
-$dialog->set_default_size (300, 150);
-$dialog->add_button ('gtk-yes' => 'yes');
-$dialog->add_button ('gtk-no' => 'no');
-$dialog->add_button ('gtk-cancel' => 'cancel');
+$dialog->set_default_size (300, 150) ;
+$dialog->add_button ('gtk-yes' => 'yes') ;
+$dialog->add_button ('gtk-no' => 'no') ;
+$dialog->add_button ('gtk-cancel' => 'cancel') ;
 
-my $label = Gtk3::Label->new($text);
-$dialog->get_content_area->add ($label);
+my $label = Gtk3::Label->new($text) ;
+$dialog->get_content_area->add ($label) ;
 $label->show;
 
 my $result = $dialog->run() ;
@@ -133,6 +133,42 @@ return $result ;
 
 #-----------------------------------------------------------------------------
 
+sub get_user_text
+{
+my ($title, $text) = @_ ;
+
+my $window = Gtk3::Window->new() ;
+
+my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
+$dialog->set_default_size (300, 50) ;
+
+add_button_with_icon ($dialog, 'Cancel', 'gtk-cancel' => 'cancel') ;
+add_button_with_icon ($dialog, 'Ok',     'gtk-ok' => 'ok') ;
+
+if (defined $text)
+	{
+	my $label = Gtk3::Label->new($text) ;
+	$label->show;
+	$dialog->get_content_area->pack_start($label, FALSE, FALSE, 5) ;
+	
+	$dialog->set_default_size (300, 100) ;
+	}
+
+my $entry = Gtk3::Entry->new() ;
+$entry->signal_connect ( activate => sub { $dialog->response('ok') ; }) ;
+$entry->show ;
+$dialog->get_content_area->pack_start($entry, FALSE, FALSE, 5) ;
+
+my $result = $dialog->run() ;
+my $input_text = $entry->get_text() ;
+
+$dialog->destroy ;
+
+return $input_text ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub display_quit_dialog
 {
 my ($self, $title, $text) = @_ ;
@@ -140,16 +176,16 @@ my ($self, $title, $text) = @_ ;
 my $window = Gtk3::Window->new() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
-$dialog->set_default_size (300, 150);
+$dialog->set_default_size (300, 150) ;
 
-add_button_with_icon ($dialog, 'Continue editing', 'gtk-cancel' => 'cancel');
-add_button_with_icon ($dialog, 'Save and Quit', 'gtk-save' => 999);
-add_button_with_icon ($dialog, 'Quit and lose changes', 'gtk-ok' => 'ok');
+add_button_with_icon ($dialog, 'Continue editing', 'gtk-cancel' => 'cancel') ;
+add_button_with_icon ($dialog, 'Save and Quit', 'gtk-save' => 999) ;
+add_button_with_icon ($dialog, 'Quit and lose changes', 'gtk-ok' => 'ok') ;
 
-my $label = Gtk3::Label->new($text);
+my $label = Gtk3::Label->new($text) ;
 $label->show;
 
-$dialog->get_content_area->add ($label);
+$dialog->get_content_area->add ($label) ;
 
 my $result = $dialog->run() ;
 $result = 'save_and_quit' if "$result" eq "999" ;
@@ -164,10 +200,10 @@ sub add_button_with_icon
 # code by Muppet
 my ($dialog, $text, $stock_id, $response_id) = @_;
 
-my $button = create_button ($text, $stock_id);
+my $button = create_button ($text, $stock_id) ;
 $button->show;
 
-$dialog->add_action_widget ($button, $response_id);
+$dialog->add_action_widget ($button, $response_id) ;
 }
 
 sub create_button
@@ -175,7 +211,7 @@ sub create_button
 # code by Muppet
 my ($text, $stock_id) = @_;
 
-my $button = Gtk3::Button->new ();
+my $button = Gtk3::Button->new () ;
 
 #
 # This setup is cribbed from gtk_button_construct_child()
@@ -183,17 +219,17 @@ my $button = Gtk3::Button->new ();
 # left-to-right ordering and alignment and such, as in the
 # real button code.
 #
-my $image = Gtk3::Image->new_from_stock ($stock_id, 'button');
-my $label = Gtk3::Label->new ($text); # accepts mnemonics
-$label->set_mnemonic_widget ($button);
+my $image = Gtk3::Image->new_from_stock ($stock_id, 'button') ;
+my $label = Gtk3::Label->new ($text) ; # accepts mnemonics
+$label->set_mnemonic_widget ($button) ;
 
-my $hbox = Gtk3::HBox->new ();
-$hbox->pack_start ($image, FALSE, FALSE, 0);
-$hbox->pack_start ($label, FALSE, FALSE, 0);
+my $hbox = Gtk3::HBox->new () ;
+$hbox->pack_start ($image, FALSE, FALSE, 0) ;
+$hbox->pack_start ($label, FALSE, FALSE, 0) ;
 
-$hbox->show_all ();
+$hbox->show_all () ;
 
-$button->add ($hbox);
+$button->add ($hbox) ;
 
 return $button;
 }
@@ -232,29 +268,29 @@ $text ='' unless defined $text ;
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
-$dialog->set_position("mouse");
-$dialog->set_border_width(0);
-$dialog->set_default_size (500, 400);
-$dialog->add_button ('gtk-ok' => 'ok');
+$dialog->set_position("mouse") ;
+$dialog->set_border_width(0) ;
+$dialog->set_default_size (500, 400) ;
+$dialog->add_button ('gtk-ok' => 'ok') ;
 
 my $vbox = Gtk3::VBox->new(FALSE, 5) ;
 $vbox->pack_start(Gtk3::Label->new(""), FALSE, FALSE, 0) ;
 $vbox->add(Gtk3::Label->new("")) ;
 
 my $textview = Gtk3::TextView->new;
-$textview->modify_font(Pango::FontDescription->from_string($asciio->get_font_as_string()));
+$textview->modify_font(Pango::FontDescription->from_string($asciio->get_font_as_string())) ;
 my $buffer = $textview->get_buffer;
-$buffer->insert ($buffer->get_end_iter, $text);
+$buffer->insert ($buffer->get_end_iter, $text) ;
 
-my $scroller = Gtk3::ScrolledWindow->new();
-$scroller->set_hexpand(TRUE);
-$scroller->set_vexpand(TRUE);
-$scroller->add($textview);
-$vbox->add($scroller);
+my $scroller = Gtk3::ScrolledWindow->new() ;
+$scroller->set_hexpand(TRUE) ;
+$scroller->set_vexpand(TRUE) ;
+$scroller->add($textview) ;
+$vbox->add($scroller) ;
 
-$textview->show();
-$scroller->show();
-$vbox->show();
+$textview->show() ;
+$scroller->show() ;
+$vbox->show() ;
 
 $dialog->get_content_area->add ($vbox) ;
 
@@ -284,36 +320,36 @@ else
 	@text_lines = ('') ;
 	}
 
-my $text_width = max(map {unicode_length($_)} @text_lines);
+my $text_width = max(map {unicode_length($_)} @text_lines) ;
 my $text_heigh = @text_lines;
 $text_width = max($text_width, 3) ;
 $text_heigh =max($text_heigh, 3) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 my ($root_x, $root_y) = $asciio->{ROOT_WINDOW}->get_window()->get_origin() ;
-my ($v_value, $h_value) = ($asciio->{SC_WINDOW}->get_vadjustment()->get_value(), $asciio->{SC_WINDOW}->get_hadjustment()->get_value());
+my ($v_value, $h_value) = ($asciio->{SC_WINDOW}->get_vadjustment()->get_value(), $asciio->{SC_WINDOW}->get_hadjustment()->get_value()) ;
 
 my $window = new Gtk3::Window() ;
 
 my $dialog = Gtk3::Dialog->new($title, $window, 'destroy-with-parent')  ;
-$dialog->set_default_size ($text_width, $text_heigh);
-$dialog->set_border_width(0);
-$dialog->set_decorated(0);
-$dialog->move($root_x+(($X+$text_begin_x)*$character_width)-$h_value, $root_y+(($Y+$text_begin_y)*$character_height)-$v_value);
+$dialog->set_default_size ($text_width, $text_heigh) ;
+$dialog->set_border_width(0) ;
+$dialog->set_decorated(0) ;
+$dialog->move($root_x+(($X+$text_begin_x)*$character_width)-$h_value, $root_y+(($Y+$text_begin_y)*$character_height)-$v_value) ;
 
 my $vbox = Gtk3::VBox->new(FALSE, 5) ;
 $vbox->pack_start(Gtk3::Label->new(""), FALSE, FALSE, 0) ;
 $vbox->add(Gtk3::Label->new("")) ;
 
 my $textview = Gtk3::TextView->new;
-$textview->modify_font(Pango::FontDescription->from_string($asciio->get_font_as_string()));
+$textview->modify_font(Pango::FontDescription->from_string($asciio->get_font_as_string())) ;
 my $buffer = $textview->get_buffer;
-$buffer->insert ($buffer->get_end_iter, $text);
+$buffer->insert ($buffer->get_end_iter, $text) ;
 
-$vbox->add($textview);
+$vbox->add($textview) ;
 
-$textview->show();
-$vbox->show();
+$textview->show() ;
+$vbox->show() ;
 
 $dialog->get_content_area->add ($vbox) ;
 $dialog->add_events('GDK_FOCUS_CHANGE_MASK') ;
@@ -338,7 +374,7 @@ my $file_chooser = Gtk3::FileChooserDialog->new
 			(
 			$title, undef, 'GTK_FILE_CHOOSER_ACTION_SAVE',
 			'gtk-cancel' => 'cancel', 'gtk-ok' => 'ok'
-			);
+			) ;
 
 $file_chooser->set_current_name("untitled_document") ;
 $file_chooser->set_current_folder($directory) if defined $directory ;
@@ -353,7 +389,7 @@ while(Gtk3::events_pending())
 	Gtk3::main_iteration() ;
 	}
 
-Encode::_utf8_on($file_name);
+Encode::_utf8_on($file_name) ;
 return $file_name ;
 }
 

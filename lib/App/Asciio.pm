@@ -701,7 +701,22 @@ sub set_title
 {
 my ($self, $title) = @_;
 
-defined $title and $self->{TITLE} = $title ;
+if(defined $title) 
+	{
+	if (defined $self->{TITLE})
+		{
+		if ($self->{TITLE} ne $title)
+			{
+			$self->{TITLE} = $title ;
+			$self->set_modified_state(1) ;
+			}
+		}
+	else
+		{
+		$self->{TITLE} = $title ;
+		$self->set_modified_state(1) ;
+		}
+	}
 }
 
 sub get_title

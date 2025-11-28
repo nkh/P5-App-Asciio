@@ -1,34 +1,3 @@
-# Running asciio
-
-    $> asciio [file.asciio]       # GUI application using Gtk3
-
-    $> tasciio [file.asciio]      # TUI application
-
-    $> asciio_to_text file.asciio # converts asciio files to ASCII
-
-    $> text_to_asciio ...         # makes an asciio file from text
-
-
-# Command line options
-
-| option                    |                                            |                |
-| -                         | -                                          | -              |
-| b                         | put the input in a box element             | text_to_asciio |
-| text_separator=s          | put the input in a boxed element           | text_to_ascioo |
-| display_setup_information | verbose setup information                  |                |
-| setup_path=s              | sets the root of the setup directory       |                |
-| s,script=s                | script to be run at Asciio start           |                |
-| p,web_port=s              | port for web server                        |                |
-| debug_fd=i                | debug file descriptor number               |                |
-| add_binding=s             | file containing bindings to embedd         |                |
-| reset_bindings            | remove all embedded bindings from document |                |
-| dump_bindings             | write the embedded bindings to files       |                |
-| dump_binding_names        | display name of embbeded bindings          |                |
-
-# Platforms
-
-Asciio is developed on both Linux and Windows (cygwin).
-
 # Installation
 
 asciio's is hosted on  [github](https://github.com/nkh/P5-App-Asciio)
