@@ -134,7 +134,13 @@ $self->update_display();
 
 sub quick_link
 {
-my ($self, $orthogonal) = @_ ;
+my ($self, @args) = @_ ;
+
+# mouse handlers always receive event data but if the action was bound with an
+# argument then the argument and the event are received
+
+my $orthogonal = @args == 1 ? 0 : $args[0] ;
+
 my ($mx, $my) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
 
 $self->create_undo_snapshot() ;
@@ -150,7 +156,7 @@ else
 	my @selected_elements = $self->get_selected_elements(1) ;
 	
 	my ($ex, $ey) = @selected_elements 
-				? get_orthogonal_position(@{$selected_elements[0]}{qw/X Y/}, $mx, $my)
+				? ($orthogonal ? get_orthogonal_position(@{$selected_elements[0]}{qw/X Y/}, $mx, $my) : ($mx, $my))
 				: ($mx, $my) ;
 	
 	my $new_box = $self->add_new_element_named('Asciio/box', $ex, $ey) ;
