@@ -20,6 +20,11 @@ Use a "center connect box"
 
 ![Center_Box](center_box.png)
 
+Using the character under the current cursor to Create a "center connect box". 
+Visually, this connector looks like it is one piece with the underlying element.
+
+![center_connect_box_under_cursor_char](center_connect_box_under_cursor_char.gif)
+
 # Example
 
 ![Add Connector](add_connector.gif)

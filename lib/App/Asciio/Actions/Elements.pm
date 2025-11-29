@@ -5,6 +5,7 @@ use warnings ;
 use Encode ;
 use utf8 ;
 
+use List::MoreUtils qw(first_value);
 use File::Slurper qw(read_text) ;
 use File::HomeDir ;
 
@@ -366,6 +367,28 @@ $self->add_element_at($line, $self->{MOUSE_X}, $self->{MOUSE_Y});
 $self->select_elements(1, $line);
 
 $self->update_display();
+}
+
+#----------------------------------------------------------------------------------------------
+sub add_center_connector_use_top_character
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot();
+
+my $current_point = $self->{MOUSE_Y} . ';' . $self->{MOUSE_X} ;
+
+my $first_element = first_value {$self->is_over_element($_, $self->{MOUSE_X}, $self->{MOUSE_Y})} reverse @{$self->{ELEMENTS}} ;
+my $current_char = ($first_element) ? App::Asciio::ZBuffer->new(0, $first_element)->{coordinates}{$current_point} // ' ' : ' ' ;
+
+my $center_connector = App::Asciio::stripes::center_connect_box->new(
+	{TEXT_ONLY => $current_char, EDITABLE => 1, AUTO_SHRINK => 1}) ;
+
+@$center_connector{'X', 'Y', 'SELECTED'} = ($self->{MOUSE_X}, $self->{MOUSE_Y}, 1) ;
+
+$self->add_elements($center_connector) ;
+
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
