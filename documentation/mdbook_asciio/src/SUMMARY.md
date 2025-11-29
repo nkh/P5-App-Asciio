@@ -52,6 +52,7 @@
 	- [Git](modes/git.md)
 	- [Cross](modes/cross.md)
 	- [Slides](modes/slides.md)
+	- [Selection](modes/selection.md)
 
 - [Examples](examples.md)
 	- [Class hierarchy](examples/example1.md)

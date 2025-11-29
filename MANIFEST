@@ -56,6 +56,7 @@ lib/App/Asciio/Server.pm
 lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
 lib/App/Asciio/String.pm
+lib/App/Asciio/Geometry.pm
 lib/App/Asciio/Undo.pm
 lib/App/Asciio/ZBuffer.pm
 

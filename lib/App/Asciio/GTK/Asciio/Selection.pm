@@ -4,8 +4,16 @@ package App::Asciio::GTK::Asciio ;
 use strict ; use warnings ;
 
 use App::Asciio::ZBuffer ;
+use App::Asciio::Geometry qw(point_in_polygon) ;
+
+use constant
+	{
+	SELECT   => 1,
+	DESELECT => 0,
+	} ;
 
 my %selected_elements ;
+
 
 #----------------------------------------------------------------------------------------------
 
@@ -91,35 +99,66 @@ sub polygon_selection
 {
 my ($self, $select_type) = @_ ;
 
+my @polygon_x = map {$_->[0]} @{$self->{SELECTION_POLYGON}} ;
+my @polygon_y = map {$_->[1]} @{$self->{SELECTION_POLYGON}} ;
+my ($polygon_min_x, $polygon_min_y, $polygon_max_x, $polygon_max_y) = (min(@polygon_x), min(@polygon_y), max(@polygon_x), max(@polygon_y)) ;
+
+my (@elements_to_be_selected, @elements_to_be_inverse_selected) ;
+
 for my $element (@{$self->{ELEMENTS}})
 	{
+	next if(ref($element) =~ /arrow/ && !$self->{DRAG_SELECTS_ARROWS}) ;
+	
+	my ($emin_x, $emin_y, $emax_x, $emax_y) = @{ $element->{EXTENTS} } ;
+	if		(($polygon_max_x < $emin_x + $element->{X})
+		||	 ($polygon_min_x > $emax_x + $element->{X})
+		||	 ($polygon_max_y < $emin_y + $element->{Y})
+		||	 ($polygon_min_y > $emax_y + $element->{Y}))
+		{
+		if(exists($selected_elements{$element}))
+			{
+			push @elements_to_be_inverse_selected, $element ;
+			delete $selected_elements{$element} ;
+			}
+		next ;
+		}
+
 	unless(exists $element->{CACHE}{SELECTION_COORDINATES})
 		{
-		my @coordinates = map { [split ';'] } keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}};
-		@coordinates = map{ [reverse @$_]} @coordinates;
-		$element->{CACHE}{SELECTION_COORDINATES} = \@coordinates;
+		my @element_all_coordinates = map { [split ';'] } keys %{App::Asciio::ZBuffer->new(0, $element)->{coordinates}} ;
+		@element_all_coordinates = map{ [reverse @$_]} @element_all_coordinates ;
+		$element->{CACHE}{SELECTION_COORDINATES} = \@element_all_coordinates ;
 		}
-	
+
 	if(all_points_in_polygon($element->{CACHE}{SELECTION_COORDINATES}, $self->{SELECTION_POLYGON}))
 		{
-		$self->select_elements($select_type, $element);
-		$selected_elements{$element} = 1 ;
+		unless (exists $selected_elements{$element})
+			{
+			push @elements_to_be_selected, $element ;
+			$selected_elements{$element} = 1 ;
+			}
 		}
 	else
 		{
 		if(exists($selected_elements{$element}))
 			{
-			$self->select_elements(!$select_type, $element);
+			push @elements_to_be_inverse_selected, $element ;
 			delete $selected_elements{$element} ;
 			}
 		}
 	}
+
+$self->select_elements($select_type, @elements_to_be_selected) if (@elements_to_be_selected) ;
+$self->select_elements(!$select_type, @elements_to_be_inverse_selected) if (@elements_to_be_inverse_selected) ;
 }
 
 #----------------------------------------------------------------------------------------------
 
 sub polygon_selection_motion
 {
+# $select_type 
+# 1: select
+# 0: deselect
 my ($self, $select_type, $event) = @_;
 
 my ($x, $y) = @{$event->{COORDINATES}}[0,1] ;
@@ -134,7 +173,7 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 		%selected_elements = () ;
 		$self->{SELECTION_POLYGON} = [[$x, $y]];
 		
-		$self->change_cursor($select_type == 1 ? "dot" : "tcross") ;
+		$self->change_cursor(($select_type == SELECT) ? "dot" : "tcross") ;
 		}
 	else
 		{
@@ -173,40 +212,6 @@ for my $point (@$points)
 	}
 
 return 1;
-}
-
-#-----------------------------------------------------------------------------
-
-sub point_in_polygon 
-{
-# determine whether the point is inside the polygon through the ray method
-# https://en.wikipedia.org/wiki/Point_in_polygon
-
-my ($point, $polygon) = @_;
-
-my ($point_x, $point_y) = @$point;
-my $is_inside = 0;
-my $vertex_num = scalar(@$polygon);
-
-for
-	(
-	my $current_index = 0, my $previous_index = $vertex_num - 1; 
-	$current_index < $vertex_num; 
-	$previous_index = $current_index++
-	) 
-	{
-	my ($current_vertex_x, $current_vertex_y) = @{$polygon->[$current_index]};
-	my ($previous_vertex_x, $previous_vertex_y) = @{$polygon->[$previous_index]};
-	
-	if ((($current_vertex_y > $point_y) != ($previous_vertex_y > $point_y)) &&
-		($point_x < ($previous_vertex_x - $current_vertex_x) * ($point_y - $current_vertex_y) / 
-					($previous_vertex_y - $current_vertex_y) + $current_vertex_x)) 
-		{
-		$is_inside = !$is_inside;
-		}
-	}
-
-return $is_inside;
 }
 
 #-----------------------------------------------------------------------------

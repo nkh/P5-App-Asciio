@@ -499,7 +499,8 @@ register_action_handlers
 	'Selection escape2'              => [ '000-Escape',        \&App::Asciio::Actions::Selection::selection_escape                      ],
 	
 	'select flip mode'               => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                   ],
-	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_elements                       ],
+	'select motion'                  => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_motion                         ],
+	'select mouse click'             => [ '000-button-press-1',\&App::Asciio::Actions::Selection::select_elements                       ],
 	'<< polygon selection >>'        => [ '000-x',             ACTION_GROUP('polygon')                                                  ] ,
 	},
 
