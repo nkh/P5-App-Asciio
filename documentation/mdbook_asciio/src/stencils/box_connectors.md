@@ -48,3 +48,12 @@ The box element class also has these functions:
 
 ![box_connector](box_connector.png)
 
+## Add numbered connector directly to the box
+
+![box_connector_add](box_connector_add.gif)
+
+## Remove numbered connector in the box
+
+![box_connector_remove](box_connector_remove.gif)
+
+

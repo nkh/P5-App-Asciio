@@ -508,6 +508,8 @@ register_action_handlers
 	'Make elements Unicode'            => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],
 	'Make elements not Unicode'        => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0       ],
 	
+	'Add numbered connectors'          => ['00S-C',  \&App::Asciio::Actions::Elements::add_numbered_connector_to_element        ],
+	'Remove numbered connectors'       => ['00S-R',  \&App::Asciio::Actions::Elements::remove_numbered_connector_in_element     ],
 	'copy element attributes'          => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_attributes                 ],
 	'paste element attributes'         => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_attributes                ],
 	'paste element control attributes' => ['00S-P',  \&App::Asciio::Actions::ElementAttributes::paste_control_attributes ],
