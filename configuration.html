@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-3c7c3ac4.js";
+            window.path_to_searchindex_js = "searchindex-e93ec0ec.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-39e71692.js"></script>
@@ -175,8 +175,8 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
-<p>Your user configuration is ‘$HOME/.config/Asciio/Asciio.ini’ it contains
-links to files that are used to setup different aspects of <strong>asciio</strong>.</p>
+<p>Your user configuration file is <code>$HOME/.config/Asciio/Asciio.ini</code>. It contains
+links to files that are used to set up different aspects of <strong>asciio</strong>.</p>
 <p>The file has this format:</p>
 <pre><code class="language-perl">{
 STENCILS =&gt;
@@ -208,24 +208,24 @@ IMPORT_EXPORT =&gt;
 <h3 id="stencils"><a class="header" href="#stencils">STENCILS</a></h3>
 <p>Contains:</p>
 <ul>
-<li>files defining stencils present in the popup menuwes</li>
-<li>stencil files that you can drag drop from</li>
+<li>files defining stencils present in the popup menus</li>
+<li>stencil files that you can drag and drop from</li>
 </ul>
 <h3 id="action_files"><a class="header" href="#action_files">ACTION_FILES</a></h3>
 <p>Contains:</p>
 <ul>
 <li>your keyboard bindings</li>
-<li>functionality you want add to asciio (that you bind keys to), plugins</li>
+<li>functionality you want to add to asciio (that you bind keys to), plugins</li>
 </ul>
 <h3 id="hook_files"><a class="header" href="#hook_files">HOOK_FILES</a></h3>
 <p>Contains:</p>
 <ul>
-<li>hooks called after elements have been modifie and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.</li>
+<li>hooks called after elements have been modified and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.</li>
 </ul>
 <h3 id="asciio_object_setup"><a class="header" href="#asciio_object_setup">ASCIIO_OBJECT_SETUP</a></h3>
 <p>Contains:</p>
 <ul>
-<li>setup variables that influence asciio behavior and look</li>
+<li>setup variables that influence asciio’s behavior and appearance</li>
 </ul>
 <p><strong>asciio</strong> will first read the settings in ‘setup/asciio_object/basic.pl’ then read
 the settings in the files contained in this section.</p>
@@ -261,7 +261,7 @@ COPY_OFFSET_Y                    =&gt; 1,  # y offset for paste
 CREATE_BACKUP                    =&gt; 1,  # create a '.bak' backup file when set
 DISPLAY_GRID                     =&gt; 1,  # display the asciio grid
 DISPLAY_GRID2                    =&gt; 1,  # display every tenth grid line in grid_2 color
-DISPLAY_RULERS                   =&gt; 1,  # display the ascioo ruler lines
+DISPLAY_RULERS                   =&gt; 1,  # display the asciio ruler lines
 DISPLAY_SETUP_INFORMATION_ACTION =&gt; 1,  # display which actions are registered
 DRAG_SELECTS_ARROWS              =&gt; 0,  # selection rectangle also selects arrows when set
 ...
@@ -275,7 +275,7 @@ RULER_LINES =&gt; # default ruler lines
 
 </code></pre>
 <h3 id="import_export"><a class="header" href="#import_export">IMPORT_EXPORT</a></h3>
-<p>Links to files which define import and export functionality, you could use this to save files to a another format.</p>
+<p>Links to files which define import and export functionality, you could use this to save files to another format.</p>
 
                     </main>
 
