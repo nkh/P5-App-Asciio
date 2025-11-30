@@ -1,8 +1,8 @@
 # Configuration
 
 
-Your user configuration is '$HOME/.config/Asciio/Asciio.ini' it contains
-links to files that are used to setup different aspects of **asciio**.
+Your user configuration file is `$HOME/.config/Asciio/Asciio.ini`. It contains
+links to files that are used to set up different aspects of **asciio**.
 
 The file has this format:
 
@@ -40,8 +40,8 @@ IMPORT_EXPORT =>
 
 Contains:
 
-- files defining stencils present in the popup menuwes
-- stencil files that you can drag drop from
+- files defining stencils present in the popup menus
+- stencil files that you can drag and drop from
 
 
 ### ACTION_FILES
@@ -49,19 +49,19 @@ Contains:
 Contains:
 
 - your keyboard bindings
-- functionality you want add to asciio (that you bind keys to), plugins
+- functionality you want to add to asciio (that you bind keys to), plugins
 
 ### HOOK_FILES
 
 Contains:
 
-- hooks called after elements have been modifie and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.
+- hooks called after elements have been modified and rendering the drawing starts, mainly used to call CANONIZE_CONNECTIONS.
 
 ### ASCIIO_OBJECT_SETUP
 
 Contains:
 
-- setup variables that influence asciio behavior and look
+- setup variables that influence asciio's behavior and appearance
 
 **asciio** will first read the settings in 'setup/asciio_object/basic.pl' then read
 the settings in the files contained in this section.
@@ -100,7 +100,7 @@ COPY_OFFSET_Y                    => 1,  # y offset for paste
 CREATE_BACKUP                    => 1,  # create a '.bak' backup file when set
 DISPLAY_GRID                     => 1,  # display the asciio grid
 DISPLAY_GRID2                    => 1,  # display every tenth grid line in grid_2 color
-DISPLAY_RULERS                   => 1,  # display the ascioo ruler lines
+DISPLAY_RULERS                   => 1,  # display the asciio ruler lines
 DISPLAY_SETUP_INFORMATION_ACTION => 1,  # display which actions are registered
 DRAG_SELECTS_ARROWS              => 0,  # selection rectangle also selects arrows when set
 ...
@@ -116,5 +116,5 @@ RULER_LINES => # default ruler lines
 
 ### IMPORT_EXPORT
 
-Links to files which define import and export functionality, you could use this to save files to a another format.
+Links to files which define import and export functionality, you could use this to save files to another format.
 
