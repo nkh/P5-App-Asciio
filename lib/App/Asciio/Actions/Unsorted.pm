@@ -428,6 +428,7 @@ sub transparent_elements
 {
 my ($self) = @_ ;
 $self->{OPAQUE_ELEMENTS} ^=1 ;
+$self->invalidate_rendering_cache() ;
 $self->update_display() ;
 }
 
