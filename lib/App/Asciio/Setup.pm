@@ -198,8 +198,9 @@ for my $action_file (@{ $action_files })
 		elsif('ARRAY' eq ref $action_handler_definition)
 			{
 			my %action_handler_hash ; # transform the definition from array into hash
-			@action_handler_hash{'SHORTCUTS', 'CODE', 'ARGUMENTS', 'CONTEXT_MENU_SUB', 'CONTEXT_MENU_ARGUMENTS', 'NAME', 'ORIGIN'}
+			@action_handler_hash{'SHORTCUTS', 'CODE', 'ARGUMENTS', 'CONTEXT_MENU_SUB', 'CONTEXT_MENU_ARGUMENTS', 'OPTIONS', 'NAME', 'ORIGIN'}
 				 = @$action_handler_definition ;
+			$action_handler_hash{OPTIONS} //= {} ;
 			
 			$shortcuts_definition = $action_handler_hash{SHORTCUTS}  ;
 			$action_handler_hash{NAME} = $name ;
@@ -414,8 +415,9 @@ for my $name (grep { $_ ne 'SHORTCUTS' && $_ ne 'ESCAPE_KEYS' } keys %{$group_de
 		{
 		my %action_handler_hash ; # transform the definition from array into hash
 		
-		@action_handler_hash{'SHORTCUTS', 'CODE', 'ARGUMENTS', 'CONTEXT_MENU_SUB', 'CONTEXT_MENU_ARGUMENTS', 'NAME', 'ORIGIN'}
+		@action_handler_hash{'SHORTCUTS', 'CODE', 'ARGUMENTS', 'CONTEXT_MENU_SUB', 'CONTEXT_MENU_ARGUMENTS', 'OPTIONS', 'NAME', 'ORIGIN'}
 			 = @{$group_definition->{$name}} ;
+		$action_handler_hash{OPTIONS} //= {} ;
 		
 		$shortcuts_definition = $action_handler_hash{SHORTCUTS}  ;
 		$action_handler_hash{NAME} = $name ;

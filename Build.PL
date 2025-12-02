@@ -69,6 +69,7 @@ lib/App/Asciio/stripes/stripes.pm
 lib/App/Asciio/stripes/triangle_down.pm
 lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
+lib/App/Asciio/stripes/dot.pm
 
 lib/App/Asciio/Utils/Presentation.pm
 lib/App/Asciio/Utils/Scripting.pm
@@ -79,6 +80,7 @@ lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/DnD.pm
 lib/App/Asciio/GTK/Asciio/Selection.pm
+lib/App/Asciio/GTK/Asciio/Pen.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm

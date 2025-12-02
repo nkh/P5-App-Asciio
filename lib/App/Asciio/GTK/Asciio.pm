@@ -13,6 +13,7 @@ use Pango ;
 use List::Util qw(min) ;
 
 use App::Asciio::GTK::Asciio::Selection ;
+use App::Asciio::GTK::Asciio::Pen ;
 
 use App::Asciio::Cross ;
 use App::Asciio::Markup ;
@@ -154,8 +155,17 @@ $self->draw_selection              ($expose_data) ;
 $self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
 $self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
 $self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
+$self->draw_pen_mapping_help       ($expose_data) ;
 
 return TRUE ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_pen_mapping_help
+{
+my ($self, $expose_data) = @_ ;
+App::Asciio::GTK::Asciio::Pen::pen_show_mapping_help($self, $expose_data->{gc}) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -631,16 +641,29 @@ sub display_mouse_cursor
 {
 my ($self, $expose_data) = @_ ;
 
-my ($gc, $character_width, $character_height)
-	= @{$expose_data}{qw/ gc character_width character_height /} ;
+my ($gc, $character_width, $character_height) = @{$expose_data}{qw/ gc character_width character_height /} ;
 
 my $start_x = $self->{MOUSE_X} * $character_width ;
 my $start_y = $self->{MOUSE_Y} * $character_height ;
 
-$gc->set_source_rgb(@{$self->get_color('mouse_rectangle')}) ;
-$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
-$gc->fill() ;
-$gc->stroke() ;
+$gc->set_source_rgba(@{$self->get_color('mouse_rectangle')}) ;
+
+if(defined $self->{SIMULATE_MOUSE_TYPE})
+	{
+	App::Asciio::GTK::Asciio::Pen::pen_draw_mouse_cursor
+		(
+		$gc,
+		$self->{SIMULATE_MOUSE_TYPE},
+		$character_width, $character_height,
+		$start_x, $start_y
+		) ;
+	}
+else
+	{
+	$gc->rectangle($start_x, $start_y, $character_width, $character_height) ;
+	$gc->fill() ;
+	$gc->stroke() ;
+	}
 }
 
 #-----------------------------------------------------------------------------

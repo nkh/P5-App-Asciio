@@ -8,17 +8,20 @@ use List::Util qw(max) ;
 use List::MoreUtils qw(any) ;
 
 use Exporter 'import';
-our @EXPORT_OK = qw(
+our @EXPORT_OK = 
+	qw(
 	point_in_polygon
 	interpolate
 	) ;
 
 #-----------------------------------------------------------------------------
+# nkh: see that there is a space before ; 
 
-# determine whether the point is inside the polygon through the ray method
-# https://en.wikipedia.org/wiki/Point_in_polygon
 sub point_in_polygon 
 {
+# determine whether the point is inside the polygon through the ray method
+# https://en.wikipedia.org/wiki/Point_in_polygon
+
 my ($point, $polygon) = @_;
 
 my ($point_x, $point_y) = @$point;
@@ -47,33 +50,39 @@ return $is_inside;
 }
 
 #----------------------------------------------------------------------------------------------
+
+sub interpolate
+{
 # interpolate($x0, $y0, $x1, $y1, $x_threshold, $y_threshold, $existing_points)
 #
 # Generate integer points along the line from (x0,y0) to (x1,y1).
 # DDA-style: steps = max(|dx|,|dy|), t = i/steps, then round to int.
 #
 # Parameters:
-#   $x0,$y0,$x1,$y1  : line endpoints (integers)
-#   $existing_points : optional arrayref of existing points (appended to, duplicates skipped)
-#   $x_threshold     : The abscissa threshold means that coordinates are 
-#						generated only when the abscissa difference exceeds the threshold.
-#						Can be a value or a sub
-#   $y_threshold     : The ordinate threshold means that coordinates are
-#						generated only when the ordinate difference exceeds the threshold.
-#						Can be a value or a sub
+#	$x0,$y0,$x1,$y1: 	line endpoints (integers)
+#	
+#	$existing_points:	 optional arrayref of existing points (appended to, duplicates skipped)
+#	
+#	$x_threshold:		The abscissa threshold means that coordinates are 
+#				generated only when the abscissa difference exceeds the threshold.
+#				Can be a value or a sub (use interpolation index as parameter)
+#	
+#	$y_threshold :		The ordinate threshold means that coordinates are
+#				generated only when the ordinate difference exceeds the threshold.
+#				Can be a value or a sub (use interpolation index as parameter)
 #
 # Returns:
-#   list of [$x,$y] points
+# 	list of [$x,$y] points
 #
 # Reference:
-#   Digital differential analyzer (graphics algorithm)
-#   https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
-sub interpolate
-{
+# 	Digital differential analyzer (graphics algorithm)
+# 	https://en.wikipedia.org/wiki/Digital_differential_analyzer_(graphics_algorithm)
+
 my ($x0, $y0, $x1, $y1, $x_threshold, $y_threshold, $existing_points) = @_ ;
 
-$x_threshold ||= 1 ;
-$y_threshold ||= 1 ;
+$x_threshold //= 1 ;
+$y_threshold //= 1 ;
+
 my @points = $existing_points ? @$existing_points : () ;
 
 my $step_index = 0 ;
@@ -81,25 +90,29 @@ my $step_index = 0 ;
 my ($dx, $dy) = ($x1 - $x0, $y1 - $y0) ;
 my $steps = max(abs($dx), abs($dy)) ;
 
-for(my $i = 0; $i <= $steps; $i++)
+for(0 .. $steps)
 	{
-	my $t = $steps == 0 ? 0 : ($i / $steps) ;
+	my $t       = $steps == 0 ? 0 : ($_ / $steps) ;
 	my ($x, $y) = (int($x0 + $dx * $t), int($y0 + $dy * $t)) ;
 	
-	# Remove duplicate points
+	# remove duplicate points
 	next if any { $_->[0] == $x && $_->[1] == $y } @points ;
-
+	
 	my $x_threshold_value = ref $x_threshold eq 'CODE' ? $x_threshold->($step_index) : $x_threshold ;
 	my $y_threshold_value = ref $y_threshold eq 'CODE' ? $y_threshold->($step_index) : $y_threshold ;
 	
-	if (!@points
+	if 
+		(
+		! @points
 		|| abs($y - $points[-1][1]) >= $y_threshold_value
-		|| abs($x - $points[-1][0]) >= $x_threshold_value)
+		|| abs($x - $points[-1][0]) >= $x_threshold_value
+		)
 		{
 		push @points, [$x, $y] ;
 		$step_index++ ;
 		}
 	}
+
 return @points ;
 }
 

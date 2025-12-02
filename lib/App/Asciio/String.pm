@@ -3,9 +3,11 @@ package App::Asciio::String ;
 
 require Exporter ;
 @ISA = qw(Exporter) ;
-@EXPORT = qw(
+@EXPORT = 
+	qw(
 	unicode_length
 	make_vertical_text
+	get_keyboard_layout
 	) ;
 
 #-----------------------------------------------------------------------------
@@ -70,6 +72,117 @@ while($found_character)
 	}
 
 return $vertical ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_keyboard_layout_from_name
+{
+my ($keyboard_layout_name) = @_ ; 
+
+no warnings 'qw' ;
+
+my %keyboard_layouts =
+	(
+	US_QWERTY => 
+		{
+		keys => [qw(
+				~ ! @ # $ % ^ & * ( ) _ +
+				` 1 2 3 4 5 6 7 8 9 0 - =
+				Q W E R T Y U I O P { } |
+				q w e r t y u i o p [ ] \
+				A S D F G H J K L : "
+				a s d f g h j k l ; '
+				Z X C V B N M < > ?
+				z x c v b n m , . /
+			)],
+		
+		layout => <<END ,
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───────┐
+│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│BS     │
+│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│       │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─────┤
+│ Tab │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s  │
+│     │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s  │
+├─────┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴┬──┴─────┤
+│  CL  │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│ Enter  │
+│      │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│        │
+├──────┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴──┬┴────────┤
+│  Shift  │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│  Shift  │
+│         │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│         │
+└─────────┴───┴───┴───┴───┴───┴───┴───┴───┴───┴───┴─────────┘
+END
+		},
+	SWE_QWERTY => 
+		{
+		keys => [qw(
+				½ ! " # ¤ % & / ( ) = ? `
+				§ 1 2 3 4 5 6 7 8 9 0 + ´
+				    @ £ $ €   { [ ] } \
+				Q W E R T Y U I O P Å ^ 
+				q w e r t y u i o p å ¨ ~
+				A S D F G H J K L Ö Ä '
+				a s d f g h j k l ö ä *
+				> Z X C V B N M , . - 
+				< z x c v b n m ; : _
+				|             µ
+			)],
+		
+		layout => <<'END',
+┌───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬───┬─────────┐
+│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│         │
+│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│BS       │
+│   │   │*%s│*%s│*%s│*%s│   │*%s│*%s│*%s│*%s│*%s│   │         │
+├───┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─────┬───┤
+│ Tab │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s    │   │
+│     │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s *%s│   │
+├─────┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬───┬─┘   │
+│  CL   │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│Enter│
+│       │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│     │
+├─────┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴─┬─┴───┴─────┤
+│Shift│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│  Shift    │
+│     │*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│*%s│           │
+└─────┤*%s├───┴───┴───┴───┴───┴───┤*%s├───┴───┴───┴───────────┘
+      └───┘                       └───┘               
+END
+		},
+	) ;
+
+if (exists $keyboard_layouts{$keyboard_layout_name})
+	{
+	return $keyboard_layouts{$keyboard_layout_name} ;
+	}
+else
+	{
+	die "Unknown keyboard layout name: $keyboard_layout_name" ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_keyboard_layout
+{
+my ($keyboard_char_map, $keyboard_layout_name) = @_ ;
+
+my $keyboard_layout = get_keyboard_layout_from_name($keyboard_layout_name) ;
+
+my $keyboard_keys = $keyboard_layout->{keys} ;
+my $keyboard_layout_template = $keyboard_layout->{layout} ;
+
+my @keyboard_keys_values = 
+	map 
+		{
+		my $key         = $_ ;
+		my $char        = $keyboard_char_map->{$key} // '' ;
+		my $unicode_len = unicode_length($char);
+		my $mapped      = $unicode_len == 2 ? $char : $unicode_len == 1 ? " $char" : "  $char" ;
+		
+		($key, $mapped) ;
+		} @$keyboard_keys ;
+
+$keyboard_layout_template =~ s/\*/%s/g ;
+
+return sprintf($keyboard_layout_template, @keyboard_keys_values) ;
 }
 
 #-----------------------------------------------------------------------------

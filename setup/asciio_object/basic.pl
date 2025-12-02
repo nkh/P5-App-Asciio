@@ -31,12 +31,14 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		hint_background             => [0.20, 0.20, 0.20],
 		hint_line                   => [0.20, 0.46, 0.62],
 		hint_line2                  => [0.3, 0.56, 0.72],
-		mouse_rectangle             => [0.90, 0.20, 0.20],
+		mouse_rectangle             => [0.90, 0.50, 0.90, 0.50],
 		new_connection              => [1.00, 0.00, 0.00],
 		ruler_line                  => [0.10, 0.23, 0.31],
 		selected_element_background => [0.10, 0.16, 0.20],
 		selection_rectangle         => [0.43, 0.00, 0.43],
 		test                        => [0.00, 1.00, 1.00],
+		prompt_background           => [0.15, 0.15, 0.15, 1.00],
+		prompt_foreground           => [0.85, 0.85, 0.85, 1.00],
 		}, 
 	'system' =>
 		{
@@ -61,12 +63,14 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		hint_background             => [0.80, 0.80, 0.80],
 		hint_line                   => [0.50, 0.80, 1.00],
 		hint_line2                  => [0.40, 0.70, 0.90],
-		mouse_rectangle             => [0.90, 0.20, 0.20],
+		mouse_rectangle             => [0.90, 0.50, 0.90, 0.50],
 		new_connection              => [1.00, 0.00, 0.00],
 		ruler_line                  => [0.33, 0.61, 0.88],
 		selected_element_background => [0.70, 0.95, 1.00],
 		selection_rectangle         => [1.00, 0.00, 1.00],
 		test                        => [0.00, 1.00, 1.00],
+		prompt_background           => [0.90, 0.90, 0.90, 1.00],
+		prompt_foreground           => [0.00, 0.00, 0.00, 1.00],
 		} 
 	},
 
@@ -88,8 +92,8 @@ FONT_SIZE                        => 11, # font size for characters
 GIT_MODE_CONNECTOR_CHAR_LIST     => ['*', 'o'], # Linker style in git mode
 
 GTK_MEMORY_OVER_SPEED            => 0,  # draw the entire canvas or just the viewport
-						# 0: Draw the entire canvas (more memory)
-						# 1: Only draw the viewport (less memory, more cache updatds)
+					# 0: Draw the entire canvas (more memory)
+					# 1: Only draw the viewport (less memory, more cache updatds)
 
 OPAQUE_ELEMENTS                  => 1,  # clear the background behind the strips when set, for debugging
 RULER_LINES => # default ruler lines
@@ -120,4 +124,30 @@ TAB_AS_SPACES            => '   ', # replacement for \t
 USE_MARKUP_MODE          => '',    # enable editing text directly on the canvas
 USE_BINDINGS_COMPLETION  => 1,     # show binding completion popup
 ZOOM_STEP                => 3,     # increment for font size
+
+PEN_KEYBOARD_LAYOUT_NAME => 'US_QWERTY', # US_QWERTY or SWE_QWERTY
+PEN_CHARS_SETS           =>        # keys to inserted characters in pen mode
+				[
+					{
+					'~' => '─' , '!' => '▀' , '@' => '▁' , '#' => '▂'  , '$' => '▃' , '%' => '▄' ,
+					'^' => '▅' , '&' => '▆' , '*' => '▇' , '(' => '█'  , ')' => '▉' , '_' => '▊' ,
+					'+' => '▋' , '`' => '▋' , '1' => '▌' , '2' => '▍'  , '3' => '▎' , '4' => '▏' ,
+					'5' => '▐' , '6' => '░' , '7' => '▒' , '8' => '▓'  , '9' => '▔' , '0' => 'À' ,
+					'-' => '│' , '=' => '┌' , 'Q' => '┐' , 'W' => '└'  , 'E' => '┘' , 'R' => '├' ,
+					'T' => '┤' , 'Y' => '┬' , 'U' => '┴' , 'I' => 'Ì'  , 'O' => 'Ð' , 'P' => '┼' ,
+					'{' => 'Ã' , '}' => 'Ä' , '|' => 'Â' , 'q' => 'Á'  , 'w' => 'Å' , 'e' => 'Æ' ,
+					'r' => 'Ç' , 't' => 'Ò' , 'y' => 'Ó' , 'u' => 'Ô'  , 'i' => 'Õ' , 'o' => 'à' ,
+					'p' => 'á' , '[' => 'â' , ']' => 'ã' , '\\' => 'ì' , 'A' => 'ø' , 'S' => 'ù' ,
+					'D' => 'ú' , 'F' => 'û' , 'G' => '¢' , 'H' => '£'  , 'J' => '¥' , 'K' => '€' ,
+					'L' => '₩' , ':' => '±' , '"' => '×' , 'a' => '÷'  , 's' => 'Þ' , 'd' => '√' ,
+					'f' => '§' , 'g' => '¶' , 'h' => '©' , 'j' => '®'  , 'k' => '™' , 'l' => '‡' ,
+					';' => '†' , "'" => '‾' , 'Z' => '¯' , 'X' => '˚'  , 'C' => '˙' , 'V' => '˝' ,
+					'B' => 'ˇ' , 'N' => 'µ' , 'M' => '∂' , '<' => '≈'  , '>' => '≠' , '?' => '≤' ,
+					'z' => '≥' , 'x' => '≡' , 'c' => '─' , 'v' => '│'  , 'b' => '┌' , 'n' => '┐' ,
+					'm' => '└' , ',' => '┘' , '.' => '├' , '/' => '┤' ,
+					},
+					{
+					'1' => '┬', '2' => '┴', '3' => '┼',
+					},
+				],
 
