@@ -21,7 +21,6 @@ use App::Asciio::GTK::Asciio::stripes::editable_exec_box ;
 use App::Asciio::GTK::Asciio::stripes::editable_box2 ;
 use App::Asciio::GTK::Asciio::stripes::rhombus ;
 use App::Asciio::GTK::Asciio::stripes::ellipse ;
-
 use App::Asciio::GTK::Asciio::stripes::editable_arrow2 ;
 use App::Asciio::GTK::Asciio::stripes::wirl_arrow ;
 use App::Asciio::GTK::Asciio::stripes::angled_arrow ;
@@ -264,11 +263,11 @@ for my $element (@elements)
 				! exists $selected_elements{$_->{CONNECTEE}}
 				} 
 				$self->get_possible_connections($element) ;
-				
+	
 	$self->add_connections(@new_connections) ;
 	
 	# handle box  element
-	for my $connection ($self->get_connected($element))
+	for my $connection ($self->get_connections_with_connectee($element))
 		{
 		# move connected with connectees
 		if (exists $selected_elements{$connection->{CONNECTED}})
@@ -297,10 +296,9 @@ for my $element (@elements)
 				# move them relatively to their previous position
 				if($connection->{CONNECTED} == $other_connection->{CONNECTED})
 					{
-					my ($new_connector) = # in characters relative to element origin
-							$other_connection->{CONNECTED}->get_named_connection($other_connection->{CONNECTOR}{NAME}) ;
+					my ($named_connection) = $other_connection->{CONNECTED}->get_named_connection($other_connection->{CONNECTOR}{NAME}) ;
 					
-					$other_connection->{CONNECTOR} = $new_connector ;
+					$other_connection->{CONNECTOR} = $named_connection ;
 					$other_connection->{FIXED}++ ;
 					}
 				}
@@ -329,51 +327,45 @@ my ($x_offset, $y_offset, undef, undef, $resized_connector_name) =
 $selected_element->{X} += $x_offset ;
 $selected_element->{Y} += $y_offset;
 
-# handle connections
-if($self->is_connected($selected_element))
-	{
-	# disconnect current connections
-	$self->delete_connections_containing($selected_element) ;
-	}
-
+# arrows
+$self->delete_connections_containing($selected_element) if $self->is_connected($selected_element) ;
 $self->connect_elements($selected_element) ; # connect to new elements if any
 
-for my $connection ($self->get_connected($selected_element))
+# non arrows
+for my $connection ($self->get_connections_with_connectee($selected_element))
 	{
-	# all connection where the selected element is the connectee
+	my ($named_connection) = $selected_element->get_named_connection($connection->{CONNECTION}{NAME}) ;
+		# {X =>  ..., Y => ..., NAME => same_as_apssed as argumnent} ;
 	
-	my ($new_connection) = # in characters relative to element origin
-	$selected_element->get_named_connection($connection->{CONNECTION}{NAME}) ;
-	
-	if(defined $new_connection)
+	if(defined $named_connection)
 		{
+		# move arrow connector to match the element connection
 		my ($x_offset, $y_offset, $width, $height, $new_connector) = 
 			$connection->{CONNECTED}->move_connector
 				(
 				$connection->{CONNECTOR}{NAME},
-				$new_connection->{X} - $connection->{CONNECTION}{X},
-				$new_connection->{Y}- $connection->{CONNECTION}{Y}
+				$named_connection->{X} - $connection->{CONNECTION}{X},
+				$named_connection->{Y}- $connection->{CONNECTION}{Y}
 				) ;
-				
+		
 		$connection->{CONNECTED}{X} += $x_offset ;
 		$connection->{CONNECTED}{Y} += $y_offset ;
 		
 		# the connection point has also changed
 		$connection->{CONNECTOR} = $new_connector ;
-		$connection->{CONNECTION} = $new_connection ;
+		$connection->{CONNECTION} = $named_connection ;
 		
 		$connection->{FIXED}++ ;
 		
-		#find the other connectors belonging to this connected
+		# find the other connectors belonging to this arrow
 		for my $other_connection (grep{ ! $_->{FIXED}} @{$self->{CONNECTIONS}})
 			{
 			# move them relatively to their previous position
 			if($connection->{CONNECTED} == $other_connection->{CONNECTED})
 				{
-				my ($new_connector) = # in characters relative to element origin
-						$other_connection->{CONNECTED}->get_named_connection($other_connection->{CONNECTOR}{NAME}) ;
+				my ($named_connection) = $other_connection->{CONNECTED}->get_named_connection($other_connection->{CONNECTOR}{NAME}) ;
 				
-				$other_connection->{CONNECTOR} = $new_connector ;
+				$other_connection->{CONNECTOR} = $named_connection ;
 				$other_connection->{FIXED}++ ;
 				}
 			}
@@ -487,21 +479,20 @@ if($self->is_connected($selected_element))
 
 $self->connect_elements($selected_element) ; # connect to new elements if any
 
-for my $connection ($self->get_connected($selected_element))
+for my $connection ($self->get_connectons($selected_element))
 	{
 	# all connection where the selected element is the connectee
 	
-	my ($new_connection) = # in characters relative to element origin
-			$selected_element->get_named_connection($connection->{CONNECTION}{NAME}) ;
+	my ($named_connection) = $selected_element->get_named_connection($connection->{CONNECTION}{NAME}) ;
 	
-	if(defined $new_connection)
+	if(defined $named_connection)
 		{
 		my ($x_offset, $y_offset, $width, $height, $new_connector) = 
 			$connection->{CONNECTED}->move_connector
 				(
 				$connection->{CONNECTOR}{NAME},
-				$new_connection->{X} - $connection->{CONNECTION}{X},
-				$new_connection->{Y}- $connection->{CONNECTION}{Y}
+				$named_connection->{X} - $connection->{CONNECTION}{X},
+				$named_connection->{Y}- $connection->{CONNECTION}{Y}
 				) ;
 				
 		$connection->{CONNECTED}{X} += $x_offset ;
@@ -509,7 +500,7 @@ for my $connection ($self->get_connected($selected_element))
 		
 		# the connection point has also changed
 		$connection->{CONNECTOR} = $new_connector ;
-		$connection->{CONNECTION} = $new_connection ;
+		$connection->{CONNECTION} = $named_connection ;
 		
 		$connection->{FIXED}++ ;
 		
@@ -519,18 +510,14 @@ for my $connection ($self->get_connected($selected_element))
 			# move them relatively to their previous position
 			if($connection->{CONNECTED} == $other_connection->{CONNECTED})
 				{
-				my ($new_connector) = # in characters relative to element origin
-						$other_connection->{CONNECTED}->get_named_connection($other_connection->{CONNECTOR}{NAME}) ;
+				my ($named_connection) = $other_connection->{CONNECTED}->get_named_connection($other_connection->{CONNECTOR}{NAME}) ;
 				
-				$other_connection->{CONNECTOR} = $new_connector ;
+				$other_connection->{CONNECTOR} = $named_connection ;
 				$other_connection->{FIXED}++ ;
 				}
 			}
-			
-		for my $connection (@{$self->{CONNECTIONS}})
-			{
-			delete $connection->{FIXED} ;
-			}
+		
+		delete $_->{FIXED} for @{$self->{CONNECTIONS}} ;
 		}
 	else
 		{

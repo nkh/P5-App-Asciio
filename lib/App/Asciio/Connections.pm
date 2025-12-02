@@ -7,9 +7,6 @@ use strict;
 use warnings;
 
 use Data::TreeDumper ;
-use Clone;
-use List::Util qw(min max) ;
-use List::MoreUtils qw(any minmax first_value) ;
 
 #-----------------------------------------------------------------------------
 
@@ -168,21 +165,21 @@ return($connectee) ;
 
 #-----------------------------------------------------------------------------
 
-sub get_connected
+sub get_connections_with_connectee
 {
 my($self, $element) = @_ ;
 
-my(@connected) ;
+my(@connections) ;
 
 for my $connection (@{$self->{CONNECTIONS}})
 	{
 	if($connection->{CONNECTEE} == $element)
 		{
-		push @connected, $connection ;
+		push @connections, $connection ;
 		}
 	}
 
-return(@connected) ;
+return(@connections) ;
 }
 
 #-----------------------------------------------------------------------------

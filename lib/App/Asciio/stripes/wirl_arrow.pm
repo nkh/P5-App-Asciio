@@ -798,7 +798,7 @@ if($is_start)
 	my $new_end_x = $self->{END_X} - $x_offset ;
 	my $new_end_y = $self->{END_Y} - $y_offset ;
 	
-	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION},$self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
+	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint // $self->{DIRECTION},$self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
 	
 	return($x_offset, $y_offset, $self->{WIDTH}, $self->{HEIGHT}, 'start') ;
 	}
@@ -807,7 +807,7 @@ else
 	my $new_end_x = $new_x ;
 	my $new_end_y = $new_y ;
 	
-	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint || $self->{DIRECTION}, $self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
+	$self->setup($self->{ARROW_TYPE}, $new_end_x, $new_end_y, $hint // $self->{DIRECTION}, $self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
 	
 	return(0, 0, $self->{WIDTH}, $self->{HEIGHT}, 'end') ;
 	}

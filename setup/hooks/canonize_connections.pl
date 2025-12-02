@@ -226,26 +226,22 @@ sub reconnect
 {
 my($asciio_connection, $connection_name, $connector_name, $hint) = @_ ;
 
-if($asciio_connection->{CONNECTION}{NAME} ne $connection_name)
-	{
-	my ($connected, $connectee) = ($asciio_connection->{CONNECTED},  $asciio_connection->{CONNECTEE}) ;
+my ($connected, $connectee) = ($asciio_connection->{CONNECTED},  $asciio_connection->{CONNECTEE}) ;
 
-	my ($connection) = $connectee->get_named_connection($connection_name) ;
-	my ($connector) = $connected->get_named_connection($connector_name) ;
+my ($connection) = $connectee->get_named_connection($connection_name) ;
+my ($connector) = $connected->get_named_connection($connector_name) ;
 
-	my $x_offset_to_connection = ($connectee->{X} + $connection->{X}) - ($connected->{X} + $connector->{X}) ;
-	my $y_offset_to_connection =  ($connectee->{Y} + $connection->{Y}) - ($connected->{Y} + $connector->{Y}) ;
+my $x_offset_to_connection = ($connectee->{X} + $connection->{X}) - ($connected->{X} + $connector->{X}) ;
+my $y_offset_to_connection =  ($connectee->{Y} + $connection->{Y}) - ($connected->{Y} + $connector->{Y}) ;
 
-	# move connector
-	#~ print STDERR "reconnect: $connection_name $connector_name\n" ;
-	my ($x_offset, $y_offset, $width, $height, $new_connector) = 
-		$connected->move_connector($connector_name, $x_offset_to_connection, $y_offset_to_connection, $hint) ;
-		
-	$connected->{X} += $x_offset ;
-	$connected->{Y} += $y_offset ;
+# move connector
+my ($x_offset, $y_offset, $width, $height, $new_connector) = 
+	$connected->move_connector($connector_name, $x_offset_to_connection, $y_offset_to_connection, $hint) ;
 	
-	$asciio_connection->{CONNECTOR} = $new_connector ;
-	$asciio_connection->{CONNECTION} = $connection ;
-	}
+$connected->{X} += $x_offset ;
+$connected->{Y} += $y_offset ;
+
+$asciio_connection->{CONNECTOR} = $new_connector ;
+$asciio_connection->{CONNECTION} = $connection ;
 }
 

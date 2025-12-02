@@ -227,7 +227,7 @@ register_action_handlers
 	'Display undo stack statistics'       => ['000-u', \&App::Asciio::Actions::Unsorted::display_undo_stack_statistics ],
 	'Dump self'                           => ['000-s', \&App::Asciio::Actions::Debug::dump_self                        ],
 	'Dump all elements'                   => ['000-e', \&App::Asciio::Actions::Debug::dump_all_elements                ],
-	'Dump selected elements'              => ['000-E', \&App::Asciio::Actions::Debug::dump_selected_elements           ],
+	'Dump selected elements'              => ['00S-E', \&App::Asciio::Actions::Debug::dump_selected_elements           ],
 	'Display numbered objects'            => ['000-t', sub { $_[0]->{NUMBERED_OBJECTS} ^= 1 ; $_[0]->update_display() }],
 	'Test'                                => ['000-o', \&App::Asciio::Actions::Debug::test                             ],
 	'ZBuffer Test'                        => ['000-z', \&App::Asciio::Actions::ZBuffer::dump_crossings                 ],

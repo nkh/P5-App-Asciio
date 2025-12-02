@@ -441,7 +441,7 @@ if($self->is_optimize_enabled() && $x >= 0 && $x < $self->{WIDTH} && $y >= 0 && 
 	{
 	return {X =>  -1, Y => -1, NAME => 'to_be_optimized'} ;
 	}
-	
+
 if($self->{ALLOW_BORDER_CONNECTION} && $x >= -1 && $x <= $self->{WIDTH} && $y >= -1 && $y <= $self->{HEIGHT})
 	{
 	return {X =>  $x, Y => $y, NAME => 'border'} ;
