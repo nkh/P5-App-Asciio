@@ -235,7 +235,6 @@ if(defined $name && $name ne q[])
 	
 	if(defined $file_name && $file_name ne q[])
 		{
-		use Data::Dumper ;
 		my ($element) = $self->get_selected_elements(1) ;
 		
 		my $cache = $element->{CACHE} ;
@@ -249,6 +248,7 @@ if(defined $name && $name ne q[])
 		delete $stencil->{Y} ;
 		$stencil->{NAME} = $name;
 		
+		use Data::Dumper ;
 		write_text($file_name, Dumper [$stencil]) ;
 		}
 	}
