@@ -479,7 +479,7 @@ if($self->is_connected($selected_element))
 
 $self->connect_elements($selected_element) ; # connect to new elements if any
 
-for my $connection ($self->get_connectons($selected_element))
+for my $connection ($self->get_connections_containing($selected_element))
 	{
 	# all connection where the selected element is the connectee
 	
