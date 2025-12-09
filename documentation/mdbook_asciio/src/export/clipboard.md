@@ -17,3 +17,14 @@
 
 Some clipboard commands are using the **xsel** command.
 
+## Win11 Msys2
+
+For users of `Win11 Msys2` system. To make using the clipboard function smoother,
+it is best to install the `Win32::Clipboard` module. If this module is not
+installed, then using `PowerShell` to perform clipboard operations is very
+inefficient. Users of other systems do not have this requirement!
+
+```bash
+cpanm Win32::Clipboard --force
+```
+

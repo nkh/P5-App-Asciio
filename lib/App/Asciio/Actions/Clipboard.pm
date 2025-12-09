@@ -5,7 +5,7 @@ use warnings ;
 #----------------------------------------------------------------------------------------------
 
 use utf8;
-use Encode;
+use Encode qw(decode FB_CROAK) ;
 use List::Util qw(min max) ;
 use MIME::Base64 ;
 use Clone ;
@@ -128,7 +128,7 @@ my $elements_serail ;
 
 for my $option (@clipboard_out_options)
 	{
-		my $elements_base64 = qx~xsel $option -o~ ;
+		my $elements_base64 = read_clipboard_raw_text($option) ;
 		
 		# print STDERR "get data:==>" . $elements_base64 . "\n" ;
 		
@@ -170,14 +170,7 @@ sub export_elements_to_system_clipboard
 {
 my ($self) = @_ ;
 
-my $serialized_elements = serialize_selected_elements($self) ;
-
-use open qw( :std :encoding(UTF-8) ) ;
-open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
-local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
-
-print CLIPBOARD $serialized_elements ;
-close CLIPBOARD ;
+write_clipboard_raw_text(serialize_selected_elements($self)) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -186,12 +179,9 @@ sub export_to_clipboard_as_ascii
 {
 my ($self) = @_ ;
 
-use open qw( :std :encoding(UTF-8) ) ;
-open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
-local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
-
-print CLIPBOARD $self->transform_elements_to_ascii_buffer($self->get_selected_elements(1)) ;
-close CLIPBOARD ;
+write_clipboard_raw_text(
+	$self->transform_elements_to_ascii_buffer($self->get_selected_elements(1))
+	) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -200,52 +190,37 @@ sub export_to_clipboard_as_markup
 {
 my ($self) = @_ ;
 
-use open qw( :std :encoding(UTF-8) ) ;
-open CLIPBOARD, "| xsel -i -b -p"  or die "can't copy to clipboard: $!" ;
-local $SIG{PIPE} = sub { die "xsel pipe broke" } ;
-
-print CLIPBOARD $self->transform_elements_to_markup_buffer($self->get_selected_elements(1)) ;
-close CLIPBOARD ;
+write_clipboard_raw_text(
+	$self->transform_elements_to_markup_buffer($self->get_selected_elements(1))
+	) ;
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub import_from_primary_to_box
-{
-my ($self) = @_ ;
-
-my $ascii = qx~xsel -p -o~ ;
-
-my $element = $self->add_new_element_named('Asciio/box', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-$element->set_text('', $ascii) ;
-$self->select_elements(1, $element) ;
-
-$self->update_display() ;
-}
+sub import_from_primary_to_box { my ($self) = @_ ; import_from_clipboard($self, '-p', 'box'); }
 
 #----------------------------------------------------------------------------------------------
 
-sub import_from_primary_to_text
-{
-my ($self) = @_ ;
+sub import_from_primary_to_text { my ($self) = @_ ; import_from_clipboard($self, '-p', 'text'); }
 
-my $ascii = qx~xsel -p -o~ ;
+#----------------------------------------------------------------------------------------------
 
-my $element = $self->add_new_element_named('Asciio/text', $self->{MOUSE_X}, $self->{MOUSE_Y}) ;
-$element->set_text('', $ascii) ;
-$self->select_elements(1, $element) ;
+sub import_from_clipboard_to_box { my ($self) = @_ ; import_from_clipboard($self, '-b', 'box'); }
 
-$self->update_display() ;
-}
+#----------------------------------------------------------------------------------------------
+
+sub import_from_clipboard_to_text { my ($self) = @_ ; import_from_clipboard($self, '-b', 'text'); }
 
 #----------------------------------------------------------------------------------------------
 
 sub import_from_clipboard
 {
-my ($self, $obj) = @_ ;
+my ($self, $source, $obj) = @_ ;
 
-my $ascii = qx~xsel -b -o~ ;
-$ascii = decode("utf-8", $ascii);
+my $ascii = read_clipboard_raw_text($source) ;
+
+$ascii = eval { decode("UTF-8", $ascii, FB_CROAK) } || decode("GBK", $ascii) ;
+
 $ascii =~ s/\r//g;
 $ascii =~ s/\t/$self->{TAB_AS_SPACES}/g;
 
@@ -258,22 +233,65 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub import_from_clipboard_to_box
+sub write_clipboard_raw_text
 {
-my ($self) = @_ ;
-import_from_clipboard($self, 'box');
+my ($text) = @_ ;
+
+if ($^O eq 'MSWin32')
+	{
+	my $ok = eval
+		{
+		require Win32::Clipboard ;
+		Win32::Clipboard()->Set(Encode::decode('UTF-8', $text)) ;
+		1 ;
+		} ;
+
+	if (!$ok)
+		# fallback: PowerShell
+		{
+		open my $POWERSHELL, "|-", "powershell", "-Command",
+			"[Console]::InputEncoding = [System.Text.Encoding]::UTF8; \$input | Set-Clipboard"
+			or die "Can't open PowerShell";
+		binmode($POWERSHELL, ":encoding(UTF-8)");
+		print $POWERSHELL $text;
+		close $POWERSHELL;
+		}
+	}
+else
+	{
+	for my $opt ('-b', '-p')
+		{
+		local $SIG{PIPE} = sub { die "xsel pipe broke for $opt" };
+		open my $CLIP, "| xsel -i $opt" or die "Can't write to clipboard $opt";
+		binmode($CLIP, ":encoding(UTF-8)");
+		print $CLIP $text;
+		close $CLIP;
+		}
+	}
 }
 
 #----------------------------------------------------------------------------------------------
-
-sub import_from_clipboard_to_text
+sub read_clipboard_raw_text
 {
-my ($self) = @_ ;
-import_from_clipboard($self, 'text');
+my ($option) = @_ ;
+
+if ($^O eq 'MSWin32')
+	{
+	my $clip = eval
+		{
+		require Win32::Clipboard ;
+		Win32::Clipboard()->Get() ;
+		} ;
+	# fallback: PowerShell
+	return defined $clip ? $clip : qx{powershell -Command "Get-Clipboard"} ;
+	}
+else
+	{
+	return qx{xsel $option -o} ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
-
 
 1 ;
 
