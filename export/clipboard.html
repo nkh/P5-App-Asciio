@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-75dcf8c5.js";
+            window.path_to_searchindex_js = "../searchindex-f5918f98.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-ccd11f40.js"></script>
@@ -197,6 +197,13 @@
 </table>
 </div>
 <p>Some clipboard commands are using the <strong>xsel</strong> command.</p>
+<h2 id="win11-msys2"><a class="header" href="#win11-msys2">Win11 Msys2</a></h2>
+<p>For users of <code>Win11 Msys2</code> system. To make using the clipboard function smoother,
+it is best to install the <code>Win32::Clipboard</code> module. If this module is not
+installed, then using <code>PowerShell</code> to perform clipboard operations is very
+inefficient. Users of other systems do not have this requirement!</p>
+<pre><code class="language-bash">cpanm Win32::Clipboard --force
+</code></pre>
 
                     </main>
 
