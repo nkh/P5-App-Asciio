@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-ca3e0fd3.js";
+            window.path_to_searchindex_js = "../searchindex-60e5b88a.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-da0bda66.js"></script>
@@ -179,6 +179,12 @@
 <p>Pen mode is used to draw one character at a time into the canvas, often used
 for small ascii art creations. It is also very convenient to use it for stencil
 making .This is a special feature of the GUI port.</p>
+<p>Here are a few examples of making ascii art.</p>
+<p><img src="pen_draw_owl.gif" alt="pen_draw_owl"></p>
+<p><img src="pen_draw_bear_head.gif" alt="pen_draw_bear_head"></p>
+<p>Here are a few examples of making stencil.</p>
+<p><img src="pen_draw_disk.gif" alt="pen_draw_disk"></p>
+<p><img src="pen_draw_book.gif" alt="pen_draw_book"></p>
 <h2 id="basic-operations"><a class="header" href="#basic-operations">Basic operations</a></h2>
 <h3 id="entering-and-exiting-pen-mode"><a class="header" href="#entering-and-exiting-pen-mode">Entering and exiting pen mode</a></h3>
 <div class="table-wrapper">
@@ -215,6 +221,16 @@ by the current mouse become the character you pressed.</li>
 <li>The overlay prompt has three shapes, which correspond to the position of the
 cursor after different inputs.</li>
 </ol>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>pen mouse toggle direction</td><td><code>&lt;&lt;C00-Tab&gt;&gt;</code></td></tr>
+</tbody>
+</table>
+</div>
 <p>(1). Square</p>
 <p>After inserting a character, the cursor does not move automatically.</p>
 <p>(2). Right triangle</p>
@@ -224,8 +240,8 @@ position, which can be used for automatic input in the horizontal direction.</p>
 <p>After inserting a character, the cursor automatically moves down one position,
 which can be used for automatic input in the vertical direction.</p>
 <p><img src="pen_char_insertion_direction.gif" alt="pen_char_insertion_direction"></p>
-<p>In the latter two direction modes, The <strong>backspace</strong> key can delete characters,
-and the <strong>Shift + Enter</strong> key can wrap lines. You can imagine that you are free
+<p>The <strong>BackSpace</strong> key can delete characters, In the latter two direction modes
+the <strong>Shift + Enter</strong> key can wrap lines. You can imagine that you are free
 input in a text editor.</p>
 <p><img src="pen_newline_and_wrap.gif" alt="pen_newline_and_wrap"></p>
 <h3 id="fast-keyboard-based-movement"><a class="header" href="#fast-keyboard-based-movement">Fast keyboard-based movement</a></h3>
@@ -234,6 +250,25 @@ click with the mouse every time we change the character,It may not be efficient,
 but if you can operate it with a pure keyboard within a small range, it may be
 much more efficient. Refer to vim editor, we also Customized a lot of Fast
 keyboard-based movement.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>pen mouse move left</td><td><code>&lt;&lt;C00-h&gt;&gt;</code> <code>&lt;&lt;000-Left&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move right</td><td><code>&lt;&lt;C00-l&gt;&gt;</code> <code>&lt;&lt;000-Right&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move up</td><td><code>&lt;&lt;C00-k&gt;&gt;</code> <code>&lt;&lt;000-up&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move down</td><td><code>&lt;&lt;C0S-j&gt;&gt;</code> <code>&lt;&lt;000-Down&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move left quick</td><td><code>&lt;&lt;0A0-h&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move right quick</td><td><code>&lt;&lt;0A0-l&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move up quick</td><td><code>&lt;&lt;0A0-k&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move down quick</td><td><code>&lt;&lt;0A0-j&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move left tab</td><td><code>&lt;&lt;00S-ISO_Left_Tab&gt;&gt;</code></td></tr>
+<tr><td>pen mouse move right tab</td><td><code>&lt;&lt;000-Tab&gt;&gt;</code></td></tr>
+</tbody>
+</table>
+</div>
 <p><img src="pen_keyboard_move.gif" alt="pen_keyboard_move"></p>
 <h3 id="types-of-characters-that-can-be-entered"><a class="header" href="#types-of-characters-that-can-be-entered">Types of characters that can be entered</a></h3>
 <p>By default, we type in ascii characters on the keyboard, including letters,
@@ -327,16 +362,20 @@ insertion characters after entering pen mode. (This has the highest priority).</
 in which it was extracted.</p>
 </blockquote>
 <h3 id="switch-to-pen-modes-built-in-eraser-mode"><a class="header" href="#switch-to-pen-modes-built-in-eraser-mode">Switch to pen mode’s built-in eraser mode</a></h3>
-<p>This is mainly used to delete a single element without exiting pen mode. In pen
-mode, press the Tab key to switch to the eraser.</p>
-<p>Press the TAB key again to switch back to pen mode.</p>
+<p>This is mainly to delete multiple or consecutive dot elements (pen elements)
+without exiting pen mode. In pen mode, press the <code>&lt;&lt;Ctrl+Shift+Tab&gt;&gt;</code> key to
+switch to the eraser.</p>
+<p>Press the <code>&lt;&lt;Ctrl+Shift+Tab&gt;&gt;</code> key again to switch back to pen mode.</p>
 <p><img src="eraser_mode.gif" alt="eraser_mdoe"></p>
-<p>There are two ways to delete elements:</p>
+<p>There are 3 ways to delete elements in pen mode:</p>
 <ol>
-<li>Click an element directly</li>
-<li>Click the left mouse button and then drag, then all elements encountered
-on the dragging path will be deleted.</li>
+<li>In pen mode, place the cursor on the dot element (pen element), and then
+press the <code>&lt;&lt;Back Space&gt;&gt;</code> key.</li>
+<li>In the eraser submode, Click the left mouse button directly on elements.</li>
+<li>In the eraser submode，Click the left mouse button and then draging, then
+all elements encountered on the dragging path will be deleted.</li>
 </ol>
+<p><img src="pen_delete_elements.gif" alt="pen_delete_elements"></p>
 <h2 id="merge-the-completed-ascii-art-into-a-text-box"><a class="header" href="#merge-the-completed-ascii-art-into-a-text-box">Merge the completed ascii art into a text box</a></h2>
 <div class="table-wrapper">
 <table>
