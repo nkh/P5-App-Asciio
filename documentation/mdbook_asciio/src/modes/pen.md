@@ -6,6 +6,20 @@ Pen mode is used to draw one character at a time into the canvas, often used
 for small ascii art creations. It is also very convenient to use it for stencil
 making .This is a special feature of the GUI port.
 
+Here are a few examples of making ascii art.
+
+![pen_draw_owl](pen_draw_owl.gif)
+
+![pen_draw_bear_head](pen_draw_bear_head.gif)
+
+
+Here are a few examples of making stencil.
+
+![pen_draw_disk](pen_draw_disk.gif)
+
+![pen_draw_book](pen_draw_book.gif)
+
+
 ## Basic operations
 
 ### Entering and exiting pen mode
@@ -40,6 +54,10 @@ by the current mouse become the character you pressed.
 4. The overlay prompt has three shapes, which correspond to the position of the
 cursor after different inputs.
 
+| action                     | binding       |
+|----------------------------|---------------|
+| pen mouse toggle direction | `<<C00-Tab>>` |
+
 (1). Square
 
 After inserting a character, the cursor does not move automatically.
@@ -56,8 +74,8 @@ which can be used for automatic input in the vertical direction.
 
 ![pen_char_insertion_direction](pen_char_insertion_direction.gif)
 
-In the latter two direction modes, The **backspace** key can delete characters,
-and the **Shift + Enter** key can wrap lines. You can imagine that you are free
+The **BackSpace** key can delete characters, In the latter two direction modes
+the **Shift + Enter** key can wrap lines. You can imagine that you are free
 input in a text editor.
 
 ![pen_newline_and_wrap](pen_newline_and_wrap.gif)
@@ -69,6 +87,19 @@ click with the mouse every time we change the character,It may not be efficient,
 but if you can operate it with a pure keyboard within a small range, it may be
 much more efficient. Refer to vim editor, we also Customized a lot of Fast
 keyboard-based movement.
+
+| action                     | binding                     |
+|----------------------------|-----------------------------|
+| pen mouse move left        | `<<C00-h>>` `<<000-Left>>`  |
+| pen mouse move right       | `<<C00-l>>` `<<000-Right>>` |
+| pen mouse move up          | `<<C00-k>>` `<<000-up>>`    |
+| pen mouse move down        | `<<C0S-j>>` `<<000-Down>>`  |
+| pen mouse move left quick  | `<<0A0-h>>`                 |
+| pen mouse move right quick | `<<0A0-l>>`                 |
+| pen mouse move up quick    | `<<0A0-k>>`                 |
+| pen mouse move down quick  | `<<0A0-j>>`                 |
+| pen mouse move left tab    | `<<00S-ISO_Left_Tab>>`      |
+| pen mouse move right tab   | `<<000-Tab>>`               |
 
 ![pen_keyboard_move](pen_keyboard_move.gif)
 
@@ -169,17 +200,23 @@ in which it was extracted.
 
 ### Switch to pen mode’s built-in eraser mode
 
-This is mainly used to delete a single element without exiting pen mode. In pen 
-mode, press the Tab key to switch to the eraser.
+This is mainly to delete multiple or consecutive dot elements (pen elements)
+without exiting pen mode. In pen mode, press the `<<Ctrl+Shift+Tab>>` key to
+switch to the eraser.
 
-Press the TAB key again to switch back to pen mode.
+Press the `<<Ctrl+Shift+Tab>>` key again to switch back to pen mode.
 
 ![eraser_mdoe](eraser_mode.gif)
 
-There are two ways to delete elements:
-1. Click an element directly
-2. Click the left mouse button and then drag, then all elements encountered 
-on the dragging path will be deleted.
+There are 3 ways to delete elements in pen mode:
+1. In pen mode, place the cursor on the dot element (pen element), and then
+    press the `<<Back Space>>` key.
+2. In the eraser submode, Click the left mouse button directly on elements.
+3. In the eraser submode，Click the left mouse button and then draging, then
+    all elements encountered on the dragging path will be deleted.
+
+![pen_delete_elements](pen_delete_elements.gif)
+
 
 ## Merge the completed ascii art into a text box
 
@@ -211,5 +248,4 @@ ascii art template text box
 For example, in the picture below, we want to add a nose to the kitten:
 
 ![split_elements_into_dots](split_elements_into_dots.gif)
-
 
