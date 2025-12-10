@@ -708,6 +708,21 @@ register_action_handlers
 	(map { "pen insert " . $_ => ["00S-" . $_, \&App::Asciio::GTK::Asciio::Pen::pen_enter_then_move_mouse, [$_], undef, undef, { NO_COMPLETION => 1 }] }('A'..'Z')),
 	(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::GTK::Asciio::Pen::pen_enter_then_move_mouse, [$_], undef, undef, { NO_COMPLETION => 1 }] }('a'..'z', '0'..'9')),
 	},
+'<< find leader >>' =>
+	{
+	SHORTCUTS   => '000-f',
+	ENTER_GROUP => \&App::Asciio::GTK::Asciio::Find::find_enter,
+	ESCAPE_KEYS => ['000-Escape', '000-f'],
+	
+	'find escape'                  => [ '000-Escape',                            \&App::Asciio::GTK::Asciio::Find::find_escape                  ],
+	'find escape2'                 => [ '000-f',                                 \&App::Asciio::GTK::Asciio::Find::find_escape                  ],
+	'find next'                    => [ '000-n',                                 \&App::Asciio::GTK::Asciio::Find::find_next                    ],
+	'find previous'                => [ '00S-N',                                 \&App::Asciio::GTK::Asciio::Find::find_previous                ],
+	'find Zoom in'                 => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::GTK::Asciio::Find::find_zoom, 1                 ],
+	'find Zoom out'                => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::GTK::Asciio::Find::find_zoom, -1                ],
+	# 'find Mouse drag canvas'       => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas               ],
+	'find perform new search'      => [ '000-s',                                 \&App::Asciio::GTK::Asciio::Find::find_new_search              ],
+	},
 
 'Asciio context_menu'                    => ['as_context_menu', undef, undef,          \&App::Asciio::Actions::Asciio::context_menu                ],
 'Box context_menu'                       => ['bo_context_menu', undef, undef,          \&App::Asciio::Actions::Box::context_menu                   ] ,

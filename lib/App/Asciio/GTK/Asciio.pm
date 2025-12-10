@@ -14,6 +14,7 @@ use List::Util qw(min) ;
 
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
+use App::Asciio::GTK::Asciio::Find ;
 
 use App::Asciio::Cross ;
 use App::Asciio::Markup ;
@@ -156,6 +157,7 @@ $self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
 $self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
 $self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
 $self->draw_pen_mapping_help       ($expose_data) ;
+$self->draw_find_highlight         ($expose_data) ;
 
 return TRUE ;
 }
@@ -166,6 +168,14 @@ sub draw_pen_mapping_help
 {
 my ($self, $expose_data) = @_ ;
 App::Asciio::GTK::Asciio::Pen::pen_show_mapping_help($self, $expose_data->{gc}) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_find_highlight
+{
+my ($self, $expose_data) = @_ ;
+App::Asciio::GTK::Asciio::Find::draw_find_keywords_highlight($self, $expose_data->{gc}, $expose_data->{character_width}, $expose_data->{character_height}) ;
 }
 
 #-----------------------------------------------------------------------------

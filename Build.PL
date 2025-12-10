@@ -81,6 +81,7 @@ lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/DnD.pm
 lib/App/Asciio/GTK/Asciio/Selection.pm
 lib/App/Asciio/GTK/Asciio/Pen.pm
+lib/App/Asciio/GTK/Asciio/Find.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
