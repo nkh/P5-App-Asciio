@@ -217,9 +217,11 @@ sub move_elements
 {
 my ($self, $x_offset, $y_offset, @elements) = @_ ;
 
-my %selected_elements = map { $_ => 1} @elements ;
+my @unfrozen_elements = grep { !$_->is_frozen() } @elements ;
 
-for my $element (@elements)
+my %selected_elements = map { $_ => 1} @unfrozen_elements ;
+
+for my $element (@unfrozen_elements)
 	{
 	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
 	
@@ -446,7 +448,7 @@ sub delete_elements
 {
 my($self, @elements) = @_ ;
 
-my %elements_to_delete = map {$_, 1} grep { defined $_ } @elements ;
+my %elements_to_delete = map {$_, 1} grep { defined $_ && !$_->is_frozen() } @elements ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{
@@ -685,19 +687,22 @@ sub is_over_element
 my ($self, $element, $x, $y, $field) = @_ ;
 
 $field //= 0 ;
-my $is_under = 0 ;
 
-# If the area rectangle and the element extreme value rectangle do not
-# intersect, then there is no need to loop the strips.
-# This should improve some speed in most cases
+# keep elements intersecting the area around the $x and $y 
 my ($emin_x, $emin_y, $emax_x, $emax_y) = @{ $element->{EXTENTS} } ;
-if		(($emin_y + $element->{Y} > $y + $field)
-	||	($emax_y + $element->{Y}  < $y - $field)
-	||	($emin_x + $element->{X} > $x + $field)
-	||	($emax_x + $element->{X} < $x - $field))
+
+if	
+	(
+	   ($emin_y + $element->{Y} > $y + $field)
+	|| ($emax_y + $element->{Y}  < $y - $field)
+	|| ($emin_x + $element->{X}  > $x + $field)
+	|| ($emax_x + $element->{X}  < $x - $field)
+	)
 	{
 	return 0 ;
 	}
+
+my $is_under = 0 ;
 
 for my $stripe (@{$element->get_stripes()})
 	{
@@ -706,7 +711,7 @@ for my $stripe (@{$element->get_stripes()})
 	
 	if
 		(
-		$stripe_x - $field <= $x   && $x < $stripe_x + $stripe->{WIDTH} + $field
+		   $stripe_x - $field <= $x   && $x < $stripe_x + $stripe->{WIDTH} + $field
 		&& $stripe_y - $field <= $y && $y < $stripe_y + $stripe->{HEIGHT} + $field
 		) 
 		{
@@ -725,15 +730,15 @@ sub element_completely_within_rectangle
 my ($self, $element, $rectangle) = @_ ;
 
 my ($start_x, $start_y) = ($rectangle->{START_X}, $rectangle->{START_Y}) ;
-my $width = $rectangle->{END_X} - $rectangle->{START_X} ;
-my $height = $rectangle->{END_Y} - $rectangle->{START_Y}; 
+my $width               = $rectangle->{END_X} - $rectangle->{START_X} ;
+my $height              = $rectangle->{END_Y} - $rectangle->{START_Y};
 
 if($width < 0)
 	{
 	$width *= -1 ;
 	$start_x -= $width ;
 	}
-	
+
 if($height < 0)
 	{
 	$height *= -1 ;

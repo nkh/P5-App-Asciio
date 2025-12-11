@@ -97,6 +97,8 @@ lib/App/Asciio/GTK/Asciio/stripes/ellipse.pm
 lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
+lib/App/Asciio/GTK/Asciio/stripes/image_box.pm
+lib/App/Asciio/GTK/Asciio/Actions/File.pm
 
 lib/App/Asciio/Text/Asciio.pm
 lib/App/Asciio/Text/Asciio/Dialogs.pm

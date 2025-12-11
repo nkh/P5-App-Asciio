@@ -2,7 +2,6 @@
 
 [📚 Asciio's documentation](https://nkh.github.io/P5-App-Asciio/)
 
-
 # GUI
 
 ![GUI](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio.png)
@@ -29,21 +28,23 @@
 
 # DESCRIPTION
 
-Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams
-can be saved as ASCII text or in a format that allows you to modify them
-later.
+Asciio allows you to draw ASCII (or Unicode) diagrams in a Gtk3 GUI or TUI. The diagrams
+can be saved as ASCII text or in a format that allows you to modify them later.
 
-Diagrams consist of boxes and text elements connected by arrows. Boxes
-stay connected when you move them around.
+Asciio is especially useful if you want diagrams under version control with 
+the rest of your code and prefer keyboard editing over mouse-heavy drawing tools.
 
-Both GUI and TUI have vim-like bindings (shortcuts), the GUI has a few extra
-bindings that are usually found in GUI applications; bindings can be
-customized.
+Both GUI and TUI have vim-like bindings (shortcuts), bindings can be customized.
 
-Keyboard bindings are the best way to use Asciio.
+Diagrams consist of boxes and text elements connected by arrows. Boxes stay
+connected when moved around.
 
-To list the bindings: $> perldoc App:Asciio.
+Asciio works well for software architecture sketches, network layouts, or any diagrams
+that must remain readable in monospaced text environments like terminals or
+code comments.
  
+Asciio can also be scripted if you want to generate your diagrams.
+
 # DOCUMENTATION
 
 Full documentation, including installation and OCI image, are found at [Online Documentation](https://nkh.github.io/P5-App-Asciio/)
@@ -69,11 +70,13 @@ Full documentation, including installation and OCI image, are found at [Online D
                context menu access some commands
                but most are accessed through the keyboard
 
-## Exporting to ASCII
+## **Exporting to ASCII**
 
-You can export to a file in ASCII by using a '.txt' file extension.
+You can export to a file in ASCII by using a **'.txt'** file extension.
 
-You can also export the selection, in ASCII, to the Primary clipboard.
+You can also export the selection, in ASCII, to the Primary clipboard:
+
+**Binding:** «y» «Y»
 
 ## Elements
    

@@ -15,6 +15,7 @@ use List::Util qw(min) ;
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
 use App::Asciio::GTK::Asciio::Find ;
+use App::Asciio::GTK::Asciio::stripes::image_box ;
 
 use App::Asciio::Cross ;
 use App::Asciio::Markup ;
@@ -249,29 +250,6 @@ $gc->paint;
 
 #-----------------------------------------------------------------------------
 
-sub draw_elements
-{
-my ($self, $expose_data) = @_ ;
-
-my ($gc, $font_description, $character_width, $character_height, $viewport)
-	= @{$expose_data}{qw/ gc font_description character_width character_height viewport /} ;
-
-for my $element (@{$expose_data->{viewport}{drawing_order}})
-	{
-	$self->draw_element
-		(
-		$element,
-		$viewport->{elements_indexs}{$element},
-		$gc,
-		$font_description,
-		$character_width,
-		$character_height,
-		) ;
-	}
-}
-
-#-----------------------------------------------------------------------------
-
 sub draw_cross_overlays
 {
 my ($self, $expose_data) = @_ ;
@@ -367,7 +345,7 @@ for (@overlay_elements)
 		}
 	elsif(ref($_) =~ /^App::Asciio::stripes/)
 		{
-		$self->draw_element($_, $element_index, $gc, $font_description, $character_width, $character_height) ;
+		$self->draw_element($_, $element_index, $expose_data) ;
 		$element_index++ ; # should overlay stripes have number?
 		}
 	else
@@ -759,44 +737,52 @@ $gc->set_source_surface($surface, $start_x, $start_y) ;
 $gc->paint;
 }
 
+#-----------------------------------------------------------------------------
+
+sub draw_elements
+{
+my ($self, $expose_data) = @_ ;
+
+for my $element (@{$expose_data->{viewport}{drawing_order}})
+	{
+	$self->draw_element
+		(
+		$element,
+		$expose_data->{viewport}{elements_indexs}{$element},
+		$expose_data,
+		) ;
+	}
+}
+
 # ------------------------------------------------------------------------------
 
 sub draw_element
 {
-my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
+my ($self, $element, $element_index, $expose_data) = @_ ;
 
-my $is_selected = $element->{SELECTED} // 0 ;
-   $is_selected = 1 if $is_selected > 0 ;
+my ($gc, $font_description, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
 
-my ($background_color, $foreground_color) =  $element->get_colors() ;
-
-if($is_selected)
+if ($element->isa('App::Asciio::GTK::Asciio::stripes::image_box'))
 	{
-	if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-		{
-		$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
-		}
-	else
-		{
-		$background_color = $self->get_color('selected_element_background');
-		}
+	$self->draw_image_box_element($element, $gc, $character_width, $character_height) ;
 	}
 else
 	{
-	unless (defined $background_color)
-		{
-		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
-			{
-			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
-			}
-		else
-			{
-			$background_color = $self->get_color('element_background') ;
-			}
-		}
+	$self->draw_stripe_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
 	}
+}
 
-$foreground_color //= $self->get_color('element_foreground') ;
+# ------------------------------------------------------------------------------
+
+sub draw_stripe_element
+{
+my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
+
+my $is_selected = $element->{SELECTED} // 0 ;
+$is_selected = 1 if $is_selected > 0 ;
+
+my ($background_color, $foreground_color) = $self->get_element_colors($element) ;
 
 my $color_set = $is_selected . '-'
 		. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
@@ -885,11 +871,86 @@ for my $rendering (@$renderings)
 	}
 }
 
+# ------------------------------------------------------------------------------
+
+sub draw_image_box_element
+{
+my ($self, $element, $gc, $character_width, $character_height) = @_ ;
+
+my $cache_key = $element->{WIDTH} . '-' . $element->{HEIGHT} . '-' . $character_width . $character_height ;
+my $rendering = $element->{CACHE}{RENDERING}{$cache_key} ;
+
+unless (defined $rendering)
+	{
+	delete $element->{CACHE}{RENDERING} ;
+	$rendering = $element->{CACHE}{RENDERING}{$cache_key} = $element->prepare_scaled_pixbuf($character_width, $character_height) ;
+	}
+
+Gtk3::Gdk::cairo_set_source_pixbuf($gc, $rendering, $element->{X} * $character_width, $element->{Y} * $character_height) ;
+
+$gc->paint() ;
+
+if ($element->{SELECTED})
+	{
+	my $alpha = 0.15 ;
+	my ($background_color, undef) = $self->get_element_colors($element) ;
+	$gc->set_source_rgba(@{$background_color}, $alpha) ;
+	$gc->rectangle
+		(
+		$element->{X} * $character_width,
+		$element->{Y} * $character_height,
+		$element->{WIDTH}  * $character_width,
+		$element->{HEIGHT} * $character_height
+		) ;
+	$gc->fill() ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_element_colors
+{
+my ($self, $element) = @_ ;
+
+my ($background_color, $foreground_color) = $element->get_colors() ;
+
+if($element->{SELECTED})
+	{
+	if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+		{
+		$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[0]
+		}
+	else
+		{
+		$background_color = $self->get_color('selected_element_background') ;
+		}
+	}
+else
+	{
+	unless (defined $background_color)
+		{
+		if(exists $element->{GROUP} and defined $element->{GROUP}[-1])
+			{
+			$background_color = $element->{GROUP}[-1]{GROUP_COLOR}[1]
+			}
+		else
+			{
+			$background_color = $self->get_color('element_background') ;
+			}
+		}
+	}
+
+$foreground_color //= $self->get_color('element_foreground') ;
+
+return ($background_color, $foreground_color) ;
+}
+
 #-----------------------------------------------------------------------------
 
 sub key_press_event      { my (undef, $event, $self) = @_ ; $self->SUPER::key_press_event($self->create_asciio_event($event)) ; }
 
 sub button_release_event { my (undef, $event, $self) = @_ ; $self->SUPER::button_release_event($self->create_asciio_event($event)) ; }
+
 sub button_press_event   { my (undef, $event, $self) = @_ ; $self->SUPER::button_press_event($self->create_asciio_event($event)) ; }
 
 #-----------------------------------------------------------------------------

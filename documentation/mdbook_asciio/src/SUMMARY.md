@@ -29,6 +29,7 @@
 	- [Pseudo connectors](stencils/pseudo_connectors.md)
 	- [Box connectors](stencils/box_connectors.md)
 	- [Asciio shapes](stencils/asciio_shapes.md)
+	- [Image box](stencils/asciio_image_box.md)
 	- [verbatim objects](stencils/verbatim.md)
 	- [user stencils](stencils/user.md)
 	
@@ -92,6 +93,7 @@
             - [Fixed vs dynamic connectors](fixed_vs_dynamic_connectors.md)
     - [Yank](yank_operations.md)
     - [Mouse](mouse_operations.md)
+    - [Image box](image_box_operations.md)
     - [Display option](visual_settings_operation.md)
         - [Color options](color_operations.md)
     - [Debug](debug_operations.md)

@@ -5,24 +5,7 @@ use utf8;
 use Encode qw(decode encode FB_CROAK) ;
 
 use File::Basename ;
-
-#----------------------------------------------------------------------------------------------
-
-sub normalize_file_name
-{
-my ($file_name) = @_;
-return undef unless defined $file_name ;
-
-my $normalized ;
-
-# try UTF-8 decoding
-eval { $normalized = decode('UTF-8', $file_name, FB_CROAK) ; 1 ; } and return $normalized ;
-
-# try CP936/GBK decoding
-eval { $normalized = decode('cp936', $file_name) ; 1 ; } and return $normalized ;
-
-return $file_name ;
-}
+use App::Asciio::String ;
 
 #----------------------------------------------------------------------------------------------
 

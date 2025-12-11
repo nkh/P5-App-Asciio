@@ -204,6 +204,14 @@ sub enable_crossover { my ($self, $enable) = @_ ; $self->{CROSSOVER_DISABLED} = 
 
 #-----------------------------------------------------------------------------
 
+sub is_frozen { ; }
+
+#-----------------------------------------------------------------------------
+
+sub freeze { ; }
+
+#-----------------------------------------------------------------------------
+
 sub get_control_attributes 
 {
 my ($self) = @_ ;
@@ -217,7 +225,8 @@ my @control_attributes_keys = (
 	'ALLOW_BORDER_CONNECTION',
 	'AUTO_SHRINK',
 	'RESIZABLE',
-	'EDITABLE') ;
+	'EDITABLE',
+	'FROZEN') ;
 	
 	my %control_attributes ;
 	for my $key (@control_attributes_keys)
