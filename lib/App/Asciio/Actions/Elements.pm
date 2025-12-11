@@ -457,5 +457,46 @@ if(@selected_elements >= 1)
 
 #----------------------------------------------------------------------------------------------
 
+sub freeze_selected_elements
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+	
+	$self->select_elements(0, @selected_elements) ;
+	
+	$_->freeze(1) for @selected_elements ; 
+	
+	# frozen elements are part of the canvas 
+	$self->move_elements_to_back(grep { $_->is_frozen() } @selected_elements) ;
+	
+	$self->update_display() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub thaw_selected_elements
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot() ;
+	
+	$_->freeze(0) for @selected_elements ; 
+	
+	$self->update_display() ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
 1 ;
 

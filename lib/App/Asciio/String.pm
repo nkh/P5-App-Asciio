@@ -8,12 +8,14 @@ require Exporter ;
 	unicode_length
 	make_vertical_text
 	get_keyboard_layout
+	normalize_file_name
 	) ;
 
 #-----------------------------------------------------------------------------
 
 use strict ; use warnings ;
 use utf8 ;
+use Encode qw(decode FB_CROAK) ;
 
 use App::Asciio::Markup ;
 
@@ -183,6 +185,24 @@ my @keyboard_keys_values =
 $keyboard_layout_template =~ s/\*/%s/g ;
 
 return sprintf($keyboard_layout_template, @keyboard_keys_values) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub normalize_file_name
+{
+my ($file_name) = @_;
+return undef unless defined $file_name ;
+
+my $normalized ;
+
+# try UTF-8 decoding
+eval { $normalized = decode('UTF-8', $file_name, FB_CROAK) ; 1 ; } and return $normalized ;
+
+# try CP936/GBK decoding
+eval { $normalized = decode('cp936', $file_name) ; 1 ; } and return $normalized ;
+
+return $file_name ;
 }
 
 #-----------------------------------------------------------------------------

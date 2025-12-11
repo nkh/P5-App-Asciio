@@ -86,5 +86,52 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
+sub image_box_change
+{
+my ($self, $operation, $factor_step) = @_ ; 
+
+$self->create_undo_snapshot() ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $element (grep { ref($_) eq 'App::Asciio::GTK::Asciio::stripes::image_box' } @selected_elements)
+	{
+	if    ($operation eq 'gray_scale') { $element->switch_images($factor_step) ; } 
+	elsif ($operation eq 'alpha')      { $element->switch_images(undef, $factor_step) ; } 
+	elsif ($operation eq 'default')    { $element->switch_images() ; }
+	}
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub image_box_change_gray_scale
+{
+my ($self, $gray_scale_factor_step) = @_ ; 
+
+image_box_change($self, 'gray_scale', $gray_scale_factor_step) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub image_box_change_alpha
+{
+my ($self, $alpha_factor_step) = @_ ; 
+
+image_box_change($self, 'alpha', $alpha_factor_step) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub image_box_revert_to_default_image
+{
+my ($self) = @_ ; 
+
+image_box_change($self, 'default') ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 1 ;
 

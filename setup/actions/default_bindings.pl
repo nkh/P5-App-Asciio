@@ -15,6 +15,7 @@ use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::ElementAttributes ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
+use App::Asciio::GTK::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;
@@ -876,12 +877,35 @@ register_action_handlers
 	# 'find Mouse drag canvas'   => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas  ],
 	},
 
-'Asciio context_menu'       => ['as_context_menu', undef, undef,          \&App::Asciio::Actions::Asciio::context_menu                ],
-'Box context_menu'          => ['bo_context_menu', undef, undef,          \&App::Asciio::Actions::Box::context_menu                   ] ,
-'Multi_wirl context_menu'   => ['mw_context_menu', undef, undef,          \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu  ],
-'Angled arrow context_menu' => ['aa_ontext menu',  undef, undef,          \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu],
-'Ruler context_menu'        => ['ru_context_menu', undef, undef,          \&App::Asciio::Actions::Ruler::context_menu                 ],
-'Shapes context_menu'       => ['sh_context_menu', undef, undef,          \&App::Asciio::Actions::Shapes::context_menu                ],
+'image box ->' => 
+	{
+	SHORTCUTS => '00S-I',
+	
+	'image box freeze'              => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements],
+	'image box thaw    '            => ['000-t', \&App::Asciio::Actions::Elements::thaw_selected_elements  ],
+	'image box inserted from file'  => ['000-i', \&App::Asciio::GTK::Asciio::Actions::File::open_image     ],
+	
+	'image box visual controls ->'  => ['000-v', ACTION_GROUP('visual')                                    ],
+	},
+	
+	'group_visual' =>
+		{
+		SHORTCUTS   => 'group_visual',
+		ESCAPE_KEYS => [ '000-v', '000-Escape' ],
+		
+		'image box increase gray scale'     => ['000-g', \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1 ],
+		'image box decrease gray scale'     => ['00S-G', \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1],
+		'image box increase alpha'          => ['000-a', \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1      ],
+		'image box decrease alpha'          => ['00S-A', \&App::Asciio::Actions::Box::image_box_change_alpha, -0.1     ],
+		'image box revert to default'       => ['000-o', \&App::Asciio::Actions::Box::image_box_revert_to_default_image],
+		},
+
+'Asciio context_menu'       => ['as_context_menu', undef, undef, \&App::Asciio::Actions::Asciio::context_menu                ],
+'Box context_menu'          => ['bo_context_menu', undef, undef, \&App::Asciio::Actions::Box::context_menu                   ] ,
+'Multi_wirl context_menu'   => ['mw_context_menu', undef, undef, \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu  ],
+'Angled arrow context_menu' => ['aa_ontext menu',  undef, undef, \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu],
+'Ruler context_menu'        => ['ru_context_menu', undef, undef, \&App::Asciio::Actions::Ruler::context_menu                 ],
+'Shapes context_menu'       => ['sh_context_menu', undef, undef, \&App::Asciio::Actions::Shapes::context_menu                ],
 ) ;
 
 register_first_level_group
