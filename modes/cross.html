@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-99d30564.js";
+            window.path_to_searchindex_js = "../searchindex-aef656d3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-5711064d.js"></script>
@@ -176,48 +176,39 @@
                     <main>
                         <h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
 <h2 id="1-introduction"><a class="header" href="#1-introduction">1 Introduction</a></h2>
-<p>Previously, crossover was a separate mode. But not anymore, crossover is just an
-attribute of the element. By default, the following shortcut keys are used to
-switch the cross attribute of the element. By default, the element has no cross
-attribute. The intersection of the boundaries of elements with the cross
-attribute will present special visual effects.</p>
-<p><em><strong>Binding:</strong></em></p>
-<pre><code>- «e»     enters the element operation group
-</code></pre>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Enable elements cross</td><td><code>&lt;&lt;x&gt;&gt;</code></td></tr>
-<tr><td>Disable elements cross</td><td><code>&lt;&lt;Shift-X&gt;&gt;</code></td></tr>
-</tbody>
-</table>
-</div>
-<p><img src="cross_effect.gif" alt="cross_effect"></p>
+<p>In normal mode, elements boundaries are independent of each.</p>
+<p><img src="normal_elements.png" alt="normal_elements"></p>
+<p>In cross mode intersections are merged:</p>
+<p><img src="cross_elements.png" alt="cross_elements"></p>
 <h2 id="2-complex-graphics"><a class="header" href="#2-complex-graphics">2 Complex graphics</a></h2>
-<p>The element cross attribute allows you to draw complex tables like the following:</p>
-<p><img src="cross_complex.gif" alt="cross_complex"></p>
+<p>The cross-mode lets you create graphics like this table</p>
 <pre><code>
-           ╔═══════╤═══════════════════════════════════════════════╗
-           ║       │     test scores                               ║
-           ║ Name  ├───────┬────────┬───────┬───────┬──────┬───────╢
-           ║       │   Math│ Physics│       │       │      │       ║
-           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
-           ║ Jim   │    A+ │  B     │       │       │      │       ║
-           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
-           ║Stephen│    B  │  A     │       │       │      │       ║
-           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
-           ║ Kate  │    A  │  C     │       │       │      │       ║
-           ╚═══════╧═══════╧════════╧═══════╧═══════╧══════╧═══════╝
+        ╔═══════╤══════════════════════════════════════════════════════════════╗
+        ║       │   test scores                                                ║
+        ║       ├──────┬───────┬───────┬────────┬───────┬──────┬────────┬──────╢
+        ║  Name │  Math│Physics│       │        │       │      │        │      ║
+        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
+        ║ Jim   │  A+  │  B    │       │        │       │      │        │      ║
+        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
+        ║Stephen│  B   │  A    │       │        │       │      │        │      ║
+        ╟───────┼──────┼───────┼───────┼────────┼───────┼──────┼────────┼──────╢
+        ║ Kate  │  A   │  C    │       │        │       │      │        │      ║
+        ╚═══════╧══════╧═══════╧═══════╧════════╧═══════╧══════╧════════╧══════╝
+
 </code></pre>
-<h2 id="stripe-group-situation"><a class="header" href="#stripe-group-situation">Stripe group situation</a></h2>
-<p>When we merge elements into a strip group, if the merged elements themself has
-a cross attribute, the merged strip group will also presents the visual effect
-of intersection, but the strip group element itself has no cross attribute.</p>
-<p><img src="cross_stripes.gif" alt="cross_stripes"></p>
-<h2 id="exported-to-text"><a class="header" href="#exported-to-text">Exported to text</a></h2>
+<h2 id="3-enabling-cross-mode"><a class="header" href="#3-enabling-cross-mode">3 Enabling cross-mode</a></h2>
+<h3 id="31-globally"><a class="header" href="#31-globally">3.1 Globally</a></h3>
+<p>Add this line in your user configuration.</p>
+<pre><code class="language-perl">USE_CROSS_MODE =&gt; 1,
+</code></pre>
+<h3 id="32-dynamically"><a class="header" href="#32-dynamically">3.2 Dynamically</a></h3>
+<p>Binding: «z-x» ‘Switch cross mode’</p>
+<h2 id="4-line-and-box"><a class="header" href="#4-line-and-box">4 Line and Box</a></h2>
+<p><img src="cross_lines.gif" alt="cross_lines"></p>
+<p><img src="cross_boxs.gif" alt="cross_boxs"></p>
+<h2 id="5-lines-and-boxes"><a class="header" href="#5-lines-and-boxes">5 Lines and boxes</a></h2>
+<p><img src="cross_box_line.gif" alt="cross_box_line"></p>
+<h2 id="6-exported-to-text"><a class="header" href="#6-exported-to-text">6 Exported to text</a></h2>
 <pre><code>        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
         |        |      │        │    ┃        ┃    ║        ║
         |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
