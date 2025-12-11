@@ -9,6 +9,23 @@ use App::Asciio::String ;
 
 #----------------------------------------------------------------------------------------------
 
+sub change_connector
+{
+my ($self, $connector, $character) = @_ ;
+
+my @arrows = grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1)  ;
+
+return unless @arrows ;
+
+$self->create_undo_snapshot() ;
+
+$_->change_connector($connector, $character) for @arrows ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
 sub disable_arrow_connector
 {
 my ($self, $end) = @_ ;
@@ -20,6 +37,8 @@ if(defined $element && 'App::Asciio::stripes::section_wirl_arrow' eq ref $elemen
 	$element->disable_arrow_connector($end) ;
 	}
 }
+
+#----------------------------------------------------------------------------------------------
 
 sub insert_wirl_arrow_section
 {

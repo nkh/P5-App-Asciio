@@ -1423,7 +1423,7 @@ sub set_arrow_type
 my ($self, $arrow_type) = @_ ;
 
 delete $self->{CACHE} ;
-$self->setup($arrow_type, $self->get_points(), $self->{DIRECTION}, $self->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
+$self->setup($arrow_type, $self->get_points(), $self->{DIRECTION}, $self->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}, $self->{NOT_CONNECTABLE_START}, $self->{NOT_CONNECTABLE_END}) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -1484,19 +1484,27 @@ sub change_attributes
 {
 my ($self, $type) = @_ ;
 
-return unless defined $type  ;
+return unless defined $type ;
 
-my $is_autoconnect_enabled      = $self->is_autoconnect_enabled() ;
-my $is_connection_allowed_start = $self->is_connection_allowed('start') ;
-my $is_connection_allowed_end   = $self->is_connection_allowed('end') ;
+$self->set_arrow_type(Clone::clone($arrow_types{$type} // $type)) ;
+}
 
-my $new_arrow_type = $arrow_types{$type} // $type ;
+#-----------------------------------------------------------------------------
 
-$self->set_arrow_type(Clone::clone($new_arrow_type)) ;
+sub change_connector
+{
+my ($self, $connector_character) = @_ ;
 
-$self->enable_autoconnect($is_autoconnect_enabled) ;
-$self->allow_connection('start', $is_connection_allowed_start) ;
-$self->allow_connection('end', $is_connection_allowed_end) ;
+my ($connector, $character) = $connector_character->@* ;
+
+my $connector_index = 'start' eq $connector ? 1 : 5 ;
+
+for my $index (0 .. 16)
+	{
+	$self->{ARROW_TYPE}[$index][$connector_index] = $character // '?' ;
+	}
+
+$self->resize(0, 0, 0, 0) ;
 }
 
 #-----------------------------------------------------------------------------

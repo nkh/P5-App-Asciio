@@ -209,16 +209,59 @@ register_action_handlers
 	{
 	SHORTCUTS   => '000-a',
 	
+	'<< connectors >>'                    => ['000-c', ACTION_GROUP('connectors')                                                     ] ,
+
 	'Change arrow direction'              => ['000-d', \&App::Asciio::Actions::Arrow::change_arrow_direction                          ],
 	'Flip arrow start and end'            => ['000-f', \&App::Asciio::Actions::Arrow::flip_arrow_ends                                 ],
 	'Append multi_wirl section'           => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section,                             ],
 	'Insert multi_wirl section'           => ['00S-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                   ],
 	'Prepend multi_wirl section'          => ['C00-s', \&App::Asciio::Actions::Multiwirl::prepend_section                             ],
 	'Remove last section from multi_wirl' => ['CA0-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow ],
-	'Start no disconnect'                 => ['C00-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0                  ],
-	'End no disconnect'                   => ['0A0-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1                  ],
+
 	'Flip drag selects arrows'            => ['0A0-s', \&App::Asciio::Actions::Arrow::drag_selects_arrows                             ],
+	# insert_section
+	# remove_last_section
+	# remove_first_section
+	# change_section_direction
+	# change_last_section_direction
 	},
+
+		'group_connectors' =>
+			{
+			SHORTCUTS   => 'group_connectors',
+			
+			'start enable connection'      => ['000-c', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 1],    ],
+			'start disable connection'     => ['00S-C', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 0],    ],
+			'end enable connection'        => ['0A0-c', \&App::Asciio::Actions::Arrow::allow_connection, ['end',   1],    ],
+			'end disable connection'       => ['0AS-C', \&App::Asciio::Actions::Arrow::allow_connection, ['end',   0],    ],
+			
+			'enable diagonals'             => ['C00-d', \&App::Asciio::Actions::Arrow::allow_diagonals, 1,                ],
+			'disable diagonals'            => ['C0S-D', \&App::Asciio::Actions::Arrow::allow_diagonals, 0,                ],
+			
+			'Start flip enable connection' => ['CA0-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0     ],
+			'End flip enable connection'   => ['CAS-D', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1     ],
+			
+			(
+			map { ( "start $_->[0]"        => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
+				(
+				['dash', '000-minus',   '-' ],
+				['dot' , '000-period',  '.' ],
+				['star', '000-asterisk', '*' ],
+				['o'   , '000-o',       'o' ],
+				['O'   , '00S-O',       'O' ],
+				),
+			), 
+			(
+			map { ( "end $_->[0]"          => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
+				(
+				['dash', '0A0-minus',   '-' ],
+				['dot' , '0A0-period',  '.' ],
+				['star', '0A0-asterisk', '*' ],
+				['o'   , '0A0-o',       'o' ],
+				['O'   , '0AS-O',       'O' ],
+				),
+			),
+			},
 
 '<< debug leader >>' => 
 	{

@@ -76,10 +76,10 @@ my $changes_made = 0 ;
 
 my %reverse_direction = 
 	(
-	'up', => 'down',
+	'up',   => 'down',
 	'right' => 'left',
-	'down' => 'up',
-	'left' => 'right'
+	'down'  => 'up',
+	'left'  => 'right'
 	) ;
 
 for
@@ -229,6 +229,40 @@ if(1 == @selected_elements)
 		$self->update_display() ;
 		}
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub allow_connection
+{
+my ($self, $which_allow) = @_ ;
+
+my @arrows = grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1)  ;
+
+return unless @arrows ;
+
+$self->create_undo_snapshot() ;
+
+$_->allow_connection($which_allow->@*) for @arrows ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub allow_diagonals
+{
+my ($self, $allow) = @_ ;
+
+my @arrows = grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1)  ;
+
+return unless @arrows ;
+
+$self->create_undo_snapshot() ;
+
+$_->allow_diagonals($allow) for @arrows ;
+
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
