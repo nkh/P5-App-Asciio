@@ -273,6 +273,8 @@ documentation/mdbook_asciio/src/editing/change_element_attribute_mouse.gif
 documentation/mdbook_asciio/src/editing/changing_element_attributes.md
 documentation/mdbook_asciio/src/editing/copy_paste_element_attributes.gif
 documentation/mdbook_asciio/src/editing/paste_element_control_attributes.gif
+documentation/mdbook_asciio/src/editing/changing_element_attributes_and_interactive_arrow_appearance.gif
+documentation/mdbook_asciio/src/editing/changing_element_attributes_and_interactive_arrow_control.gif
 documentation/mdbook_asciio/src/editing/drag_and_drop.gif
 documentation/mdbook_asciio/src/editing/drag_drop.md
 documentation/mdbook_asciio/src/editing/clone_base_element.gif

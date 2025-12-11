@@ -2,9 +2,6 @@ package App::Asciio::Actions::ElementAttributes ;
 
 use strict ; use warnings ;
 
-use App::Asciio::Actions::Git ;
-use Clone ;
-
 #----------------------------------------------------------------------------------------------
 
 sub make_selection_unicode

@@ -6,6 +6,7 @@ use warnings ;
 use utf8 ;
 
 use App::Asciio::String ;
+use App::Asciio::Actions::ElementAttributes ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -318,7 +319,9 @@ my @selected_elements = $self->get_selected_elements(1) ;
 
 if(0 == @selected_elements)
 	{
-	App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]),
+	my $element = App::Asciio::Actions::Elements::add_element($self, ['Asciio/wirl_arrow', 0]) ;
+	App::Asciio::Actions::ElementAttributes::paste_attributes($self, $element) ;
+	App::Asciio::Actions::ElementAttributes::paste_control_attributes($self, $element) ;
 	}
 elsif(1 == @selected_elements)
 	{
@@ -351,6 +354,10 @@ elsif(1 == @selected_elements)
 		
 		$self->deselect_all_elements() ;
 		$self->select_elements(1, $arrow) ;
+		
+		App::Asciio::Actions::ElementAttributes::paste_attributes($self, $arrow) ;
+		App::Asciio::Actions::ElementAttributes::paste_control_attributes($self, $arrow) ;
+		
 		$self->update_display() ;
 		}
 	}
