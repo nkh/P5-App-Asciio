@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-99d30564.js";
+            window.path_to_searchindex_js = "searchindex-b529bc95.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-719e19a4.js"></script>
@@ -3456,8 +3456,8 @@ and delete the old fill character.</li>
 <li>remove all filling characters that are not at cross points.</li>
 <li>update drawing.</li>
 </ol>
-<h1 id="detailed-steps"><a class="header" href="#detailed-steps">Detailed steps</a></h1>
-<h2 id="1-find-the-cross-point"><a class="header" href="#1-find-the-cross-point">1 Find the cross point</a></h2>
+<h2 id="detailed-steps"><a class="header" href="#detailed-steps">Detailed steps</a></h2>
+<h3 id="find-the-cross-point"><a class="header" href="#find-the-cross-point">Find the cross point</a></h3>
 <p>The cross point must be the coverage of characters,
 and the characters that cover each other are the characters we care about.</p>
 <blockquote>
@@ -3486,8 +3486,8 @@ because they absolutely determine what kind of cross point is generated.</p>
 diagonal crossing, you also need to record characters at 45 degrees,
 135 degrees, 225 degrees, and 315 degrees.</p>
 </blockquote>
-<h2 id="2-judgment-scene"><a class="header" href="#2-judgment-scene">2 Judgment scene</a></h2>
-<h3 id="21-general-situation"><a class="header" href="#21-general-situation">2.1 General situation</a></h3>
+<h3 id="judgment-scene"><a class="header" href="#judgment-scene">Judgment scene</a></h3>
+<h4 id="general-situation"><a class="header" href="#general-situation">General situation</a></h4>
 <p>First of all, all cross characters are directional, we need to group
 them by direction and type.</p>
 <p>Let me give you an example, if the center has generated a character<code>┼</code>,
@@ -3542,7 +3542,7 @@ one <code>╤</code> to fill.</p>
 </ol>
 <p>Pay attention to the bold part above, because if this condition is true,
 then the filling character should be <code>╪</code>, not <code>╤</code>.</p>
-<h3 id="22-improve-efficiency"><a class="header" href="#22-improve-efficiency">2.2 Improve efficiency</a></h3>
+<h4 id="improve-efficiency"><a class="header" href="#improve-efficiency">Improve efficiency</a></h4>
 <p>There is no need to perform calculations every time to determine the characters
 filled in the middle. Whenever a new scene calculation occurs, we can save the
 calculation result in a cache and read it directly next time without performing
@@ -3550,7 +3550,7 @@ logical calculations again.</p>
 <p>A hash table is most suitable for this, and the hash key can use a combination
 of upper, lower, left, and right characters(The oblique lines are the four diagonal
 directions.).</p>
-<h3 id="23-an-additional-case-needs-to-be-considered-separately"><a class="header" href="#23-an-additional-case-needs-to-be-considered-separately">2.3 An additional case needs to be considered separately</a></h3>
+<h4 id="an-additional-case-needs-to-be-considered-separately"><a class="header" href="#an-additional-case-needs-to-be-considered-separately">An additional case needs to be considered separately</a></h4>
 <pre><code>   ││
  ──││─────
    ││
@@ -3578,7 +3578,7 @@ intersection can meet the requirements.So I said earlier that the foreground
 and background characters of the cross point all need to be recorded.In fact,
 there may be more than one character that meets the condition in the background,
 so all of these characters need to be considered, not just limited to 2 characters.</p>
-<h3 id="24-the-case-of-character-coverage"><a class="header" href="#24-the-case-of-character-coverage">2.4 The case of character coverage</a></h3>
+<h3 id="the-case-of-character-coverage"><a class="header" href="#the-case-of-character-coverage">The case of character coverage</a></h3>
 <p>There is another situation that needs to be explained separately,Similar to
 above but slightly different</p>
 <pre><code> ╭─────╮
@@ -3609,7 +3609,7 @@ characters are considered.</p>
 <p>The definition of the cross point has already been mentioned in the
 previous chapter</p>
 </blockquote>
-<h3 id="25-a-method-to-simplify-logical-judgment"><a class="header" href="#25-a-method-to-simplify-logical-judgment">2.5 A method to simplify logical judgment</a></h3>
+<h4 id="a-method-to-simplify-logical-judgment"><a class="header" href="#a-method-to-simplify-logical-judgment">A method to simplify logical judgment</a></h4>
 <p>When we determine what characters should be filled in a point, we first consider
 the characters in the four directions. Then after these characters are considered,
 characters in three directions are considered, and finally characters in two directions
@@ -3618,6 +3618,51 @@ do not meet the conditions, then when judging the characters in the three direct
 there is no need to repeatedly consider that a certain character may be a character
 in the four directions, because it has been ruled out before. Similar logic is used
 for two-way characters. This can greatly reduce the complexity of logical judgment.</p>
+<h3 id="a-better-judgment-algorithm"><a class="header" href="#a-better-judgment-algorithm">A better judgment algorithm</a></h3>
+<p>Use 3 bits to represent the attributes of chars in each direction.</p>
+<pre><code class="language-txt">none        : 0
+ascii       : 1
+thin        : 2
+bold        : 3
+double      : 4
+dotted      : 5
+bold dotted : 6
+</code></pre>
+<p>A 32-bit integer can precisely represent all attributes of a character.</p>
+<pre><code class="language-txt">                   ┃ 315 ┃ 225 ┃ 135 ┃ 45  ┃right┃left ┃down ┃ up
+   │3│3│2│2│2│2│2│2┃2│2│2┃2│1│1┃1│1│1┃1│1│1┃1│1│ ┃ │ │ ┃ │ │ ┃ │ │ │
+   │1│0│9│8│7│6│5│4┃3│2│1┃0│9│8┃7│6│5┃4│3│2┃1│0│9┃8│7│6┃5│4│3┃2│1│0│
+───┼─┼─┼─┼─┼─┼─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─┼───
+  ┼│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │1│ ┃ │1│ ┃ │1│ ┃ │1│ │
+  ┤│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │1│ ┃ │ │ ┃ │1│ ┃ │1│ │
+  ╫│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │1│ ┃ │1│ ┃1│ │ ┃1│ │ │
+  &gt;│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │1┃ │ │ ┃ │ │ ┃ │ │1│
+  &lt;│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │1┃ │ │ ┃ │ │1│
+  +│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │1┃ │ │1┃ │ │1┃ │ │1│ 
+   │ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ │ 
+</code></pre>
+<p>To determine what character a crosspoint should be, we should take the neighbors
+in the eight directions of this crosspoint.</p>
+<p>Then, we need to look at the properties of these eight characters.
+The judgment logic is as follows:</p>
+<ol>
+<li>The character above takes the properties of the part below.</li>
+<li>The character to the left takes the properties of the part to the right.</li>
+<li>The character below takes the properties of the part above.</li>
+<li>The character to the right takes the properties of the part to the left.</li>
+<li>The character at 45 degrees takes the properties of the 225-degree part.</li>
+<li>The character at 135 degrees takes the properties of the 315-degree part.</li>
+<li>The character at 225 degrees takes the properties of the 45-degree part.</li>
+<li>The character at 315 degrees takes the properties of the 135-degree part.</li>
+</ol>
+<p>In this way, after extracting the character attributes from the eight directions
+and performing bitwise operations, we can concatenate them into a new complete
+32-bit integer. By looking up a table, we can determine the character
+corresponding to this new integer (if it’s 0, then it’s an empty character,
+indicating no intersecting characters).</p>
+<p>This allows us to obtain the character at the center point. There’s no need for
+complex calculations or caching.</p>
+<p>The current code uses this algorithm.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="unicode-character-classification"><a class="header" href="#unicode-character-classification">Unicode character classification</a></h1>
 <ul>
