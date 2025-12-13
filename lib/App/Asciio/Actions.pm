@@ -26,7 +26,7 @@ my ($self, $keep_visible) = @_ ;
 
 if($self->{USE_BINDINGS_COMPLETION})
 	{
-	my %reserved = map { $_ => 1 } qw(IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE) ;
+	my %reserved = map { $_ => 1 } qw(IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
 
 	my $binding_max_length = max map { length } grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
 	
