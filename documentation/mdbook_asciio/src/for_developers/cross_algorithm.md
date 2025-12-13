@@ -36,8 +36,8 @@ then the steps are as follows:
 4. remove all filling characters that are not at cross points.
 5. update drawing.
 
-# Detailed steps
-## 1 Find the cross point
+## Detailed steps
+### Find the cross point
 
 The cross point must be the coverage of characters, 
 and the characters that cover each other are the characters we care about.
@@ -66,9 +66,9 @@ because they absolutely determine what kind of cross point is generated.
 diagonal crossing, you also need to record characters at 45 degrees, 
 135 degrees, 225 degrees, and 315 degrees.
 
-## 2 Judgment scene
+### Judgment scene
 
-### 2.1 General situation
+#### General situation
 
 First of all, all cross characters are directional, we need to group 
 them by direction and type.
@@ -135,7 +135,7 @@ For the `╤` sign, the condition for its appearance is that:
 Pay attention to the bold part above, because if this condition is true, 
 then the filling character should be `╪`, not `╤`.
 
-### 2.2 Improve efficiency
+#### Improve efficiency
 
 There is no need to perform calculations every time to determine the characters 
 filled in the middle. Whenever a new scene calculation occurs, we can save the 
@@ -146,7 +146,7 @@ A hash table is most suitable for this, and the hash key can use a combination
 of upper, lower, left, and right characters(The oblique lines are the four diagonal 
 directions.).
 
-### 2.3 An additional case needs to be considered separately
+#### An additional case needs to be considered separately
 
 ```
    ││
@@ -183,7 +183,7 @@ and background characters of the cross point all need to be recorded.In fact,
 there may be more than one character that meets the condition in the background, 
 so all of these characters need to be considered, not just limited to 2 characters.
 
-### 2.4 The case of character coverage
+### The case of character coverage
 
 There is another situation that needs to be explained separately,Similar to 
 above but slightly different
@@ -220,7 +220,7 @@ characters are considered.
 >The definition of the cross point has already been mentioned in the 
 previous chapter
 
-### 2.5 A method to simplify logical judgment
+#### A method to simplify logical judgment
 
 When we determine what characters should be filled in a point, we first consider 
 the characters in the four directions. Then after these characters are considered, 
@@ -231,4 +231,59 @@ there is no need to repeatedly consider that a certain character may be a charac
 in the four directions, because it has been ruled out before. Similar logic is used 
 for two-way characters. This can greatly reduce the complexity of logical judgment.
 
+### A better judgment algorithm
+
+Use 3 bits to represent the attributes of chars in each direction.
+
+```txt
+none        : 0
+ascii       : 1
+thin        : 2
+bold        : 3
+double      : 4
+dotted      : 5
+bold dotted : 6
+```
+
+A 32-bit integer can precisely represent all attributes of a character.
+
+```txt
+                   ┃ 315 ┃ 225 ┃ 135 ┃ 45  ┃right┃left ┃down ┃ up
+   │3│3│2│2│2│2│2│2┃2│2│2┃2│1│1┃1│1│1┃1│1│1┃1│1│ ┃ │ │ ┃ │ │ ┃ │ │ │
+   │1│0│9│8│7│6│5│4┃3│2│1┃0│9│8┃7│6│5┃4│3│2┃1│0│9┃8│7│6┃5│4│3┃2│1│0│
+───┼─┼─┼─┼─┼─┼─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─╂─┼─┼─┼───
+  ┼│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │1│ ┃ │1│ ┃ │1│ ┃ │1│ │
+  ┤│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │1│ ┃ │ │ ┃ │1│ ┃ │1│ │
+  ╫│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │1│ ┃ │1│ ┃1│ │ ┃1│ │ │
+  >│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │1┃ │ │ ┃ │ │ ┃ │ │1│
+  <│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │1┃ │ │ ┃ │ │1│
+  +│ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │1┃ │ │1┃ │ │1┃ │ │1│ 
+   │ │ │ │ │ │ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ ┃ │ │ │ 
+```
+
+To determine what character a crosspoint should be, we should take the neighbors
+in the eight directions of this crosspoint.
+
+Then, we need to look at the properties of these eight characters.
+The judgment logic is as follows:
+
+1. The character above takes the properties of the part below.
+2. The character to the left takes the properties of the part to the right.
+3. The character below takes the properties of the part above.
+4. The character to the right takes the properties of the part to the left.
+5. The character at 45 degrees takes the properties of the 225-degree part.
+6. The character at 135 degrees takes the properties of the 315-degree part.
+7. The character at 225 degrees takes the properties of the 45-degree part.
+8. The character at 315 degrees takes the properties of the 135-degree part.                      
+
+In this way, after extracting the character attributes from the eight directions
+and performing bitwise operations, we can concatenate them into a new complete
+32-bit integer. By looking up a table, we can determine the character
+corresponding to this new integer (if it's 0, then it's an empty character,
+indicating no intersecting characters).
+
+This allows us to obtain the character at the center point. There's no need for
+complex calculations or caching.              
+
+The current code uses this algorithm.
 
