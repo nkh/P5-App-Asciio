@@ -229,6 +229,7 @@ documentation/mdbook_asciio/src/asciio_unicode_shrunk.png
 documentation/mdbook_asciio/src/Bindings.md
 documentation/mdbook_asciio/src/bindings/aligning.md
 documentation/mdbook_asciio/src/bindings/arrows.md
+documentation/mdbook_asciio/src/stencils/arrow_dynamic_configuration.md
 documentation/mdbook_asciio/src/bindings/asciio_auto_shrink_box.png
 documentation/mdbook_asciio/src/bindings/asciio_enable_auto_shrink.png
 documentation/mdbook_asciio/src/bindings/asciio_resize.png

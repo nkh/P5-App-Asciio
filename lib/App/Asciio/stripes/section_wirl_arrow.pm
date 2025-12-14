@@ -1493,15 +1493,32 @@ $self->set_arrow_type(Clone::clone($arrow_types{$type} // $type)) ;
 
 sub change_connector
 {
-my ($self, $connector_character) = @_ ;
+my ($self, $connector_characters) = @_ ;
 
-my ($connector, $character) = $connector_character->@* ;
+#                             connector          characters   
+#                                                 RIGHT  DOWN  LEFT  UP   
+# $connector_characters => [ 'start' or 'end' => ['-',   '|',  '-',  '|'] ],
+
+my ($connector, $characters) = $connector_characters->@* ;
 
 my $connector_index = 'start' eq $connector ? 1 : 5 ;
 
-for my $index (0 .. 16)
+if(1 == $characters->@*)
 	{
-	$self->{ARROW_TYPE}[$index][$connector_index] = $character // '?' ;
+	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[0] for 0 .. 16 ;
+	}
+elsif(4 == $characters->@*)
+	{
+	use constant RIGHT => 0 ;
+	use constant DOWN  => 1 ;
+	use constant LEFT  => 2 ;
+	use constant UP    => 3 ;
+	
+	# index 0 kept the same
+	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (8, 9, 11) ;
+	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (2, 7, 12, 14, 15) ;
+	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (3, 4, 6) ;
+	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (1, 5, 10, 13, 16) ;
 	}
 
 $self->resize(0, 0, 0, 0) ;

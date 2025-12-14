@@ -11,7 +11,7 @@ use App::Asciio::String ;
 
 sub change_connector
 {
-my ($self, $connector, $character) = @_ ;
+my ($self, $connector, $characters) = @_ ;
 
 my @arrows = grep {ref $_ eq 'App::Asciio::stripes::section_wirl_arrow'} $self->get_selected_elements(1)  ;
 
@@ -19,7 +19,7 @@ return unless @arrows ;
 
 $self->create_undo_snapshot() ;
 
-$_->change_connector($connector, $character) for @arrows ;
+$_->change_connector($connector, $characters) for @arrows ;
 
 $self->update_display() ;
 }

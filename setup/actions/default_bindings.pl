@@ -240,26 +240,41 @@ register_action_handlers
 			'Start flip enable connection' => ['CA0-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0     ],
 			'End flip enable connection'   => ['CAS-D', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1     ],
 			
+			'start connectors ->'          => ['000-s', ACTION_GROUP('start_connectors')                                  ] ,
+			'end connectors ->'            => ['000-e', ACTION_GROUP('end_connectors')                                    ] ,
+			},
+		
+		'group_start_connectors' =>
+			{
+			SHORTCUTS   => 'group_start_connectors',
+			
 			(
 			map { ( "start $_->[0]"        => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
 				(
 				['dash', '000-minus',    ['-'] ],
 				['dot' , '000-period',   ['.'] ],
-				['star', '000-asterisk', ['*'] ],
+				['star', '00S-asterisk', ['*'] ],
 				['o'   , '000-o',        ['o'] ],
 				['O'   , '00S-O',        ['O'] ],
 				),
 			), 
+			} ,
+		
+		'group_en_connectors' =>
+			{
+			SHORTCUTS   => 'group_end_connectors',
+			
 			(
 			map { ( "end $_->[0]"          => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
 				(
-				['dynamic dash', '0A0-minus',    ['-', '|', '-', '|'] ],
+				#                              right down left up   
+				['dynamic dash', 'C00-minus', ['-',  '|', '-', '|'] ],
 				
-				['dash', '0A0-minus',    ['-'] ],
-				['dot' , '0A0-period',   ['.'] ],
-				['star', '0A0-asterisk', ['*'] ],
-				['o'   , '0A0-o',        ['o'] ],
-				['O'   , '0AS-O',        ['O'] ],
+				['dash', '000-minus',         ['-'] ],
+				['dot' , '000-period',        ['.'] ],
+				['star', '00S-asterisk',      ['*'] ],
+				['o'   , '000-o',             ['o'] ],
+				['O'   , '00S-O',             ['O'] ],
 				),
 			),
 			},
