@@ -243,21 +243,23 @@ register_action_handlers
 			(
 			map { ( "start $_->[0]"        => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
 				(
-				['dash', '000-minus',   '-' ],
-				['dot' , '000-period',  '.' ],
-				['star', '000-asterisk', '*' ],
-				['o'   , '000-o',       'o' ],
-				['O'   , '00S-O',       'O' ],
+				['dash', '000-minus',    ['-'] ],
+				['dot' , '000-period',   ['.'] ],
+				['star', '000-asterisk', ['*'] ],
+				['o'   , '000-o',        ['o'] ],
+				['O'   , '00S-O',        ['O'] ],
 				),
 			), 
 			(
 			map { ( "end $_->[0]"          => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
 				(
-				['dash', '0A0-minus',   '-' ],
-				['dot' , '0A0-period',  '.' ],
-				['star', '0A0-asterisk', '*' ],
-				['o'   , '0A0-o',       'o' ],
-				['O'   , '0AS-O',       'O' ],
+				['dynamic dash', '0A0-minus',    ['-', '|', '-', '|'] ],
+				
+				['dash', '0A0-minus',    ['-'] ],
+				['dot' , '0A0-period',   ['.'] ],
+				['star', '0A0-asterisk', ['*'] ],
+				['o'   , '0A0-o',        ['o'] ],
+				['O'   , '0AS-O',        ['O'] ],
 				),
 			),
 			},
