@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-b529bc95.js";
+            window.path_to_searchindex_js = "searchindex-7b2189d6.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-719e19a4.js"></script>
+        <script src="toc-ff4579a6.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -744,6 +744,56 @@ $ ls /usr/share/figlet/
                      ╠═════╬═════╬══════╬═════╬════╬═════╣
                      ╚═════╩═════╩══════╩═════╩════╩═════╝
 
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="wirl-arrow-dynamic-configuration"><a class="header" href="#wirl-arrow-dynamic-configuration">Wirl arrow dynamic configuration</a></h1>
+<p>The wirl arrow can be dynamically configured by using the keyboard bindings. Some configuration can be done via the popup menus but we are working eliminating them in favor of keyboard bindings.</p>
+<p>The keyboard bindings can have changed, best is to check them in the default_bindings.pl configuration file.</p>
+<p>You can also define your own bindings.</p>
+<h2 id="changing-the-arrow-type"><a class="header" href="#changing-the-arrow-type">Changing the arrow type</a></h2>
+<p><em><strong>binding:</strong></em> &lt;&lt; e &gt;&gt; + &lt;&lt; w &gt;&gt; + chose the arrow type</p>
+<h2 id="controlling-the-connectors"><a class="header" href="#controlling-the-connectors">Controlling the connectors</a></h2>
+<p><em><strong>binding:</strong></em> &lt;&lt; a &gt;&gt; + chose the connection command</p>
+<ul>
+<li>
+<p>start enable connection</p>
+</li>
+<li>
+<p>start disable connection</p>
+</li>
+<li>
+<p>end enable connection</p>
+</li>
+<li>
+<p>end disable connection</p>
+</li>
+<li>
+<p>enable diagonals</p>
+</li>
+<li>
+<p>disable diagonals</p>
+</li>
+<li>
+<p>Start flip enable connection</p>
+</li>
+<li>
+<p>End flip enable connection</p>
+</li>
+</ul>
+<h2 id="changing-the-arrow-connector"><a class="header" href="#changing-the-arrow-connector">changing the arrow connector</a></h2>
+<p><em><strong>binding:</strong></em> &lt;&lt; a &gt;&gt; + &lt;&lt; c &gt;&gt; + (&lt;&lt; s &gt;&gt; or &lt;&lt; e &gt;&gt;) + chose the arrow connector</p>
+<ul>
+<li>&lt;&lt; a &gt;&gt;     group ‘arrow’</li>
+<li>&lt;&lt; c &gt;&gt; sub group ‘connector’</li>
+<li>&lt;&lt; s &gt;&gt; sub group ‘start_connector’</li>
+<li>&lt;&lt; e &gt;&gt; sub group ‘end_connector’</li>
+</ul>
+<h3 id="fixed-connector-shape"><a class="header" href="#fixed-connector-shape">fixed connector shape</a></h3>
+<p>A single character will be used as the connector regardless of the arrow geometry</p>
+<h3 id="dynamic-connector-shape"><a class="header" href="#dynamic-connector-shape">dynamic connector shape</a></h3>
+<p>A set of character that will be used depending on the arrow geometry</p>
+<pre><code class="language-text"> RIGHT  DOWN  LEFT  UP   
+['-',   '|',  '-',  '|'] ],
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="pseudo-connectors"><a class="header" href="#pseudo-connectors">Pseudo-connectors</a></h1>

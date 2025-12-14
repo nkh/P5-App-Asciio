@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Running Asciio, Installation - Asciio</title>
+        <title>Wirl arrow dynamic configuration - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -174,114 +174,65 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="running-asciio"><a class="header" href="#running-asciio">Running asciio</a></h1>
-<pre><code>$&gt; asciio [file.asciio]       # GUI application using Gtk3
-
-$&gt; tasciio [file.asciio]      # TUI application
-
-$&gt; asciio_to_text file.asciio # converts asciio files to ASCII
-
-$&gt; text_to_asciio ...         # makes an asciio file from text
-</code></pre>
-<h1 id="command-line-options"><a class="header" href="#command-line-options">Command line options</a></h1>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>option</th><th></th><th></th></tr>
-</thead>
-<tbody>
-<tr><td>b</td><td>put the input in a box element</td><td>text_to_asciio</td></tr>
-<tr><td>text_separator=s</td><td>put the input in a boxed element</td><td>text_to_ascioo</td></tr>
-<tr><td>display_setup_information</td><td>verbose setup information</td><td></td></tr>
-<tr><td>setup_path=s</td><td>sets the root of the setup directory</td><td></td></tr>
-<tr><td>s,script=s</td><td>script to be run at Asciio start</td><td></td></tr>
-<tr><td>p,web_port=s</td><td>port for web server</td><td></td></tr>
-<tr><td>debug_fd=i</td><td>debug file descriptor number</td><td></td></tr>
-<tr><td>add_binding=s</td><td>file containing bindings to embedd</td><td></td></tr>
-<tr><td>reset_bindings</td><td>remove all embedded bindings from document</td><td></td></tr>
-<tr><td>dump_bindings</td><td>write the embedded bindings to files</td><td></td></tr>
-<tr><td>dump_binding_names</td><td>display name of embbeded bindings</td><td></td></tr>
-</tbody>
-</table>
-</div>
-<h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
-<p>Asciio is developed on both Linux and Windows (cygwin).</p>
-<h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
-<p>asciio’s is hosted on  <a href="https://github.com/nkh/P5-App-Asciio">github</a></p>
-<h2 id="debianubuntu-package"><a class="header" href="#debianubuntu-package">Debian/Ubuntu package</a></h2>
-<p>No packages pre-build for distributions yet, work is ongoing.</p>
-<h2 id="manual-install-on-debian-based-distros"><a class="header" href="#manual-install-on-debian-based-distros">Manual install on debian based distros.</a></h2>
-<p>See the OCI build instruction in <a href="https://github.com/nkh/P5-App-Asciio/blob/main/OCI/Containerfile">Containerfile</a>.</p>
-<h2 id="oci-image"><a class="header" href="#oci-image">OCI image</a></h2>
-<h3 id="user-config"><a class="header" href="#user-config">user config</a></h3>
-<p>A user configuration is copied from ‘repo:OCI/Asciio’ to ‘/root/.config/Asciio/’, it can be modified to suit your needs.</p>
-<h3 id="pre-built-image"><a class="header" href="#pre-built-image">pre-built image</a></h3>
-<p>The image is on <a href="https://github.com/users/nkh/packages/container/package/p5-app-asciio">github</a></p>
-<p>Change &lt;PATH_YOU_WANT_TO_SHARE&gt;, if you want to save your files to your file system, before running the command below.</p>
-<h3 id="linux"><a class="header" href="#linux">linux</a></h3>
-<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME/.Xauthority:/root/.Xauthority:rw" --volume="$HOME:&lt;PATH_YOU_WANT_TO_SHARE&gt;" ghcr.io/nkh/p5-app-asciio:release asciio
-
-</code></pre>
-<h3 id="jypiter-notebook"><a class="header" href="#jypiter-notebook">Jypiter notebook</a></h3>
-<p>Example of installation and testing.</p>
-<p><a href="https://colab.research.google.com/github/nkh/P5-App-Asciio/blob/main/examples/asciio.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"></a></p>
-<h3 id="windows-wsl"><a class="header" href="#windows-wsl">windows wsl</a></h3>
-<p>If using Podman, add github repository to podman in ‘/etc/containers/registries.conf’</p>
-<pre><code>[registries.search]
-registries = ['ghcr.io']
-</code></pre>
-<p>Install an Xserver in windows. I used <a href="https://vcxsrv.com/">VcXsrv</a> and disabled access control.</p>
-<p>The IP of Xserv was not correct. Had to use this, to have it report the Windows host virtual IP:</p>
-<pre><code>export DISPLAY=$(ip route | grep default | awk '{print $3}'):0
-</code></pre>
-<pre><code class="language-bash">podman run -it --net=host --env="DISPLAY" --volume="$HOME:&lt;PATH_YOU_WANT_TO_SHARE&gt;" p5-app-asciio:release asciio
-
-</code></pre>
-<p><img src="Win11WSL.jpg" alt="Win 11 Screenshot"></p>
-<h2 id="windows"><a class="header" href="#windows">Windows</a></h2>
-<p>In the windows environment, you can use asciio through msys2 or WSL or cygwin.</p>
-<h3 id="windows-msys2-package"><a class="header" href="#windows-msys2-package">windows msys2 package</a></h3>
-<p><a href="https://github.com/qindapao/P5-App-Asciio-msys2">P5-App-Asciio-msys2</a>, Here are the complete packaging and installation instructions.</p>
-<h3 id="wsl"><a class="header" href="#wsl">WSL</a></h3>
-<p>The use of WSL is not much different from the Linux environment.However, there are some things that need attention. This link talks about how to connect to the WSL environment and execute GUI programs through remote connections under Windows.</p>
-<p><a href="https://github.com/qindapao/linux_app_use_in_windows/blob/main/remote_wsl_use_gui_app.md">remote_wsl_use_gui_app</a></p>
-<h3 id="cygwin"><a class="header" href="#cygwin">Cygwin</a></h3>
+                        <h1 id="wirl-arrow-dynamic-configuration"><a class="header" href="#wirl-arrow-dynamic-configuration">Wirl arrow dynamic configuration</a></h1>
+<p>The wirl arrow can be dynamically configured by using the keyboard bindings. Some configuration can be done via the popup menus but we are working eliminating them in favor of keyboard bindings.</p>
+<p>The keyboard bindings can have changed, best is to check them in the default_bindings.pl configuration file.</p>
+<p>You can also define your own bindings.</p>
+<h2 id="changing-the-arrow-type"><a class="header" href="#changing-the-arrow-type">Changing the arrow type</a></h2>
+<p><em><strong>binding:</strong></em> &lt;&lt; e &gt;&gt; + &lt;&lt; w &gt;&gt; + chose the arrow type</p>
+<h2 id="controlling-the-connectors"><a class="header" href="#controlling-the-connectors">Controlling the connectors</a></h2>
+<p><em><strong>binding:</strong></em> &lt;&lt; a &gt;&gt; + chose the connection command</p>
 <ul>
-<li>First install <a href="https://www.cygwin.com/">Cygwin</a>.</li>
-<li>Make sure the following components are installed correctly
-<ul>
-<li>x11</li>
-<li>perl</li>
-<li>Gnome</li>
-<li>gun-make</li>
-<li>gcc-g++</li>
-</ul>
+<li>
+<p>start enable connection</p>
 </li>
-<li>Search for “gcrypt” in all the packages to be installed, and install all
-the packages that appear.</li>
-<li>Install all dependent modules of asciio</li>
+<li>
+<p>start disable connection</p>
+</li>
+<li>
+<p>end enable connection</p>
+</li>
+<li>
+<p>end disable connection</p>
+</li>
+<li>
+<p>enable diagonals</p>
+</li>
+<li>
+<p>disable diagonals</p>
+</li>
+<li>
+<p>Start flip enable connection</p>
+</li>
+<li>
+<p>End flip enable connection</p>
+</li>
 </ul>
-<p>Pay attention when installing perl modules, some may be installed through
-cpan, but some cannot, and can only be installed manually.</p>
-<blockquote>
-<p>When compiling, the Makefile of several modules has an unrecognized option
-<code>-lnsl</code>. removed it when install it manually.</p>
-</blockquote>
-<p>Start asciio by the following method:</p>
-<pre><code class="language-bash">startxwin &gt;/dev/null 2&gt;&amp;1 &amp;
-export DISPLAY=:0.0
-asciio
+<h2 id="changing-the-arrow-connector"><a class="header" href="#changing-the-arrow-connector">changing the arrow connector</a></h2>
+<p><em><strong>binding:</strong></em> &lt;&lt; a &gt;&gt; + &lt;&lt; c &gt;&gt; + (&lt;&lt; s &gt;&gt; or &lt;&lt; e &gt;&gt;) + chose the arrow connector</p>
+<ul>
+<li>&lt;&lt; a &gt;&gt;     group ‘arrow’</li>
+<li>&lt;&lt; c &gt;&gt; sub group ‘connector’</li>
+<li>&lt;&lt; s &gt;&gt; sub group ‘start_connector’</li>
+<li>&lt;&lt; e &gt;&gt; sub group ‘end_connector’</li>
+</ul>
+<h3 id="fixed-connector-shape"><a class="header" href="#fixed-connector-shape">fixed connector shape</a></h3>
+<p>A single character will be used as the connector regardless of the arrow geometry</p>
+<h3 id="dynamic-connector-shape"><a class="header" href="#dynamic-connector-shape">dynamic connector shape</a></h3>
+<p>A set of character that will be used depending on the arrow geometry</p>
+<pre><code class="language-text"> RIGHT  DOWN  LEFT  UP   
+['-',   '|',  '-',  '|'] ],
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../index.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../stencils/asciio_arrows.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../Interface.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../stencils/pseudo_connectors.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -291,11 +242,11 @@ asciio
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../index.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../stencils/asciio_arrows.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../Interface.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../stencils/pseudo_connectors.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
