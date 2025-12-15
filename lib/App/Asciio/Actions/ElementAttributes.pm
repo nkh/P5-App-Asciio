@@ -24,7 +24,11 @@ my ($asciio) = @_ ;
 
 my @selected_elements = $asciio->get_selected_elements(1);
 
-@{$asciio->{COPIED_ATTRIBUTES}}{'NAME', 'TYPE'} = $selected_elements[0]->get_attributes() if @selected_elements == 1 ;
+if(@selected_elements == 1)
+	{
+	@{$asciio->{COPIED_ATTRIBUTES}}{'NAME', 'TYPE'} = $selected_elements[0]->get_attributes() ;
+	@{$asciio->{COPIED_CONTROL_ATTRIBUTES}}{'CLASS', 'ATTRIBUTES'} = $selected_elements[0]->get_control_attributes() ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -52,6 +56,37 @@ my @elements = grep { $_->isa('App::Asciio::stripes::' . $class) } $asciio->get_
 for(@elements)
 	{
 	$_->change_attributes($type) ;
+	delete $_->{CACHE} ;
+	}
+
+$asciio->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub paste_control_attributes
+{
+my ($asciio, @elements) = @_ ;
+
+return unless defined $asciio->{COPIED_CONTROL_ATTRIBUTES} ;
+
+change_control_attributes($asciio, [ @{$asciio->{COPIED_CONTROL_ATTRIBUTES}}{'CLASS', 'ATTRIBUTES'}]) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub change_control_attributes
+{
+my ($asciio, $class_and_attributes) = @_ ;
+my ($class, $attributes) = @$class_and_attributes ;
+
+$asciio->create_undo_snapshot() ;
+
+my @elements = grep { $_->isa($class) } $asciio->get_selected_elements(1) ;
+
+for(@elements)
+	{
+	$_->change_control_attributes($attributes) ;
 	delete $_->{CACHE} ;
 	}
 

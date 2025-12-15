@@ -204,4 +204,55 @@ sub enable_crossover { my ($self, $enable) = @_ ; $self->{CROSSOVER_DISABLED} = 
 
 #-----------------------------------------------------------------------------
 
+sub get_control_attributes 
+{
+my ($self) = @_ ;
+
+my @control_attributes_keys = (
+	'AUTOCONNECT_DISABLED',
+	'OPTIMIZE_DISABLED',
+	'CROSSOVER_DISABLED',
+	'NOT_CONNECTABLE_START',
+	'NOT_CONNECTABLE_END',
+	'ALLOW_BORDER_CONNECTION',
+	'AUTO_SHRINK',
+	'RESIZABLE',
+	'EDITABLE') ;
+	
+	my %control_attributes ;
+	for my $key (@control_attributes_keys)
+		{
+		if (exists $self->{$key})
+			{
+			$control_attributes{$key} = $self->{$key} ;
+			}
+		}
+	
+	return (ref($self), \%control_attributes) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub change_control_attributes
+{
+my ($self, $attrs) = @_ ;
+
+for my $key (keys %{$attrs})
+	{
+	my $control_method = "apply_" . lc($key) ;
+	
+	if ($self->can($control_method))
+		{
+		$self->$control_method($attrs->{$key}) ;
+		}
+	else
+		{
+		$self->{$key} = $attrs->{$key} ;
+		}
+	}
+
+return $self ;
+}
+
+#-----------------------------------------------------------------------------
 1 ;

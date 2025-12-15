@@ -125,6 +125,7 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		DO_STACK_POINTER DO_STACK
 		WARN
 		COPIED_ATTRIBUTES
+		COPIED_CONTROL_ATTRIBUTES
 		) ;
 
 sub load_self
@@ -276,6 +277,7 @@ local $self->{ELEMENT_TYPES_BY_NAME} = undef ;
 local $self->{ACTION_VERBOSE} = undef ;
 local $self->{WARN} = undef ;
 local $self->{COPIED_ATTRIBUTES} = undef ;
+local $self->{COPIED_CONTROL_ATTRIBUTES} = undef ;
 
 
 local $self->{ROOT_WINDOW} = undef ;

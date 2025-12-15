@@ -428,26 +428,27 @@ register_action_handlers
 	{
 	SHORTCUTS   => '000-e',
 	
-	'Shrink box'                => ['000-s',  \&App::Asciio::Actions::ElementsManipulation::shrink_box                    ],
-	'Make elements Unicode'     => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1        ],
-	'Make elements not Unicode' => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0        ],
+	'Shrink box'                       => ['000-s',  \&App::Asciio::Actions::ElementsManipulation::shrink_box                    ],
+	'Make elements Unicode'            => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1        ],
+	'Make elements not Unicode'        => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0        ],
 	
-	'copy element attributes'   => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_attributes                  ],
-	'paste element attributes'  => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_attributes                 ],
+	'copy element attributes'          => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_attributes                  ],
+	'paste element attributes'         => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_attributes                 ],
+	'paste element control attributes' => ['00S-P',  \&App::Asciio::Actions::ElementAttributes::paste_control_attributes ],
 	
-	'convert to a big text'     => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element ], 
-	'convert to dots'           => ['00S-D',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements ], 
+	'convert to a big text'            => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element ],
+	'convert to dots'                  => ['00S-D',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements ],
 	
-	'enable elements cross'     => ['000-x',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1     ], 
-	'disable elements cross'    => ['00S-X',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0     ], 
+	'enable elements cross'            => ['000-x',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1     ],
+	'disable elements cross'           => ['00S-X',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0     ],
 	
-	'Box ->'                 => ['000-b', ACTION_GROUP('box_type_change')                                              ] ,
-	'Wirl Arrow ->'          => ['000-w', ACTION_GROUP('wirl_arrow_type_change')                                       ] ,
-	'Angled Arrow ->'        => ['000-a', ACTION_GROUP('angled_arrow_type_change')                                     ] ,
-	'Ellipse ->'             => ['000-e', ACTION_GROUP('ellipse_type_change')                                          ] ,
-	'Rhombus ->'             => ['000-r', ACTION_GROUP('rhombus_type_change')                                          ] ,
-	'Triangle Up ->'         => ['000-u', ACTION_GROUP('triangle_up_type_change')                                      ] ,
-	'Triangle Down->'        => ['000-d', ACTION_GROUP('triangle_down_type_change')                                    ] ,
+	'Box ->'                           => ['000-b', ACTION_GROUP('box_type_change')                                              ] ,
+	'Wirl Arrow ->'                    => ['000-w', ACTION_GROUP('wirl_arrow_type_change')                                       ] ,
+	'Angled Arrow ->'                  => ['000-a', ACTION_GROUP('angled_arrow_type_change')                                     ] ,
+	'Ellipse ->'                       => ['000-e', ACTION_GROUP('ellipse_type_change')                                          ] ,
+	'Rhombus ->'                       => ['000-r', ACTION_GROUP('rhombus_type_change')                                          ] ,
+	'Triangle Up ->'                   => ['000-u', ACTION_GROUP('triangle_up_type_change')                                      ] ,
+	'Triangle Down->'                  => ['000-d', ACTION_GROUP('triangle_down_type_change')                                    ] ,
 	},
 
 		'group_box_type_change' => 

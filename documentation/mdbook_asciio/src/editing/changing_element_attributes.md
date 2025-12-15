@@ -51,8 +51,31 @@ Select one or more element then :
 ***Binding:***
 
     - «e»     enters the element operation group
-    - «c»     paste the attributes
+    - «p»     paste the attributes
 
 
 ![copy_paste_element_attributes](copy_paste_element_attributes.gif)
+
+### Paste the control attributes
+
+Select one or more element then :
+
+***Binding:***
+
+    - «e»       enters the element operation group
+    - «Shift+P» paste the control attributes
+
+![paste_element_control_attributes](paste_element_control_attributes.gif)
+
+The control attributes of the element are as follows:
+
+    - AUTOCONNECT_DISABLED
+    - OPTIMIZE_DISABLED
+    - CROSSOVER_DISABLED
+    - NOT_CONNECTABLE_START
+    - NOT_CONNECTABLE_END
+    - ALLOW_BORDER_CONNECTION
+    - AUTO_SHRINK
+    - RESIZABLE
+    - EDITABLE
 

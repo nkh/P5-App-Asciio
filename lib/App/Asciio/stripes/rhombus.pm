@@ -589,4 +589,23 @@ return
 
 #-----------------------------------------------------------------------------
 
+sub apply_auto_shrink
+{
+my ($self, $auto_shrink) = @_ ;
+
+return if $auto_shrink eq $self->{AUTO_SHRINK} ;
+
+if($self->is_auto_shrink())
+	{
+	$self->flip_auto_shrink() ;
+	}
+else
+	{
+	$self->shrink() ;
+	$self->flip_auto_shrink () ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
 1 ;
