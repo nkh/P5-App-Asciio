@@ -208,9 +208,9 @@ register_action_handlers
 
 'arrow ->' => 
 	{
-	SHORTCUTS   => '000-a',
+	SHORTCUTS => '000-a',
 	
-	'connectors ->'                    => ['000-c', ACTION_GROUP('connectors')                                                     ] ,
+	'connectors ->'                       => ['000-c', ACTION_GROUP('connectors')                                                     ] ,
 
 	'Change arrow direction'              => ['000-d', \&App::Asciio::Actions::Arrow::change_arrow_direction                          ],
 	'Flip arrow start and end'            => ['000-f', \&App::Asciio::Actions::Arrow::flip_arrow_ends                                 ],
@@ -229,7 +229,7 @@ register_action_handlers
 
 		'group_connectors' =>
 			{
-			SHORTCUTS   => 'group_connectors',
+			SHORTCUTS => 'group_connectors',
 			
 			'start enable connection'      => ['000-c', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 1],    ],
 			'start disable connection'     => ['00S-C', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 0],    ],
@@ -244,53 +244,113 @@ register_action_handlers
 			
 			'start connectors ->'          => ['000-s', ACTION_GROUP('start_connectors')                                  ] ,
 			'end connectors ->'            => ['000-e', ACTION_GROUP('end_connectors')                                    ] ,
+			'both connectors ->'           => ['000-b', ACTION_GROUP('both_connectors')                                   ] ,
 			},
 		
 		'group_start_connectors' =>
 			{
-			SHORTCUTS   => 'group_start_connectors',
+			SHORTCUTS => 'group_start_connectors',
+			
+			'fixed start connectors ->' => ['000-f', ACTION_GROUP('fixed_start_connectors')                                   ] ,
 			
 			(
-			map { ( "start $_->[0]"        => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
+			map { ( "start $_->[0]"     => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
 				(
-				#                                               right down left up   d45  d135  d225 d315
-				['dynamic dash',                  '0A0-minus', ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ],
-				['dynamic double direction arrow','00S-less',  ['>',  'v', '<', '^', '^', 'v',  'v', '^'] ],
-				['dynamic t',                     '000-t',     ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ],
-				['dynamic T',                     '00S-T',     ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ],
-				
-				['dash', '000-minus',    ['-'] ],
-				['dot' , '000-period',   ['.'] ],
-				['star', '00S-asterisk', ['*'] ],
-				['o'   , '000-o',        ['o'] ],
-				['O'   , '00S-O',        ['O'] ],
-				['•'   , '000-d',        ['•'] ],
+				#                       right down left up   d45  d135  d225 d315
+				['dash',  '000-minus', ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ],
+				['arrow', '000-less',  ['>',  'v', '<', '^', '^', 'v',  'v', '^' ] ],
+				['t',     '000-t',     ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ],
+				['T',     '00S-T',     ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ],
 				),
-			), 
+			)
 			} ,
+			
+			'group_fixed_start_connectors' =>
+				{
+				SHORTCUTS => 'group_fixed_start_connectors',
+				
+				(
+				map { ( "start $_->[0]" => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
+					(
+					['dash fixed', '000-minus',    ['-'] ],
+					['dot  fixed', '000-period',   ['.'] ],
+					['star fixed', '00S-asterisk', ['*'] ],
+					['o fixed',    '000-o',        ['o'] ],
+					['O fixed',    '00S-O',        ['O'] ],
+					['• fixed',    '000-d',        ['•'] ],
+					),
+				), 
+				} ,
 		
-		'group_en_connectors' =>
+		'group_end_connectors' =>
 			{
-			SHORTCUTS   => 'group_end_connectors',
+			SHORTCUTS => 'group_end_connectors',
+			
+			'fixed end connectors ->' => ['000-f', ACTION_GROUP('fixed_end_connectors')                                   ] ,
 			
 			(
-			map { ( "end $_->[0]"          => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
+			map { ( "end $_->[0]"     => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
 				(
-				#                                               right down left up   d45  d135  d225 d315
-				['dynamic dash',                  '0A0-minus', ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ],
-				['dynamic double direction arrow','00S-less',  ['>',  'v', '<', '^', '^', 'v',  'v', '^'] ],
-				['dynamic t',                     '000-t',     ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ],
-				['dynamic T',                     '00S-T',     ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ],
-				
-				['dash', '000-minus',         ['-'] ],
-				['dot' , '000-period',        ['.'] ],
-				['star', '00S-asterisk',      ['*'] ],
-				['o'   , '000-o',             ['o'] ],
-				['O'   , '00S-O',             ['O'] ],
-				['•'   , '000-d',             ['•'] ],
+				#                       right down left up   d45  d135  d225 d315
+				['dash',  '000-minus', ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ],
+				['arrow', '000-less',  ['>',  'v', '<', '^', '^', 'v',  'v', '^' ] ],
+				['t',     '000-t',     ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ],
+				['T',     '00S-T',     ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ],
 				),
 			),
 			},
+			
+			'group_fixed_end_connectors' =>
+				{
+				SHORTCUTS => 'group_fixedend_connectors',
+				
+				(
+				map { ( "end $_->[0]"  => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
+					(
+					['dash fixed', '000-minus',    ['-'] ],
+					['dot fixed' , '000-period',   ['.'] ],
+					['star fixed', '00S-asterisk', ['*'] ],
+					['o fixed',    '000-o',        ['o'] ],
+					['O fixed',    '00S-O',        ['O'] ],
+					['• fixed',    '000-d',        ['•'] ],
+					),
+				),
+				},
+		
+		'group_both_connectors' =>
+			{
+			SHORTCUTS => 'group_both_connectors',
+			
+			'fixed both connectors ->' => ['000-f', ACTION_GROUP('fixed_both_connectors')                                   ] ,
+			
+			(
+			map { ( "both $_->[0]"     => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connectors, $_->[2]] ) } 
+				(
+				#                                    right down left up   d45  d135  d225 d315
+				['dash',  '000-minus', [ [ start => ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ], [ end => ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ] ] ],
+				['arrow', '000-less',  [ [ start => ['>',  'v', '<', '^', '^', 'v',  'v', '^' ] ], [ end => ['>',  'v', '<', '^', '^', 'v',  'v', '^' ] ] ] ],
+				['t',     '000-t',     [ [ start => ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ], [ end => ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ] ] ],
+				['T',     '00S-T',     [ [ start => ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ], [ end => ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ] ] ],
+				),
+			),
+			},
+		
+			'group_fixed_both_connectors' =>
+				{
+				SHORTCUTS  => 'group_fixed_both_connectors',
+				
+				(
+				map { ( "both $_->[0]"  => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connectors, $_->[2]] ) } 
+					(
+					['dash fixed', '000-minus',    [ [ start => ['-'] ], [ end => ['-'] ] ] ], 
+					['dot fixed' , '000-period',   [ [ start => ['.'] ], [ end => ['.'] ] ] ],
+					['star fixed', '00S-asterisk', [ [ start => ['*'] ], [ end => ['*'] ] ] ],
+					['o fixed'   , '000-o',        [ [ start => ['o'] ], [ end => ['o'] ] ] ],
+					['O fixed'   , '00S-O',        [ [ start => ['O'] ], [ end => ['O'] ] ] ],
+					['• fixed'   , '000-d',        [ [ start => ['•'] ], [ end => ['•'] ] ] ],
+					),
+				),
+				},
 
 'debug ->' => 
 	{
