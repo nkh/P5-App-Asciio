@@ -28,15 +28,15 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	
 	push @stripes, 
 		{
-		TEXT => $text,
+		TEXT     => $text,
 		X_OFFSET => $stripe->{X_OFFSET},
 		Y_OFFSET => $stripe->{Y_OFFSET},
-		WIDTH => $width, 
-		HEIGHT => $height , 
+		WIDTH    => $width,
+		HEIGHT   => $height ,
 		} ;
 	
-	($total_width) = max($total_width, $stripe->{X_OFFSET} + $width) ;
-	($total_height) = max($total_height, $stripe->{Y_OFFSET} + $height) ;
+	($total_width)   = max($total_width, $stripe->{X_OFFSET} + $width) ;
+	($total_height)  = max($total_height, $stripe->{Y_OFFSET} + $height) ;
 	
 	($min_x, $max_x) = minmax($min_x, $max_x, $stripe->{X_OFFSET}, $stripe->{X_OFFSET} + $width) ;
 	($min_y, $max_y) = minmax($min_y, $max_y, $stripe->{Y_OFFSET}, $stripe->{Y_OFFSET} + $height) ;
@@ -46,8 +46,8 @@ return bless
 	{
 	STRIPES => \@stripes,
 	EXTENTS => [$min_x, $min_y, $max_x, $max_y],
-	WIDTH => $total_width,
-	HEIGHT => $total_height,
+	WIDTH   => $total_width,
+	HEIGHT  => $total_height,
 	}, __PACKAGE__ ;
 }
 

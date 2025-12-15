@@ -454,6 +454,7 @@ my ($self) = @_ ;
 
 my $stripes = $self->{CACHE}{STRIPES} ;
 
+# print "\n" ;
 unless (defined $stripes)
 	{
 	my @stripes ;
@@ -482,7 +483,7 @@ unless (defined $stripes)
 	my $previous_was_diagonal ;
 	
 	$arrow_index = 0 ;
-	for my $arrow(@{$self->{ARROWS}})
+	for my $arrow (@{$self->{ARROWS}})
 		{
 		last if @{$self->{ARROWS}} == 1 ;
 		
@@ -527,6 +528,7 @@ unless (defined $stripes)
 			# straight or angled arrow
 			if(defined $previous_was_diagonal)
 				{
+				# print "previous is diagonal\n" ;
 				if($arrow->{DIRECTION} =~ /^down/)
 					{
 					$connection = q{.}   ;
@@ -544,6 +546,7 @@ unless (defined $stripes)
 				{
 				if($previous_direction ne $d1)
 					{
+					# printf "previous: %5s ne d1:  %5s\n", $previous_direction, $d1 ;
 					if($d1 eq 'down')
 						{
 						if($previous_direction eq 'right')
@@ -556,7 +559,7 @@ unless (defined $stripes)
 							}
 						else
 							{
-							$connection = $self->{ARROW_TYPE}[$up_index][$connection_index] ;
+							$connection = $self->{ARROW_TYPE}[$up_index][$body_index] ;
 							}
 						}
 					elsif($d1 eq 'up')
@@ -571,7 +574,7 @@ unless (defined $stripes)
 							}
 						else
 							{
-							$connection = $self->{ARROW_TYPE}[$up_index][$connection_index] ;
+							$connection = $self->{ARROW_TYPE}[$up_index][$body_index] ;
 							}
 						}
 					elsif($previous_direction eq 'down')
@@ -595,6 +598,29 @@ unless (defined $stripes)
 							{
 							$connection = $self->{ARROW_TYPE}[$leftdown_index][$connection_index] ;
 							}
+						}
+					else
+						{
+						$connection = $self->{ARROW_TYPE}[$left_index][$body_index] ;
+						}
+						
+					if (
+						   ($previous_direction eq 'right' && $d1 eq 'left')
+						|| ($previous_direction eq 'left'  && $d1 eq 'right')
+						|| ($previous_direction eq 'up'    && $d1 eq 'down')
+						|| ($previous_direction eq 'down'  && $d1 eq 'up')
+						)
+						{
+						$connection = '@' ;
+						}
+					}
+				else
+					{
+					# printf "previous: %5s, d1: %5s, d2: %5s\n",  ($previous_direction//'undef'), ($d1//'undef'), ($d2//'undef') ;
+					
+					if($d1 eq 'up' || $d1 eq 'down')
+						{
+						$connection = $self->{ARROW_TYPE}[$up_index][$body_index] ;
 						}
 					else
 						{
@@ -984,7 +1010,7 @@ if(defined $start_element)
 		my $start_element_y_offset = $self->{POINTS_OFFSETS}[$start_element_index][1] ;
 		
 		my ($x_offset, $y_offset) = 
-			$start_element ->resize
+			$start_element->resize
 							(
 							$reference_x - $start_element_x_offset,
 							$reference_y - $start_element_y_offset,
@@ -1214,7 +1240,7 @@ my $arrow = new App::Asciio::stripes::wirl_arrow
 			({
 			END_X => $extend_x - $last_point->[0],
 			END_Y => $extend_y - $last_point->[1],
-			ARROW_TYPE => $self->{ARROW_TYPE},
+			ARROW_TYPE => Clone::clone($self->{ARROW_TYPE}),
 			DIRECTION => $self->{DIRECTION},
 			ALLOW_DIAGONAL_LINES => $self->{ALLOW_DIAGONAL_LINES},
 			EDITABLE => $self->{EDITABLE},
@@ -1505,63 +1531,78 @@ my $connector_index = 'start' eq $connector ? 1 : 5 ;
 
 if(1 == $characters->@*)
 	{
-	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[0] for 0 .. 16 ;
+	for my $arrow ($self, @{$self->{ARROWS}})
+		{
+		$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[0] for 0 .. 16 ;
+		$arrow->resize(0, 0, 0, 0) ;
+		}
 	}
 elsif(8 == $characters->@*)
 	{
-	use constant RIGHT => 0 ;
-	use constant DOWN  => 1 ;
-	use constant LEFT  => 2 ;
-	use constant UP    => 3 ;
-	use constant D45   => 4 ;
-	use constant D135  => 5 ;
-	use constant D225  => 6 ;
-	use constant D315  => 7 ;
-	# .---.----------.--------------------------------. 
-	# |   |          |start DIRECTION  end DIRECTION  | 
-	# |1  |up        | v    DOWN       ^   UP         | 
-	# |2  |down      | ^    UP         v   DOWN       | 
-	# |3  |left      | >    RIGHT      <   LEFT       | 
-	# |4  |up-left   | v    DOWN       <   LEFT       | 
-	# |5  |left-up   | >    RIGHT      ^   UP         | 
-	# |6  |down-left | ^    UP         <   LEFT       | 
-	# |7  |left-down | >    RIGHT      v   DOWN       | 
-	# |8  |right     | <    LEFT       >   RIGHT      | 
-	# |9  |up-right  | v    DOWN       >   RIGHT      | 
-	# |10 |right-up  | <    LEFT       ^   UP         | 
-	# |11 |down-right| ^    UP         >   RIGHT      | 
-	# |12 |right-down| <    LEFT       v   DOWN       | 
-	# |13 |45        | v    D225       ^   D45        | 
-	# |14 |135       | ^    D315       v   D135       | 
-	# |15 |225       | ^    D45        v   D225       | 
-	# |16 |315       | v    D135       ^   D315       | 
-	# '---'----------'--------------------------------' 
-	# index 0 kept the same
-	if ($connector eq 'start')
+	use constant 
 		{
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (3, 5, 7) ;
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (1, 4, 9) ;
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (8, 10, 12) ;
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (2, 6, 11) ;
-		$self->{ARROW_TYPE}[13][$connector_index] = $characters->[D225] ;
-		$self->{ARROW_TYPE}[14][$connector_index] = $characters->[D315] ;
-		$self->{ARROW_TYPE}[15][$connector_index] = $characters->[D45] ;
-		$self->{ARROW_TYPE}[16][$connector_index] = $characters->[D135] ;
-		}
-	else
+		RIGHT => 0,
+		DOWN  => 1,
+		LEFT  => 2,
+		UP    => 3,
+		D45   => 4,
+		D135  => 5,
+		D225  => 6,
+		D315  => 7,
+		} ;
+	
+	# .---.----------.-----------------.-----------------. 
+	# |   |          | start direction |  end  direction | 
+	# .---.----------.-----------------.-----------------. 
+	# |0  |          | kept the same   |  kept the same  |
+	# |1  |up        | v    DOWN       |  ^   UP         | 
+	# |2  |down      | ^    UP         |  v   DOWN       | 
+	# |3  |left      | >    RIGHT      |  <   LEFT       | 
+	# |4  |up-left   | v    DOWN       |  <   LEFT       | 
+	# |5  |left-up   | >    RIGHT      |  ^   UP         | 
+	# |6  |down-left | ^    UP         |  <   LEFT       | 
+	# |7  |left-down | >    RIGHT      |  v   DOWN       | 
+	# |8  |right     | <    LEFT       |  >   RIGHT      | 
+	# |9  |up-right  | v    DOWN       |  >   RIGHT      | 
+	# |10 |right-up  | <    LEFT       |  ^   UP         | 
+	# |11 |down-right| ^    UP         |  >   RIGHT      | 
+	# |12 |right-down| <    LEFT       |  v   DOWN       | 
+	# |13 |45        | v    D225       |  ^   D45        | 
+	# |14 |135       | ^    D315       |  v   D135       | 
+	# |15 |225       | ^    D45        |  v   D225       | 
+	# |16 |315       | v    D135       |  ^   D315       | 
+	# '---'----------'-----------------'-----------------' 
+	
+	for my $arrow ($self, @{$self->{ARROWS}})
 		{
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (8, 9, 11) ;
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (2, 7, 12) ;
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (3, 4, 6) ;
-		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (1, 5, 10) ;
-		$self->{ARROW_TYPE}[13][$connector_index] = $characters->[D45] ;
-		$self->{ARROW_TYPE}[14][$connector_index] = $characters->[D135] ;
-		$self->{ARROW_TYPE}[15][$connector_index] = $characters->[D225] ;
-		$self->{ARROW_TYPE}[16][$connector_index] = $characters->[D315] ;
+		if ($connector eq 'start')
+			{
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (3, 5, 7) ;
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (1, 4, 9) ;
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (8, 10, 12) ;
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (2, 6, 11) ;
+			$arrow->{ARROW_TYPE}[13][$connector_index] = $characters->[D225] ;
+			$arrow->{ARROW_TYPE}[14][$connector_index] = $characters->[D315] ;
+			$arrow->{ARROW_TYPE}[15][$connector_index] = $characters->[D45] ;
+			$arrow->{ARROW_TYPE}[16][$connector_index] = $characters->[D135] ;
+			}
+		else
+			{
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (8, 9, 11) ;
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (2, 7, 12) ;
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (3, 4, 6) ;
+			$arrow->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (1, 5, 10) ;
+			$arrow->{ARROW_TYPE}[13][$connector_index] = $characters->[D45] ;
+			$arrow->{ARROW_TYPE}[14][$connector_index] = $characters->[D135] ;
+			$arrow->{ARROW_TYPE}[15][$connector_index] = $characters->[D225] ;
+			$arrow->{ARROW_TYPE}[16][$connector_index] = $characters->[D315] ;
+			}
+		
+		$arrow->resize(0, 0, 0, 0) ;
+		# delete $arrow->{CACHE} ;
+		# $arrow->regenerate() ;
 		}
 	}
-
-$self->resize(0, 0, 0, 0) ;
 }
 
 #-----------------------------------------------------------------------------

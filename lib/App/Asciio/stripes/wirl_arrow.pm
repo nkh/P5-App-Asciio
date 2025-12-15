@@ -813,6 +813,13 @@ else
 	}
 }
 
+sub regenerate
+{
+my ($self) = @_ ;
+
+$self->setup($self->{ARROW_TYPE}, $self->{END_X}, $self->{END_Y}, $self->{DIRECTION}, $self ->{ALLOW_DIAGONAL_LINES}, $self->{EDITABLE}) ;
+}
+
 #-----------------------------------------------------------------------------
 
 sub edit
