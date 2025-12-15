@@ -1496,8 +1496,8 @@ sub change_connector
 my ($self, $connector_characters) = @_ ;
 
 #                             connector          characters   
-#                                                 RIGHT  DOWN  LEFT  UP   
-# $connector_characters => [ 'start' or 'end' => ['-',   '|',  '-',  '|'] ],
+#                                                 RIGHT  DOWN  LEFT  UP   45   135   225   315
+# $connector_characters => [ 'start' or 'end' => ['-',   '|',  '-',  '|', '/', '\\', '/', '\\'] ],
 
 my ($connector, $characters) = $connector_characters->@* ;
 
@@ -1507,18 +1507,58 @@ if(1 == $characters->@*)
 	{
 	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[0] for 0 .. 16 ;
 	}
-elsif(4 == $characters->@*)
+elsif(8 == $characters->@*)
 	{
 	use constant RIGHT => 0 ;
 	use constant DOWN  => 1 ;
 	use constant LEFT  => 2 ;
 	use constant UP    => 3 ;
-	
+	use constant D45   => 4 ;
+	use constant D135  => 5 ;
+	use constant D225  => 6 ;
+	use constant D315  => 7 ;
+	# .---.----------.--------------------------------. 
+	# |   |          |start DIRECTION  end DIRECTION  | 
+	# |1  |up        | v    DOWN       ^   UP         | 
+	# |2  |down      | ^    UP         v   DOWN       | 
+	# |3  |left      | >    RIGHT      <   LEFT       | 
+	# |4  |up-left   | v    DOWN       <   LEFT       | 
+	# |5  |left-up   | >    RIGHT      ^   UP         | 
+	# |6  |down-left | ^    UP         <   LEFT       | 
+	# |7  |left-down | >    RIGHT      v   DOWN       | 
+	# |8  |right     | <    LEFT       >   RIGHT      | 
+	# |9  |up-right  | v    DOWN       >   RIGHT      | 
+	# |10 |right-up  | <    LEFT       ^   UP         | 
+	# |11 |down-right| ^    UP         >   RIGHT      | 
+	# |12 |right-down| <    LEFT       v   DOWN       | 
+	# |13 |45        | v    D225       ^   D45        | 
+	# |14 |135       | ^    D315       v   D135       | 
+	# |15 |225       | ^    D45        v   D225       | 
+	# |16 |315       | v    D135       ^   D315       | 
+	# '---'----------'--------------------------------' 
 	# index 0 kept the same
-	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (8, 9, 11) ;
-	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (2, 7, 12, 14, 15) ;
-	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (3, 4, 6) ;
-	$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (1, 5, 10, 13, 16) ;
+	if ($connector eq 'start')
+		{
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (3, 5, 7) ;
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (1, 4, 9) ;
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (8, 10, 12) ;
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (2, 6, 11) ;
+		$self->{ARROW_TYPE}[13][$connector_index] = $characters->[D225] ;
+		$self->{ARROW_TYPE}[14][$connector_index] = $characters->[D315] ;
+		$self->{ARROW_TYPE}[15][$connector_index] = $characters->[D45] ;
+		$self->{ARROW_TYPE}[16][$connector_index] = $characters->[D135] ;
+		}
+	else
+		{
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[RIGHT] for (8, 9, 11) ;
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[DOWN]  for (2, 7, 12) ;
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[LEFT]  for (3, 4, 6) ;
+		$self->{ARROW_TYPE}[$_][$connector_index] = $characters->[UP]    for (1, 5, 10) ;
+		$self->{ARROW_TYPE}[13][$connector_index] = $characters->[D45] ;
+		$self->{ARROW_TYPE}[14][$connector_index] = $characters->[D135] ;
+		$self->{ARROW_TYPE}[15][$connector_index] = $characters->[D225] ;
+		$self->{ARROW_TYPE}[16][$connector_index] = $characters->[D315] ;
+		}
 	}
 
 $self->resize(0, 0, 0, 0) ;

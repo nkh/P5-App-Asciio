@@ -1,4 +1,6 @@
 
+use utf8 ;
+
 use App::Asciio::Actions ;
 use App::Asciio::Actions::Align ;
 use App::Asciio::Actions::Arrow ;
@@ -251,11 +253,18 @@ register_action_handlers
 			(
 			map { ( "start $_->[0]"        => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['start', $_->[2]] ] ) } 
 				(
+				#                                               right down left up   d45  d135  d225 d315
+				['dynamic dash',                  '0A0-minus', ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ],
+				['dynamic double direction arrow','00S-less',  ['>',  'v', '<', '^', '^', 'v',  'v', '^'] ],
+				['dynamic t',                     '000-t',     ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ],
+				['dynamic T',                     '00S-T',     ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ],
+				
 				['dash', '000-minus',    ['-'] ],
 				['dot' , '000-period',   ['.'] ],
 				['star', '00S-asterisk', ['*'] ],
 				['o'   , '000-o',        ['o'] ],
 				['O'   , '00S-O',        ['O'] ],
+				['•'   , '000-d',        ['•'] ],
 				),
 			), 
 			} ,
@@ -267,14 +276,18 @@ register_action_handlers
 			(
 			map { ( "end $_->[0]"          => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connector, ['end', $_->[2]] ] ) } 
 				(
-				#                              right down left up   
-				['dynamic dash', 'C00-minus', ['-',  '|', '-', '|'] ],
+				#                                               right down left up   d45  d135  d225 d315
+				['dynamic dash',                  '0A0-minus', ['-',  '|', '-', '|', '/', '\\', '/', '\\'] ],
+				['dynamic double direction arrow','00S-less',  ['>',  'v', '<', '^', '^', 'v',  'v', '^'] ],
+				['dynamic t',                     '000-t',     ['┤',  '┴', '├', '┬', '/', '\\', '/', '\\'] ],
+				['dynamic T',                     '00S-T',     ['┫',  '┻', '┣', '┳', '/', '\\', '/', '\\'] ],
 				
 				['dash', '000-minus',         ['-'] ],
 				['dot' , '000-period',        ['.'] ],
 				['star', '00S-asterisk',      ['*'] ],
 				['o'   , '000-o',             ['o'] ],
 				['O'   , '00S-O',             ['O'] ],
+				['•'   , '000-d',             ['•'] ],
 				),
 			),
 			},

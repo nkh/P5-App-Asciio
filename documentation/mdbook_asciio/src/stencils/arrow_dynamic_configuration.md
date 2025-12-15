@@ -44,7 +44,7 @@ A single character will be used as the connector regardless of the arrow geometr
 A set of character that will be used depending on the arrow geometry
 
 ```text
- RIGHT  DOWN  LEFT  UP   
-['-',   '|',  '-',  '|'] ],
+   RIGHT  DOWN  LEFT  UP   45   135   225  315
+[ ['-',   '|',  '-',  '|', '/', '\\', '/', '\\'] ],
 ```
 
