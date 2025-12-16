@@ -1,6 +1,8 @@
 
 package App::Asciio::Actions::Mouse ;
 
+use App::Asciio::Actions::ElementAttributes ;
+
 #----------------------------------------------------------------------------------------------
 
 use List::MoreUtils qw(any minmax first_value) ;
@@ -257,6 +259,8 @@ my $wirl_arrow = new App::Asciio::stripes::section_wirl_arrow
 					EDITABLE => 1,
 					RESIZABLE => 1,
 					}) ;
+
+App::Asciio::Actions::ElementAttributes::paste_attributes($self, $wirl_arrow) ;
 
 $self->add_element_at_no_connection
 		(

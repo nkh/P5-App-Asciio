@@ -36,21 +36,22 @@ my ($asciio, @elements) = @_ ;
 
 return unless defined $asciio->{COPIED_ATTRIBUTES} ;
 
-change_attributes($asciio, [ @{$asciio->{COPIED_ATTRIBUTES}}{'NAME', 'TYPE'}]) ;
+change_attributes($asciio, [ @{$asciio->{COPIED_ATTRIBUTES}}{'NAME', 'TYPE'}], \@elements) ;
 }
 
 #----------------------------------------------------------------------------------------------
 
 sub change_attributes
 {
-my ($asciio, $class_and_type) = @_ ;
+my ($asciio, $class_and_type, $elements) = @_ ;
 my ($class, $type) = @$class_and_type ;
 
 $asciio->create_undo_snapshot() ;
 
-my @elements = grep { $_->isa('App::Asciio::stripes::' . $class) } $asciio->get_selected_elements(1) ;
+my @matching_elements = grep { $_->isa('App::Asciio::stripes::' . $class) }
+	(defined($elements) ? @$elements : $asciio->get_selected_elements(1)) ;
 
-for(@elements)
+for(@matching_elements)
 	{
 	$_->change_attributes($type) ;
 	delete $_->{CACHE} ;
@@ -67,21 +68,22 @@ my ($asciio, @elements) = @_ ;
 
 return unless defined $asciio->{COPIED_CONTROL_ATTRIBUTES} ;
 
-change_control_attributes($asciio, [ @{$asciio->{COPIED_CONTROL_ATTRIBUTES}}{'CLASS', 'ATTRIBUTES'}]) ;
+change_control_attributes($asciio, [ @{$asciio->{COPIED_CONTROL_ATTRIBUTES}}{'CLASS', 'ATTRIBUTES'}], \@elements) ;
 }
 
 #----------------------------------------------------------------------------------------------
 
 sub change_control_attributes
 {
-my ($asciio, $class_and_attributes) = @_ ;
+my ($asciio, $class_and_attributes, $elements) = @_ ;
 my ($class, $attributes) = @$class_and_attributes ;
 
 $asciio->create_undo_snapshot() ;
 
-my @elements = grep { $_->isa($class) } $asciio->get_selected_elements(1) ;
+my @matching_elements = grep { $_->isa($class) }
+	(defined($elements) ? @$elements : $asciio->get_selected_elements(1)) ;
 
-for(@elements)
+for(@matching_elements)
 	{
 	$_->change_control_attributes($attributes) ;
 	delete $_->{CACHE} ;

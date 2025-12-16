@@ -11,6 +11,8 @@
 
 ![quick link](quick_link.gif)
 
+Quick links will use the current attributes, see: [Changing element attributes](changing_element_attributes.md).
+
 ## Orthogonal quick link
 
 ***Binding:*** «shift-alt-left-mouse-click»
@@ -19,6 +21,8 @@ Works like a quick link but, when necessary, will create a box that is either al
 horizontally or vertically with the first element of the selection (whichever is closest)
 
 ![orthogonal_quick link](orthogonal_quick_link.gif)
+
+Orthogonal quick links will use the current attributes, see: [Changing element attributes](changing_element_attributes.md).
 
 ## Quick copy
 

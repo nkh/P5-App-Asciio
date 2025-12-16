@@ -91,3 +91,11 @@ They will used the currently copied appearance and control properties.
 
 ![changing_element_attributes_and_interactive_arrow_control](changing_element_attributes_and_interactive_arrow_control.gif)
 
+## Mouse Quick link and Orthogonal quick link
+
+See: [mouse](mouse.md)
+
+Quick links and Orthogonal links use the current appearance properties.
+
+![changing_element_attributes_and_mouse_link](changing_element_attributes_and_mouse_link.gif)
+
