@@ -4,11 +4,11 @@ use parent qw/App::Asciio::stripes::single_stripe/ ;
 
 use strict;
 use warnings;
+use utf8 ;
 
 use List::Util qw(min max any) ;
 use Readonly ;
 use Clone ;
-use utf8 ;
 
 use App::Asciio::String ;
 
@@ -426,7 +426,8 @@ my ($self, $connector, $end_x, $end_y) = @_ ;
 
 my ($x, $scale_x, $offset_x, $y, $scale_y, $offset_y, $name) = $connector->@* ;
 
-my $connector_obj = {
+my $connector_obj =
+	{
 	X => $x, SCALE_X => $scale_x, OFFSET_X => $offset_x,
 	Y => $y, SCALE_Y => $scale_y, OFFSET_Y => $offset_y,
 	NAME => $name 

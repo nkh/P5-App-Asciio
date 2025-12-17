@@ -462,20 +462,27 @@ sub add_numbered_connector_to_element
 {
 my ($self) = @_ ;
 
-$self->create_undo_snapshot() ;
+my ($element , @other_elements) = $self->get_selected_elements(1) ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-return unless (
-	@selected_elements == 1
-	&& $self->is_over_element($selected_elements[0], $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
-	&& exists $selected_elements[0]->{CONNECTORS}
+return unless 
+	(
+	   defined $element 
+	&& @other_ elements == 1
+	&& $self->is_over_element($element, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
+	&& exists $element->{CONNECTORS}
 	) ;
 
-my $element = $selected_elements[0] ;
+$self->create_undo_snapshot() ;
 
 # The connector does not allow setting the outer radius of the element rectangle > 1
 # But outer radius == 1 is allowed
+# nkh: 
+# is the comment above the same as:
+# connectors are placed 1 character outside the element?
+#
+# nkh:
+# that's not true, a connector can be placed anywhere
+# to do that interactively we'd need to select the element then select the position
 # .---.------------------------------------------>  X
 # |   |
 # |   |     1
@@ -487,10 +494,20 @@ my $element = $selected_elements[0] ;
 # |Y   └────o───────┘
 # v         3
 
-my @numbered_connector_names = map { $_->{NAME} } grep { defined $_->{NAME} && $_->{NAME} =~ /^\d+$/ } $element->{CONNECTORS}->@* ;
+my @numbered_connector_names =
+	map { $_->{NAME} }
+		grep { defined $_->{NAME} && $_->{NAME} =~ /^\d+$/ }
+			$element->{CONNECTORS}->@* ;
+
+#nkh: max_num say nothing!
 my $max_num = @numbered_connector_names ? max(@numbered_connector_names) : 0 ;
+#nkh: and why is max incremented?!
 $max_num++ ;
+
 my $connector ;
+
+#nkh: please explain very clearly what these floating points are doing here
+#nkh: also explain all the scaling in editable_box module
 
 my $round = sub { my ($num) = @_ ; return int(sprintf("%.0f", $num)) ; } ;
 
@@ -570,53 +587,53 @@ elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
 	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
 	$connector = [0, $scale_x, 0, 0, 10000, -1, $max_num] ;
 	}
-# Inside the element
 else
 	{
+	# Inside the element
 	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
 	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
 	$connector = [0, $scale_x, 0, 0, $scale_y, 0, $max_num] ;
 	}
 
 $element->add_connector($connector, $element->{WIDTH}, $element->{HEIGHT}) ;
+
 $self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
+
 sub remove_numbered_connector_in_element
 {
 my ($self) = @_ ;
 
-$self->create_undo_snapshot() ;
+my ($element, @other_elements = $self->get_selected_elements(1) ;
 
-my @selected_elements = $self->get_selected_elements(1) ;
-
-return unless (
-	@selected_elements == 1
-	&& $self->is_over_element($selected_elements[0], $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
-	&& exists $selected_elements[0]->{CONNECTORS}
+return unless
+	(
+	   defined $element
+	&& @other_elements == 0
+	&& $self->is_over_element($elements, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
+	&& exists $elements->{CONNECTORS}
 	) ;
 
-my $element = $selected_elements[0] ;
+$self->create_undo_snapshot() ;
 
-# :QQ: Only our digital connectors can be deleted, the default connector is
-#	not allowedto be deleted.
-my @numbered_connectors_to_be_deleted = grep 
+#  Only delete numbered connectors
+my @connectors_to_delete = grep 
 	{
-	$_->{X} == $self->{MOUSE_X} - $element->{X}
-	&& $_->{Y} == $self->{MOUSE_Y} - $element->{Y}
+	      $_->{X} == $self->{MOUSE_X} - $element->{X}
+	&&    $_->{Y} == $self->{MOUSE_Y} - $element->{Y}
 	&& $_->{NAME} =~ /^\d+$/
 	} @{$element->{CONNECTORS}} ;
 
-for my $deleted_connector (@numbered_connectors_to_be_deleted)
+for my $connector (@connectors_to_delete)
 	{
-	# :QQ: If the deleted connector is currently a connection point,
-	#		deletion is not allowed
-	my @connecteed_connectors = $self->get_connections_with_connectee($element) ;
+	# connected connector deletion is not allowed
 	
-	my $is_linked = any { $_->{CONNECTION}{NAME} eq $deleted_connector->{NAME} } @connecteed_connectors ;
+	$element->remove_connector($connector->{NAME})
+		unless any { $_->{CONNECTION}{NAME} eq $connector->{NAME} }
+			$self->get_connections_with_connectee($element) ;
 	
-	$element->remove_connector($deleted_connector->{NAME}) unless $is_linked ;
 	}
 
 $self->update_display() ;
