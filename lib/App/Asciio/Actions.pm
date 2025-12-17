@@ -7,6 +7,8 @@ use Encode ;
 use List::Util qw(max) ;
 use List::MoreUtils qw(any) ;
 
+use B;
+
 #------------------------------------------------------------------------------------------------------
 
 $|++ ;
@@ -98,13 +100,13 @@ for my $action (@actions)
 			(
 			sprintf
 				(
-				"%-30s %-30s [%s]",
+				"%-30s %-40s %s",
 				"${modifiers}$action_key $action_group_tag",
 				$self->{CURRENT_ACTIONS}{$action}{NAME},
-				$self->{CURRENT_ACTIONS}{$action}{ORIGIN}
+				coderef2name($self->{CURRENT_ACTIONS}{$action}{CODE}) =~ s/App::Asciio:://r,
+				# $self->{CURRENT_ACTIONS}{$action}{ORIGIN},
 				)
 			) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion' ;
-				
 		
 		# Note: action sub is what changes $self->{CURRENT_ACTIONS} to a new action group
 		my $start_actions = $self->{CURRENT_ACTIONS} ;
@@ -254,6 +256,18 @@ sub exists_action
 my ($self, $action) = @_ ;
 
 return exists $self->{CURRENT_ACTIONS}{$action} ;
+}
+
+#------------------------------------------------------------------------------------------------------
+
+sub coderef2name 
+{
+my ($coderef) = @_;
+
+return '' unless UNIVERSAL::isa($coderef, "CODE");
+
+my $obj = B::svref_2object($coderef);
+return $obj->GV->STASH->NAME . "::" . $obj->GV->NAME;
 }
 
 #------------------------------------------------------------------------------------------------------

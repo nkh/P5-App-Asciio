@@ -7,13 +7,14 @@ use strict;
 use warnings;
 use utf8 ;
 
+use Carp ;
 use Data::TreeDumper ;
 use Eval::Context ;
-use Carp ;
-use Module::Util qw(find_installed) ;
 use File::Basename ;
 use File::Slurper qw(read_text write_text) ;
 use File::Temp qw(tempfile) ;
+use Module::Util qw(find_installed) ;
+use Sub::Util qw(set_subname ) ;
 
 #------------------------------------------------------------------------------------------------------
 
@@ -142,9 +143,6 @@ sub setup_action_handlers
 {
 my($self, $setup_path, $action_files, $from_code) = @_ ;
 
-use Module::Util qw(find_installed) ;
-use File::Basename ;
-
 my $installed = find_installed('App::Asciio') ;
 my ($basename, $path, $ext) = File::Basename::fileparse($installed, ('\..*')) ;
 my $asciio_setup_path = $path . $basename . '/setup/' ;
@@ -165,6 +163,15 @@ for my $action_file (@{ $action_files })
 	
 	my $location = $action_file =~ /^\// ? $action_file : "$setup_path/$action_file" ;
 	
+	my $action_group_sub = 
+		sub 
+		{ 
+		my $group = shift ;
+		my $sub = sub { $_[0]->use_action_group("group_$group") ; } ;
+		set_subname( "App::Asciio::Actions::Group", $sub ) ;
+		return $sub ;
+		} ;
+	
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
@@ -172,7 +179,8 @@ for my $action_file (@{ $action_files })
 				register_action_handlers                      => sub { %action_handlers = @_ ; },
 				register_action_handlers_remove_old_shortcuts => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
 				register_first_level_group                    => sub { %first_level_group = (%first_level_group, @_) ; },
-				ACTION_GROUP                                  => sub { my $group = shift ; return sub { $_[0]->use_action_group("group_$group") ; } }
+				# ACTION_GROUP                                  => sub { my $group = shift ; return sub { $_[0]->use_action_group("group_$group") ; } }
+				ACTION_GROUP                                  => $action_group_sub
 				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		(defined $from_code ? (CODE => $from_code) : (CODE_FROM_FILE => $location)) ,
@@ -313,13 +321,17 @@ for my $name ( grep { $_ ne 'SHORTCUTS' } keys %{$group_definition} )
 my $escape_keys = 'ARRAY' eq ref $group_definition->{ESCAPE_KEYS} ? $group_definition->{ESCAPE_KEYS} : [$group_definition->{ESCAPE_KEYS}//()] ;
 my $shortcuts   = 'ARRAY' eq ref $group_definition->{SHORTCUTS}   ? $group_definition->{SHORTCUTS}   : [$group_definition->{SHORTCUTS}] ;
 
+my $group_handler = sub { $_[0]->{CURRENT_ACTIONS} = \%handler ; } ;
+set_subname( "App::Asciio::Actions::Group", $group_handler ) ;
+
 @handler{'IS_GROUP', 'ENTER_GROUP', 'ESCAPE_KEYS', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
 	(
 	1,
 	$group_definition->{ENTER_GROUP},
 	$escape_keys,
 	$shortcuts,
-	sub { $_[0]->{CURRENT_ACTIONS} = \%handler },
+	# sub { $_[0]->{CURRENT_ACTIONS} = \%handler },
+	$group_handler,
 	'first_level_group',
 	'action_file'
 	) ;
@@ -449,13 +461,17 @@ for my $name (grep { $_ ne 'SHORTCUTS' && $_ ne 'ESCAPE_KEYS' } keys %{$group_de
 		}
 	}
 
+my $group_handler = sub { $_[0]->{CURRENT_ACTIONS} = \%handler ; } ;
+set_subname( "App::Asciio::Actions::Group", $group_handler ) ;
+
 @handler{'IS_GROUP', 'ENTER_GROUP', 'ESCAPE_KEYS', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
 	(
 	1,
 	$group_definition->{ENTER_GROUP},
 	$escape_keys,
 	$group_definition->{SHORTCUTS},
-	sub { $_[0]->{CURRENT_ACTIONS} = \%handler },
+	# sub { $_[0]->{CURRENT_ACTIONS} = \%handler },
+	$group_handler,
 	$group_name,
 	$action_file
 	) ;

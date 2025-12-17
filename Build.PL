@@ -303,6 +303,7 @@ my $build = $class->new
 		'Readonly'              => 0,
 		'Sereal'                => 5.004,
 		'Sub::Exporter'         => 0,
+		'Sub::Util'             => 0,
 		'Term::ReadKey'         => 0,
 		'Term::Size::Any'       => 0,
 		'Term::TermKey'         => 0,

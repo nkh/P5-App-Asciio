@@ -54,6 +54,7 @@ our @EXPORT = qw(
 
 use strict ; use warnings ;
 use utf8 ;
+use open qw( :std :encoding(UTF-8) ) ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
