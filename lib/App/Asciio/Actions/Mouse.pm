@@ -28,12 +28,6 @@ sub mouse_left_release
 {
 my ($self) = @_;
 
-if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
-   {
-   $self->{EDIT_SEMAPHORE}--;
-   return ;
-   }
-
 undef $self->{DRAGGING} ;
 delete $self->{IN_DRAG_DROP} ;
 

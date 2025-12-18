@@ -29,11 +29,7 @@ my ($name, $edit, $x, $y) = @{$name_and_edit} ;
 
 my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
 
-if($edit)
-	{
-	$element->edit($self);
-	$self->{EDIT_SEMAPHORE} = 3 if((defined $self->{EDIT_TEXT_INLINE}) && ($self->{EDIT_TEXT_INLINE} != 0)) ;
-	}
+$element->edit($self) if ($edit) ;
 
 $self->select_elements(1, $element);
 
@@ -54,11 +50,7 @@ my ($name, $edit, $x, $y) = @{$name_and_edit} ;
 
 my $element = $self->add_new_element_named($name, $x // $self->{MOUSE_X}, $y // $self->{MOUSE_Y}) ;
 
-if($edit)
-	{
-	$element->edit($self);
-	$self->{EDIT_SEMAPHORE} = 3 if defined $self->{EDIT_TEXT_INLINE} && $self->{EDIT_TEXT_INLINE} != 0 ;
-	}
+$element->edit($self) if ($edit) ;
 
 use App::Asciio::Actions::Mouse ;
 App::Asciio::Actions::Mouse::connect_to_destination_element($self, $element, $x, $y) ;

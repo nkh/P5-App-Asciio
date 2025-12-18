@@ -791,12 +791,6 @@ sub motion_notify_event
 {
 my ($self, $event) = @_ ;
 
-if((defined $self->{EDIT_SEMAPHORE}) && ($self->{EDIT_SEMAPHORE} > 0))
-   {
-   $self->{EDIT_SEMAPHORE}--;
-   return ;
-   }
-
 # my $button = $event->{BUTTON} ;
 my($x, $y) = @{$event->{COORDINATES}} ;
 my $modifiers = $event->{MODIFIERS} ; 
