@@ -1,6 +1,6 @@
 # Cross Mode
 
-## 1 Introduction
+## Introduction
 
 Previously, crossover was a separate mode. But not anymore, crossover is just an
 attribute of the element. By default, the following shortcut keys are used to
@@ -19,7 +19,7 @@ attribute will present special visual effects.
 
 ![cross_effect](cross_effect.gif)
 
-## 2 Complex graphics
+## Complex graphics
 
 The element cross attribute allows you to draw complex tables like the following:
 
