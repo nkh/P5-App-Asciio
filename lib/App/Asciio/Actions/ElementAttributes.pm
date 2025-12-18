@@ -49,7 +49,7 @@ my ($class, $type) = @$class_and_type ;
 $asciio->create_undo_snapshot() ;
 
 my @matching_elements = grep { $_->isa('App::Asciio::stripes::' . $class) }
-	(defined($elements) ? @$elements : $asciio->get_selected_elements(1)) ;
+	((defined $elements && @$elements) ? @$elements : $asciio->get_selected_elements(1)) ;
 
 for(@matching_elements)
 	{
@@ -81,7 +81,7 @@ my ($class, $attributes) = @$class_and_attributes ;
 $asciio->create_undo_snapshot() ;
 
 my @matching_elements = grep { $_->isa($class) }
-	(defined($elements) ? @$elements : $asciio->get_selected_elements(1)) ;
+	((defined($elements) && @$elements) ? @$elements : $asciio->get_selected_elements(1)) ;
 
 for(@matching_elements)
 	{

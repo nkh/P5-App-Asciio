@@ -745,7 +745,7 @@ elsif($x == $self->{WIDTH} && $y == $middle_height)
 	{
 	return {X =>  $x, Y => $y, NAME => 'right_center'} ;
 	}
-elsif($x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
+elsif($self->is_optimize_enabled() && $x >= 0 && $x < $self->{WIDTH} && $y >= 0 && $y < $self->{HEIGHT})
 	{
 	return {X =>  $middle_width, Y => -1, NAME => 'to_be_optimized'} ;
 	}
