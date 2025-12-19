@@ -131,6 +131,29 @@ TOP_LEVEL_GROUP
 'Copy to clipboard'                  => [['C00-c', 'C00-Insert'],                  \&App::Asciio::Actions::Clipboard::export_elements_to_system_clipboard             ],
 'Insert from clipboard'              => [['C00-v', '00S-Insert'],                  \&App::Asciio::Actions::Clipboard::import_elements_from_system_clipboard           ],
 
+'tabs ->' => GROUP
+	(
+	SHORTCUTS   => '000-t',
+	
+	'clone tab'         => ['000-c',      \ &App::Asciio::Actions::Tabs::copy_tab, 1         ],
+	'move tab left'     => ['000-h',      \ &App::Asciio::Actions::Tabs::move_tab_left       ],
+	'move tab right'    => ['000-l',      \ &App::Asciio::Actions::Tabs::move_tab_right      ],
+	'new tab'           => ['000-n',      \ &App::Asciio::Actions::Tabs::new_tab             ],
+	'next tab'          => ['000-t',      \ &App::Asciio::Actions::Tabs::next_tab            ],
+	'open project'      => ['000-e',      \ &App::Asciio::Actions::Tabs::open_project        ],
+	'previous tab'      => ['00S-T',      \ &App::Asciio::Actions::Tabs::previous_tab        ],
+	'quit app'          => ['000-q',      \ &App::Asciio::Actions::Tabs::quit_app            ],
+	'quit app no save'  => ['00S-Q',      \ &App::Asciio::Actions::Tabs::quit_app_no_save    ],
+	'rename'            => ['00S-R',      \ &App::Asciio::Actions::Tabs::rename_tab          ],
+	'read'              => ['000-r',      \ &App::Asciio::Actions::Tabs::read, undef         ],
+	'save'              => ['000-w',      \ &App::Asciio::Actions::Tabs::save_project, undef ],
+	'save as'           => ['00S-W',      \ &App::Asciio::Actions::Tabs::save_project, ''    ],
+	'toggle tab labels' => ['00S-L',      \ &App::Asciio::Actions::Tabs::toggle_tab_labels   ],
+	
+	'last tab'          => ['000-dollar', \ &App::Asciio::Actions::Tabs::last_tab, undef, undef, undef, { NO_COMPLETION => 1 } ],
+	map { ("tab $_"     => ["000-$_",     \ &App::Asciio::Actions::Tabs::focus_tab, $_, undef, undef, { NO_COMPLETION => 1 } ] ) } (0..9), 
+	),
+
 'yank ->' => GROUP
 	(
 	SHORTCUTS => '000-y',
@@ -219,11 +242,15 @@ TOP_LEVEL_GROUP
 	'connectors ->'                       => ['000-c', USE_GROUP('connectors')                                                       ] ,
 	
 	'Change arrow direction'              => ['000-d', \&App::Asciio::Actions::Arrow::change_arrow_direction                         ],
+	'enable diagonals'                    => ['0A0-d', \&App::Asciio::Actions::Arrow::allow_diagonals, 1,                            ],
+	'disable diagonals'                   => ['0AS-D', \&App::Asciio::Actions::Arrow::allow_diagonals, 0,                            ],
+		
 	'Flip arrow start and end'            => ['000-f', \&App::Asciio::Actions::Arrow::flip_arrow_ends                                ],
-	'Append multi_wirl section'           => ['000-s', \&App::Asciio::Actions::Multiwirl::append_section,                            ],
+	'Prepend multi_wirl section'          => ['000-s', \&App::Asciio::Actions::Multiwirl::prepend_section                            ],
+	'Append multi_wirl section'           => ['000-e', \&App::Asciio::Actions::Multiwirl::append_section,                            ],
 	'Insert multi_wirl section'           => ['00S-S', \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                  ],
-	'Prepend multi_wirl section'          => ['C00-s', \&App::Asciio::Actions::Multiwirl::prepend_section                            ],
-	'Remove last section from multi_wirl' => ['CA0-s', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow],
+
+	'Remove last section from multi_wirl' => ['000-r', \&App::Asciio::Actions::Multiwirl::remove_last_section_from_section_wirl_arrow],
 	
 	'Flip drag selects arrows'            => ['0A0-s', \&App::Asciio::Actions::Arrow::drag_selects_arrows                            ],
 	# insert_section
@@ -237,16 +264,13 @@ TOP_LEVEL_GROUP
 		(
 		SHORTCUTS => 'group_connectors',
 		
-		'start enable connection'      => ['000-c', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 1],],
-		'start disable connection'     => ['00S-C', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 0],],
-		'end enable connection'        => ['0A0-c', \&App::Asciio::Actions::Arrow::allow_connection, ['end',   1],],
-		'end disable connection'       => ['0AS-C', \&App::Asciio::Actions::Arrow::allow_connection, ['end',   0],],
+		'start enable connection'      => ['0A0-s', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 1],],
+		'start disable connection'     => ['0AS-S', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 0],],
+		'end enable connection'        => ['0A0-e', \&App::Asciio::Actions::Arrow::allow_connection, ['end',   1],],
+		'end disable connection'       => ['0AS-E', \&App::Asciio::Actions::Arrow::allow_connection, ['end',   0],],
 		
-		'enable diagonals'             => ['C00-d', \&App::Asciio::Actions::Arrow::allow_diagonals, 1,            ],
-		'disable diagonals'            => ['C0S-D', \&App::Asciio::Actions::Arrow::allow_diagonals, 0,            ],
-		
-		'Start flip enable connection' => ['CA0-d', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0 ],
-		'End flip enable connection'   => ['CAS-D', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1 ],
+		'Start flip enable connection' => ['C00-s', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 0 ],
+		'End flip enable connection'   => ['C00-e', \&App::Asciio::Actions::Multiwirl::disable_arrow_connector, 1 ],
 		
 		'start connectors ->'          => ['000-s', USE_GROUP('start_connectors')] ,
 		'end connectors ->'            => ['000-e', USE_GROUP('end_connectors')  ] ,
@@ -474,7 +498,7 @@ TOP_LEVEL_GROUP
 		'Add connector use top character' => ['00S-C', \&App::Asciio::Actions::Elements::add_center_connector_use_top_character  ],
 		'Add if'                          => ['000-i', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/if', 1]     ],
 		'Add process'                     => ['000-p', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/process', 1]],
-		'Add rhombus'                     => ['0A0-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]],
+		'Add rhombus'                     => ['000-r', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/rhombus', 0]],
 		'Add ellipse'                     => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]],
 		),
 
@@ -485,10 +509,10 @@ TOP_LEVEL_GROUP
 		'Add box'                    => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                     ],
 		'Add shrink box'             => ['000-s', \&App::Asciio::Actions::Elements::add_element, ['Asciio/shrink_box', 1]              ],
 		
-		'Add exec box'               => ['C00-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]              ],
-		'Add exec box verbatim'      => ['C00-v', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim', 1]     ],
-		'Add exec box verbatim once' => ['C00-o', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim once', 1]],
-		'Add line numbered box'      => ['C00-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]    ],
+		'Add exec box'               => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec', 1]              ],
+		'Add exec box verbatim'      => ['000-v', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim', 1]     ],
+		'Add exec box verbatim once' => ['000-o', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec verbatim once', 1]],
+		'Add line numbered box'      => ['000-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]    ],
 		),
 
 	'group_insert_unicode' =>  GROUP
@@ -512,161 +536,170 @@ TOP_LEVEL_GROUP
 	(
 	SHORTCUTS => '000-e',
 	
-	'Shrink box'                       => ['000-s',  \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
-	'Make elements Unicode'            => ['C00-u',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],
-	'Make elements not Unicode'        => ['C0S-U',  \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0       ],
+	'Shrink box'                       => ['000-s',             \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
 	
-	'copy element attributes'          => ['000-c',  \&App::Asciio::Actions::ElementAttributes::copy_attributes                 ],
-	'paste element attributes'         => ['000-p',  \&App::Asciio::Actions::ElementAttributes::paste_attributes                ],
-	'paste element control attributes' => ['00S-P',  \&App::Asciio::Actions::ElementAttributes::paste_control_attributes ],
+	'copy element attributes'          => [['000-c', '000-y'],  \&App::Asciio::Actions::ElementAttributes::copy_attributes                 ],
+	'paste element attributes'         => ['000-p',             \&App::Asciio::Actions::ElementAttributes::paste_attributes                ],
+	'paste element control attributes' => ['00S-P',             \&App::Asciio::Actions::ElementAttributes::paste_control_attributes        ],
 	
-	'convert to a big text'            => ['00S-T',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element],
-	'convert to dots'                  => ['00S-D',  \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements],
+	'Make elements Unicode'            => ['000-u',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],
+	'Make elements not Unicode'        => ['00S-U',             \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 0       ],
+
+	'convert to a text element'        => ['000-g',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_text_element],
+	'convert to dots'                  => ['00S-G',             \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements],
 	
-	'enable elements cross'            => ['000-x',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1    ],
-	'disable elements cross'           => ['00S-X',  \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0    ],
+	'enable elements cross'            => ['000-x',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1    ],
+	'disable elements cross'           => ['00S-X',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0    ],
 	
-	'Box ->'                           => ['000-b', USE_GROUP('box_type_change')                                                ] ,
-	'Wirl Arrow ->'                    => ['000-w', USE_GROUP('wirl_arrow_type_change')                                         ] ,
-	'Angled Arrow ->'                  => ['000-a', USE_GROUP('angled_arrow_type_change')                                       ] ,
-	'Ellipse ->'                       => ['000-e', USE_GROUP('ellipse_type_change')                                            ] ,
-	'Rhombus ->'                       => ['000-r', USE_GROUP('rhombus_type_change')                                            ] ,
-	'Triangle Up ->'                   => ['000-u', USE_GROUP('triangle_up_type_change')                                        ] ,
-	'Triangle Down->'                  => ['000-d', USE_GROUP('triangle_down_type_change')                                      ] ,
+	'change type'                      => ['000-t', USE_GROUP('change_type')],
 	),
 
-	'group_box_type_change' =>  GROUP
+	'group_change_type' => GROUP
 		(
-		SHORTCUTS => 'group_box_type_change',
+		SHORTCUTS => 'group_change_type',
 		
-		map { ( "box $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['editable_box2', $_->[0]] ] ) } 
-			(
-			['dash'                      , '000-d'],
-			['dot'                       , '00S-D'],
-			['star'                      , '000-s'],
-			['math_parantheses'          , '000-m'],
-			['unicode'                   , '000-u'],
-			['unicode_imaginary'         , '000-i'],
-			['unicode_bold'              , '00S-U'],
-			['unicode_bold_imaginary'    , '00S-I'],
-			['unicode_double'            , '000-l'],
-			['unicode_with_filler_type1' , '000-1'],
-			['unicode_with_filler_type2' , '000-2'],
-			['unicode_with_filler_type3' , '000-3'],
-			['unicode_with_filler_type4' , '000-4'],
-			['unicode_hollow_dot'        , '000-h'],
-			['unicode_math_paranthesesar', '00S-M']
-			),
+		'Box ->'          => ['000-b', USE_GROUP('box_type_change')          ] ,
+		'Wirl Arrow ->'   => ['000-w', USE_GROUP('wirl_arrow_type_change')   ] ,
+		'Angled Arrow ->' => ['000-a', USE_GROUP('angled_arrow_type_change') ] ,
+		'Ellipse ->'      => ['000-e', USE_GROUP('ellipse_type_change')      ] ,
+		'Rhombus ->'      => ['000-r', USE_GROUP('rhombus_type_change')      ] ,
+		'Triangle Up ->'  => ['000-u', USE_GROUP('triangle_up_type_change')  ] ,
+		'Triangle Down->' => ['000-d', USE_GROUP('triangle_down_type_change')] ,
 		),
+
+		'group_box_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_box_type_change',
+			
+			map { ( "box $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['editable_box2', $_->[0]] ] ) } 
+				(
+				['dash'                      , '000-d'],
+				['dot'                       , '00S-D'],
+				['star'                      , '000-s'],
+				['math_parantheses'          , '000-m'],
+				['unicode'                   , '000-u'],
+				['unicode_imaginary'         , '000-i'],
+				['unicode_bold'              , '00S-U'],
+				['unicode_bold_imaginary'    , '00S-I'],
+				['unicode_double'            , '000-l'],
+				['unicode_with_filler_type1' , '000-1'],
+				['unicode_with_filler_type2' , '000-2'],
+				['unicode_with_filler_type3' , '000-3'],
+				['unicode_with_filler_type4' , '000-4'],
+				['unicode_hollow_dot'        , '000-h'],
+				['unicode_math_paranthesesar', '00S-M']
+				),
+			),
+		
+		'group_ellipse_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_ellipse_type_change',
+			
+			map { ( "ellipse $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['ellipse', $_->[0]] ] ) } 
+				(
+				['ellipse_normal'                 , '000-n'],
+				['ellipse_normal_with_filler_star', '000-s'],
+				),
+			),
+		
+		'group_rhombus_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_rhombus_type_change',
+			
+			map { ( "rhombus $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['rhombus', $_->[0]] ] ) } 
+				(
+				['rhombus_normal'                 , '000-n'],
+				['rhombus_normal_with_filler_star', '000-s'],
+				['rhombus_sparseness'             , '00S-S'],
+				['rhombus_unicode_slash'          , '000-u'],
+				)
+			),
+
+		'group_triangle_up_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_triangle_up_type_change',
+			
+			map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_up', $_->[0]] ] ) } 
+				(
+				['triangle_up_normal', '000-n'],
+				['triangle_up_dot'   , '000-s'],
+				),
+			),
+		
+		'group_triangle_down_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_triangle_down_type_change',
+			
+			map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_down', $_->[0]] ] ) } 
+				(
+				['triangle_down_normal', '000-n'],
+				['triangle_down_dot'   , '000-s'],
+				),
+			),
+		
+		'group_wirl_arrow_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_wirl_arrow_type_change',
+			
+			map { ( "wirl arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['section_wirl_arrow', $_->[0]] ] ) } 
+				(
+				['dash'                  , '000-d'] ,
+				['dash_line'             , '00S-D'] ,
+				['dot'                   , 'C00-d'] ,
+				['dot_no_arrow'          , '0A0-d'] ,
+				['star'                  , '000-s'] ,
+				['octo'                  , '000-o'] ,
+				['unicode'               , '000-1'] ,
+				['unicode_line'          , '000-u'] ,
+				['unicode_bold'          , '000-2'] ,
+				['unicode_bold_line'     , '000-b'] ,
+				['unicode_double'        , '000-3'] ,
+				['unicode_double_line'   , '00S-B'] ,
+				['unicode_imaginary'     , '000-4'] ,
+				['unicode_imaginary_line', '000-i'] ,
+				['unicode_hollow_dot'    , '000-h'] ,
+				),
+			),
+		
+		'group_angled_arrow_type_change' =>  GROUP
+			(
+			SHORTCUTS => 'group_angled_arrow_type_change',
+			
+			map { ( "angled arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['angled_arrow', $_->[0]] ] ) } 
+				(
+				['angled_arrow_dash'   , '000-d'] ,
+				['angled_arrow_unicode', '000-u'] ,
+				),
+			),
 	
-	'group_ellipse_type_change' =>  GROUP
-		(
-		SHORTCUTS => 'group_ellipse_type_change',
-		
-		map { ( "ellipse $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['ellipse', $_->[0]] ] ) } 
-			(
-			['ellipse_normal'                 , '000-n'],
-			['ellipse_normal_with_filler_star', '000-s'],
-			),
-		),
-
-	'group_rhombus_type_change' =>  GROUP
-		(
-		SHORTCUTS => 'group_rhombus_type_change',
-		
-		map { ( "rhombus $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['rhombus', $_->[0]] ] ) } 
-			(
-			['rhombus_normal'                 , '000-n'],
-			['rhombus_normal_with_filler_star', '000-s'],
-			['rhombus_sparseness'             , '00S-S'],
-			['rhombus_unicode_slash'          , '000-u'],
-			)
-		),
-
-	'group_triangle_up_type_change' =>  GROUP
-		(
-		SHORTCUTS => 'group_triangle_up_type_change',
-		
-		map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_up', $_->[0]] ] ) } 
-			(
-			['triangle_up_normal', '000-n'],
-			['triangle_up_dot'   , '000-s'],
-			),
-		),
-
-	'group_triangle_down_type_change' =>  GROUP
-		(
-		SHORTCUTS => 'group_triangle_down_type_change',
-		
-		map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_down', $_->[0]] ] ) } 
-			(
-			['triangle_down_normal', '000-n'],
-			['triangle_down_dot'   , '000-s'],
-			),
-		),
-
-	'group_wirl_arrow_type_change' =>  GROUP
-		(
-		SHORTCUTS => 'group_wirl_arrow_type_change',
-		
-		map { ( "wirl arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['section_wirl_arrow', $_->[0]] ] ) } 
-			(
-			['dash'                  , '000-d'] ,
-			['dash_line'             , '00S-D'] ,
-			['dot'                   , 'C00-d'] ,
-			['dot_no_arrow'          , '0A0-d'] ,
-			['star'                  , '000-s'] ,
-			['octo'                  , '000-o'] ,
-			['unicode'               , '000-1'] ,
-			['unicode_line'          , '000-u'] ,
-			['unicode_bold'          , '000-2'] ,
-			['unicode_bold_line'     , '000-b'] ,
-			['unicode_double'        , '000-3'] ,
-			['unicode_double_line'   , '00S-B'] ,
-			['unicode_imaginary'     , '000-4'] ,
-			['unicode_imaginary_line', '000-i'] ,
-			['unicode_hollow_dot'    , '000-h'] ,
-			),
-		),
-
-	'group_angled_arrow_type_change' =>  GROUP
-		(
-		SHORTCUTS => 'group_angled_arrow_type_change',
-		
-		map { ( "angled arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['angled_arrow', $_->[0]] ] ) } 
-			(
-			['angled_arrow_dash'   , '000-d'] ,
-			['angled_arrow_unicode', '000-u'] ,
-			),
-		),
-
 'selection ->' => GROUP
 	(
 	SHORTCUTS   => '000-s',
 	ENTER_GROUP => \&App::Asciio::Actions::Selection::selection_enter,
-	ESCAPE_KEYS => [ '000-s', '000-Escape' ],
+	ESCAPE_KEYS => ['000-s', '000-Escape'],
 	
-	'Selection escape'     => [ '000-s',             \&App::Asciio::Actions::Selection::selection_escape   ],
-	'Selection escape2'    => [ '000-Escape',        \&App::Asciio::Actions::Selection::selection_escape   ],
+	'Selection escape'     => ['000-s',             \&App::Asciio::Actions::Selection::selection_escape   ],
+	'Selection escape2'    => ['000-Escape',        \&App::Asciio::Actions::Selection::selection_escape   ],
 	
-	'select flip mode'     => [ '000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip],
-	'select motion'        => [ '000-motion_notify', \&App::Asciio::Actions::Selection::select_motion      ],
-	'select mouse click'   => [ '000-button-press-1',\&App::Asciio::Actions::Selection::select_elements    ],
-	'polygon selection ->' => [ '000-x',             USE_GROUP('polygon')                                  ] ,
-	),
+	'select flip mode'     => ['000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip],
+	'select motion'        => ['000-motion_notify', \&App::Asciio::Actions::Selection::select_motion      ],
+	'select mouse click'   => ['000-button-press-1',\&App::Asciio::Actions::Selection::select_elements    ],
 
+	'polygon selection ->' => ['000-x', USE_GROUP('polygon')] ,
+	),
+	
 'group_polygon' => GROUP
 	(
 	SHORTCUTS   => 'group_polygon',
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::polygon_selection_enter,
-	ESCAPE_KEYS => [ '000-x', '000-Escape' ],
+	ESCAPE_KEYS => ['000-x', '000-Escape'],
 	
-	'Polygon selection escape'      => [ '000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape        ],
-	'Polygon selection escape2'     => [ '000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape        ],
-	'Polygon select motion'         => [ '000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1     ],
-	'Polygon deselect motion'       => [ 'C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0     ],
-	'Polygon select left-release'   => [ '000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release],
-	'Polygon select left-release 2' => [ 'C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release],
+	'Polygon selection escape'      => ['000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape        ],
+	'Polygon selection escape2'     => ['000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape        ],
+	'Polygon select motion'         => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1     ],
+	'Polygon deselect motion'       => ['C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0     ],
+	'Polygon select left-release'   => ['000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release],
+	'Polygon select left-release 2' => ['C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release],
 	),
 
 'eraser ->' => GROUP
@@ -675,8 +708,8 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'Eraser escape' => [ '000-Escape',        \&App::Asciio::Actions::Eraser::eraser_escape ],
-	'Eraser motion' => [ '000-motion_notify', \&App::Asciio::Actions::Eraser::erase_elements],
+	'Eraser escape' => ['000-Escape',        \&App::Asciio::Actions::Eraser::eraser_escape ],
+	'Eraser motion' => ['000-motion_notify', \&App::Asciio::Actions::Eraser::erase_elements],
 	),
 
 'clone ->' => GROUP
@@ -685,16 +718,16 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::Actions::Clone::clone_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'clone escape'          => [ '000-Escape',          \&App::Asciio::Actions::Clone::clone_escape                                 ],
-	'clone motion'          => [ '000-motion_notify',   \&App::Asciio::Actions::Clone::clone_mouse_motion                           ], 
+	'clone escape'          => ['000-Escape',          \&App::Asciio::Actions::Clone::clone_escape                                 ],
+	'clone motion'          => ['000-motion_notify',   \&App::Asciio::Actions::Clone::clone_mouse_motion                           ], 
 	
-	'clone insert'          => [ '000-button-press-1',  \&App::Asciio::Actions::Clone::clone_add_element                            ],
-	'clone insert2'         => [ '000-Return',          \&App::Asciio::Actions::Clone::clone_add_element                            ],
-	'clone arrow'           => [ '000-a',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/wirl_arrow', 0]  ],
-	'clone angled arrow'    => [ '00S-A',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/angled_arrow', 0]],
-	'clone box'             => [ '000-b',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box', 0]         ],
-	'clone text'            => [ '000-t',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]        ],
-	'clone flip hint lines' => [ '000-h',               \&App::Asciio::Actions::Unsorted::flip_hint_lines                           ],
+	'clone insert'          => ['000-button-press-1',  \&App::Asciio::Actions::Clone::clone_add_element                            ],
+	'clone insert2'         => ['000-Return',          \&App::Asciio::Actions::Clone::clone_add_element                            ],
+	'clone arrow'           => ['000-a',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/wirl_arrow', 0]  ],
+	'clone angled arrow'    => ['00S-A',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/angled_arrow', 0]],
+	'clone box'             => ['000-b',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box', 0]         ],
+	'clone text'            => ['000-t',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]        ],
+	'clone flip hint lines' => ['000-h',               \&App::Asciio::Actions::Unsorted::flip_hint_lines                           ],
 	'clone left'            => ['000-Left',             \&App::Asciio::Actions::ElementsManipulation::move_selection_left           ],
 	'clone right'           => ['000-Right',            \&App::Asciio::Actions::ElementsManipulation::move_selection_right          ],
 	'clone up'              => ['000-Up',               \&App::Asciio::Actions::ElementsManipulation::move_selection_up             ],
@@ -715,24 +748,24 @@ TOP_LEVEL_GROUP
 	
 	'Quick git'                  => [['000-button-press-3', '000-c'],       \&App::Asciio::Actions::Git::quick_link                                ],
 	
-	'Git add box'                => [ '000-b',                              \&App::Asciio::Actions::Elements::add_element, ['Asciio/box',  1]      ],
-	'Git add text'               => [ '000-t',                              \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]      ],
-	'Git add arrow'              => [ '000-a',                              \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]],
+	'Git add box'                => ['000-b',                               \&App::Asciio::Actions::Elements::add_element, ['Asciio/box',  1]      ],
+	'Git add text'               => ['000-t',                               \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]      ],
+	'Git add arrow'              => ['000-a',                               \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]],
 	'Git edit selected element'  => [['000-2button-press-1', '000-Return'], \&App::Asciio::Actions::Git::edit_selected_element                     ],
 	
-	'Git mouse left-click'       => [ '000-button-press-1',                 \&App::Asciio::Actions::Mouse::mouse_left_click                        ],
-	'Git change arrow direction' => [ '000-d',                              \&App::Asciio::Actions::Arrow::change_arrow_direction                  ],
-	'Git undo'                   => [ '000-u',                              \&App::Asciio::Actions::Unsorted::undo                                 ],
+	'Git mouse left-click'       => ['000-button-press-1',                  \&App::Asciio::Actions::Mouse::mouse_left_click                        ],
+	'Git change arrow direction' => ['000-d',                               \&App::Asciio::Actions::Arrow::change_arrow_direction                  ],
+	'Git undo'                   => ['000-u',                               \&App::Asciio::Actions::Unsorted::undo                                 ],
 	'Git delete elements'        => [['000-Delete', '000-x'],               \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements ],
 	
-	'Git mouse motion'           => [ '000-motion_notify',                  \&App::Asciio::Actions::Mouse::mouse_motion                            ], 
-	'Git move elements left'     => [ '000-Left',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_left      ],
-	'Git move elements right'    => [ '000-Right',                          \&App::Asciio::Actions::ElementsManipulation::move_selection_right     ],
-	'Git move elements up'       => [ '000-Up',                             \&App::Asciio::Actions::ElementsManipulation::move_selection_up        ],
-	'Git move elements down'     => [ '000-Down',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_down      ],
+	'Git mouse motion'           => ['000-motion_notify',                   \&App::Asciio::Actions::Mouse::mouse_motion                            ], 
+	'Git move elements left'     => ['000-Left',                            \&App::Asciio::Actions::ElementsManipulation::move_selection_left      ],
+	'Git move elements right'    => ['000-Right',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_right     ],
+	'Git move elements up'       => ['000-Up',                              \&App::Asciio::Actions::ElementsManipulation::move_selection_up        ],
+	'Git move elements down'     => ['000-Down',                            \&App::Asciio::Actions::ElementsManipulation::move_selection_down      ],
 	
-	'Git mouse right-click'      => [ '0A0-button-press-3',                 \&App::Asciio::Actions::Mouse::mouse_right_click                       ],
-	'Git flip hint lines'        => [ '000-h',                              \&App::Asciio::Actions::Unsorted::flip_hint_lines                      ],
+	'Git mouse right-click'      => ['0A0-button-press-3',                  \&App::Asciio::Actions::Mouse::mouse_right_click                       ],
+	'Git flip hint lines'        => ['000-h',                               \&App::Asciio::Actions::Unsorted::flip_hint_lines                      ],
 	),
 
 'slides ->' => GROUP
@@ -746,10 +779,11 @@ TOP_LEVEL_GROUP
 	'first slide'           => ['000-g', \&App::Asciio::Actions::Presentation::first_slide          ],
 	'show previous message' => ['000-m', \&App::Asciio::Actions::Presentation::show_previous_message],
 	'show next message'     => ['00S-M', \&App::Asciio::Actions::Presentation::show_next_message    ],
-	'run script ->'         => ['000-s', USE_GROUP('slides_script')                                 ] ,
+	
+	'run script ->'         => ['000-s', USE_GROUP('run_slides_script')] ,
 	),
 
-	'group_slides_script' => GROUP
+	'group_run_slides_script' => GROUP
 		(
 		SHORTCUTS   => 'group_slides_script',
 		ESCAPE_KEYS => '000-Escape',
@@ -762,22 +796,22 @@ TOP_LEVEL_GROUP
 	SHORTCUTS   => '0A0-a',
 	ESCAPE_KEYS => '000-Escape',
 	
-	'arrow start up'     => [ '000-Up',    \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1]],
-	'arrow start down'   => [ '000-Down',  \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1]],
-	'arrow start right'  => [ '000-Right', \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0]],
-	'arrow start left'   => [ '000-Left',  \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0]],
-	'arrow start up2'    => [ '000-k',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1]],
-	'arrow start down2'  => [ '000-j',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1]],
-	'arrow start right2' => [ '000-l',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0]],
-	'arrow start left2'  => [ '000-h',     \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0]],
-	'arrow end up'       => [ '00S-Up',    \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1]],
-	'arrow end down'     => [ '00S-Down',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1]],
-	'arrow end right'    => [ '00S-Right', \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0]],
-	'arrow end left'     => [ '00S-Left',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0]],
-	'arrow end up2'      => [ '00S-K',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1]],
-	'arrow end down2'    => [ '00S-J',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1]],
-	'arrow end right2'   => [ '00S-L',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0]],
-	'arrow end left2'    => [ '00S-H',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0]],
+	'arrow start up'     => ['000-Up',    \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1]],
+	'arrow start down'   => ['000-Down',  \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1]],
+	'arrow start right'  => ['000-Right', \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0]],
+	'arrow start left'   => ['000-Left',  \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0]],
+	'arrow start up2'    => ['000-k',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0, -1]],
+	'arrow start down2'  => ['000-j',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 0,  1]],
+	'arrow start right2' => ['000-l',     \&App::Asciio::Actions::Arrow::move_arrow_start, [ 1,  0]],
+	'arrow start left2'  => ['000-h',     \&App::Asciio::Actions::Arrow::move_arrow_start, [-1,  0]],
+	'arrow end up'       => ['00S-Up',    \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1]],
+	'arrow end down'     => ['00S-Down',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1]],
+	'arrow end right'    => ['00S-Right', \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0]],
+	'arrow end left'     => ['00S-Left',  \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0]],
+	'arrow end up2'      => ['00S-K',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0, -1]],
+	'arrow end down2'    => ['00S-J',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 0,  1]],
+	'arrow end right2'   => ['00S-L',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [ 1,  0]],
+	'arrow end left2'    => ['00S-H',     \&App::Asciio::Actions::Arrow::move_arrow_end,   [-1,  0]],
 	),
 
 'pen ->' => GROUP
@@ -786,12 +820,12 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'pen escape'                      => [ '000-Escape',          \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_escape             ],
-	'pen motion'                      => [ '000-motion_notify',   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion, undef, { HIDE => 1 } ],
+	'pen escape'                      => ['000-Escape',          \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_escape             ],
+	'pen motion'                      => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion, undef, { HIDE => 1 } ],
 	
-	'pen insert or delete'            => [ '000-button-press-1',  \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0           ],
-	'pen insert2 or delete2'          => [ '000-Return',          \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0           ],
-	'pen mouse change char'           => [ '000-button-press-3',  \&App::Asciio::GTK::Asciio::Pen::mouse_change_char                      ],
+	'pen insert or delete'            => ['000-button-press-1',  \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0           ],
+	'pen insert2 or delete2'          => ['000-Return',          \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0           ],
+	'pen mouse change char'           => ['000-button-press-3',  \&App::Asciio::GTK::Asciio::Pen::mouse_change_char                      ],
 	'pen eraser switch'               => [ 'C0S-ISO_Left_Tab',    \&App::Asciio::GTK::Asciio::Pen::pen_eraser_switch                      ],
 	
 	'pen mouse toggle direction'      => [ 'C00-Tab',              \&App::Asciio::GTK::Asciio::Pen::toggle_mouse_emulation_move_direction ],
@@ -874,10 +908,10 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::Find::find_enter,
 	ESCAPE_KEYS => ['000-Escape', '000-f'],
 	
-	'find escape'              => [ '000-Escape',                            \&App::Asciio::GTK::Asciio::Find::find_escape    ],
-	'find escape2'             => [ '000-f',                                 \&App::Asciio::GTK::Asciio::Find::find_escape    ],
-	'find next'                => [ '000-n',                                 \&App::Asciio::GTK::Asciio::Find::find_next      ],
-	'find previous'            => [ '00S-N',                                 \&App::Asciio::GTK::Asciio::Find::find_previous  ],
+	'find escape'              => ['000-Escape',                            \&App::Asciio::GTK::Asciio::Find::find_escape    ],
+	'find escape2'             => ['000-f',                                 \&App::Asciio::GTK::Asciio::Find::find_escape    ],
+	'find next'                => ['000-n',                                 \&App::Asciio::GTK::Asciio::Find::find_next      ],
+	'find previous'            => ['00S-N',                                 \&App::Asciio::GTK::Asciio::Find::find_previous  ],
 	'find Zoom in'             => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::GTK::Asciio::Find::find_zoom, 1   ],
 	'find Zoom out'            => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::GTK::Asciio::Find::find_zoom, -1  ],
 	'find perform new search'  => [ '000-s',                                 \&App::Asciio::GTK::Asciio::Find::find_new_search],
@@ -919,5 +953,6 @@ use App::Asciio::Actions::Selection ;
 use App::Asciio::Actions::Shapes ;
 use App::Asciio::Actions::Unsorted ;
 use App::Asciio::Actions::ZBuffer ;
+use App::Asciio::Actions::Tabs ;
 use App::Asciio::Utils::Scripting ;
 

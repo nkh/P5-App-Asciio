@@ -6,5 +6,5 @@ You need to give the **.pnge** extension to the file you save (please note the f
 
 When opening a **PNG** file, asciio looks for its data and opens the file if it's present.
 
-![Example](https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio_embedded_in_png.gif)
+![Example]( https://raw.githubusercontent.com/nkh/P5-App-Asciio/refs/heads/main/screencasts/asciio_embedded_in_png.gif)
 

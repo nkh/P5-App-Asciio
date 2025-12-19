@@ -1380,6 +1380,8 @@ my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @
 $field ||= 0 ;
 my $is_under = 0 ;
 
+# use Data::TreeDumper ;
+# print DumpTree $element, "$element", MAX_DEPTH => 2 ;
 my ($emin_x, $emin_y, $emax_x, $emax_y) = @{ $element->{EXTENTS} } ;
 if		(($emin_y + $element->{Y} > $y + $field)
 	||	($emax_y + $element->{Y}  < $y - $field)

@@ -74,6 +74,8 @@ $self->set
 	END_Y => $end_y,
 	ALLOW_DIAGONAL_LINES => $allow_diagonal_lines,
 	) ;
+
+$self->{EXTENTS} = [0, 0, $end_x + 1, $end_y + 1] ;
 }
 
 #-----------------------------------------------------------------------------

@@ -37,7 +37,6 @@
 	- [Mouse](editing/mouse.md)
 	- [Cloning](editing/cloning.md)
 	- [Stencils and "Drag and Drop"](editing/drag_drop.md)
-	- [Strip groups](editing/strip-groups.md)
     - [Changing element attributes](editing/changing_element_attributes.md)
 
 - [Export/Save](exporting.md)
@@ -63,29 +62,46 @@
 	- [Unicode Example](examples/unicode_example.md)
 	- [Videos](videos/videos.md)
 
-## Bindings
+# Bindings
 
-- [Bindings](Bindings.md)
-	- [Mouse](bindings/mouse.md)
+- [Bindings Reference](bindings_index.md)
 	- [Why vim-like bindings](bindings/vim-like.md)
-	
-	- [Single key](bindings/single_key.md)
+    - [Root level bindings](root_level_bindings.md)
 		- [GUI bindings](bindings/gui.md)
-		- [Moving elements](bindings/moving.md)
-		- [Selecting elements](bindings/selecting.md)
+        #- [Tab Management](bindings_group_tabs.md)
+    - [Insert operations](insert_operation.md)
+		- [box variants](bindings_group_insert_box.md)            
+        - [multiple elements](bindings_group_insert_multiple.md)  
+        - [unicode elements](bindings_group_insert_unicode.md)    
+        - [connected elements](bindings_group_insert_connected.md)
+        - [lines](bindings_group_insert_line.md)                  
+        - [stencils](bindings_group_insert_stencil.md)       
+        - [special elements](bindings_group_insert_element.md)    
+        - [rulers](bindings_group_insert_ruler.md)                
+    - [Element manipulation](element_operation.md)
 		- [Resizing elements](bindings/resizing.md)
-		- [Clipboard](bindings/clipboard.md)
-	
-	- [Multiple key](bindings/multiple_keys.md)
-		- [«:» Command group:](bindings/commands.md)
-		- [«i» Insert group](bindings/inserting.md)
-		- [«a» Arrow group](bindings/arrows.md)
-		- [«A» Align group](bindings/aligning.md)
-		- [«g» Grouping group](bindings/grouping.md)
-		- [«A-g» Stripes-group group](bindings/grouping_stripes.md)
-		- [«z» Display group](bindings/display.md)
-		- [«S» Slides group](bindings/slides.md)
-		- [«D» Debug group](bindings/debug.md)
+        - [Grouping elements](element_grouping_operation.md)
+    - [Arrow manipulation](arrow_operation.md)
+        - [Arrow - Connectors](bindings_group_arrow_connectors.md)
+            - [Start Connector](bindings_group_arrow_connectors_start.md) 
+            - [End Connector](bindings_group_arrow_connectors_end.md)
+            - [Both Connectors](bindings_group_arrow_connectors_both.md)
+            - [Fixed vs dynamic connectors](fixed_vs_dynamic_connectors.md)
+    - [Yank](yank_operations.md)
+    - [Mouse](mouse_operations.md)
+    - [Display option](visual_settings_operation.md)
+        - [Color options](color_operations.md)
+    - [Debug](debug_operations.md)
+    - [Modes](modes_operation.md)
+        - [Clone](clone_mode_operation.md)
+        - [Eraser](eraser_mode.md)
+        - [Pen](pen_mode.md)
+        - [Arrow](arrow_mode.md)
+        - [Find](find_mode.md)
+        - [Git](git_mode.md)
+        - [Selection](selection_mode_operation.md)
+            - [Selection polygon mode](selection_polygon_mode.md)
+        - [Slide script](slide_script_mode.md)
 
 # Configuration
 
@@ -93,8 +109,6 @@
 	- [Configuration Format](config/config_format.md)
     - [Bindings Format](config/binding_format.md)
 		- [Binding override](config/user_bindings/binding_override.md)
-
------------
 
 # Developer Guide
 
@@ -105,7 +119,6 @@
 	- [Modifying Asciio](for_developers/modify_Asciio.md)
 		- [Bindings](for_developers/bindings.md)
 		- [Capturing groups with overlay](config/user_bindings/capturing_groups_overlay.md)
-
 	- [Debugging](for_developers/debugging.md)
 	- [Cross algorithm](for_developers/cross_algorithm.md)
 	- [Unicode support](for_developers/unicode_support.md)

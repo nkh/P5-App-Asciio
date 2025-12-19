@@ -2,6 +2,8 @@
 package App::Asciio ;
 
 $|++ ;
+binmode( STDOUT, ":encoding(UTF-8)" ) ; 
+binmode( STDERR, ":encoding(UTF-8)" ) ; 
 
 use strict;
 use warnings;
@@ -46,7 +48,7 @@ for my $setup_file (@{$setup_ini_files})
 	my $context = new Eval::Context() ;
 	$ini_files = $context->eval
 				(
-				PRE_CODE          => "use strict;\nuse warnings;\n",
+				PRE_CODE          => "use strict;\nuse warnings;\nuse utf8 ;\n",
 				INSTALL_VARIABLES => [[ '$ASCIIO_UI'  => $self->{UI}]] ,
 				CODE_FROM_FILE    => $setup_file,
 				) ;
@@ -122,7 +124,7 @@ for my $hook_file (@{ $hook_files })
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
 		INSTALL_SUBS              => {register_hooks => sub{@hooks = @_}},
-		PRE_CODE                  => "use strict;\nuse warnings;\n",
+		PRE_CODE                  => "use strict;\nuse warnings;\nuse utf8;\n",
 		CODE_FROM_FILE            => "$setup_path/$hook_file" ,
 		) ;
 	
@@ -186,7 +188,7 @@ for my $action_file (@{ $action_files })
 				GROUP                                  => $group_sub, 
 				CONTEXT_MENU                           => sub { push @context_menues, [@_] ; return () ; } 
 				},
-		PRE_CODE => "use strict;\nuse warnings;\n",
+		PRE_CODE => "use strict;\nuse warnings;\nuse utf8;\n",
 		(defined $from_code ? (CODE => $from_code) : (CODE_FROM_FILE => $location)) ,
 		) ;
 	
@@ -280,7 +282,7 @@ for my $action_file (@{ $action_files })
 			{
 			if(exists $self->{ACTIONS}{$shortcut})
 				{
-				$self->{ACTION_VERBOSE}("Overriding shortcut '$shortcut'\n") ;
+				$self->{ACTION_VERBOSE}("4 Overriding shortcut '$shortcut'\n") ;
 				$self->{ACTION_VERBOSE}("\tnew is '$name' defined in file '$setup_path/$action_file'\n") ;
 				$self->{ACTION_VERBOSE}( "\told was '$self->{ACTIONS}{$shortcut}{NAME}' defined in file '$self->{ACTIONS}{$shortcut}{ORIGIN}'\n") ;
 				}
@@ -562,6 +564,7 @@ for my $import_export_file (@{ $import_export_files })
 		PRE_CODE                  => <<EOC ,
 						use strict;
 						use warnings;
+						use utf8 ;
 EOC
 		CODE_FROM_FILE => "$setup_path/$import_export_file",
 		) ;
@@ -592,7 +595,7 @@ for my $options_file (@{ $options_files })
 	
 	my %options = $context->eval
 				(
-				PRE_CODE       => "use strict;\nuse warnings;\n",
+				PRE_CODE       => "use strict;\nuse warnings;\nuse utf8;\n",
 				CODE_FROM_FILE => "$setup_path/$options_file",
 				) ;
 	

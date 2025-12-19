@@ -1,1 +1,0 @@
-# Strip groups
