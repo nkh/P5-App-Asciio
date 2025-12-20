@@ -5,13 +5,13 @@ If a group has an ESCAPE_KEY, the group is a capturing group. The group's bindin
 
 ```perl
 
-'capture group' =>
-	{
+'capture group' => GROUP
+	(
 	SHORTCUTS => '0A0-c',
 	ESCAPE_KEY => '000-Escape',
 	
 	'capture x'     => [ '000-x', sub { print "captured x\n"; } ],
 	'capture y'     => [ '000-y', sub { print "captured y\n"; } ],
-	},
+	),
 
 ```

@@ -6,7 +6,6 @@ use strict ; use warnings ;
 use Encode ;
 use List::Util qw(max) ;
 use List::MoreUtils qw(any) ;
-
 use B;
 
 #------------------------------------------------------------------------------------------------------
@@ -26,29 +25,47 @@ sub show_binding_completions
 {
 my ($self, $keep_visible) = @_ ;
 
-if($self->{USE_BINDINGS_COMPLETION})
+if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 	{
-	my %reserved = map { $_ => 1 } qw(IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
-
-	my $binding_max_length = max map { length } grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
+	my %reserved = map { $_ => 1 } qw(HIDE IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
+	
+	my $binding_max_length =
+		max map { length }
+			map 
+				{
+				'ARRAY' eq ref($self->{CURRENT_ACTIONS}{$_}{SHORTCUTS})
+						?  join(', ', $self->{CURRENT_ACTIONS}{$_}{SHORTCUTS}->@*)
+						: $_
+				} grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
 	
 	my $max_length = 0 ;
+	my @actions ;
+	
+	die "should not happen\n" unless exists $self->{ACTIONS_ORDERED}{$self->{CURRENT_ACTIONS}{NAME}} ;
+	
+	@actions = map {[ $_->{SHORTCUTS}, $_->{NAME} ]}
+			grep
+				{
+				my $shortcut = $_->{SHORTCUTS} ;
+				
+				   ! exists $reserved{$shortcut} 
+				&& ! ($self->{CURRENT_ACTIONS}{$shortcut}{OPTIONS}{HIDE})
+				} $self->{ACTIONS_ORDERED}{$self->{CURRENT_ACTIONS}{NAME}}->@* ;
 	
 	$self->{BINDINGS_COMPLETION} = 
 			[
 			map
 				{
-				my $completion = sprintf("%-${binding_max_length}s - %s", $_, $self->{CURRENT_ACTIONS}{$_}{NAME}) ;
+				my ($action_shortcut, $action_name) = $_->@* ;
+				
+				$action_shortcut = join(', ', $action_shortcut->@*) if 'ARRAY' eq ref $action_shortcut ;
+				
+				my $completion = sprintf("%-${binding_max_length}s - %s", $action_shortcut, $action_name) ;
 				my $length = length $completion ;
 				
 				$max_length = $length if $length > $max_length ;
 				$completion ;
-				}
-				sort grep
-					{
-					   ! exists $reserved{$_} 
-					&& ! ($self->{CURRENT_ACTIONS}{$_}{OPTIONS}{NO_COMPLETION})
-					} keys $self->{CURRENT_ACTIONS}->%*
+				} @actions
 			] ;
 	
 	$self->{BINDINGS_COMPLETION_LENGTH} = $max_length ;

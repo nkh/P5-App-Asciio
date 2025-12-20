@@ -130,11 +130,8 @@ my @context_menu_entries ;
 for my $context_menu_handler
 	(
 	map {$self->{ACTIONS}{$_}}
-		grep 
-			{
-			'HASH' eq ref $self->{ACTIONS}{$_} # not a sub actions definition
-			&& defined $self->{ACTIONS}{$_}{CONTEXT_MENU_SUB}
-			} sort keys %{$self->{ACTIONS}}
+		grep { defined $self->{ACTIONS}{$_}{CONTEXT_MENU_SUB} }
+			sort keys %{$self->{ACTIONS}}
 	)
 	{
 	# print STDERR "Adding context menu from action '$context_menu_handler->{NAME}'.\n" ;
