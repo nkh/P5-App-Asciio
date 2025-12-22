@@ -35,7 +35,7 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-8405761c.js";
+            window.path_to_searchindex_js = "../../searchindex-8f6c143d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../../toc-ff4579a6.js"></script>
@@ -177,14 +177,14 @@
                         <h1 id="capturing-groups"><a class="header" href="#capturing-groups">Capturing groups</a></h1>
 <p>If a group has an ESCAPE_KEY, the group is a capturing group. The group’s bindings will be used repeatedly till the ESCAPE_KEY is pressed.</p>
 <pre><code class="language-perl">
-'capture group' =&gt;
-	{
+'capture group' =&gt; GROUP
+	(
 	SHORTCUTS =&gt; '0A0-c',
 	ESCAPE_KEY =&gt; '000-Escape',
 	
 	'capture x'     =&gt; [ '000-x', sub { print "captured x\n"; } ],
 	'capture y'     =&gt; [ '000-y', sub { print "captured y\n"; } ],
-	},
+	),
 
 </code></pre>
 

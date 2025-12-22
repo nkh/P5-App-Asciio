@@ -35,7 +35,7 @@
             const path_to_root = "../../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-8405761c.js";
+            window.path_to_searchindex_js = "../../searchindex-8f6c143d.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../../toc-ff4579a6.js"></script>
@@ -175,22 +175,22 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="group-bindings"><a class="header" href="#group-bindings">Group bindings</a></h1>
-<p>Bindings can be grouped so you can use multiple key presses (vim-like) to reach an action.</p>
+<p>Bindings can be grouped so you can use a series of key presses (vim-like) to reach an action.</p>
 <pre><code class="language-perl">
-'group name' =&gt;
-    {
+'group name' =&gt; GROUP
+    (
     SHORTCUTS =&gt; 'C00-x',
 
-    'binding group' =&gt; ['C00-x', ACTION_GROUP('next_level') ] ,
+    'binding group' =&gt; ['C00-x', USE_GROUP('next_level')           ] ,
     'binding 1'     =&gt; ['000-1', sub { print "you're in x/1\n" ; } ],  
-    },
+    ),
 
-'group_next_level' =&gt; # need to be prefixed with 'group_'
-    {
-    SHORTCUTS =&gt; 'C00-y', # can be accessed directly
+'group_next_level' =&gt; GROUP # need to be prefixed with 'group_'
+    (
+    SHORTCUTS =&gt; 'C00-y', # can be accessed directly or use a key combination that cant exist (eg: 'no_direct_shortcut')
 
     'binding in sub group' =&gt; ['C00-x', sub { print "you're in x/x/x\n" ; } ],  
-    } ,
+    ) ,
 
 </code></pre>
 
