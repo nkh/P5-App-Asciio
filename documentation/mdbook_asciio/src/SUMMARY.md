@@ -90,10 +90,8 @@
 # Configuration
 
 - [Configuration](configuration.md)
-	- [Bindings](config/user_bindings.md)
-		- [Binding format](config/user_bindings/binding_format.md)
-		- [Group bindings](config/user_bindings/group_bindings.md)
-		- [Capturing groups](config/user_bindings/capturing_groups.md)
+	- [Configuration Format](config/config_format.md)
+    - [Bindings Format](config/binding_format.md)
 		- [Binding override](config/user_bindings/binding_override.md)
 
 -----------

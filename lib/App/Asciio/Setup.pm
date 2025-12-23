@@ -46,9 +46,9 @@ for my $setup_file (@{$setup_ini_files})
 	my $context = new Eval::Context() ;
 	$ini_files = $context->eval
 				(
-				PRE_CODE => "use strict;\nuse warnings;\n",
-				INSTALL_VARIABLES =>[[ '$ASCIIO_UI'  => $self->{UI}]] ,
-				CODE_FROM_FILE => $setup_file,
+				PRE_CODE          => "use strict;\nuse warnings;\n",
+				INSTALL_VARIABLES => [[ '$ASCIIO_UI'  => $self->{UI}]] ,
+				CODE_FROM_FILE    => $setup_file,
 				) ;
 	
 	$self->{WARN}("can't load '$setup_file': $! $@\n") if $@ ;
@@ -121,9 +121,9 @@ for my $hook_file (@{ $hook_files })
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
-		INSTALL_SUBS => {register_hooks => sub{@hooks = @_}},
-		PRE_CODE => "use strict;\nuse warnings;\n",
-		CODE_FROM_FILE => "$setup_path/$hook_file" ,
+		INSTALL_SUBS              => {register_hooks => sub{@hooks = @_}},
+		PRE_CODE                  => "use strict;\nuse warnings;\n",
+		CODE_FROM_FILE            => "$setup_path/$hook_file" ,
 		) ;
 	
 	die "Asciio: can't load hook file '$hook_file ': $! $@\n" if $@ ;
@@ -179,12 +179,12 @@ for my $action_file (@{ $action_files })
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
 		INSTALL_SUBS => {
-				register_action_handlers                      => sub { %action_handlers = @_ ; },
-				register_action_handlers_remove_old_shortcuts => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
-				TOP_LEVEL_GROUP                               => sub { push @top_level_groups, [@_] ; return () ; },
-				USE_GROUP                                     => $use_group_sub,
-				GROUP                                         => $group_sub, 
-				CONTEXT_MENU                                  => sub { push @context_menues, [@_] ; return () ; } 
+				register_action_handlers               => sub { %action_handlers = @_ ; },
+				register_action_handlers_with_override => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
+				TOP_LEVEL_GROUP                        => sub { push @top_level_groups, [@_] ; return () ; },
+				USE_GROUP                              => $use_group_sub,
+				GROUP                                  => $group_sub, 
+				CONTEXT_MENU                           => sub { push @context_menues, [@_] ; return () ; } 
 				},
 		PRE_CODE => "use strict;\nuse warnings;\n",
 		(defined $from_code ? (CODE => $from_code) : (CODE_FROM_FILE => $location)) ,
@@ -558,11 +558,10 @@ for my $import_export_file (@{ $import_export_files })
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
-		INSTALL_SUBS => {register_import_export_handlers => sub{%import_export_handlers = @_}},
-		PRE_CODE => <<EOC ,
-			use strict;
-			use warnings;
-		
+		INSTALL_SUBS              => {register_import_export_handlers => sub{%import_export_handlers = @_}},
+		PRE_CODE                  => <<EOC ,
+						use strict;
+						use warnings;
 EOC
 		CODE_FROM_FILE => "$setup_path/$import_export_file",
 		) ;
@@ -591,12 +590,11 @@ for my $options_file (@{ $options_files })
 	{
 	my $context = new Eval::Context() ;
 	
-	my %options = 
-		$context->eval
-			(
-			PRE_CODE => "use strict;\nuse warnings;\n",
-			CODE_FROM_FILE => "$setup_path/$options_file",
-			) ;
+	my %options = $context->eval
+				(
+				PRE_CODE       => "use strict;\nuse warnings;\n",
+				CODE_FROM_FILE => "$setup_path/$options_file",
+				) ;
 	
 	for my $option_name (sort keys %options)
 		{

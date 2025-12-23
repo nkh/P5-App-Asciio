@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------------------------
 
-register_action_handlers_remove_old_shortcuts
+register_action_handlerswith_override_
 (
 'Undo'                                            => ['u'],
 'Redo'                                            => ['C-r'],
