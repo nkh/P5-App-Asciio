@@ -255,13 +255,9 @@ documentation/mdbook_asciio/src/bindings/vim-like.md
 documentation/mdbook_asciio/src/bindings_help.gif
 documentation/mdbook_asciio/src/chapter_1.md
 documentation/mdbook_asciio/src/check_mdbook_git
-documentation/mdbook_asciio/src/config/user_bindings.md
-documentation/mdbook_asciio/src/config/user_bindings/binding_format.md
 documentation/mdbook_asciio/src/config/user_bindings/binding_override.md
 documentation/mdbook_asciio/src/config/user_bindings/capture_overlay.gif
-documentation/mdbook_asciio/src/config/user_bindings/capturing_groups.md
 documentation/mdbook_asciio/src/config/user_bindings/capturing_groups_overlay.md
-documentation/mdbook_asciio/src/config/user_bindings/group_bindings.md
 documentation/mdbook_asciio/src/config/user_bindings/warning.svg
 documentation/mdbook_asciio/src/configuration.md
 documentation/mdbook_asciio/src/continuous-integration.md
