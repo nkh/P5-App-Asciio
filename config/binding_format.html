@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Capturing groups - Asciio</title>
+        <title>Bindings Format - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../../favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="../../favicon-8114d1fc.png">
-        <link rel="stylesheet" href="../../css/variables-8adf115d.css">
-        <link rel="stylesheet" href="../../css/general-2459343d.css">
-        <link rel="stylesheet" href="../../css/chrome-ae938929.css">
-        <link rel="stylesheet" href="../../css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-2459343d.css">
+        <link rel="stylesheet" href="../css/chrome-ae938929.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../../fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="../../highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../../tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../../ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../../";
+            const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../../searchindex-8f6c143d.js";
+            window.path_to_searchindex_js = "../searchindex-ab7c909a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../../toc-ff4579a6.js"></script>
+        <script src="../toc-07fdbbe9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -105,7 +105,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -140,7 +140,7 @@
                     <h1 class="menu-title">Asciio</h1>
 
                     <div class="right-buttons">
-                        <a href="../../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -174,29 +174,136 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="capturing-groups"><a class="header" href="#capturing-groups">Capturing groups</a></h1>
-<p>If a group has an ESCAPE_KEY, the group is a capturing group. The group’s bindings will be used repeatedly till the ESCAPE_KEY is pressed.</p>
+                        <h1 id="bindings-format"><a class="header" href="#bindings-format">BINDINGS FORMAT</a></h1>
+<p><strong>Asciio</strong> processes external configuration files that dynamically define the application’s keybindings, keybindings structure, and context menus.</p>
+<p>These files are valid Perl scripts, you can defined code to bind to in the files but we recommend you create a module instead.</p>
+<h2 id="action-definition-commands"><a class="header" href="#action-definition-commands">Action Definition Commands</a></h2>
+<p>Use the following commands to define commands:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Subroutine Name</th><th>Purpose</th><th>Data Format Expected</th></tr>
+</thead>
+<tbody>
+<tr><td>register_action_handlers</td><td>Defines actions, and multi-level action groups.</td><td></td></tr>
+<tr><td>register_action_handlers_with_override</td><td>As above but also <strong>deletes</strong> old shortcuts</td><td>list of key-value pairs</td></tr>
+<tr><td>TOP_LEVEL_GROUP</td><td>Defines the content of the top-level grouping used for menu display</td><td>shortcut and a list of action</td></tr>
+<tr><td>GROUP</td><td>Used to declare a nested, ordered, action group.</td><td></td></tr>
+<tr><td>USE_GROUP</td><td>binds a shortcut with a group</td><td></td></tr>
+<tr><td>CONTEXT_MENU</td><td>Defines actions that are only accessible via a context menu</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="action-definition-formats"><a class="header" href="#action-definition-formats">Action Definition Formats</a></h2>
+<p>The definitions passed to <em>register_action_handlers</em> can take two primary forms:</p>
+<ul>
+<li>Single Action</li>
+<li>Group Definition</li>
+</ul>
+<h3 id="single-action-definition"><a class="header" href="#single-action-definition">Single Action Definition</a></h3>
+<p>Single action definition are declared within a pair of square brackets (a Perl array ref).</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Index</th><th>Defines</th><th>Type</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>SHORTCUTS</td><td>Scalar or ArrayRef</td><td>The keybindings that trigger the action</td></tr>
+<tr><td>1</td><td>CODE</td><td>CodeRef</td><td>The Perl subroutine reference to execute when the shortcut is pressed.</td></tr>
+<tr><td>2</td><td>ARGUMENTS</td><td>Scalar or ArrayRef</td><td>Optional arguments to be passed to the CODE subroutine.</td></tr>
+<tr><td>3</td><td>OPTIONS</td><td>HashRef</td><td>Optional hash of flags or attributes for the binding</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example of Single Action:</strong></p>
 <pre><code class="language-perl">
-'capture group' =&gt; GROUP
-	(
-	SHORTCUTS =&gt; '0A0-c',
-	ESCAPE_KEY =&gt; '000-Escape',
-	
-	'capture x'     =&gt; [ '000-x', sub { print "captured x\n"; } ],
-	'capture y'     =&gt; [ '000-y', sub { print "captured y\n"; } ],
-	),
+register_action_handlers
+(
+'Undo' =&gt; 
+    [ 
+        ['C00-z', '000-u'],                      # [0] SHORTCUTS
+        \&amp;App::Asciio::Actions::Unsorted::undo,  # [1] CODE
+        -1,                                      # [2] optional ARGUMENTS
+        { ... },                                 # [3] optional BINDING OPTIONS
+    ],
 
+# ... more  bindings
+);
+</code></pre>
+<h4 id="binding-options"><a class="header" href="#binding-options">Binding Options</a></h4>
+<ul>
+<li>HIDE =&gt; 1/0, controls if this binding is shown in the bindings help</li>
+</ul>
+<h3 id="group-definition"><a class="header" href="#group-definition"><code>GROUP</code> Definition</a></h3>
+<p>Used for defining a collection of related commands.</p>
+<p>The commands typically share a single shortcut that, when pressed, switches the application’s context to the commands defined within the group.</p>
+<h4 id="group-control-keys"><a class="header" href="#group-control-keys">Group Control Keys</a></h4>
+<p>The definition must contain the following control keys at the top-level of the group:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Key</th><th>Type</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>SHORTCUTS</td><td>Scalar or ArrayRef</td><td>The keybinding(s) that activate/enter this group</td></tr>
+<tr><td>ESCAPE_KEYS</td><td>Scalar or ArrayRef</td><td>Optional keybinding(s) that deactivate/exit the group</td></tr>
+<tr><td>ENTER_GROUP</td><td>CodeRef or undef</td><td>Optional code to execute <em>when</em> the group is activated.</td></tr>
+<tr><td>HIDE</td><td>Scalar (0 or 1)</td><td>Optional atrribute, the group is hidden from bindingsdisplays.</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="group-actions"><a class="header" href="#group-actions">Group Actions</a></h4>
+<p>Following the control keys, an the ordered list of actions:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Type</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>ArrayRef</td><td>A Single Action Definition</td></tr>
+<tr><td>GROUP</td><td>A Nested Group Definition</td></tr>
+<tr><td>USE_GROUP</td><td>Command to switches to another group.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example of Group Definition:</strong></p>
+<pre><code class="language-perl">register_action_handlers
+(
+'grouping -&gt;' =&gt; 
+    GROUP # create a GROUP
+        (
+        # control keys
+        SHORTCUTS   =&gt; '000-g',
+        ESCAPE_KEYS =&gt; '000-Escape',
+
+        # Single element
+        'selected elements' =&gt; [ '000-g', \&amp;App::Asciio::Actions::ElementsManipulation::group_selected_elements ],
+
+        # Nested Group
+        'Subgroup' =&gt; GROUP
+                        ( 
+                        SHORTCUTS =&gt; '000-a',
+                        'Align top' =&gt; ['000-t', \&amp;App::Asciio::Actions::Align::align, 'top'],
+                        ),
+
+        'Enter Other Group' =&gt; USE_GROUP('other_group_name'),
+        ),
+
+# ... other actions
+);
+        
+'group_other_group_name' =&gt; GROUP ( ...), # note that 'group_' is needed in the declaration of groups referred to by USE_GROUP
 </code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../../config/user_bindings/group_bindings.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="../config/config_format.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../../config/user_bindings/binding_override.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../config/user_bindings/binding_override.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -206,11 +313,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../../config/user_bindings/group_bindings.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="../config/config_format.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../../config/user_bindings/binding_override.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../config/user_bindings/binding_override.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -230,13 +337,13 @@
         </script>
 
 
-        <script src="../../elasticlunr-ef4e11c1.min.js"></script>
-        <script src="../../mark-09e88c2c.min.js"></script>
-        <script src="../../searcher-c2a407aa.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-c2a407aa.js"></script>
 
-        <script src="../../clipboard-1626706a.min.js"></script>
-        <script src="../../highlight-abc7f01d.js"></script>
-        <script src="../../book-a0b12cfe.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
 

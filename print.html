@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8f6c143d.js";
+            window.path_to_searchindex_js = "searchindex-ab7c909a.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-ff4579a6.js"></script>
+        <script src="toc-07fdbbe9.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -2850,9 +2850,35 @@ accessed with shortcuts that start with the same letter.</p>
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
-<p>Your user configuration file is <code>$HOME/.config/Asciio/Asciio.ini</code>. It contains
-links to files that are used to set up different aspects of <strong>asciio</strong>.</p>
-<p>The file has this format:</p>
+<h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
+<h3 id="configuration-file"><a class="header" href="#configuration-file">Configuration file</a></h3>
+<p>A file containing pointers to file where:</p>
+<ul>
+<li>stencils are defines</li>
+<li>actions and bindings are defined</li>
+<li>asciio options are configured</li>
+<li>routing hooks are defined</li>
+<li>document importers and exporters are defined</li>
+</ul>
+<h3 id="actions"><a class="header" href="#actions">Actions</a></h3>
+<p>Code that is added to <strong>asciio</strong> (a plugin in an other term).</p>
+<p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a keyboard shortcut.</p>
+<h3 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h3>
+<p>Registered keyboards shortcuts that execute actions.</p>
+<h2 id="asciio-configuration-file"><a class="header" href="#asciio-configuration-file">Asciio configuration file</a></h2>
+<p>The default configuration is defined in :</p>
+<ul>
+<li>setup/setup.ini</li>
+</ul>
+<h3 id="asciios-default-action-binding-files"><a class="header" href="#asciios-default-action-binding-files">Asciio’s default action binding files</a></h3>
+<ul>
+<li>setup/actions/default_bindings.pl</li>
+<li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
+</ul>
+<h2 id="user-configuration-file"><a class="header" href="#user-configuration-file">User configuration file</a></h2>
+<p>Your user configuration file is at <code>$HOME/.config/Asciio/Asciio.ini</code>.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="configuration-format"><a class="header" href="#configuration-format">CONFIGURATION FORMAT</a></h1>
 <pre><code class="language-perl">{
 STENCILS =&gt;
 	[
@@ -2952,100 +2978,125 @@ RULER_LINES =&gt; # default ruler lines
 <h3 id="import_export"><a class="header" href="#import_export">IMPORT_EXPORT</a></h3>
 <p>Links to files which define import and export functionality, you could use this to save files to another format.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h1>
-<h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
-<p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
-<p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a shortcut.</p>
-<h2 id="bindings-1-1"><a class="header" href="#bindings-1-1">Bindings</a></h2>
-<p>Registration of shortcuts that execute actions.</p>
-<p>The default Bindings are setup by the <strong>register_action_handlers</strong> in the following files:</p>
+<h1 id="bindings-format"><a class="header" href="#bindings-format">BINDINGS FORMAT</a></h1>
+<p><strong>Asciio</strong> processes external configuration files that dynamically define the application’s keybindings, keybindings structure, and context menus.</p>
+<p>These files are valid Perl scripts, you can defined code to bind to in the files but we recommend you create a module instead.</p>
+<h2 id="action-definition-commands"><a class="header" href="#action-definition-commands">Action Definition Commands</a></h2>
+<p>Use the following commands to define commands:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Subroutine Name</th><th>Purpose</th><th>Data Format Expected</th></tr>
+</thead>
+<tbody>
+<tr><td>register_action_handlers</td><td>Defines actions, and multi-level action groups.</td><td></td></tr>
+<tr><td>register_action_handlers_with_override</td><td>As above but also <strong>deletes</strong> old shortcuts</td><td>list of key-value pairs</td></tr>
+<tr><td>TOP_LEVEL_GROUP</td><td>Defines the content of the top-level grouping used for menu display</td><td>shortcut and a list of action</td></tr>
+<tr><td>GROUP</td><td>Used to declare a nested, ordered, action group.</td><td></td></tr>
+<tr><td>USE_GROUP</td><td>binds a shortcut with a group</td><td></td></tr>
+<tr><td>CONTEXT_MENU</td><td>Defines actions that are only accessible via a context menu</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="action-definition-formats"><a class="header" href="#action-definition-formats">Action Definition Formats</a></h2>
+<p>The definitions passed to <em>register_action_handlers</em> can take two primary forms:</p>
 <ul>
-<li>setup/actions/default_bindings.pl</li>
-<li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
+<li>Single Action</li>
+<li>Group Definition</li>
 </ul>
-<h2 id="user-defined-bindings"><a class="header" href="#user-defined-bindings">User defined bindings</a></h2>
-<p>The bindings can be changed in your user configuration.</p>
-<p>Set the <strong>ACTION_FILES</strong> section of file ‘$HOME/.config/Asciio/Asciio.ini’ to point at one
-or more files that will be loaded by <strong>asciio</strong>.</p>
-<p>The files contain bindings override but can also contain actions code.</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="binding-format"><a class="header" href="#binding-format">Binding format</a></h1>
-<p>A binding contains:</p>
-<ul>
-<li>unique name for your binding</li>
-<li>shortcut, multiple shortcuts are passed as [‘shortcut_1’, ‘shortcut_2’, …]</li>
-<li>action sub reference</li>
-<li>arguments to the action sub reference, optional</li>
-<li>popup-menu sub reference, optional</li>
-</ul>
-<p>Example:</p>
+<h3 id="single-action-definition"><a class="header" href="#single-action-definition">Single Action Definition</a></h3>
+<p>Single action definition are declared within a pair of square brackets (a Perl array ref).</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Index</th><th>Defines</th><th>Type</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>0</td><td>SHORTCUTS</td><td>Scalar or ArrayRef</td><td>The keybindings that trigger the action</td></tr>
+<tr><td>1</td><td>CODE</td><td>CodeRef</td><td>The Perl subroutine reference to execute when the shortcut is pressed.</td></tr>
+<tr><td>2</td><td>ARGUMENTS</td><td>Scalar or ArrayRef</td><td>Optional arguments to be passed to the CODE subroutine.</td></tr>
+<tr><td>3</td><td>OPTIONS</td><td>HashRef</td><td>Optional hash of flags or attributes for the binding</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example of Single Action:</strong></p>
 <pre><code class="language-perl">
-'Edit selected element inline'  =&gt; 
-    [
-    ['C00-2button-press-1','C00-Return'],
-    \&amp;App::Asciio::Actions::ElementsManipulation::edit_selected_element,
-    1
+register_action_handlers
+(
+'Undo' =&gt; 
+    [ 
+        ['C00-z', '000-u'],                      # [0] SHORTCUTS
+        \&amp;App::Asciio::Actions::Unsorted::undo,  # [1] CODE
+        -1,                                      # [2] optional ARGUMENTS
+        { ... },                                 # [3] optional BINDING OPTIONS
     ],
 
+# ... more  bindings
+);
 </code></pre>
-<h2 id="binding-override-in-your-user-configuration"><a class="header" href="#binding-override-in-your-user-configuration">binding override in your user configuration</a></h2>
+<h4 id="binding-options"><a class="header" href="#binding-options">Binding Options</a></h4>
 <ul>
-<li>Find the command name for the binding you want to change</li>
-<li>decide a new keyboard shortcuts</li>
-<li>add your binding to your configuration file</li>
+<li>HIDE =&gt; 1/0, controls if this binding is shown in the bindings help</li>
 </ul>
-<h3 id="example-2"><a class="header" href="#example-2">example</a></h3>
-<p>Change the shortcut for setting element color.</p>
-<p>Create ‘$HOME/.config/Asciio/actions/colors.pl’ and add:</p>
+<h3 id="group-definition"><a class="header" href="#group-definition"><code>GROUP</code> Definition</a></h3>
+<p>Used for defining a collection of related commands.</p>
+<p>The commands typically share a single shortcut that, when pressed, switches the application’s context to the commands defined within the group.</p>
+<h4 id="group-control-keys"><a class="header" href="#group-control-keys">Group Control Keys</a></h4>
+<p>The definition must contain the following control keys at the top-level of the group:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Key</th><th>Type</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>SHORTCUTS</td><td>Scalar or ArrayRef</td><td>The keybinding(s) that activate/enter this group</td></tr>
+<tr><td>ESCAPE_KEYS</td><td>Scalar or ArrayRef</td><td>Optional keybinding(s) that deactivate/exit the group</td></tr>
+<tr><td>ENTER_GROUP</td><td>CodeRef or undef</td><td>Optional code to execute <em>when</em> the group is activated.</td></tr>
+<tr><td>HIDE</td><td>Scalar (0 or 1)</td><td>Optional atrribute, the group is hidden from bindingsdisplays.</td></tr>
+</tbody>
+</table>
+</div>
+<h4 id="group-actions"><a class="header" href="#group-actions">Group Actions</a></h4>
+<p>Following the control keys, an the ordered list of actions:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Type</th><th>Purpose</th></tr>
+</thead>
+<tbody>
+<tr><td>ArrayRef</td><td>A Single Action Definition</td></tr>
+<tr><td>GROUP</td><td>A Nested Group Definition</td></tr>
+<tr><td>USE_GROUP</td><td>Command to switches to another group.</td></tr>
+</tbody>
+</table>
+</div>
+<p><strong>Example of Group Definition:</strong></p>
 <pre><code class="language-perl">register_action_handlers
-	(
-	'Change elements foreground color' =&gt; ['000-Z'],
-	) ;
-</code></pre>
-<p>Add it to yout <strong>‘$HOME/.config/Asciio/Asciio.ini’</strong></p>
-<pre><code class="language-perl">{
-...
-ACTION_FILES =&gt;
-	[
-	'actions/colors.pl', # new configuration file where you want to put your color bindings
-	],
-...
-}
+(
+'grouping -&gt;' =&gt; 
+    GROUP # create a GROUP
+        (
+        # control keys
+        SHORTCUTS   =&gt; '000-g',
+        ESCAPE_KEYS =&gt; '000-Escape',
 
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="group-bindings"><a class="header" href="#group-bindings">Group bindings</a></h1>
-<p>Bindings can be grouped so you can use a series of key presses (vim-like) to reach an action.</p>
-<pre><code class="language-perl">
-'group name' =&gt; GROUP
-    (
-    SHORTCUTS =&gt; 'C00-x',
+        # Single element
+        'selected elements' =&gt; [ '000-g', \&amp;App::Asciio::Actions::ElementsManipulation::group_selected_elements ],
 
-    'binding group' =&gt; ['C00-x', USE_GROUP('next_level')           ] ,
-    'binding 1'     =&gt; ['000-1', sub { print "you're in x/1\n" ; } ],  
-    ),
+        # Nested Group
+        'Subgroup' =&gt; GROUP
+                        ( 
+                        SHORTCUTS =&gt; '000-a',
+                        'Align top' =&gt; ['000-t', \&amp;App::Asciio::Actions::Align::align, 'top'],
+                        ),
 
-'group_next_level' =&gt; GROUP # need to be prefixed with 'group_'
-    (
-    SHORTCUTS =&gt; 'C00-y', # can be accessed directly or use a key combination that cant exist (eg: 'no_direct_shortcut')
+        'Enter Other Group' =&gt; USE_GROUP('other_group_name'),
+        ),
 
-    'binding in sub group' =&gt; ['C00-x', sub { print "you're in x/x/x\n" ; } ],  
-    ) ,
-
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="capturing-groups"><a class="header" href="#capturing-groups">Capturing groups</a></h1>
-<p>If a group has an ESCAPE_KEY, the group is a capturing group. The group’s bindings will be used repeatedly till the ESCAPE_KEY is pressed.</p>
-<pre><code class="language-perl">
-'capture group' =&gt; GROUP
-	(
-	SHORTCUTS =&gt; '0A0-c',
-	ESCAPE_KEY =&gt; '000-Escape',
-	
-	'capture x'     =&gt; [ '000-x', sub { print "captured x\n"; } ],
-	'capture y'     =&gt; [ '000-y', sub { print "captured y\n"; } ],
-	),
-
+# ... other actions
+);
+        
+'group_other_group_name' =&gt; GROUP ( ...), # note that 'group_' is needed in the declaration of groups referred to by USE_GROUP
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="binding-override"><a class="header" href="#binding-override">Binding override</a></h1>
