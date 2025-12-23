@@ -433,8 +433,10 @@ TOP_LEVEL_GROUP
 		(
 		SHORTCUTS => 'group_insert_multiple',
 		
-		'Add multiple texts'   => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'],
-		'Add multiple boxes'   => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box' ],
+		'Add multiple boxes'           => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box' ],
+		'Add multiple box connected'   => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box',  1]],
+		'Add multiple texts'           => ['000-t', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/text'],
+		'Add multiple texts connected' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]],
 		),
 
 	'group_insert_ruler' =>  GROUP
@@ -458,10 +460,10 @@ TOP_LEVEL_GROUP
 		(
 		SHORTCUTS => 'group_insert_connected',
 
-		'Add connected box edit'           => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/box', 1]          ], 
-		'Add multiple connected box edit'  => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box', 1] ], 
-		'Add connected text edit'          => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected, ['Asciio/text', 1]         ], 
-		'Add multiple connected text edit' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]], 
+		'Add box connected'            => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected,          ['Asciio/box',  1]], 
+		'Add multiple box connected'   => ['00S-B', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/box',  1]], 
+		'Add text connected'           => ['000-t', \&App::Asciio::Actions::Elements::add_element_connected,          ['Asciio/text', 1]], 
+		'Add multiple texts connected' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]], 
 		),
 
 	'group_insert_element' =>  GROUP
