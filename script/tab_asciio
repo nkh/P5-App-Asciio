@@ -4,6 +4,7 @@ use warnings;
 
 use Gtk3 -init;
 use Glib::Object::Introspection;
+use Glib qw(TRUE FALSE);
 
 use App::Asciio::GTK::Asciio::TabManager ;
 
@@ -24,6 +25,18 @@ $window->signal_connect
 	) ;
 
 $window->show_all() ;
+
+# $window->signal_connect
+# 	(
+# 	'key-press-event' => sub
+# 				{
+# 				my ($widget, $event) = @_ ;
+# 				$widget->grab_focus() ;
+# 				# App::Asciio::GTK::Asciio::button_press_event(undef, $event, $self) ;
+# 				print"in main window key-press-event\n" ;
+# 				return TRUE ;
+# 				}
+# 	) ;
 
 Gtk3::main() ;
 

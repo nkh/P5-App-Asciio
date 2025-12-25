@@ -186,7 +186,8 @@ for my $action_file (@{ $action_files })
 				TOP_LEVEL_GROUP                        => sub { push @top_level_groups, [@_] ; return () ; },
 				USE_GROUP                              => $use_group_sub,
 				GROUP                                  => $group_sub, 
-				CONTEXT_MENU                           => sub { push @context_menues, [@_] ; return () ; } 
+				CONTEXT_MENU                           => sub { push @context_menues, [@_] ; return () ; },
+				CAPTURE_KEYS                           => sub { return sub {} ; },
 				},
 		PRE_CODE => "use strict;\nuse warnings;\nuse utf8;\n",
 		(defined $from_code ? (CODE => $from_code) : (CODE_FROM_FILE => $location)) ,
@@ -194,7 +195,7 @@ for my $action_file (@{ $action_files })
 	
 	die "Asciio: can't load setup file '$action_file': $! $@\n" if $@ ;
 	
-	my %reserved = map {$_ => 1} qw(SHORTCUT HIDE ENTER_GROUP ESCAPE_KEYS HIDE) ;
+	my %reserved = map {$_ => 1} qw(SHORTCUT HIDE ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP) ;
 	
 	for my $name (grep { ! exists $reserved{$_}} keys %action_handlers)
 		{
@@ -414,7 +415,7 @@ my ($self, $setup_path, $action_file, $group_name, $group_definition) = @_ ;
 
 my %handler ;
 
-my ($shortcuts, $escape_keys, $enter_group, $hide) ;
+my ($shortcuts, $enter_group, $escape_keys, $escape_group, $hide) ;
 
 if('action_group' eq ref $group_definition)
 	{
@@ -425,14 +426,15 @@ if('action_group' eq ref $group_definition)
 	die "Asciio: group '$group_name' is without shortcuts in '$action_file'.\n"
 		unless exists $group_definition{SHORTCUTS} ;
 	
-	$escape_keys = 'ARRAY' eq ref $group_definition{ESCAPE_KEYS} ? $group_definition{ESCAPE_KEYS} : [ ($group_definition{ESCAPE_KEYS} // ()) ] ;
-	$enter_group = $group_definition{ENTER_GROUP} ;
-	$shortcuts   = $group_definition{SHORTCUTS} ;
-	$hide        = $group_definition{HIDE} ;
+	$escape_keys  = 'ARRAY' eq ref $group_definition{ESCAPE_KEYS} ? $group_definition{ESCAPE_KEYS} : [ ($group_definition{ESCAPE_KEYS} // ()) ] ;
+	$enter_group  = $group_definition{ENTER_GROUP} ;
+	$escape_group = $group_definition{ESCAPE_GROUP} ;
+	$shortcuts    = $group_definition{SHORTCUTS} ;
+	$hide         = $group_definition{HIDE} ;
 	
 	$self->{ACTIONS_ORDERED}{$group_name} = [] ; # reset if overridden 
 	
-	my %reserved = map {$_ => 1} qw(SHORTCUT HIDE ENTER_GROUP ESCAPE_KEYS HIDE) ;
+	my %reserved = map {$_ => 1} qw(SHORTCUT HIDE ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP) ;
 	
 	while(my ($name, $setup) = splice($group_definition->@*, 0, 2))
 		{
@@ -487,20 +489,17 @@ if('action_group' eq ref $group_definition)
 			}
 		}
 	}
-else
-	{
-	die "****  not supported any longer ****\n" ;
-	}
 
 my $group_handler = sub { $_[0]->{CURRENT_ACTIONS} = \%handler ; } ;
 set_subname( "App::Asciio::Actions::Group::$group_name", $group_handler ) ;
 
-@handler{'IS_GROUP', 'HIDE', 'ENTER_GROUP', 'ESCAPE_KEYS', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
+@handler{'IS_GROUP', 'HIDE', 'ENTER_GROUP', 'ESCAPE_KEYS', 'ESCAPE_GROUP', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
 	(
 	1,
 	$hide,
 	$enter_group,
 	$escape_keys,
+	$escape_group,
 	$shortcuts,
 	$group_handler,
 	$group_name,
@@ -521,6 +520,7 @@ $self->{ACTIONS}{$context_menu->[0]} =
 	IS_GROUP              => 0,
 	ENTER_GROUP           => undef,
 	ESCAPE_KEYS           => undef,
+	ESCAPE_GROUP          => undef,
 	SHORTCUTS             => $context_menu->[1],
 	CODE                  => undef,
 	NAME                  => $context_menu->[0],
@@ -536,13 +536,14 @@ sub register_separator_group
 {
 $_[0]->{ACTIONS_BY_NAME}{' '} =
 	{
-	IS_GROUP    => 1,
-	ENTER_GROUP => undef,
-	ESCAPE_KEYS => undef,
-	SHORTCUTS   => [''],
-	CODE        => sub {},
-	NAME        => ' ',
-	ORIGIN      => 'internal',
+	IS_GROUP     => 1,
+	ENTER_GROUP  => undef,
+	ESCAPE_KEYS  => undef,
+	ESCAPE_GROUP => undef,
+	SHORTCUTS    => [''],
+	CODE         => sub {},
+	NAME         => ' ',
+	ORIGIN       => 'internal',
 	}
 }
 

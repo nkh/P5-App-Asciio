@@ -292,7 +292,7 @@ ACTION_FILES =>
         'actions/mouse.pl',
         'actions/colors.pl',
         'actions/unsorted.pl',
-        'actions/presentation.pl',
+        'actions/animation.pl',
 
         'actions/context_menu_multi_wirl.pl',
         'actions/context_menu_box.pl',

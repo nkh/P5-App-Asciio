@@ -2,78 +2,60 @@
 package App::Asciio::Actions::Presentation ;
 
 use strict ; use warnings ;
-use File::Slurper qw(read_text) ;
+# use File::Slurper qw(read_text) ;
+
+use App::Asciio::Actions::Tabs ;
 
 #----------------------------------------------------------------------------------------------
 
+my $slideshow_delay = 500 ;
+my $slideshow_timer ;
+
+sub start_automatic_slideshow
 {
-my @stack ;
+my ($self, $time) = @_ ;
 
-sub load_slides
-{
-my ($self, $file_name) = @_ ;
+$slideshow_delay = $time if defined $time ;
+$time //= $slideshow_delay ;
 
-# get file name for slides definitions
-$file_name = $self->get_file_name('open') unless defined $file_name ;
+$slideshow_timer = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
 
-if(defined $file_name && $file_name ne q{})
-	{
-	my $slides = do $file_name or die $@ ;
-	
-	return unless  defined $slides and 'ARRAY' eq ref $slides ;
-	
-	@stack = [0, $slides] ;
-	run_slide($self, $slides) ;
-	}
+App::Asciio::Actions::Tabs::hide_all_bindings_help($self) ;
+App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub run_slide
+sub escape_slideshow
 {
-my ($self, $slide) = @_ ;
+my ($self) = @_ ;
 
-# use Data::TreeDumper ;
-# print STDERR DumpTree \@stack, 'stack:' ;
+Glib::Source->remove($slideshow_timer) if defined $slideshow_timer ;
 
-if(defined $slide and 'ARRAY' eq ref $slide)
-	{
-	for my $element ($slide->@*)
-		{
-		# print STDERR "running element: $element '" . ref($element) . "' $slide\n" ;
-		
-		if('' eq ref($element))
-			{
-			clear_all()->($self),
-			box(0, 0, '', $element, 1)->($self),
-			$self->update_display() ;
-			}
-		
-		if('CODE' eq ref($element))
-			{
-			$element->($self) ;
-			$self->update_display() ;
-			}
-		
-		if('ARRAY' eq ref($element))
-			{
-			# print STDERR "PUSH $element\n" ;
-			
-			push @stack, [0, $element] ;
-			run_slide($self, $element) ;
-			
-			last ;
-			}
-		
-		if('HASH' eq ref($element))
-			{
-			$stack[-1][2] = $element ;
-			print STDERR "Asciio: slide has scripts\n" ;
-			}
-		
-		$stack[-1][0]++ ;
-		}
-	}
+App::Asciio::Actions::Tabs::show_all_bindings_help($self) ; #todo: if it was set before
+App::Asciio::Actions::Tabs::redirect_events($self, 0) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub next_slideshow_slide
+{
+my ($self, $time) = @_ ;
+$time //= $slideshow_delay ;
+
+App::Asciio::Actions::Tabs::next_tab($self) ;
+$slideshow_timer = Glib::Timeout->add ( $time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; } ) 
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub start_manual_slideshow
+{
+my ($self, $time) = @_ ;
+$time //= 500 ;
+
+App::Asciio::Actions::Tabs::hide_all_bindings_help($self) ;
+App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -81,39 +63,7 @@ if(defined $slide and 'ARRAY' eq ref $slide)
 sub next_slide
 {
 my ($self) = @_ ;
-
-if(@stack)
-	{
-	my ($index, $slide) = $stack[-1]->@* ;
-	
-	# print STDERR "$index < " . $slide->@* . "\n" ;
-	
-	if($index < $slide->@*)
-		{
-		# print STDERR "NEXT\n" ;
-		$stack[-1][0]++ ;
-		
-		my $next_slide = $slide->[$index + 1] ;
-		
-		if('ARRAY' eq ref($next_slide))
-			{
-			# print STDERR "PUSH $next_slide\n" ;
-			push @stack, [0, $next_slide] ;
-			}
-		
-		run_slide($self, $next_slide) ;
-		}
-	else
-		{
-		if(@stack > 1)
-			{
-			# print STDERR "POP\n" ;
-			pop @stack ;
-			
-			next_slide($self) ;
-			}
-		}
-	}
+App::Asciio::Actions::Tabs::next_tab($self) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -122,27 +72,7 @@ sub previous_slide
 {
 my ($self) = @_ ;
 
-# use Data::TreeDumper ;
-# print STDERR DumpTree \@stack, 'stack:' ;
-
-if(@stack)
-	{
-	@stack = [ $stack[0]->@* ] ;
-
-	
-	my $slides = $stack[0][1] ;
-	my $index  = $stack[0][0] >= $stack[0][1]->@* ? $stack[0][0] - 2 : $stack[0][0] - 1 ; 
-	
-	# print STDERR "new index: $index\n" ;
-	
-	if($index >= 0)
-		{
-		$stack[0][0] = $index ; 
-		
-		push @stack, [0, $slides->[$index]] ;
-		run_slide($self, $slides->[$index]) 
-		}
-	}
+App::Asciio::Actions::Tabs::previous_tab($self) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -150,77 +80,40 @@ if(@stack)
 sub first_slide
 {
 my ($self) = @_ ;
-
-if(@stack)
-	{
-	@stack = [0, $stack[0][1]] ;
-	run_slide($self, $stack[0][1]) ;
-	}
+App::Asciio::Actions::Tabs::focus_tab() ;
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub run_script
+sub slower_speed
 {
-my ($self, $script_args) = @_ ;
-
-if(defined $stack[-1][2])
-	{
-	my $scripts = $stack[-1][2] ;
-	
-	if(exists $scripts->{$script_args->[0]})
-		{
-		$scripts->{$script_args->[0]}($self, $script_args) ;
-		$self->use_action_group('<< slides leader >>') ;
-		}
-	}
-}
-
+my ($self) = @_ ;
+$slideshow_delay *= 1.5 ;
 }
 
 #----------------------------------------------------------------------------------------------
 
-my $message_element ;
-my $counter = 0 ;
+sub faster_speed
+{
+my ($self) = @_ ;
+$slideshow_delay /= 1.5 ;
+}
 
 #----------------------------------------------------------------------------------------------
 
-sub show_previous_message
+sub pause 
 {
 my ($self) = @_ ;
 
-$counter-- ;
-show_message($self, $counter) ;
-}
-
-sub show_next_message
-{
-my ($self) = @_ ;
-
-$counter++ ;
-show_message($self, $counter) ;
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub show_message
-{
-my ($asciio, $counter) = @_ ;
-
-$asciio->delete_elements($message_element) ;
-
-if(defined $ENV{ASCIIO_MESSAGES} && -d $ENV{ASCIIO_MESSAGES} && -f "$ENV{ASCIIO_MESSAGES}/$counter")
+if(defined $slideshow_timer)
 	{
-	my @lines = read_text "$ENV{ASCIIO_MESSAGES}/$counter" ;
-	
-	chomp(my $title = $lines[0]) ;
-	my $text = join '', grep { defined $_ } @lines[1 .. @lines] ;
-	
-	$message_element = $asciio->add_new_element_named('Asciio/box', 0, 0) ;
-	$message_element->set_text($title, $text) ;
+	Glib::Source->remove($slideshow_timer) ;
+	undef $slideshow_timer ;
 	}
-
-$asciio->update_display() ;
+else
+	{
+	$slideshow_timer = Glib::Timeout->add ($slideshow_delay, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------

@@ -53,12 +53,13 @@
 	- [Clipboard](export/clipboard.md)
 
 - [Modes](modes.md)
-	- [Git](modes/git.md)
-	- [Cross](modes/cross.md)
-	- [Slides](modes/slides.md)
 	- [Selection](modes/selection.md)
 	- [Pen](modes/pen.md)
 	- [Find](modes/find.md)
+	- [Git](modes/git.md)
+	- [Cross](modes/cross.md)
+	- [Slide](modes/slides.md)
+    - [Animation](modes/animations.md)
 
 - [Examples](examples.md)
 	- [Class hierarchy](examples/example1.md)
@@ -106,7 +107,9 @@
         - [Git](git_mode.md)
         - [Selection](selection_mode_operation.md)
             - [Selection polygon mode](selection_polygon_mode.md)
-        - [Slide script](slide_script_mode.md)
+        - [Slide](slide_mode.md)
+        - [Animation](animation_mode.md)
+            - [Animation script](animation_script_mode.md)
 
 # Configuration
 

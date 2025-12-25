@@ -27,7 +27,7 @@ my ($self, $keep_visible) = @_ ;
 
 if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 	{
-	my %reserved = map { $_ => 1 } qw(HIDE IS_GROUP ENTER_GROUP ESCAPE_KEYS NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
+	my %reserved = map { $_ => 1 } qw(HIDE IS_GROUP ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
 	
 	my $binding_max_length =
 		max map { length }
@@ -93,10 +93,7 @@ for my $action (@actions)
 	{
 	my @arguments ;
 	
-	if('ARRAY' eq ref $action)
-		{
-		($action, @arguments) = @{ $action } ;
-		}
+	($action, @arguments) = @{ $action } if 'ARRAY' eq ref $action ;
 	
 	my ($modifiers, $action_key) = $action =~ /(...-)?(.*)/ ;
 	$modifiers //= '000-' ;
@@ -149,7 +146,15 @@ for my $action (@actions)
 		if($start_actions != $self->{CURRENT_ACTIONS})
 			{
 			# entered new group
-			$self->{CURRENT_ACTIONS}{ENTER_GROUP}->($self) if defined $self->{CURRENT_ACTIONS}{ENTER_GROUP} ;
+			if(defined $self->{CURRENT_ACTIONS}{ENTER_GROUP})
+				{
+				my ($enter_group_sub, $arguments) = 'ARRAY' eq ref $self->{CURRENT_ACTIONS}{ENTER_GROUP}
+									? ($self->{CURRENT_ACTIONS}{ENTER_GROUP}->@*)
+									: ($self->{CURRENT_ACTIONS}{ENTER_GROUP}) ; 
+				
+				$enter_group_sub->($self, $arguments) ; 
+				}
+			
 			$self->show_binding_completions() ; 
 			}
 		else
@@ -164,6 +169,9 @@ for my $action (@actions)
 			if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
 				{
 				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[0m") if $self->{ACTION_VERBOSE} ; 
+				
+				$self->{CURRENT_ACTIONS}{ESCAPE_GROUP}->($self) if defined $self->{CURRENT_ACTIONS}{ESCAPE_GROUP} ;
+				
 				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 				}
 			else
@@ -180,6 +188,7 @@ for my $action (@actions)
 			if(any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
 				{
 				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[0m") if $self->{ACTION_VERBOSE} ; 
+				$self->{CURRENT_ACTIONS}{ESCAPE_GROUP}->($self) if defined $self->{CURRENT_ACTIONS}{ESCAPE_GROUP} ;
 				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 				}
 			else

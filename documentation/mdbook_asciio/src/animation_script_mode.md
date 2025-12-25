@@ -1,12 +1,11 @@
+
 # Animation Script Execution
 
 **Navigation:** [Index](bindings_index.md) > [Modes](modes_operation.md) > [Animation](animation_mode.md) > Script execution
 
-**Prefix:** Press «Alt+a» then «s» to enter script execution
+**Prefix:** Press «S» «a» enter the automation mode then «s» 
 
-**Exit:** Press «Escape» to return to slides mode
-
-Execute presentation scripts bound to alphanumeric keys.
+**Exit:** Press «Escape» to exit animatioexit animationanimation scripts bound to alphanumeric keys.
 
 ## Script Keys
 
@@ -14,7 +13,7 @@ Scripts can be bound to any letter or number key. Press the corresponding key to
 
 | Key Range       | Description                         |
 | -----------     | -------------                       |
-| «a» through «z» | Execute script bound to that letter |
+| «a» through «f» | Execute script bound to that letter |
 | «0» through «9» | Execute script bound to that number |
 
-Scripts are configured in the slide presentation file and can perform various actions during presentations.
+Scripts are configured in the animation file.

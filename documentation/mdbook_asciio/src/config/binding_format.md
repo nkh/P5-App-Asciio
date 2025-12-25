@@ -67,12 +67,14 @@ The commands typically share a single shortcut that, when pressed, switches the 
 
 The definition must contain the following control keys at the top-level of the group:
 
-| Key         | Type               | Purpose                                                        |
-| ---         | ---                | ---                                                            |
-| SHORTCUTS   | Scalar or ArrayRef | The keybinding(s) that activate/enter this group               |
-| ESCAPE_KEYS | Scalar or ArrayRef | Optional keybinding(s) that deactivate/exit the group          |
-| ENTER_GROUP | CodeRef or undef   | Optional code to execute *when* the group is activated.        |
-| HIDE        | Scalar (0 or 1)    | Optional atrribute, the group is hidden from bindingsdisplays. |
+| Key          | Type                      | Purpose                                                        |
+| ---          | ---                       | ---                                                            |
+| SHORTCUTS    | Scalar or ArrayRef        | The keybinding(s) that activate/enter this group               |
+| ENTER_GROUP  | CodeRef,ArrayRef or undef | Optional code to execute *when* the group is activated.        |
+| ESCAPE_KEYS  | Scalar or ArrayRef        | Optional keybinding(s) that deactivate/exit the group          |
+| ESCAPE_GROUP | CodeRef                   | Optional code to execute *when* the group is exited.           |
+| CAPTURE_KEYS |                           | Pass as sub to ENTER_GROUP if you just want to capture keys    |
+| HIDE         | Scalar (0 or 1)           | Optional atrribute, the group is hidden from bindingsdisplays. |
 
 #### Group Actions
 

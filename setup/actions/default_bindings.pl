@@ -793,24 +793,53 @@ TOP_LEVEL_GROUP
 'slides ->' => GROUP
 	(
 	SHORTCUTS   => '0A0-s',
+	ENTER_GROUP  => \&App::Asciio::Actions::Presentation::start_manual_slideshow,
+	ESCAPE_KEYS => '000-Escape',
+	ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
+	
+	'previous slide' => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
+	'next slide'     => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
+	'first slide'    => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
+	
+	'run slideshow'  => ['000-s', USE_GROUP('slideshow_run')] ,
+	# 'animation ->' => ['000-a', USE_GROUP('animation')] ,
+	),
+	
+	'group_slideshow_run'    => GROUP
+		(
+		SHORTCUTS    => 'group_slideshow',
+		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow, 1000],
+		ESCAPE_KEYS  => '000-Escape',
+		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
+		
+		'previous slide' => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
+		'next slide'     => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
+		'slower'         => ['000-s', \&App::Asciio::Actions::Presentation::slower_speed  ],
+		'faster'         => ['000-f', \&App::Asciio::Actions::Presentation::faster_speed  ],
+		'pause'          => ['000-p', \&App::Asciio::Actions::Presentation::pause         ],
+		
+		'next slideshow slide' => ['next_slideshow_slide', \&App::Asciio::Actions::Presentation::next_slideshow_slide],
+		),
+
+'animation ->' => GROUP
+	(
+	SHORTCUTS   => 'group_animation',
 	ESCAPE_KEYS => '000-Escape',
 	
-	'Load slides'           => ['000-l', \&App::Asciio::Actions::Presentation::load_slides          ] ,
-	'previous slide'        => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide       ],
-	'next slide'            => ['000-n', \&App::Asciio::Actions::Presentation::next_slide           ],
-	'first slide'           => ['000-g', \&App::Asciio::Actions::Presentation::first_slide          ],
-	'show previous message' => ['000-m', \&App::Asciio::Actions::Presentation::show_previous_message],
-	'show next message'     => ['00S-M', \&App::Asciio::Actions::Presentation::show_next_message    ],
+	'Load animation'     => ['000-l', \&App::Asciio::Actions::Animation::load_animation_slide ],
+	'previous animation' => ['00S-N', \&App::Asciio::Actions::Animation::previous_animation   ],
+	'next animation'     => ['000-n', \&App::Asciio::Actions::Animation::next_animation       ],
+	'first animation'    => ['000-g', \&App::Asciio::Actions::Animation::first_animation      ],
 	
-	'run script ->'         => ['000-s', USE_GROUP('run_slides_script')] ,
+	'script ->' => ['000-s', USE_GROUP('animation_script')] ,
 	),
-
-	'group_run_slides_script' => GROUP
+	
+	'group_animation_script' => GROUP
 		(
 		SHORTCUTS   => 'group_slides_script',
 		ESCAPE_KEYS => '000-Escape',
 		
-		map { my $name =  "slides script $_" ; $name => ["000-$_", \&App::Asciio::Actions::Presentation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
+		# map { "slides script $_" => ["000-$_", \&App::Asciio::Actions::Animation::run_script, [$_], undef, { HIDE => 1 } ] } ('a'..'f', '0'..'9'),
 		),
 
 'move arrow ends ->' => GROUP
@@ -984,22 +1013,23 @@ use App::Asciio::Actions::Clipboard ;
 use App::Asciio::Actions::Clone ;
 use App::Asciio::Actions::Colors ;
 use App::Asciio::Actions::Debug ;
-use App::Asciio::Actions::Elements ;
-use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::ElementAttributes ;
 use App::Asciio::Actions::ElementSelection ;
+use App::Asciio::Actions::Elements ;
+use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
-use App::Asciio::GTK::Asciio::Actions::File ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;
 use App::Asciio::Actions::Presentation ;
+use App::Asciio::Actions::Animation ;
 use App::Asciio::Actions::Ruler ;
 use App::Asciio::Actions::Selection ;
 use App::Asciio::Actions::Shapes ;
+use App::Asciio::Actions::Tabs ;
 use App::Asciio::Actions::Unsorted ;
 use App::Asciio::Actions::ZBuffer ;
-use App::Asciio::Actions::Tabs ;
+use App::Asciio::GTK::Asciio::Actions::File ;
 use App::Asciio::Utils::Scripting ;
 

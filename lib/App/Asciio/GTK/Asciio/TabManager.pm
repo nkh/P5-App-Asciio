@@ -5,19 +5,21 @@ use strict ; use warnings ;
 
 use Glib qw(TRUE FALSE);
 
-use App::Asciio::Setup ;
-use App::Asciio::Server ;
-use App::Asciio::GTK::Asciio::TabbedAsciio ;
-use App::Asciio::GTK::Asciio::HelpWidget ;
 use App::Asciio::Actions::File ;
-use App::Asciio::GTK::Asciio::TabManager::WebApi ;
 use App::Asciio::GTK::Asciio::DnD ;
+use App::Asciio::GTK::Asciio::HelpWidget ;
+use App::Asciio::GTK::Asciio::TabManager::WebApi ;
+use App::Asciio::GTK::Asciio::TabbedAsciio ;
+use App::Asciio::Options ;
+use App::Asciio::Server ;
+use App::Asciio::Setup ;
 
-use Module::Util qw(find_installed) ;
-use File::Basename ;
+
 use Archive::Tar ;
-use Sereal::Encoder ;
+use File::Basename ;
+use Module::Util qw(find_installed) ;
 use Sereal::Decoder ;
+use Sereal::Encoder ;
 
 # ----------------------------------------------------------------------------
 
@@ -31,19 +33,20 @@ my $notebook = Gtk3::Notebook->new() ;
 $notebook->set_scrollable(TRUE) ; 
 
 my $self = bless
-	{
-	vbox           => $vbox,
-	notebook       => $notebook,
-	tab_counter    => 0,
-	help_page_num  => -1,
-	storage        => {},
-	asciios        => [],
-	help_widget    => undef,
-	labels_visible => TRUE,
-	MODIFIED       => 0,
-	TITLE          => undef,
+{
+	vbox             => $vbox,
+	notebook         => $notebook,
+	tab_counter      => 0,
+	help_page_num    => -1,
+	storage          => {},
+	asciios          => [],
+	help_widget      => undef,
+	labels_visible   => TRUE,
+	redirect_events  => -1, # redirect to all_tabs
+	MODIFIED         => 0,
+	TITLE            => undef,
 	LOADED_DOCUMENTS => {},
-	}, $class ;
+}, $class ;
 
 $vbox->pack_start($notebook, TRUE, TRUE, 0) ;
 
@@ -52,7 +55,77 @@ my $asciio_config = $self->start_ui() ;
 my (undef, $web_server_pid) = App::Asciio::Server::start_web_server($self, $asciio_config->{WEB_PORT} // 4444, \&web_callback) ; 
 $self->{web_server_pid} = $web_server_pid ;
 
+$vbox->set_can_focus(TRUE) ;
+
+$vbox->set_events
+	([qw/
+	exposure-mask
+	leave-notify-mask
+	button-press-mask
+	button-release-mask
+	pointer-motion-mask
+	key-press-mask
+	key-release-mask
+	/]);
+
+
+$self->setup_event_redirection() ;
+
 return $self ;
+}
+
+sub setup_event_redirection
+{
+my ($self) = @_ ;
+
+my $already_forwarding = 0 ;
+
+$self->{vbox}->signal_connect
+		(
+		'key-press-event' => 
+			sub
+			{
+			my ($widget, $event) = @_ ;
+			
+			return FALSE if $already_forwarding ;
+			
+			# print "TabManager [key-press-event], redirect: $self->{redirect_events}\n" ;
+			
+			my $page_num = $self->{redirect_events} == -1 ? $self->{notebook}->get_current_page() : $self->{redirect_events} ;
+			
+			if ($page_num >= 0)
+				{
+				my $scrolled_window = $self->{notebook}->get_nth_page($page_num) ;
+				my @children        = $scrolled_window->get_children() ;
+				my $viewport        = $children[0] if @children ;
+				
+				if ($viewport)
+					{
+					my $custom_widget = $viewport->get_child() ;
+					
+					if ($custom_widget)
+						{
+						$already_forwarding = 1 ;
+						$custom_widget->signal_emit('key-press-event', $event) ;
+						$already_forwarding = 0 ;
+						}
+					}
+				}
+			
+			return TRUE ;
+			}
+		) ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub redirect_events
+{
+# redirect all key events to the current tab
+
+my ($self, $on) = @_ ;
+
+$self->{redirect_events} = $on ? $self->{notebook}->get_current_page() : -1 ;
 }
 
 # ----------------------------------------------------------------------------
@@ -85,6 +158,8 @@ if($config->{TARGETS}->@*)
 		{
 		$self->set_title($config->{TARGETS}[0]) ;
 		}
+	
+	$self->focus_tab(0) ;
 	}
 else
 	{
@@ -97,14 +172,13 @@ return $config  ;
 
 # ----------------------------------------------------------------------------
 
-use App::Asciio::Options ;
-
 sub create_tab
 {
 my ($self, $asciio_data) = @_ ;
 
 my ($asciio, $asciio_config)  = App::Asciio::GTK::Asciio::TabbedAsciio->new($asciio_data) ;
 
+$asciio->set_can_focus(FALSE) ;
 $asciio->setup_dnd ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
@@ -137,6 +211,8 @@ my %signal_handlers =
 	save_project           => sub { my ($w, $as)     = @_ ;                       $self->save_project($as) ;                 },
 	show_help_tab          => sub { my ($w)          = @_ ;                       $self->show_help_tab() ;                   },
 	toggle_tab_labels      => sub { my ($w)          = @_ ;                       $self->toggle_tab_labels() ;               },
+	# event management
+	redirect_events        => sub { my ($w, $on)     = @_ ;                       $self->redirect_events($on) ;              },
 	) ;
 
 while (my ($signal, $sub) = each %signal_handlers)

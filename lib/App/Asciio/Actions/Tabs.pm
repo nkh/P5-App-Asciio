@@ -25,6 +25,7 @@ sub show_help_tab          { my ($self) = @_             ; $self->signal_emit('s
 sub toggle_tab_labels      { my ($self) = @_             ; $self->signal_emit('toggle_tab_labels')                                   ; $self->update_display() ; }
 sub hide_all_bindings_help { my ($self) = @_             ; $self->signal_emit('hide_all_bindings_help')                              ; $self->update_display() ; }
 sub show_all_bindings_help { my ($self) = @_             ; $self->signal_emit('show_all_bindings_help')                              ; $self->update_display() ; }
+sub redirect_events        { my ($self, $on) = @_        ; $self->signal_emit('redirect_events', $on)                                ;                           }
 
 use App::Asciio::GTK::Asciio ;
 

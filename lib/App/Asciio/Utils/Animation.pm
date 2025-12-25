@@ -1,4 +1,6 @@
 
+package App::Asciio::Utils::Animation ;
+
 use strict;
 use warnings;
 

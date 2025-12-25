@@ -450,27 +450,27 @@ register_action_handlerswith_override_
 	'Git flip hint lines'                     => ['h'],
 	},
 
-'<< slides leader >>' => 
-	{
-	SHORTCUTS => 'S',
-	ESCAPE_KEYS => 'Escape',
+# '<< slides leader >>' => 
+# 	{
+# 	SHORTCUTS => 'S',
+# 	ESCAPE_KEYS => 'Escape',
 	
-	'Load slides'                             => ['l'],
-	'previous slide'                          => ['N'],
-	'next slide'                              => ['n'],
-	'first slide'                             => ['g'],
-	'show previous message'                   => ['m'],
-	'show next message'                       => ['M'],
-	'<< run script >>'                        => ['s'] ,
-	},
+# 	'Load slides'                             => ['l'],
+# 	'previous slide'                          => ['N'],
+# 	'next slide'                              => ['n'],
+# 	'first slide'                             => ['g'],
+# 	'show previous message'                   => ['m'],
+# 	'show next message'                       => ['M'],
+# 	'<< run script >>'                        => ['s'] ,
+# 	},
 
-'group_slides_script' => 
-	{
-	SHORTCUTS   => 'group_slides_script',
-	ESCAPE_KEYS => 'Escape',
+# 'group_slides_script' => 
+# 	{
+# 	SHORTCUTS   => 'group_slides_script',
+# 	ESCAPE_KEYS => 'Escape',
 	
-	map { my $name =  "slides script $_" ; $name => ["$_", \&App::Asciio::Actions::Presentation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
-	},
+# 	map { my $name =  "slides script $_" ; $name => ["$_", \&App::Asciio::Actions::Animation::run_script, [$_] ] } ('a'..'z', '0'..'9'),
+# 	},
 
 '<< move arrow ends leader >>' =>
 	{

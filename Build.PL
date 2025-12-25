@@ -47,6 +47,7 @@ lib/App/Asciio/Actions/File.pm
 lib/App/Asciio/Actions/Git.pm
 lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Multiwirl.pm
+lib/App/Asciio/Actions/Animation.pm
 lib/App/Asciio/Actions/Presentation.pm
 lib/App/Asciio/Actions/Ruler.pm
 lib/App/Asciio/Actions/Selection.pm
@@ -73,7 +74,7 @@ lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
 lib/App/Asciio/stripes/dot.pm
 
-lib/App/Asciio/Utils/Presentation.pm
+lib/App/Asciio/Utils/Animation.pm
 lib/App/Asciio/Utils/Scripting.pm
 
 lib/App/Asciio/GTK/Asciio.pm

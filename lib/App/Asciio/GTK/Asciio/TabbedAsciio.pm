@@ -47,6 +47,8 @@ use Glib::Object::Subclass Gtk3::DrawingArea::,
 		# IPC
 		send_to_asciio         => { param_types => ['Glib::Int', 'Glib::Scalar'],    return_type => undef          },
 		get_all_asciios        => { param_types => [],                               return_type => 'Glib::Scalar' },
+		# event management
+		redirect_events        => { param_types => ['Glib::Int'],                    return_type => undef          },
 		} ;
 
 
@@ -57,18 +59,17 @@ sub INIT_INSTANCE
 my ($self) = @_ ;
 
 $self->set_events
-  	([qw/
-  	exposure-mask
-  	leave-notify-mask
-  	button-press-mask
-  	button-release-mask
-  	pointer-motion-mask
-  	key-press-mask
-  	key-release-mask
-  	/]);
+	([qw/
+	exposure-mask
+	leave-notify-mask
+	button-press-mask
+	button-release-mask
+	pointer-motion-mask
+	key-press-mask
+	key-release-mask
+	/]);
 
 $self->set_can_focus(TRUE) ;
-
 
 $self->signal_connect
 	(
