@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>«a» Arrow group - Asciio</title>
+        <title>Root level bindings - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -12,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="../favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
-        <link rel="stylesheet" href="../css/variables-8adf115d.css">
-        <link rel="stylesheet" href="../css/general-2459343d.css">
-        <link rel="stylesheet" href="../css/chrome-ae938929.css">
-        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "../";
+            const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-ab7c909a.js";
+            window.path_to_searchindex_js = "searchindex-5617d0da.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-07fdbbe9.js"></script>
+        <script src="toc-47770481.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -105,7 +105,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -140,7 +140,7 @@
                     <h1 class="menu-title">Asciio</h1>
 
                     <div class="right-buttons">
-                        <a href="../print.html" title="Print this book" aria-label="Print this book">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -174,29 +174,245 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="a-arrow-group"><a class="header" href="#a-arrow-group">«a» arrow group</a></h1>
-<pre><code> «a» arrow group:
-
-     «S»                Insert multi-wirl section
-
-     «f»                Flip arrow start and end
-
-     «d»                Change arrow direction
-
-     «s»                Append multi-wirl sectioni
-
-     «A-s»              Remove last section from multi-wirl
-</code></pre>
+                        <h1 id="root-level-bindings"><a class="header" href="#root-level-bindings">Root Level Bindings</a></h1>
+<p><strong>Navigation:</strong> <a href="bindings_index.html">Index</a> &gt; Root Level Bindings</p>
+<p>These bindings work directly without requiring a prefix key.</p>
+<h2 id="editing-operations"><a class="header" href="#editing-operations">Editing Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Undo</td><td><code>«Ctrl+z»</code> or <code>«u»</code></td><td>Undo last operation</td></tr>
+<tr><td>Redo</td><td><code>«Ctrl+y»</code> or <code>«Ctrl+r»</code></td><td>Redo previously undone operation</td></tr>
+<tr><td>Delete selected elements</td><td><code>«Delete»</code> or <code>«d»</code></td><td>Remove currently selected elements</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="view-control"><a class="header" href="#view-control">View Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Zoom in</td><td><code>«+»</code> or <code>«Ctrl+j»</code> or <code>«Ctrl+scroll-up»</code></td><td>Increase canvas zoom level</td></tr>
+<tr><td>Zoom out</td><td><code>«-»</code> or <code>«Ctrl+h»</code> or <code>«Ctrl+scroll-down»</code></td><td>Decrease canvas zoom level</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="selection-operations"><a class="header" href="#selection-operations">Selection Operations</a></h2>
+<h3 id="basic-selection"><a class="header" href="#basic-selection">Basic Selection</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Select all elements</td><td><code>«Ctrl+a»</code> or <code>«Shift+V»</code></td><td>Select every element in the canvas</td></tr>
+<tr><td>Deselect all elements</td><td><code>«Escape»</code></td><td>Clear current selection</td></tr>
+<tr><td>Select connected elements</td><td><code>«v»</code></td><td>Select all elements connected to current selection</td></tr>
+<tr><td>Select elements by word</td><td><code>«Ctrl+f»</code></td><td>Select all elements containing specific text</td></tr>
+<tr><td>Select elements by word no group</td><td><code>«Ctrl+Shift+f»</code></td><td>Select by text without grouping</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="sequential-selection"><a class="header" href="#sequential-selection">Sequential Selection</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Select next element</td><td><code>«Tab»</code></td><td>Cycle forward through all elements</td></tr>
+<tr><td>Select previous element</td><td><code>«Shift+Tab»</code></td><td>Cycle backward through all elements</td></tr>
+<tr><td>Select next non-arrow</td><td><code>«n»</code></td><td>Cycle forward through non-arrow elements</td></tr>
+<tr><td>Select previous non-arrow</td><td><code>«Shift+N»</code></td><td>Cycle backward through non-arrow elements</td></tr>
+<tr><td>Select next arrow</td><td><code>«m»</code></td><td>Cycle forward through arrow elements</td></tr>
+<tr><td>Select previous arrow</td><td><code>«Shift+M»</code></td><td>Cycle backward through arrow elements</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="advanced-selection"><a class="header" href="#advanced-selection">Advanced Selection</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Enter interactive selection mode</td><td><code>«s»</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-manipulation"><a class="header" href="#element-manipulation">Element Manipulation</a></h2>
+<h3 id="editing-elements"><a class="header" href="#editing-elements">Editing Elements</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Edit selected element</td><td><code>«Double-click-1»</code> or <code>«Return»</code></td><td>Open editor for selected element</td></tr>
+<tr><td>Edit selected element inline</td><td><code>«Ctrl+Double-click-1»</code> or <code>«Alt+Return»</code></td><td>Edit element text directly on canvas</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="moving-elements"><a class="header" href="#moving-elements">Moving Elements</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move selected left</td><td><code>«Left»</code> or <code>«h»</code></td><td>Move selection one character left</td></tr>
+<tr><td>Move selected right</td><td><code>«Right»</code> or <code>«l»</code></td><td>Move selection one character right</td></tr>
+<tr><td>Move selected up</td><td><code>«Up»</code> or <code>«k»</code></td><td>Move selection one character up</td></tr>
+<tr><td>Move selected down</td><td><code>«Down»</code> or <code>«j»</code></td><td>Move selection one character down</td></tr>
+<tr><td>Move selected left (fast)</td><td><code>«Alt+Left»</code></td><td>Move selection 10 characters left</td></tr>
+<tr><td>Move selected right (fast)</td><td><code>«Alt+Right»</code></td><td>Move selection 10 characters right</td></tr>
+<tr><td>Move selected up (fast)</td><td><code>«Alt+Up»</code></td><td>Move selection 10 characters up</td></tr>
+<tr><td>Move selected down (fast)</td><td><code>«Alt+Down»</code></td><td>Move selection 10 characters down</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="resizing-elements"><a class="header" href="#resizing-elements">Resizing Elements</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Make element narrower</td><td><code>«1»</code></td><td>Decrease width by one character</td></tr>
+<tr><td>Make element taller</td><td><code>«2»</code></td><td>Increase height by one character</td></tr>
+<tr><td>Make element shorter</td><td><code>«3»</code></td><td>Decrease height by one character</td></tr>
+<tr><td>Make element wider</td><td><code>«4»</code></td><td>Increase width by one character</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-operations"><a class="header" href="#mouse-operations">Mouse Operations</a></h2>
+<p>See <a href="mouse_operations.html">Mouse Operations Reference</a> for complete details.</p>
+<h3 id="basic-mouse"><a class="header" href="#basic-mouse">Basic Mouse</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Mouse left-click</td><td><code>«Left-click»</code></td><td>Select element or set insertion point</td></tr>
+<tr><td>Mouse right-click</td><td><code>«Right-click»</code></td><td>Open context menu</td></tr>
+<tr><td>Mouse left-release</td><td><code>«Left-release»</code></td><td>Complete drag operation</td></tr>
+<tr><td>Mouse selection flip</td><td><code>«Shift+Left-click»</code></td><td>Toggle element in selection</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="quick-operations"><a class="header" href="#quick-operations">Quick Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Quick link</td><td><code>«Alt+Left-click»</code> or <code>«.»</code></td><td>Create arrow to clicked location</td></tr>
+<tr><td>Quick link orthogonal</td><td><code>«Alt+Shift+Left-click»</code></td><td>Create orthogonal arrow</td></tr>
+<tr><td>Quick box</td><td><code>«Ctrl+Shift+Left-click»</code></td><td>Create box at location</td></tr>
+<tr><td>Duplicate elements</td><td><code>«,»</code></td><td>Duplicate selected elements</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="drag-and-drop"><a class="header" href="#drag-and-drop">Drag and Drop</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Start drag and drop</td><td><code>«Ctrl+Left-click»</code></td><td>Begin dragging elements</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="interactive-arrow-editing"><a class="header" href="#interactive-arrow-editing">Interactive Arrow Editing</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Arrow to mouse</td><td><code>«Ctrl+Alt+motion»</code></td><td>Extend arrow to follow mouse</td></tr>
+<tr><td>Arrow change direction</td><td><code>«Ctrl+Alt+d»</code></td><td>Toggle arrow direction interactively</td></tr>
+<tr><td>Arrow mouse change direction</td><td><code>«Ctrl+Alt+Double-click»</code></td><td>Change arrow direction at click point</td></tr>
+<tr><td>Wirl arrow add section</td><td><code>«Ctrl+Alt+Left-click»</code></td><td>Add section to multi-segment arrow</td></tr>
+<tr><td>Wirl arrow insert flex point</td><td><code>«Ctrl+Alt+Middle-click»</code></td><td>Insert flexible point in arrow</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="mouse-motion"><a class="header" href="#mouse-motion">Mouse Motion</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Mouse motion</td><td><code>«motion»</code></td><td>Track mouse position</td></tr>
+<tr><td>Mouse motion (extended)</td><td><code>«Alt+Shift+motion»</code></td><td>Track with alternate behavior</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-emulation"><a class="header" href="#mouse-emulation">Mouse Emulation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Toggle mouse emulation</td><td><code>«'»</code></td><td>Enable/disable keyboard mouse control</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="when-mouse-emulation-active"><a class="header" href="#when-mouse-emulation-active">When Mouse Emulation Active</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Emulation left-click</td><td><code>«ö»</code></td><td>Simulate left mouse click</td></tr>
+<tr><td>Emulation expand selection</td><td><code>«Shift+Ö»</code></td><td>Expand selection at cursor</td></tr>
+<tr><td>Emulation selection flip</td><td><code>«Ctrl+ö»</code></td><td>Toggle selection at cursor</td></tr>
+<tr><td>Emulation right-click</td><td><code>«ä»</code></td><td>Simulate right mouse click</td></tr>
+<tr><td>Emulation move left</td><td><code>«Ctrl+Left»</code></td><td>Move mouse cursor left</td></tr>
+<tr><td>Emulation move right</td><td><code>«Ctrl+Right»</code></td><td>Move mouse cursor right</td></tr>
+<tr><td>Emulation move up</td><td><code>«Ctrl+Up»</code></td><td>Move mouse cursor up</td></tr>
+<tr><td>Emulation move down</td><td><code>«Ctrl+Down»</code></td><td>Move mouse cursor down</td></tr>
+<tr><td>Emulation drag left</td><td><code>«Shift+Left»</code></td><td>Drag while moving left</td></tr>
+<tr><td>Emulation drag right</td><td><code>«Shift+Right»</code></td><td>Drag while moving right</td></tr>
+<tr><td>Emulation drag up</td><td><code>«Shift+Up»</code></td><td>Drag while moving up</td></tr>
+<tr><td>Emulation drag down</td><td><code>«Shift+Down»</code></td><td>Drag while moving down</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="clipboard-operations"><a class="header" href="#clipboard-operations">Clipboard Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Copy to clipboard</td><td><code>«Ctrl+c»</code> or <code>«Ctrl+Insert»</code></td><td>Copy selection to system clipboard</td></tr>
+<tr><td>Paste from clipboard</td><td><code>«Ctrl+v»</code> or <code>«Shift+Insert»</code></td><td>Insert from system clipboard</td></tr>
+</tbody>
+</table>
+</div>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="../bindings/inserting.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="bindings/vim-like.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../bindings/aligning.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="bindings/gui.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -206,11 +422,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="../bindings/inserting.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="bindings/vim-like.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../bindings/aligning.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="bindings/gui.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
@@ -230,13 +446,13 @@
         </script>
 
 
-        <script src="../elasticlunr-ef4e11c1.min.js"></script>
-        <script src="../mark-09e88c2c.min.js"></script>
-        <script src="../searcher-c2a407aa.js"></script>
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
 
-        <script src="../clipboard-1626706a.min.js"></script>
-        <script src="../highlight-abc7f01d.js"></script>
-        <script src="../book-a0b12cfe.js"></script>
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
 
         <!-- Custom JS scripts -->
 

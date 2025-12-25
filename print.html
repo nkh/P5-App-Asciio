@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-ab7c909a.js";
+            window.path_to_searchindex_js = "searchindex-5617d0da.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-07fdbbe9.js"></script>
+        <script src="toc-47770481.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -200,7 +200,7 @@
 <p>ASCII format is easy and universal, many tools exist to manipulate it and even transform it to other formats.</p>
 <p>I’ve used it a lot to draw trees and graphs when my hand drawn pictures were not good enough for presentations. Having the possibility to copy and modify the graphs/diagrams makes it possible to present changes in an attractive way.</p>
 <h2 id="history"><a class="header" href="#history">History</a></h2>
-<p>Asciio was born … as a dare; someone coined a cool name at a conference in Oslo and it’s been under development for 20 years. It allows you to embed graphs in code, documentation, requirements, …</p>
+<p>Asciio was born … as a dare; the cool name was coined at a conference in Oslo.</p>
 <pre><code>                          .------.
               .-----------| root |---------.
               |           '------'         |       other process
@@ -220,6 +220,7 @@
                               '--------------------------'
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
+<p>Asciio is developed, and runs, on both Linux and Windows (cygwin).</p>
 <h1 id="running-asciio"><a class="header" href="#running-asciio">Running asciio</a></h1>
 <pre><code>$&gt; asciio [file.asciio]       # GUI application using Gtk3
 
@@ -233,12 +234,13 @@ $&gt; text_to_asciio ...         # makes an asciio file from text
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>option</th><th></th><th></th></tr>
+<tr><th>option</th><th></th><th>context</th></tr>
 </thead>
 <tbody>
 <tr><td>b</td><td>put the input in a box element</td><td>text_to_asciio</td></tr>
 <tr><td>text_separator=s</td><td>put the input in a boxed element</td><td>text_to_ascioo</td></tr>
 <tr><td>display_setup_information</td><td>verbose setup information</td><td></td></tr>
+<tr><td>show_binding_override</td><td>display binding overrides in terminal</td><td></td></tr>
 <tr><td>setup_path=s</td><td>sets the root of the setup directory</td><td></td></tr>
 <tr><td>s,script=s</td><td>script to be run at Asciio start</td><td></td></tr>
 <tr><td>p,web_port=s</td><td>port for web server</td><td></td></tr>
@@ -250,8 +252,177 @@ $&gt; text_to_asciio ...         # makes an asciio file from text
 </tbody>
 </table>
 </div>
-<h1 id="platforms"><a class="header" href="#platforms">Platforms</a></h1>
-<p>Asciio is developed on both Linux and Windows (cygwin).</p>
+<h1 id="opening-asciio-documents-from-the-command-line"><a class="header" href="#opening-asciio-documents-from-the-command-line">Opening Asciio documents from the command line</a></h1>
+<h2 id="asciio-documents-and-projects"><a class="header" href="#asciio-documents-and-projects">Asciio Documents and Projects</a></h2>
+<p>The Asciio (tabbed) application distinguishes between two file types: individual asciio documents and asciio projects. Understanding this distinction is essential for proper file management.</p>
+<h3 id="file-types"><a class="header" href="#file-types">File Types</a></h3>
+<h4 id="asciio-documents"><a class="header" href="#asciio-documents">Asciio Documents</a></h4>
+<p>Asciio documents represent individual diagrams. Each document contains:</p>
+<ul>
+<li>Drawing elements and their properties</li>
+<li>Setup data</li>
+</ul>
+<p>Documents are loaded into individual tabs within the application interface.</p>
+<h4 id="asciio-projects"><a class="header" href="#asciio-projects">Asciio Projects</a></h4>
+<p>Asciio projects are container that bundle multiple asciio documents together. A project file contains:</p>
+<ul>
+<li>Multiple serialized asciio documents</li>
+<li>Project data specifying tab count and document order</li>
+</ul>
+<h3 id="loading-files-from-command-line"><a class="header" href="#loading-files-from-command-line">Loading Files from Command Line</a></h3>
+<h4 id="command-line-behavior"><a class="header" href="#command-line-behavior">Command Line Behavior</a></h4>
+<p>Files specified as command-line arguments are processed sequentially. The application automatically detects whether each file is a document or project.</p>
+<h4 id="type-detection-mechanism"><a class="header" href="#type-detection-mechanism">Type Detection Mechanism</a></h4>
+<p>File type detection operates through document validation:</p>
+<ul>
+<li>The application attempts to open the file as an asciio project</li>
+<li>Open failure triggers single-document loading</li>
+</ul>
+<p>This approach allows transparent handling of both file types without requiring file extension conventions or explicit type specification.</p>
+<h4 id="multiple-file-loading"><a class="header" href="#multiple-file-loading">Multiple File Loading</a></h4>
+<p>When multiple files are provided via command line:</p>
+<ul>
+<li>Each file is processed independently</li>
+<li>Projects expand into multiple tabs (one per contained document)</li>
+<li>Asciio documents in a tab each</li>
+<li>All loaded files coexist in the same application session</li>
+</ul>
+<h3 id="writing-projects"><a class="header" href="#writing-projects">Writing Projects</a></h3>
+<h4 id="project-structure"><a class="header" href="#project-structure">Project Structure</a></h4>
+<p>When saving a project, the application:</p>
+<ul>
+<li>Serializes each open tab’s asciio document</li>
+<li>Generates unique filenames for each document within the archive</li>
+<li>Creates an <code>asciio_project</code> data file containing document count and ordering</li>
+<li>Packages all components into a project file</li>
+</ul>
+<h3 id="naming-collision-resolution"><a class="header" href="#naming-collision-resolution">Naming Collision Resolution</a></h3>
+<h4 id="during-project-creation"><a class="header" href="#during-project-creation">During Project Creation</a></h4>
+<p>The application implements collision detection when saving projects:</p>
+<ul>
+<li>Documents without titles receive automatic names (<code>untitled_0</code>, <code>untitled_1</code>, etc.)</li>
+<li>Duplicate names trigger automatic suffix generation using random integers (0-9999)</li>
+</ul>
+<p>This ensures filesystem-safe uniqueness within the project file.</p>
+<h3 id="save-operations"><a class="header" href="#save-operations">Save Operations</a></h3>
+<h4 id="project-modified-state"><a class="header" href="#project-modified-state">Project Modified State</a></h4>
+<p>The application tracks modifications at two levels:</p>
+<ul>
+<li>Individual document modification (tracked per tab)</li>
+<li>Project-level modification (tab operations, document additions/removals)</li>
+</ul>
+<h4 id="file-overwrite-protection"><a class="header" href="#file-overwrite-protection">File Overwrite Protection</a></h4>
+<p>The save mechanism implements defensive overwrite handling:</p>
+<ul>
+<li>Existing filenames trigger confirmation dialogs</li>
+<li>User cancellation aborts the save operation</li>
+</ul>
+<h3 id="application-exit"><a class="header" href="#application-exit">Application Exit</a></h3>
+<h4 id="modified-content-handling"><a class="header" href="#modified-content-handling">Modified Content Handling</a></h4>
+<p>Application termination with unsaved changes triggers:</p>
+<ul>
+<li>Detection of any modified documents or project structure</li>
+<li>Presentation of save/quit/cancel dialog</li>
+</ul>
+<h3 id="document-vs-project-saves"><a class="header" href="#document-vs-project-saves">Document vs Project Saves</a></h3>
+<p>Asciio uses project-level saves during exit. Individual document modifications are captured within the project save operation. You can save individual documents at any time.</p>
+<h3 id="error-handling-behavior"><a class="header" href="#error-handling-behavior">Error Handling Behavior</a></h3>
+<h4 id="non-existent-files"><a class="header" href="#non-existent-files">Non-Existent Files</a></h4>
+<p>When a non-existent file path is provided on the command line:</p>
+<ul>
+<li>A new empty tab is created</li>
+</ul>
+<p>The application launches successfully but the non-existent file produces an empty tab, error is output to the console.</p>
+<h4 id="invalid-file-formats"><a class="header" href="#invalid-file-formats">Invalid File Formats</a></h4>
+<p>When an existing file contains invalid or corrupted data:</p>
+<ul>
+<li>A new empty tab is created</li>
+</ul>
+<h4 id="error-recovery"><a class="header" href="#error-recovery">Error Recovery</a></h4>
+<p>Asciio is resilient to bad input:</p>
+<ul>
+<li>Individual file failures do not prevent application launch</li>
+<li>Subsequent command-line files are processed</li>
+<li>Error messages provide diagnostic information to STDERR</li>
+</ul>
+<h3 id="command-line-examples"><a class="header" href="#command-line-examples">Command Line Examples</a></h3>
+<h4 id="single-asciio-document"><a class="header" href="#single-asciio-document">Single Asciio Document</a></h4>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio diagram.ascii
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Application launches with one document</li>
+<li>no tab is displayed when a single file is loaded</li>
+</ul>
+<h3 id="single-project"><a class="header" href="#single-project">Single Project</a></h3>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio project.asciios
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Application launches with multiple tabs (one per contained document)</li>
+<li>Tab labels reflect individual document names from archive</li>
+<li>Tab order matches the orders of the saved project</li>
+</ul>
+<h4 id="multiple-asciio-documents"><a class="header" href="#multiple-asciio-documents">Multiple Asciio Documents</a></h4>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio doc1.asciio doc2.asciio doc3.asciio
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Application launches with three tabs</li>
+<li>Each document loads into separate sequential tab</li>
+<li>Tab labels: <code>doc1.asciio</code>, <code>doc2.asciio</code>, <code>doc3.asciio</code></li>
+</ul>
+<h4 id="multiple-projects"><a class="header" href="#multiple-projects">Multiple Projects</a></h4>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio project1.asciios project2.asciios
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Application launches with tabs from both projects</li>
+<li>First project’s documents load into initial tabs</li>
+<li>Second project’s documents append to tab bar</li>
+<li>Tab labels reflect individual document names</li>
+<li>Naming collision resolution applies if documents share names</li>
+</ul>
+<h3 id="mixed-asciio-documents-and-projects"><a class="header" href="#mixed-asciio-documents-and-projects">Mixed Asciio Documents and Projects</a></h3>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio header.asciio project.asciios footer.asciio
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Tab sequence: <code>header.asciio</code>, then project documents, then <code>footer.asciio</code></li>
+<li>Project expands into multiple consecutive tabs</li>
+<li>Final tab arrangement reflects command-line order</li>
+</ul>
+<h4 id="project-with-document-name-collisions"><a class="header" href="#project-with-document-name-collisions">Project with Document Name Collisions</a></h4>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio project1.asciios project2.asciios
+</code></pre>
+<p><strong>Where both projects contain a document named <code>diagram</code></strong>:</p>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>First <code>diagram</code> from <code>project1.asciio</code> loads with original name</li>
+<li>Second <code>diagram</code> from <code>project2.asciio</code> receives random suffix</li>
+<li>Resulting tabs: <code>diagram</code>, <code>diagram_4721</code> (random number varies)</li>
+<li>Collision detection operates at session load time</li>
+<li>Suffix generation prevents tab label conflicts</li>
+</ul>
+<h4 id="all-invalid-files"><a class="header" href="#all-invalid-files">All Invalid Files</a></h4>
+<p><strong>Command</strong>:</p>
+<pre><code class="language-bash">asciio missing1.ascii0 missing2.asciio missing3.asciio
+</code></pre>
+<p><strong>Behavior</strong>:</p>
+<ul>
+<li>Three empty tabs created</li>
+<li>Three error messages to STDERR</li>
+<li>Application remains functional</li>
+<li>User can immediately begin working in empty tabs</li>
+<li>No crash or abnormal termination</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="installation"><a class="header" href="#installation">Installation</a></h1>
 <p>asciio’s is hosted on  <a href="https://github.com/nkh/P5-App-Asciio">github</a></p>
 <h2 id="debianubuntu-package"><a class="header" href="#debianubuntu-package">Debian/Ubuntu package</a></h2>
@@ -328,6 +499,123 @@ asciio
 <p>Although work can mostly be done using the keyboard, the mouse is still useful and it’s fast when creating new diagrams. See <em>Working efficiently</em></p>
 <h2 id="popup-menus"><a class="header" href="#popup-menus">popup menus</a></h2>
 <p>My least favorite way of using Asciio, it’s slow and cumbersome for most actions. I try to limit the amount of menu and sub menus.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="asciio-tab-management"><a class="header" href="#asciio-tab-management">Asciio Tab Management</a></h1>
+<p><img src="asciio_tabs.png" alt="Asciio tabs"></p>
+<h2 id="overview"><a class="header" href="#overview">Overview</a></h2>
+<p>Asciio provides a comprehensive tab-based workflow system that allows you to work with multiple documents simultaneously within a single application window. Each tab represents an independent drawing canvas, and you can organize, navigate, and manage these tabs efficiently through a variety of operations.</p>
+<p><em><strong>Bindings:</strong></em> <a href="#tab-management">Tab Management</a></p>
+<hr>
+<h2 id="index"><a class="header" href="#index">Index</a></h2>
+<h3 id="creating-new-tabs"><a class="header" href="#creating-new-tabs">Creating New Tabs</a></h3>
+<p><a href="#creating-new-tabs">Creating new tabs</a> | <a href="#duplicating-tabs">Duplicating tabs</a> | <a href="#closing-tabs">Closing tabs</a></p>
+<h3 id="tab-navigation"><a class="header" href="#tab-navigation">Tab Navigation</a></h3>
+<p><a href="#sequential-navigation">Sequential navigation</a> | <a href="#direct-tab-access">Direct tab access</a> | <a href="#jump-to-last-tab">Jump to last tab</a></p>
+<h3 id="tab-organization"><a class="header" href="#tab-organization">Tab Organization</a></h3>
+<p><a href="#moving-tabs">Moving tabs</a> | <a href="#renaming-tabs">Renaming tabs</a> | <a href="#tab-label-visibility">Tab label visibility</a></p>
+<h3 id="project-operations"><a class="header" href="#project-operations">Project Operations</a></h3>
+<p><a href="#opening-projects">Opening projects</a> | <a href="#saving-projects">Saving projects</a> | <a href="#reading-files-into-tabs">Reading files into tabs</a></p>
+<h3 id="application-control"><a class="header" href="#application-control">Application Control</a></h3>
+<p><a href="#exiting-the-application">Exiting the application</a></p>
+<h3 id="workflow-tips"><a class="header" href="#workflow-tips">Workflow Tips</a></h3>
+<p><a href="#organizing-multiple-documents">Organizing multiple documents</a> |
+<a href="#project-management-strategy">Project management strategy</a></p>
+<p><a href="#handling-name-conflicts">Handling name conflicts</a> |
+<a href="#maximizing-canvas-space">Maximizing canvas space</a></p>
+<hr>
+<h2 id="tab-creation-and-removal"><a class="header" href="#tab-creation-and-removal">Tab Creation and Removal</a></h2>
+<h3 id="creating-new-tabs-1"><a class="header" href="#creating-new-tabs-1">Creating New Tabs</a></h3>
+<p>Create a new empty tab to start a fresh drawing. The new tab is appended to the end of the tab bar and automatically receives focus.</p>
+<p><em><strong>Binding:</strong></em> «t» + «n»</p>
+<p>The newly created tab begins with default canvas settings and an empty drawing surface. Tab labels are automatically shown when multiple tabs exist.</p>
+<h3 id="duplicating-tabs"><a class="header" href="#duplicating-tabs">Duplicating Tabs</a></h3>
+<p>Clone the current tab to create an exact copy of your work. This operation duplicates all elements, their positions, properties, and the current canvas state.</p>
+<p><em><strong>Binding:</strong></em> «t» + «c»</p>
+<p>The duplicated tab is created as a new tab with identical content. This is useful for creating variations of a design or maintaining snapshots of work in progress. The cloned tab is independent from the original and modifications to either tab do not affect the other.</p>
+<h3 id="closing-tabs"><a class="header" href="#closing-tabs">Closing Tabs</a></h3>
+<p>Close operations are handled directly within each document window. Closing a tab with unsaved modifications triggers a save confirmation dialog. The application prevents accidental data loss by prompting for save actions before tab removal.</p>
+<p>When closing the last remaining tab, the application follows its exit procedures, including project-level save prompts if modifications exist.</p>
+<h2 id="tab-navigation-1"><a class="header" href="#tab-navigation-1">Tab Navigation</a></h2>
+<h3 id="sequential-navigation"><a class="header" href="#sequential-navigation">Sequential Navigation</a></h3>
+<p>Navigate through tabs in sequential order using forward and backward operations.</p>
+<p><em><strong>Binding:</strong></em> «t» + «t»<br>Move focus to the tab immediately to the right of the current tab. When viewing the rightmost tab, this operation wraps around to the leftmost tab, creating circular navigation behavior.</p>
+<p><em><strong>Binding:</strong></em> «t» + «Shift+T»<br>Move focus to the tab immediately to the left of the current tab. When viewing the leftmost tab, this operation wraps around to the rightmost tab.</p>
+<h3 id="direct-tab-access"><a class="header" href="#direct-tab-access">Direct Tab Access</a></h3>
+<p>Jump directly to specific tabs by their position index. Tabs are numbered from 0 to 9, allowing instant access to the first ten tabs.</p>
+<p><em><strong>Binding:</strong></em> «t» + «0» through «t» + «9»</p>
+<p>Each number key corresponds to a tab position:</p>
+<ul>
+<li>«t» + «0» focuses the first tab</li>
+<li>«t» + «1» focuses the second tab</li>
+<li>«t» + «2» focuses the third tab</li>
+<li>And so on through «t» + «9» for the tenth tab</li>
+</ul>
+<p>If you attempt to access a tab index that doesn’t exist (for example, pressing «t» + «5» when only three tabs are open), the operation has no effect and focus remains on the current tab.</p>
+<h3 id="jump-to-last-tab"><a class="header" href="#jump-to-last-tab">Jump to Last Tab</a></h3>
+<p>Quickly navigate to the rightmost tab regardless of current position.</p>
+<p><em><strong>Binding:</strong></em> «t» + «$»</p>
+<p>This operation is particularly useful when working with many tabs and you need to access the most recently created tab or the last tab in your workspace.</p>
+<h2 id="tab-organization-1"><a class="header" href="#tab-organization-1">Tab Organization</a></h2>
+<h3 id="moving-tabs"><a class="header" href="#moving-tabs">Moving Tabs</a></h3>
+<p>Reorder tabs within the tab bar by moving them left or right. Tab reordering is purely organizational and does not affect tab content or properties.</p>
+<p><em><strong>Binding:</strong></em> «t» + «h»<br>Moves the current tab one position to the left in the tab bar. If the current tab is already in the leftmost position, this operation has no effect.</p>
+<p><em><strong>Binding:</strong></em> «t» + «l»<br>Moves the current tab one position to the right in the tab bar. If the current tab is already in the rightmost position, this operation has no effect.</p>
+<p>Tab movement operations preserve tab focus. After moving a tab, it remains the active tab in its new position. If a help tab is visible, the application correctly maintains its position tracking during tab reordering.</p>
+<h3 id="renaming-tabs"><a class="header" href="#renaming-tabs">Renaming Tabs</a></h3>
+<p>Assign meaningful names to tabs for easier identification and organization. Tab names appear in the tab label and help distinguish between multiple documents.</p>
+<p><em><strong>Binding:</strong></em> «t» + «Shift+R»</p>
+<p>The rename operation prompts for a new tab name. The provided name updates the tab label immediately. Tab names are preserved when saving projects and are used as filenames when archiving documents within project files.</p>
+<p>If multiple tabs share the same name when saving a project, the application automatically applies numeric suffixes to ensure unique filenames within the archive.</p>
+<h3 id="tab-label-visibility"><a class="header" href="#tab-label-visibility">Tab Label Visibility</a></h3>
+<p>Control the visibility of tab labels to maximize drawing canvas space or show tab organization.</p>
+<p><em><strong>Binding:</strong></em> «t» + «Shift+L»</p>
+<p>Tab label visibility toggles between shown and hidden states. When working with a single tab, labels are automatically hidden by default since no navigation is necessary. Opening a second tab automatically shows labels to facilitate navigation.</p>
+<p>Hidden labels do not affect tab functionality. All navigation and management operations work identically regardless of label visibility state.</p>
+<h2 id="project-operations-1"><a class="header" href="#project-operations-1">Project Operations</a></h2>
+<h3 id="opening-projects"><a class="header" href="#opening-projects">Opening Projects</a></h3>
+<p>Load an existing project file into the application. Project files contain multiple documents that are extracted and opened as individual tabs.</p>
+<p><em><strong>Binding:</strong></em> «t» + «e»</p>
+<p>The operation presents a file selection dialog. Upon selecting a project file, the application prompts to save any unsaved work in currently open tabs. After confirmation, existing tabs are closed and the project’s documents are loaded.</p>
+<p>Each document from the project opens in a sequential tab with its preserved name. Tab order matches the document order stored in the project metadata. The application window title updates to reflect the opened project filename.</p>
+<p>If the project file is invalid or corrupted, appropriate error messages are displayed and the operation is aborted.</p>
+<h3 id="saving-projects"><a class="header" href="#saving-projects">Saving Projects</a></h3>
+<p>Save all open tabs as a unified project file. This operation captures the entire workspace state including all documents and their organization.</p>
+<p><em><strong>Binding:</strong></em> «t» + «w»</p>
+<p>The save operation checks for modifications at both the project level (tab operations, additions, removals) and document level (content changes within tabs). If no modifications exist, the operation completes immediately without prompting.</p>
+<p>For modified projects, the application uses the current project filename if one exists. If no project filename is associated with the current workspace, or if you explicitly request “save as” functionality, a file selection dialog appears prompting for a filename.</p>
+<p>When saving to an existing file, a confirmation dialog asks whether to overwrite the file. Canceling at this point aborts the save operation without modifying any files.</p>
+<p>Successful save operations reset all modification flags for both the project and individual documents.</p>
+<p><em><strong>Binding:</strong></em> «t» + «Shift+W»<br>Force the file selection dialog to appear regardless of whether a project filename already exists. This allows saving the current workspace as a new project file while preserving the original.</p>
+<h3 id="reading-files-into-tabs"><a class="header" href="#reading-files-into-tabs">Reading Files into Tabs</a></h3>
+<p>Load individual document files or project files into the current workspace without closing existing tabs.</p>
+<p><em><strong>Binding:</strong></em> «t» + «r»</p>
+<p>The read operation presents a file selection dialog. The selected file is loaded according to its type:</p>
+<p><strong>Single Document Files</strong>: A new tab is created and the document content is loaded into it. The new tab is appended to the end of the tab bar.</p>
+<p><strong>Project Files</strong>: All documents within the project are extracted and each opens in its own new tab. These tabs are appended sequentially to the existing tab bar.</p>
+<p>Unlike the open project operation, reading files does not close existing tabs or prompt for save operations. This allows you to progressively build a workspace by loading multiple files from different sources.</p>
+<p>If a loaded document name conflicts with an existing tab name, a numeric suffix is automatically appended to ensure unique identification.</p>
+<h2 id="application-control-1"><a class="header" href="#application-control-1">Application Control</a></h2>
+<h3 id="exiting-the-application"><a class="header" href="#exiting-the-application">Exiting the Application</a></h3>
+<p>Close the application and terminate the session. The exit operation provides safeguards against data loss through modification checking and save prompts.</p>
+<p><em><strong>Binding:</strong></em> «t» + «q»</p>
+<p>The application checks for unsaved modifications in both the project structure (tab organization changes) and individual documents (content changes). If modifications exist, a dialog appears with three options:</p>
+<ul>
+<li><strong>Save and Quit</strong>: Saves the entire project before exiting. If no project filename exists, a file selection dialog prompts for the destination filename.</li>
+<li><strong>Quit Without Saving</strong>: Exits immediately, discarding all unsaved changes.</li>
+<li><strong>Cancel</strong>: Aborts the exit operation and returns to the workspace.</li>
+</ul>
+<p><em><strong>Binding:</strong></em> «t» + «Shift+Q»</p>
+<p>This operation bypasses all save prompts and modification checks, exiting the application immediately. All unsaved work is discarded without confirmation. Use this operation only when you are certain you want to abandon current work.</p>
+<h2 id="workflow-tips-1"><a class="header" href="#workflow-tips-1">Workflow Tips</a></h2>
+<h3 id="organizing-multiple-documents"><a class="header" href="#organizing-multiple-documents">Organizing Multiple Documents</a></h3>
+<p>When working with related documents, use tab reordering to group them logically. Position frequently accessed tabs toward the left for easier access with direct tab shortcuts («t» + «0» through «t» + «9»).</p>
+<h3 id="project-management-strategy"><a class="header" href="#project-management-strategy">Project Management Strategy</a></h3>
+<p>Use the “read file” operation («t» + «r») to incrementally build a workspace from multiple sources. Once your workspace is organized, save it as a project («t» + «w») to preserve the entire configuration for future sessions.</p>
+<h3 id="handling-name-conflicts"><a class="header" href="#handling-name-conflicts">Handling Name Conflicts</a></h3>
+<p>When loading multiple projects that contain identically named documents, the application automatically prevents conflicts by appending numeric suffixes. You can rename tabs afterward («t» + «Shift+R») to provide more meaningful distinctions.</p>
+<h3 id="maximizing-canvas-space"><a class="header" href="#maximizing-canvas-space">Maximizing Canvas Space</a></h3>
+<p>When tab names are not needed for orientation, you can hide tab labels («t» + «Shift+L»). Labels can be toggled back on at any time without affecting functionality.</p>
+<p>Asciio hides the tab label if only one tab exists.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="unicode-support"><a class="header" href="#unicode-support">Unicode support</a></h1>
 <p>Asciio supports Unicode is a work under progress; including support for Asian languages, thanks to the co-developer who writes in these languages, but you may need a font that supports them.</p>
@@ -534,15 +822,15 @@ be aligned, you can download a font that can align them.</p>
 <p><img src="stencils/box_rotated.png" alt="rotated"></p>
 <h2 id="types"><a class="header" href="#types">Types</a></h2>
 <h3 id="a-box"><a class="header" href="#a-box">A box</a></h3>
-<p>Binding: «b»                Add box</p>
+<p><em><strong>Binding:</strong></em> «ibb»              Add box</p>
 <h3 id="a-box-with-the-frame-drawn-with-unicode-characters"><a class="header" href="#a-box-with-the-frame-drawn-with-unicode-characters">A box with the frame drawn with Unicode characters</a></h3>
-<p><em><strong>Binding:</strong></em> «A-b»              Add unicode box</p>
+<p><em><strong>Binding:</strong></em> «iub»              Add unicode box</p>
 <h3 id="a-text"><a class="header" href="#a-text">A text</a></h3>
 <p>Texts are just boxes without frames.</p>
-<p>Binding: «t»                Add text</p>
+<p><em><strong>Binding:</strong></em> «it»               Add text</p>
 <h3 id="a-shrink-box"><a class="header" href="#a-shrink-box">A shrink-box</a></h3>
 <p>A box which is already has auto-shrink set</p>
-<p>Binding: «B»                Add shrink box</p>
+<p><em><strong>Binding:</strong></em> «ibs»              Add shrink box</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="asciio-if-and-process-boxes"><a class="header" href="#asciio-if-and-process-boxes">Asciio if and process boxes</a></h1>
 <div class="table-wrapper">
@@ -551,8 +839,8 @@ be aligned, you can download a font that can align them.</p>
 <tr><th>element</th><th>binding</th></tr>
 </thead>
 <tbody>
-<tr><td>Add if box</td><td>«ib»</td></tr>
-<tr><td>Add process box</td><td>«ib»</td></tr>
+<tr><td>Add if box</td><td>«iei»</td></tr>
+<tr><td>Add process box</td><td>«iep»</td></tr>
 </tbody>
 </table>
 </div>
@@ -562,21 +850,21 @@ be aligned, you can download a font that can align them.</p>
 <h1 id="asciio-exec-boxes"><a class="header" href="#asciio-exec-boxes">Asciio exec-boxes</a></h1>
 <p>An “exec-box” is and object that lets you run an external command and put its output in a box. There are different types of exec-boxes explained below.</p>
 <h2 id="multi-command"><a class="header" href="#multi-command">Multi command</a></h2>
-<p>Binding: «ie» Add exec box</p>
+<p><em><strong>Binding:</strong></em> «ib» «ctl-e» Add exec box</p>
 <p>The simplest exec-box accepts multiple commands, one per line. It will redirect stderr for each command.</p>
 <p>Editing the box will let you edit the command.</p>
 <p><img src="stencils/ie.gif" alt="ie"></p>
 <h2 id="verbatim"><a class="header" href="#verbatim">Verbatim</a></h2>
-<p>Binding: «iv» Add exec box verbatim</p>
+<p><em><strong>Binding:</strong></em> «ib» «ctl-v» Add exec box verbatim</p>
 <p>This exec-box doesn’t redirect stderr, you can use it for commands that span multiple line or commands that take a multi line input</p>
 <p>Editing the box will let you edit the command.</p>
 <p><img src="stencils/iv.gif" alt="iv"></p>
 <h2 id="once"><a class="header" href="#once">Once</a></h2>
-<p>Binding: «io» Add exec box verbatim once</p>
+<p>**<em>Binding:</em> «ib» «ctl-o» Add exec box verbatim once</p>
 <p>This exec-box will run your commands once, editing the box will let you edit the command’s output.</p>
 <p><img src="stencils/io.gif" alt="io"></p>
 <h2 id="add-line-numbers"><a class="header" href="#add-line-numbers">Add line numbers</a></h2>
-<p>Binding: «i + c-l» Add line numbered box</p>
+<p><em><strong>Binding:</strong></em> «ib» «ctl-l» Add line numbered box</p>
 <p>This is an example of a custom stencil which will add line numbers to your input.</p>
 <p><img src="stencils/il.gif" alt="il"></p>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
@@ -652,7 +940,7 @@ $ ls /usr/share/figlet/
 </thead>
 <tbody>
 <tr><td>Add arrow</td><td>«ia»</td></tr>
-<tr><td>Add Unicode arrow</td><td>«i+Alt-a»</td></tr>
+<tr><td>Add Unicode arrow</td><td>«iua»</td></tr>
 <tr><td>Add angled arrow</td><td>«iA»</td></tr>
 </tbody>
 </table>
@@ -1505,8 +1793,6 @@ horizontally or vertically with the first element of the selection (whichever is
 </div>
 <p><img src="editing/drag_and_drop.gif" alt="Drag And Drop"></p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="strip-groups"><a class="header" href="#strip-groups">Strip groups</a></h1>
-<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="changing-element-attributes"><a class="header" href="#changing-element-attributes">Changing element attributes</a></h1>
 <p>Element attributes control how  elements are rendered.</p>
 <p>Example attributes:</p>
@@ -1589,7 +1875,7 @@ horizontally or vertically with the first element of the selection (whichever is
 <p>You can save your asciio document as a PNG, it will be recognized by image viewers; that also allows you to have a preview in your file manager.</p>
 <p>You need to give the <strong>.pnge</strong> extension to the file you save (please note the final ‘e’), this lets asciio know what you want to do. Your file will have the <strong>.png</strong> extension.</p>
 <p>When opening a <strong>PNG</strong> file, asciio looks for its data and opens the file if it’s present.</p>
-<p><img src="https://github.com/nkh/P5-App-Asciio/blob/main/screencasts/asciio_embedded_in_png.gif" alt="Example"></p>
+<p><img src="https://raw.githubusercontent.com/nkh/P5-App-Asciio/refs/heads/main/screencasts/asciio_embedded_in_png.gif" alt="Example"></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="png"><a class="header" href="#png">PNG</a></h1>
 <p>Asciio export directly to PNG.</p>
@@ -2406,94 +2692,66 @@ to convert text files to SVG.</p>
 <p><a href="https://www.youtube.com/watch?v=0l9W84PhOyI"><img src="videos/old_video.jpg" alt="old video"></a></p>
 <p><a href="https://www.youtube.com/watch?v=d5Fq17Bxurs">asciio 1.0</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h1>
-<p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.</p>
-<p>It’s faster and easier to work with keyboard shortcuts than the mouse and the number of combination of mouse buttons * control-keys is very limited.</p>
-<p><em>Asciio</em> bindings are vim-like, they initially take more time to get used to, and often take multiple key presses but they are much more logical as families of commands are
-accessed with shortcuts that start with the same letter.</p>
-<p>The bindings can be changed in your user configuration, See configuration/user_bindings</p>
-<h1 id="bindings-help"><a class="header" href="#bindings-help">Bindings help</a></h1>
-<p><em><strong>Binding:</strong></em> zb</p>
+<h1 id="asciio-keyboard-bindings-reference"><a class="header" href="#asciio-keyboard-bindings-reference">Asciio Keyboard Bindings Reference</a></h1>
+<h2 id="understanding-the-binding-system"><a class="header" href="#understanding-the-binding-system">Understanding the Binding System</a></h2>
+<p>Asciio uses a hierarchical keyboard binding system where many operations are organized into groups accessed through prefix keys.</p>
+<p>It’s faster and easier to work with keyboard shortcuts than the mouse plus the number of combination of mouse buttons * control-keys is limited.</p>
+<p><em>Asciio</em> bindings are vim-like, they initially take a little time to get used to and often take multiple key presses but they are much more logical as families of commands are accessed with shortcuts that start with the same letter.</p>
+<p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be user modified. See configuration/user_bindings</p>
+<h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
+<p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
+<p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a shortcut.</p>
+<h2 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h2>
+<p>Registration of shortcuts that execute actions.</p>
+<p>The default Bindings are setup by the <strong>register_action_handlers</strong> in the following files:</p>
+<ul>
+<li>setup/actions/default_bindings.pl</li>
+<li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
+</ul>
+<h2 id="user-defined-bindings"><a class="header" href="#user-defined-bindings">User defined bindings</a></h2>
+<p>The bindings can be changed in your user configuration.</p>
+<p>Set the <strong>ACTION_FILES</strong> section of file ‘$HOME/.config/Asciio/Asciio.ini’ to point at one
+or more files that will be loaded by <strong>asciio</strong>.</p>
+<p>The files contain bindings override but can also contain actions code.</p>
+<h2 id="show-bindings-completion"><a class="header" href="#show-bindings-completion">Show Bindings Completion</a></h2>
+<p><em><strong>Binding:</strong></em> «zb»</p>
 <p><img src="bindings_help.gif" alt="bindings_help"></p>
-<p>You can get a pop up showing the bindings (<em>?</em> in the top level) Or you can configure it:</p>
+<p>Makes Asciio show the current bindings iwhile you type.</p>
+<p>You can add it in your config:</p>
 <pre><code>USE_BINDINGS_COMPLETION =&gt; 1,
 </code></pre>
-<h2 id="bindings-map"><a class="header" href="#bindings-map">Bindings map</a></h2>
-<p><strong>bindings change, truth is in the config not this snapshot</strong></p>
-<p><img src="asciio_bindings.png" alt="bindings"></p>
 <h2 id="embedded-bindings"><a class="header" href="#embedded-bindings">Embedded bindings</a></h2>
 <p>Extra bindings can be embedded in an asciio document with command line options</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>option</th><th></th><th></th></tr>
+<tr><th>option</th><th></th></tr>
 </thead>
 <tbody>
-<tr><td>add_binding=s</td><td>file containing bindings to embedd</td><td></td></tr>
-<tr><td>reset_bindings</td><td>remove all embedded bindings from document</td><td></td></tr>
-<tr><td>dump_bindings</td><td>write the embedded bindings to files</td><td></td></tr>
-<tr><td>dump_binding_names</td><td>display name of embbeded bindings</td><td></td></tr>
+<tr><td>add_binding=s</td><td>file containing bindings to embedd</td></tr>
+<tr><td>reset_bindings</td><td>remove all embedded bindings from document</td></tr>
+<tr><td>dump_bindings</td><td>write the embedded bindings to files</td></tr>
+<tr><td>dump_binding_names</td><td>display name of embbeded bindings</td></tr>
 </tbody>
 </table>
 </div>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="mouse-1"><a class="header" href="#mouse-1">Mouse</a></h1>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Edit selected element</td><td>000-2button-press-1</td></tr>
-<tr><td>Edit selected element inline</td><td>C00-2button-press-1</td></tr>
-<tr><td>Mouse right-click</td><td>000-button-press-3,</td></tr>
-<tr><td>Mouse left-click</td><td>000-button-press-1,</td></tr>
-<tr><td>Mouse expand selection</td><td>00S-button-press-1,</td></tr>
-<tr><td>Mouse selection flip</td><td>C00-button-press-1,</td></tr>
-<tr><td>Mouse quick link</td><td>0A0-button-press-1</td></tr>
-<tr><td>Mouse duplicate elements</td><td>0AS-button-press-1</td></tr>
-<tr><td>Mouse quick box</td><td>C0S-button-press-1</td></tr>
-<tr><td>Arrow to mouse</td><td>CA0-motion_notify,</td></tr>
-<tr><td>Arrow mouse change direction</td><td>CA0-2button-press-1</td></tr>
-<tr><td>Arrow change direction</td><td>CA0-d,</td></tr>
-<tr><td>Wirl arrow add section</td><td>CA0-button-press-1,</td></tr>
-<tr><td>Wirl arrow insert flex point</td><td>CA0-button-press-2,</td></tr>
-<tr><td>Mouse motion</td><td>000-motion_notify,</td></tr>
-<tr><td>Mouse motion 2</td><td>0AS-motion_notify,</td></tr>
-<tr><td>Mouse drag canvas</td><td>C00-motion_notify,</td></tr>
-<tr><td>Zoom in</td><td>C00-scroll-up,</td></tr>
-<tr><td>Zoom out</td><td>C00-scroll-down,</td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="mouse-emulation"><a class="header" href="#mouse-emulation">Mouse emulation</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Toggle mouse</td><td>«’»</td></tr>
-<tr><td>Mouse shift-left-click</td><td>«Ö»</td></tr>
-<tr><td>Mouse left-click</td><td>«ö»</td></tr>
-<tr><td>Mouse right-click</td><td>«ä»</td></tr>
-<tr><td>Mouse drag left 3</td><td>«H»</td></tr>
-<tr><td>Mouse drag down 3</td><td>«J»</td></tr>
-<tr><td>Mouse drag up 3</td><td>«K»</td></tr>
-<tr><td>Mouse drag right 3</td><td>«L»</td></tr>
-<tr><td>Mouse drag down</td><td>«Down»</td></tr>
-<tr><td>Mouse drag left</td><td>«Left»</td></tr>
-<tr><td>Mouse drag right</td><td>«Right»</td></tr>
-<tr><td>Mouse drag up</td><td>«Up»</td></tr>
-<tr><td>Mouse drag down</td><td>«A-Down»</td></tr>
-<tr><td>Mouse drag left</td><td>«A-Left»</td></tr>
-<tr><td>Mouse drag right</td><td>«A-Right»</td></tr>
-<tr><td>Mouse drag up</td><td>«A-Up»</td></tr>
-<tr><td>Mouse alt-left-click</td><td>«ö»</td></tr>
-<tr><td>Mouse ctl-left-click</td><td>«ö»</td></tr>
-</tbody>
-</table>
-</div>
+<h1 id="binding-notation"><a class="header" href="#binding-notation">Binding Notation</a></h1>
+<p>Bindings are shown using the notation <code>«key»</code> where:</p>
+<ul>
+<li><code>«key»</code> means press that key directly</li>
+<li><code>«Shift+Key»</code> means hold Shift and press the key</li>
+<li><code>«Ctrl+Key»</code> means hold Control and press the key</li>
+<li><code>«Alt+Key»</code> means hold Alt and press the key</li>
+</ul>
+<h2 id="prefix-system"><a class="header" href="#prefix-system">Prefix System</a></h2>
+<p>Many operations require a prefix key followed by an operation key:</p>
+<ul>
+<li>Press the prefix key (e.g., <code>«t»</code> for tab operations)</li>
+<li>Then press the operation key (e.g., <code>«n»</code> for new tab)</li>
+<li>Result: <code>«t»</code> + <code>«n»</code> creates a new tab</li>
+</ul>
+<h2 id="escaping-groups"><a class="header" href="#escaping-groups">Escaping Groups</a></h2>
+<p>When in a binding group, press <code>«Escape»</code> to return to root level bindings.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="why-vim-like-bindings"><a class="header" href="#why-vim-like-bindings">Why vim-like bindings</a></h1>
 <h2 id="combinations"><a class="header" href="#combinations">Combinations</a></h2>
@@ -2555,299 +2813,1616 @@ accessed with shortcuts that start with the same letter.</p>
 <li>insert a box with the default unicode</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="single-key-bindings"><a class="header" href="#single-key-bindings">single key bindings</a></h1>
-<pre><code> «Enter»            Edit selected element
-
- «d»                Delete selected element(s)
-
- «u»                Undo
-
- «C»-r              Redo
-
- «.»                Quick link
-
- «,»                Quick copy
-
- «R»                Remove rulers
-</code></pre>
+<h1 id="root-level-bindings"><a class="header" href="#root-level-bindings">Root Level Bindings</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Root Level Bindings</p>
+<p>These bindings work directly without requiring a prefix key.</p>
+<h2 id="editing-operations"><a class="header" href="#editing-operations">Editing Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Undo</td><td><code>«Ctrl+z»</code> or <code>«u»</code></td><td>Undo last operation</td></tr>
+<tr><td>Redo</td><td><code>«Ctrl+y»</code> or <code>«Ctrl+r»</code></td><td>Redo previously undone operation</td></tr>
+<tr><td>Delete selected elements</td><td><code>«Delete»</code> or <code>«d»</code></td><td>Remove currently selected elements</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="view-control"><a class="header" href="#view-control">View Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Zoom in</td><td><code>«+»</code> or <code>«Ctrl+j»</code> or <code>«Ctrl+scroll-up»</code></td><td>Increase canvas zoom level</td></tr>
+<tr><td>Zoom out</td><td><code>«-»</code> or <code>«Ctrl+h»</code> or <code>«Ctrl+scroll-down»</code></td><td>Decrease canvas zoom level</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="selection-operations"><a class="header" href="#selection-operations">Selection Operations</a></h2>
+<h3 id="basic-selection"><a class="header" href="#basic-selection">Basic Selection</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Select all elements</td><td><code>«Ctrl+a»</code> or <code>«Shift+V»</code></td><td>Select every element in the canvas</td></tr>
+<tr><td>Deselect all elements</td><td><code>«Escape»</code></td><td>Clear current selection</td></tr>
+<tr><td>Select connected elements</td><td><code>«v»</code></td><td>Select all elements connected to current selection</td></tr>
+<tr><td>Select elements by word</td><td><code>«Ctrl+f»</code></td><td>Select all elements containing specific text</td></tr>
+<tr><td>Select elements by word no group</td><td><code>«Ctrl+Shift+f»</code></td><td>Select by text without grouping</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="sequential-selection"><a class="header" href="#sequential-selection">Sequential Selection</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Select next element</td><td><code>«Tab»</code></td><td>Cycle forward through all elements</td></tr>
+<tr><td>Select previous element</td><td><code>«Shift+Tab»</code></td><td>Cycle backward through all elements</td></tr>
+<tr><td>Select next non-arrow</td><td><code>«n»</code></td><td>Cycle forward through non-arrow elements</td></tr>
+<tr><td>Select previous non-arrow</td><td><code>«Shift+N»</code></td><td>Cycle backward through non-arrow elements</td></tr>
+<tr><td>Select next arrow</td><td><code>«m»</code></td><td>Cycle forward through arrow elements</td></tr>
+<tr><td>Select previous arrow</td><td><code>«Shift+M»</code></td><td>Cycle backward through arrow elements</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="advanced-selection"><a class="header" href="#advanced-selection">Advanced Selection</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Enter interactive selection mode</td><td><code>«s»</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-manipulation"><a class="header" href="#element-manipulation">Element Manipulation</a></h2>
+<h3 id="editing-elements"><a class="header" href="#editing-elements">Editing Elements</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Edit selected element</td><td><code>«Double-click-1»</code> or <code>«Return»</code></td><td>Open editor for selected element</td></tr>
+<tr><td>Edit selected element inline</td><td><code>«Ctrl+Double-click-1»</code> or <code>«Alt+Return»</code></td><td>Edit element text directly on canvas</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="moving-elements"><a class="header" href="#moving-elements">Moving Elements</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move selected left</td><td><code>«Left»</code> or <code>«h»</code></td><td>Move selection one character left</td></tr>
+<tr><td>Move selected right</td><td><code>«Right»</code> or <code>«l»</code></td><td>Move selection one character right</td></tr>
+<tr><td>Move selected up</td><td><code>«Up»</code> or <code>«k»</code></td><td>Move selection one character up</td></tr>
+<tr><td>Move selected down</td><td><code>«Down»</code> or <code>«j»</code></td><td>Move selection one character down</td></tr>
+<tr><td>Move selected left (fast)</td><td><code>«Alt+Left»</code></td><td>Move selection 10 characters left</td></tr>
+<tr><td>Move selected right (fast)</td><td><code>«Alt+Right»</code></td><td>Move selection 10 characters right</td></tr>
+<tr><td>Move selected up (fast)</td><td><code>«Alt+Up»</code></td><td>Move selection 10 characters up</td></tr>
+<tr><td>Move selected down (fast)</td><td><code>«Alt+Down»</code></td><td>Move selection 10 characters down</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="resizing-elements"><a class="header" href="#resizing-elements">Resizing Elements</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Make element narrower</td><td><code>«1»</code></td><td>Decrease width by one character</td></tr>
+<tr><td>Make element taller</td><td><code>«2»</code></td><td>Increase height by one character</td></tr>
+<tr><td>Make element shorter</td><td><code>«3»</code></td><td>Decrease height by one character</td></tr>
+<tr><td>Make element wider</td><td><code>«4»</code></td><td>Increase width by one character</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-operations"><a class="header" href="#mouse-operations">Mouse Operations</a></h2>
+<p>See <a href="#mouse-operations-reference">Mouse Operations Reference</a> for complete details.</p>
+<h3 id="basic-mouse"><a class="header" href="#basic-mouse">Basic Mouse</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Mouse left-click</td><td><code>«Left-click»</code></td><td>Select element or set insertion point</td></tr>
+<tr><td>Mouse right-click</td><td><code>«Right-click»</code></td><td>Open context menu</td></tr>
+<tr><td>Mouse left-release</td><td><code>«Left-release»</code></td><td>Complete drag operation</td></tr>
+<tr><td>Mouse selection flip</td><td><code>«Shift+Left-click»</code></td><td>Toggle element in selection</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="quick-operations"><a class="header" href="#quick-operations">Quick Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Quick link</td><td><code>«Alt+Left-click»</code> or <code>«.»</code></td><td>Create arrow to clicked location</td></tr>
+<tr><td>Quick link orthogonal</td><td><code>«Alt+Shift+Left-click»</code></td><td>Create orthogonal arrow</td></tr>
+<tr><td>Quick box</td><td><code>«Ctrl+Shift+Left-click»</code></td><td>Create box at location</td></tr>
+<tr><td>Duplicate elements</td><td><code>«,»</code></td><td>Duplicate selected elements</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="drag-and-drop-1"><a class="header" href="#drag-and-drop-1">Drag and Drop</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Start drag and drop</td><td><code>«Ctrl+Left-click»</code></td><td>Begin dragging elements</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="interactive-arrow-editing"><a class="header" href="#interactive-arrow-editing">Interactive Arrow Editing</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Arrow to mouse</td><td><code>«Ctrl+Alt+motion»</code></td><td>Extend arrow to follow mouse</td></tr>
+<tr><td>Arrow change direction</td><td><code>«Ctrl+Alt+d»</code></td><td>Toggle arrow direction interactively</td></tr>
+<tr><td>Arrow mouse change direction</td><td><code>«Ctrl+Alt+Double-click»</code></td><td>Change arrow direction at click point</td></tr>
+<tr><td>Wirl arrow add section</td><td><code>«Ctrl+Alt+Left-click»</code></td><td>Add section to multi-segment arrow</td></tr>
+<tr><td>Wirl arrow insert flex point</td><td><code>«Ctrl+Alt+Middle-click»</code></td><td>Insert flexible point in arrow</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="mouse-motion"><a class="header" href="#mouse-motion">Mouse Motion</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Mouse motion</td><td><code>«motion»</code></td><td>Track mouse position</td></tr>
+<tr><td>Mouse motion (extended)</td><td><code>«Alt+Shift+motion»</code></td><td>Track with alternate behavior</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-emulation"><a class="header" href="#mouse-emulation">Mouse Emulation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Toggle mouse emulation</td><td><code>«'»</code></td><td>Enable/disable keyboard mouse control</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="when-mouse-emulation-active"><a class="header" href="#when-mouse-emulation-active">When Mouse Emulation Active</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Emulation left-click</td><td><code>«ö»</code></td><td>Simulate left mouse click</td></tr>
+<tr><td>Emulation expand selection</td><td><code>«Shift+Ö»</code></td><td>Expand selection at cursor</td></tr>
+<tr><td>Emulation selection flip</td><td><code>«Ctrl+ö»</code></td><td>Toggle selection at cursor</td></tr>
+<tr><td>Emulation right-click</td><td><code>«ä»</code></td><td>Simulate right mouse click</td></tr>
+<tr><td>Emulation move left</td><td><code>«Ctrl+Left»</code></td><td>Move mouse cursor left</td></tr>
+<tr><td>Emulation move right</td><td><code>«Ctrl+Right»</code></td><td>Move mouse cursor right</td></tr>
+<tr><td>Emulation move up</td><td><code>«Ctrl+Up»</code></td><td>Move mouse cursor up</td></tr>
+<tr><td>Emulation move down</td><td><code>«Ctrl+Down»</code></td><td>Move mouse cursor down</td></tr>
+<tr><td>Emulation drag left</td><td><code>«Shift+Left»</code></td><td>Drag while moving left</td></tr>
+<tr><td>Emulation drag right</td><td><code>«Shift+Right»</code></td><td>Drag while moving right</td></tr>
+<tr><td>Emulation drag up</td><td><code>«Shift+Up»</code></td><td>Drag while moving up</td></tr>
+<tr><td>Emulation drag down</td><td><code>«Shift+Down»</code></td><td>Drag while moving down</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="clipboard-operations"><a class="header" href="#clipboard-operations">Clipboard Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Copy to clipboard</td><td><code>«Ctrl+c»</code> or <code>«Ctrl+Insert»</code></td><td>Copy selection to system clipboard</td></tr>
+<tr><td>Paste from clipboard</td><td><code>«Ctrl+v»</code> or <code>«Shift+Insert»</code></td><td>Insert from system clipboard</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="gui-bindings"><a class="header" href="#gui-bindings">GUI bindings</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; GUI bindings</p>
 <h2 id="keyboard-1"><a class="header" href="#keyboard-1">keyboard</a></h2>
-<pre><code> «C00-a»            Select all elements
-
- «C00-c»            Copy to clipboard
-
- «C00-e»            Export to clipboard &amp; primary as ascii
-
- «C00-v»            Insert from clipboard
-
- «C0S-V»            Import from primary to box
-
- «C00-z»            Undo
-
- «C00-y»            Redo
-
- «+»                Zoom in
-
- «-»                Zoom out
-</code></pre>
-<h2 id="mouse-2"><a class="header" href="#mouse-2">mouse</a></h2>
-<pre><code> «double-click»     Edit selected element
-
- «C00-button-1»     Add to selection
-
- «0A0-button-1»     Quick link
-
- «0AS-button-1»     Duplicate elements
-
- «CA0-button-1»     Insert flex point (in arrow)
-</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Select all elements</td><td>«C00-a»</td></tr>
+<tr><td>Copy to clipboard</td><td>«C00-c»</td></tr>
+<tr><td>Export to clipboard &amp; primary as ascii</td><td>«C00-e»</td></tr>
+<tr><td>Insert from clipboard</td><td>«C00-v»</td></tr>
+<tr><td>Import from primary to box</td><td>«C0S-V»</td></tr>
+<tr><td>Undo</td><td>«C00-z»</td></tr>
+<tr><td>Redo</td><td>«C00-y»</td></tr>
+<tr><td>Zoom in</td><td>«+»</td></tr>
+<tr><td>Zoom out</td><td>«-»</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-1"><a class="header" href="#mouse-1">mouse</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Edit selected element</td><td>«double-click»</td></tr>
+<tr><td>Add to selection</td><td>«C00-button-1»</td></tr>
+<tr><td>Quick link</td><td>«0A0-button-1»</td></tr>
+<tr><td>Duplicate elements</td><td>«0AS-button-1»</td></tr>
+<tr><td>Insert flex point (in arrow)</td><td>«CA0-button-1»</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="moving-elements"><a class="header" href="#moving-elements">Moving elements</a></h1>
-<pre><code>     «h»                Move selected elements left
-
-     «j»                Move selected elements down
-
-     «k»                Move selected elements up
-
-     «l»                Move selected elements right
-
-
-     «Left»             Move selected elements left
-
-     «Down»             Move selected elements down
-
-     «Up»               Move selected elements up
-
-     «Right»            Move selected elements right
-</code></pre>
+<h1 id="tab-management"><a class="header" href="#tab-management">Tab Management</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#root-level-bindings">Root level bindings</a> &gt; Tab Management</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«t»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<h2 id="tab-navigation-bindings"><a class="header" href="#tab-navigation-bindings">Tab Navigation bindings</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Shortcut</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Next tab</td><td>«t»</td><td>Move to next tab (wraps around)</td></tr>
+<tr><td>Previous tab</td><td>«T»</td><td>Move to previous tab (wraps around)</td></tr>
+<tr><td>Last tab</td><td>«$»</td><td>Jump to rightmost tab</td></tr>
+<tr><td>Focus tab 0</td><td>«0»</td><td>Jump to first tab</td></tr>
+<tr><td>Focus tab N</td><td>«1» .. «9»</td><td>Jump to Nth tab</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="tab-management-bindings"><a class="header" href="#tab-management-bindings">Tab Management bindings</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Shortcut</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>New tab</td><td>«n»</td><td>Create new empty tab</td></tr>
+<tr><td>Clone tab</td><td>«c»</td><td>Duplicate current tab</td></tr>
+<tr><td>Rename tab</td><td>«R»</td><td>Change tab label text</td></tr>
+<tr><td>Move tab left</td><td>«h»</td><td>Shift tab position left</td></tr>
+<tr><td>Move tab right</td><td>«l»</td><td>Shift tab position right</td></tr>
+<tr><td>Toggle tab labels</td><td>«L»</td><td>Show or hide tab labels</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="file-operations-bindings"><a class="header" href="#file-operations-bindings">File Operations bindings</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Shortcut</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Read file</td><td>«r»</td><td>Load file into new tab</td></tr>
+<tr><td>Open project</td><td>«e»</td><td>Open project (closes existing tabs)</td></tr>
+<tr><td>Save project</td><td>«w»</td><td>Save current workspace</td></tr>
+<tr><td>Save project as</td><td>«W»</td><td>Save with new filename</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="application-level-bindings"><a class="header" href="#application-level-bindings">Application level bindings</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Shortcut</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Quit with save</td><td>«q»</td><td>Exit with save prompt</td></tr>
+<tr><td>Quit without save</td><td>«Q»</td><td>Exit immediately without saving</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="selecting-elements"><a class="header" href="#selecting-elements">Selecting elements</a></h1>
-<pre><code>     «n»                Select next element
-
-     «N»                Select previous element
-
-     «Tab»              Select next element move mouse
-
-     «V»                Select all elements
-
-     «v»                Select connected elements
-
-     «Escape»           Deselect all elements
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="resizing-elements"><a class="header" href="#resizing-elements">Resizing elements</a></h1>
-<p>Bindings:</p>
+<h1 id="insert-operations"><a class="header" href="#insert-operations">Insert Operations</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Insert Operations</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«i»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<h2 id="basic-elements"><a class="header" href="#basic-elements">Basic Elements</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add connector</td><td><code>«c»</code></td><td>Insert connection point</td></tr>
+<tr><td>Add text</td><td><code>«t»</code></td><td>Insert text element</td></tr>
+<tr><td>Add arrow</td><td><code>«a»</code></td><td>Insert multi-segment arrow</td></tr>
+<tr><td>Add angled arrow</td><td><code>«Shift+A»</code></td><td>Insert angled arrow</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="insert-sub-groups"><a class="header" href="#insert-sub-groups">Insert Sub-Groups</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Stencil</td><td><code>«s»</code></td><td>Insert from <a href="#stencils-3">stencils</a></td></tr>
+<tr><td>Multiple</td><td><code>«m»</code></td><td>Insert <a href="#multiple-elements">multiple elements</a></td></tr>
+<tr><td>Unicode</td><td><code>«u»</code></td><td>Insert <a href="#unicode-elements">unicode elements</a></td></tr>
+<tr><td>Box</td><td><code>«b»</code></td><td>Insert <a href="#box-variants">box variants</a></td></tr>
+<tr><td>Elements</td><td><code>«e»</code></td><td>Insert <a href="#special-elements">special elements</a></td></tr>
+<tr><td>Ruler</td><td><code>«r»</code></td><td>Insert <a href="#rulers-1">rulers</a></td></tr>
+<tr><td>Line</td><td><code>«l»</code></td><td>Insert <a href="#lines">lines</a></td></tr>
+<tr><td>Connected</td><td><code>«k»</code></td><td>Insert <a href="#connected-elements">connected elements</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-groups"><a class="header" href="#related-groups">Related Groups</a></h2>
 <ul>
-<li>
-<p>«1»                Make element narrower</p>
-</li>
-<li>
-<p>«2»                Make element taller</p>
-</li>
-<li>
-<p>«3»                Make element shorter</p>
-</li>
-<li>
-<p>«4»                Make element wider</p>
-</li>
+<li><a href="#pen-mode">Pen Mode</a> - Character-by-character drawing</li>
+<li><a href="#clone-mode-bindings">Clone Mode</a> - Clone and place elements</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="box-variants"><a href="#box-variants" class="header">box variants</a></h1>
+<h2 id="insert-box"><a class="header" href="#insert-box">Insert Box</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Box</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«b»</code></p>
+<h3 id="box-operations"><a class="header" href="#box-operations">Box Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add box</td><td><code>«b»</code></td><td>Insert standard box</td></tr>
+<tr><td>Add shrink box</td><td><code>«s»</code></td><td>Insert box that shrinks to fit content</td></tr>
+<tr><td>Add exec box</td><td><code>«e»</code></td><td>Insert box with executable content</td></tr>
+<tr><td>Add exec box verbatim</td><td><code>«v»</code></td><td>Insert box with verbatim executable content</td></tr>
+<tr><td>Add exec box verbatim once</td><td><code>«o»</code></td><td>Insert box with one-time verbatim execution</td></tr>
+<tr><td>Add line numbered box</td><td><code>«l»</code></td><td>Insert box with line numbers</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="multiple-elements"><a href="#multiple-elements" class="header">multiple elements</a></h1>
+<h2 id="insert-multiple-elements"><a class="header" href="#insert-multiple-elements">Insert Multiple Elements</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Multiple Elements</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«m»</code></p>
+<h3 id="multiple-element-operations"><a class="header" href="#multiple-element-operations">Multiple Element Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add multiple boxes</td><td><code>«b»</code></td><td>Insert multiple boxes at once</td></tr>
+<tr><td>Add multiple boxes connected</td><td><code>«B»</code></td><td>Insert multiple boxes at once</td></tr>
+<tr><td>Add multiple texts</td><td><code>«t»</code></td><td>Insert multiple text elements at once</td></tr>
+<tr><td>Add multiple texts connected</td><td><code>«T»</code></td><td>Insert multiple text elements at once</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="unicode-elements"><a href="#unicode-elements" class="header">unicode elements</a></h1>
+<h2 id="insert-unicode"><a class="header" href="#insert-unicode">Insert Unicode</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Unicode</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«u»</code></p>
+<h3 id="unicode-element-operations"><a class="header" href="#unicode-element-operations">Unicode Element Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add unicode box</td><td><code>«b»</code></td><td>Insert box with unicode characters</td></tr>
+<tr><td>Add unicode arrow</td><td><code>«a»</code></td><td>Insert arrow with unicode characters</td></tr>
+<tr><td>Add unicode angled arrow</td><td><code>«A»</code></td><td>Insert angled arrow with unicode characters</td></tr>
+<tr><td>Add unicode line</td><td><code>«l»</code></td><td>Insert connecting unicode line</td></tr>
+<tr><td>Add unicode bold line</td><td><code>«L»</code></td><td>Insert bold unicode line</td></tr>
+<tr><td>Add unicode double line</td><td><code>«Alt+l»</code></td><td>Insert double unicode line</td></tr>
+<tr><td>Add unicode no-connect line</td><td><code>«k»</code></td><td>Insert non-connecting unicode line</td></tr>
+<tr><td>Add unicode no-connect bold line</td><td><code>«K»</code></td><td>Insert non-connecting bold unicode line</td></tr>
+<tr><td>Add unicode no-connect double line</td><td><code>«Alt+K»</code></td><td>Insert non-connecting double unicode line</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="connected-elements"><a href="#connected-elements" class="header">connected elements</a></h1>
+<h2 id="insert-connected"><a class="header" href="#insert-connected">Insert Connected</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Connected</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«k»</code></p>
+<p>Starting from a box or text, element, automatically link to one or more new boxes or text.</p>
+<h3 id="connected-element-operations"><a class="header" href="#connected-element-operations">Connected Element Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add connected box edit</td><td><code>«b»</code></td><td>Insert box with immediate edit and auto-connect</td></tr>
+<tr><td>Add multiple connected box edit</td><td><code>«B»</code></td><td>Insert multiple boxes with edit and auto-connect</td></tr>
+<tr><td>Add connected text edit</td><td><code>«t»</code></td><td>Insert text with immediate edit and auto-connect</td></tr>
+<tr><td>Add multiple connected text edit</td><td><code>«T»</code></td><td>Insert multiple texts with edit and auto-connect</td></tr>
+</tbody>
+</table>
+</div>
+<p><img src="bindings/inserting_connected_box.gif" alt="inserting_connected_box"></p>
+<p><img src="bindings/inserting_connected_text.gif" alt="inserting_connected_text"></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="lines"><a href="#lines" class="header">lines</a></h1>
+<h2 id="insert-line"><a class="header" href="#insert-line">Insert Line</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Line</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«l»</code></p>
+<h3 id="line-operations"><a class="header" href="#line-operations">Line Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add ASCII line</td><td><code>«l»</code></td><td>Insert connecting ASCII line</td></tr>
+<tr><td>Add ASCII no-connect line</td><td><code>«k»</code></td><td>Insert non-connecting ASCII line</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="stencils-3"><a href="#stencils-3" class="header">stencils</a></h1>
+<h2 id="insert-stencil"><a class="header" href="#insert-stencil">Insert Stencil</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Stencil</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«s»</code></p>
+<h3 id="stencil-operations"><a class="header" href="#stencil-operations">Stencil Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>From user stencils</td><td><code>«s»</code></td><td>Open user stencil directory</td></tr>
+<tr><td>From default stencil</td><td><code>«d»</code></td><td>Open default_stencil.asciio</td></tr>
+<tr><td>From any stencil</td><td><code>«a»</code></td><td>Open any stencil file</td></tr>
+<tr><td>From user elements</td><td><code>«0»</code></td><td>Open elements.asciio</td></tr>
+<tr><td>From user computer</td><td><code>«1»</code></td><td>Open computer.asciio</td></tr>
+<tr><td>From user people</td><td><code>«2»</code></td><td>Open people.asciio</td></tr>
+<tr><td>From user buildings</td><td><code>«3»</code></td><td>Open buildings.asciio</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="special-elements"><a href="#special-elements" class="header">special elements</a></h1>
+<h2 id="insert-special-element"><a class="header" href="#insert-special-element">Insert Special Element</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Elements</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«e»</code></p>
+<h3 id="special-element-operations"><a class="header" href="#special-element-operations">Special Element Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add connector type 2</td><td><code>«c»</code></td><td>Insert alternate connector style</td></tr>
+<tr><td>Add connector use top character</td><td><code>«C»</code></td><td>Insert center connector using top character</td></tr>
+<tr><td>Add if box</td><td><code>«i»</code></td><td>Insert diamond-shaped if/decision box</td></tr>
+<tr><td>Add process box</td><td><code>«p»</code></td><td>Insert process box</td></tr>
+<tr><td>Add rhombus</td><td><code>«r»</code></td><td>Insert rhombus shape</td></tr>
+<tr><td>Add ellipse</td><td><code>«e»</code></td><td>Insert ellipse shape</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="rulers-1"><a href="#rulers-1" class="header">rulers</a></h1>
+<h2 id="insert-ruler"><a class="header" href="#insert-ruler">Insert Ruler</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#insert-operations">Insert</a> &gt; Ruler</p>
+<p><strong>Prefix:</strong> Press <code>«i»</code> <code>«r»</code></p>
+<h3 id="ruler-operations"><a class="header" href="#ruler-operations">Ruler Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add vertical ruler</td><td><code>«v»</code></td><td>Insert vertical measurement ruler</td></tr>
+<tr><td>Add horizontal ruler</td><td><code>«h»</code></td><td>Insert horizontal measurement ruler</td></tr>
+<tr><td>Delete rulers</td><td><code>«d»</code></td><td>Remove all rulers</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="element-operations"><a class="header" href="#element-operations">Element Operations</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Element Operations</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«e»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<h2 id="element-modification"><a class="header" href="#element-modification">Element Modification</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Shrink box</td><td><code>«s»</code></td><td>Shrink box to fit content</td></tr>
+<tr><td>Make elements unicode</td><td><code>«u»</code></td><td>Convert selection to unicode style</td></tr>
+<tr><td>Make elements not unicode</td><td><code>«U»</code></td><td>Convert selection from unicode style</td></tr>
+<tr><td>Convert to big text</td><td><code>«g»</code></td><td>Merge selected elements into single text element</td></tr>
+<tr><td>Convert to dots</td><td><code>«G»</code></td><td>Convert selected elements to dot characters</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-attributes"><a class="header" href="#element-attributes">Element Attributes</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Copy element attributes</td><td><code>«c»</code> or «y»</td><td>Copy attributes from selected element</td></tr>
+<tr><td>Paste element attributes</td><td><code>«p»</code></td><td>Apply copied attributes to selection</td></tr>
+<tr><td>Paste control attributes</td><td><code>«P»</code></td><td>Apply only control-related attributes</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="crossover-control"><a class="header" href="#crossover-control">Crossover Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Enable elements cross</td><td><code>«x»</code></td><td>Allow elements to cross over each other</td></tr>
+<tr><td>Disable elements cross</td><td><code>«X»</code></td><td>Prevent elements from crossing over</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-type-change"><a class="header" href="#element-type-change">Element Type Change</a></h2>
+<p><strong>Prefix:</strong> All operations require pressing <code>«t»</code> first</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Box styles</td><td><code>«b»</code></td></tr>
+<tr><td>Wirl arrow styles</td><td><code>«w»</code></td></tr>
+<tr><td>Angled arrow styles</td><td><code>«a»</code></td></tr>
+<tr><td>Ellipse styles</td><td><code>«e»</code></td></tr>
+<tr><td>Rhombus styles</td><td><code>«r»</code></td></tr>
+<tr><td>Triangle up styles</td><td><code>«u»</code></td></tr>
+<tr><td>Triangle down styles</td><td><code>«d»</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-groups-1"><a class="header" href="#related-groups-1">Related Groups</a></h2>
+<ul>
+<li><a href="#insert-operations">Insert new elements</a></li>
+<li><a href="#grouping-elements">Element grouping</a></li>
+<li><a href="#display-options-1">Display Options</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="resizing-elements-1"><a class="header" href="#resizing-elements-1">Resizing elements</a></h1>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Make element narrower</td><td>«1»</td></tr>
+<tr><td>Make element taller</td><td>«2»</td></tr>
+<tr><td>Make element shorter</td><td>«3»</td></tr>
+<tr><td>Make element wider</td><td>«4»</td></tr>
+</tbody>
+</table>
+</div>
 <p><img src="bindings/asciio_resize.png" alt="resize"></p>
-<ul>
-<li>«s»                Shrink box</li>
-</ul>
+<h1 id="shrinking-boxes"><a class="header" href="#shrinking-boxes">Shrinking boxes</a></h1>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Shrink box</td><td>«es»</td></tr>
+</tbody>
+</table>
+</div>
 <p><img src="bindings/asciio_shrink.png" alt="shrink"></p>
 <p>There an auto-shrink attribute so you don’t have to shrink boxes manually each time you change their size.</p>
 <p><img src="bindings/asciio_enable_auto_shrink.png" alt="auto shrink"></p>
 <p>There’s also a box you can add which already has auto-shrink set; you can insert it with a shortcut or via the popup menu.</p>
-<p>Binding: <em>«iB»</em> Add auto-shrink box:</p>
-<p><img src="bindings/asciio_auto_shrink_box.png" alt="auto shrink_box"></p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="clipboard-1"><a class="header" href="#clipboard-1">Clipboard</a></h1>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>command</th><th>bindings</th></tr>
+<tr><th>Operation</th><th>Binding</th></tr>
 </thead>
 <tbody>
-<tr><td>Copy to clipboard</td><td>‘C00-c’ or ‘C00-Insert’</td></tr>
-<tr><td>Insert from clipboard</td><td>‘C00-v’ or ‘00S-Insert’</td></tr>
-<tr><td>-</td><td>-</td></tr>
-<tr><td>Copy to clipboard</td><td>‘000-y’+‘000-y’</td></tr>
-<tr><td>Export to clipboard &amp; primary as ascii</td><td>‘000-y’+‘00S-Y’</td></tr>
-<tr><td>Export to clipboard &amp; primary as markup</td><td>‘000-y’+‘000-m’</td></tr>
-<tr><td>-</td><td>-</td></tr>
-<tr><td>Insert from clipboard</td><td>‘000-p’+‘000-p’</td></tr>
-<tr><td>Import from primary to box</td><td>‘000-p’+‘00S-P’</td></tr>
-<tr><td>Import from primary to text</td><td>‘000-p’+‘0A0-p’</td></tr>
-<tr><td>Import from clipboard to box</td><td>‘000-p’+‘000-b’</td></tr>
-<tr><td>Import from clipboard to text</td><td>‘000-p’+‘000-t’</td></tr>
+<tr><td>Add auto-shrink box</td><td>«i»«b»«s»</td></tr>
 </tbody>
 </table>
 </div>
-<p>Some clipboard commands are using the <strong>xsel</strong> command.</p>
+<p><img src="bindings/asciio_auto_shrink_box.png" alt="auto shrink_box"></p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="multiple-key-bindings"><a class="header" href="#multiple-key-bindings">multiple key bindings</a></h1>
+<h1 id="grouping-elements"><a class="header" href="#grouping-elements">Grouping Elements</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#element-operations">Element operations</a> &gt; Grouping elements</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«g»</code> first</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Group selected elements</td><td>«g»</td></tr>
+<tr><td>Ungroup selected elements</td><td>«u»</td></tr>
+<tr><td>Move selected elements to the front</td><td>«f»</td></tr>
+<tr><td>Move selected elements to the back</td><td>«b»</td></tr>
+<tr><td>Temporary move to the front</td><td>«F»</td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<p><img src="editing/grouping_elements.gif" alt="Grouping"></p>
+<p>Only arrows that are fully connected will be grouped.</p>
+<p><img src="editing/group_only_fully_connected_arrows.gif" alt="Grouping arrows"></p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="-command-group"><a class="header" href="#-command-group">«:» command group:</a></h1>
-<pre><code> «:» command group:
-
-     «q»                Quit
-
-     «Q»                Quit no save
-
-     «w»                Save
-
-     «W»                SaveAs
-
-     «e»                Open
-
-     «r»                Insert
-
-     «m»                Display manpage
-
-     «h»                Help
-
-     «c»                Display commands
-
-     «f»                Display action files
-
-     «k»                Display keyboard mapping
-</code></pre>
+<h1 id="arrow-manipulation"><a class="header" href="#arrow-manipulation">Arrow Manipulation</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Arrow Operations</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«a»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<h2 id="arrow-manipulation-1"><a class="header" href="#arrow-manipulation-1">Arrow Manipulation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Change arrow direction</td><td><code>«d»</code></td><td>Change arrow direction</td></tr>
+<tr><td>Flip arrow start and end</td><td><code>«f»</code></td><td>Reverse arrow</td></tr>
+<tr><td>enable diagonals</td><td>«Alt+d»</td><td></td></tr>
+<tr><td>disable diagonals</td><td>«Alt+D»</td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="connector-configuration"><a class="header" href="#connector-configuration">Connector Configuration</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Connectors</td><td><code>«c»</code></td><td>Enters <a href="#arrow-connectors-operations">connector group</a></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="multi-segment-arrow-operations"><a class="header" href="#multi-segment-arrow-operations">Multi-Segment Arrow Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Prepend section</td><td><code>«s»</code></td><td>Add section to start of multi-segment arrow</td></tr>
+<tr><td>Append section</td><td><code>«e»</code></td><td>Add section to end of multi-segment arrow</td></tr>
+<tr><td>Insert section</td><td><code>«S»</code></td><td>Insert section in middle of arrow</td></tr>
+<tr><td>Remove last section</td><td><code>«r»</code></td><td>Delete last section from arrow</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="select-arrows"><a class="header" href="#select-arrows">Select Arrows</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Flip drag selects arrows</td><td><code>«Alt+s»</code></td><td>Toggle whether drag operations select arrows</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-groups-2"><a class="header" href="#related-groups-2">Related Groups</a></h2>
+<ul>
+<li><a href="#interactive-arrow-editing-1">Mouse Operations</a> - Interactive arrow editing</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="i-insert-group"><a class="header" href="#i-insert-group">«i» Insert group</a></h1>
-<pre><code> «i» Insert group:
-
-     «c»                Add connector
-
-     «t»                Add text
-
-     «a»                Add arrow
-
-     «A»                Add angled arrow
-
-     «s»                Add Stencil Action Group
-
-     «m»                Add Multiple Action Group
-
-     «u»                Add Unicode Action Group
-
-     «b»                Add Box Action Group
-
-     «e»                Add Elements Action Group
-
-     «r»                Add Ruler Action Group
-
-     «l»                Add Line Action Group
-
-     «k»                Add Connected Action Group
-</code></pre>
-<h2 id="stencil-action-group"><a class="header" href="#stencil-action-group">Stencil Action Group</a></h2>
-<h2 id="multiple-action-group"><a class="header" href="#multiple-action-group">Multiple Action Group</a></h2>
-<h2 id="unicode-action-group"><a class="header" href="#unicode-action-group">Unicode Action Group</a></h2>
-<h2 id="box-action-group"><a class="header" href="#box-action-group">Box Action Group</a></h2>
-<h2 id="elements-action-group"><a class="header" href="#elements-action-group">Elements Action Group</a></h2>
-<h2 id="ruler-action-group"><a class="header" href="#ruler-action-group">Ruler Action Group</a></h2>
-<h2 id="line-action-group"><a class="header" href="#line-action-group">Line Action Group</a></h2>
-<h2 id="connected-action-group"><a class="header" href="#connected-action-group">Connected Action Group</a></h2>
-<p>Starting from a box element or starting from a text element, automatically link to one or more new boxes or text.Here are two examples:</p>
-<p><img src="bindings/inserting_connected_box.gif" alt="inserting_connected_box"></p>
-<p><img src="bindings/inserting_connected_text.gif" alt="inserting_connected_text"></p>
+<h1 id="arrow-connectors-operations"><a class="header" href="#arrow-connectors-operations">Arrow Connectors Operations</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Arrow Operations &gt; Arrow Connectors Operations</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«a» «c»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>‘start enable connection’</td><td>«Alt+s»</td></tr>
+<tr><td>‘start disable connection’</td><td>«Alt+S»</td></tr>
+<tr><td>‘end enable connection’</td><td>«Alt+e»</td></tr>
+<tr><td>‘end disable connection’</td><td>«Alt+E»</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td>‘Start flip enable connection’</td><td>«Ctl+s»</td></tr>
+<tr><td>‘End flip enable connection’</td><td>«Ctl+e»</td></tr>
+<tr><td></td><td></td></tr>
+<tr><td><a href="#start-connector">‘start connectors -&gt;’</a></td><td>«s»</td></tr>
+<tr><td><a href="#end-connector">‘end connectors -&gt;’</a></td><td>«e»</td></tr>
+<tr><td><a href="#both-connectors">‘both connectors -&gt;’</a></td><td>«b»</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="a-arrow-group"><a class="header" href="#a-arrow-group">«a» arrow group</a></h1>
-<pre><code> «a» arrow group:
-
-     «S»                Insert multi-wirl section
-
-     «f»                Flip arrow start and end
-
-     «d»                Change arrow direction
-
-     «s»                Append multi-wirl sectioni
-
-     «A-s»              Remove last section from multi-wirl
-</code></pre>
+<h1 id="start-connector"><a class="header" href="#start-connector">Start Connector</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#arrow-manipulation">Arrow Manipulation</a> &gt; <a href="#arrow-connectors-operations">Connectors</a> &gt; Start Connector</p>
+<p><strong>Prefix:</strong> Press <code>«a»</code> <code>«c»</code> <code>«s»</code> to enter this group</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to both connectors configuration</p>
+<h2 id="start-connector-styles"><a class="header" href="#start-connector-styles">Start Connector Styles</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>fixed start connectors -&gt;</td><td>f</td></tr>
+<tr><td>dash,</td><td>«minus»,</td></tr>
+<tr><td>arrow reversed,</td><td>«less»,</td></tr>
+<tr><td>arrow,</td><td>«greater»,</td></tr>
+<tr><td>t,</td><td>«t»,</td></tr>
+<tr><td>T,</td><td>«T»,</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="a-align-group"><a class="header" href="#a-align-group">«A» align group</a></h1>
-<p>«A» align group:</p>
-<pre><code>«t»                Align top
-
-«l»                Align left
-
-«b»                Align bottom
-
-«r»                Align right
-
-«h»                Align horizontally
-
-«v»                Align vertically
-</code></pre>
+<h1 id="end-connector"><a class="header" href="#end-connector">End Connector</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#arrow-manipulation">Arrow Manipulation</a> &gt; <a href="#arrow-connectors-operations">Connectors</a> &gt; End Connector</p>
+<p><strong>Prefix:</strong> Press <code>«a»</code> <code>«c»</code> <code>«e»</code> to enter this group</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to both connectors configuration</p>
+<h2 id="start-connector-styles-1"><a class="header" href="#start-connector-styles-1">Start Connector Styles</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>fixed end connectors -&gt;</td><td>f</td></tr>
+<tr><td>dash,</td><td>«minus»,</td></tr>
+<tr><td>arrow reversed,</td><td>«less»,</td></tr>
+<tr><td>arrow,</td><td>«greater»,</td></tr>
+<tr><td>t,</td><td>«t»,</td></tr>
+<tr><td>T,</td><td>«T»,</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="g-grouping-group"><a class="header" href="#g-grouping-group">«g» grouping group</a></h1>
-<pre><code> «g» grouping group:
-
-     «g»                Group selected elements
-
-     «u»                Ungroup selected elements
-
-     «F»                Temporary move selected element to the front
-
-     «f»                Move selected elements to the front
-
-     «b»                Move selected elements to the back
-</code></pre>
+<h1 id="both-connectors"><a class="header" href="#both-connectors">Both Connectors</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#arrow-manipulation">Arrow Manipulation</a> &gt; <a href="#arrow-connectors-operations">Connectors</a> &gt; Both Connector</p>
+<p><strong>Prefix:</strong> Press <code>«a»</code> <code>«c»</code> <code>«b»</code> to enter this group</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to both connectors configuration</p>
+<h2 id="start-connector-styles-2"><a class="header" href="#start-connector-styles-2">Start Connector Styles</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>fixed both connectors -&gt;</td><td>f</td></tr>
+<tr><td>dash,</td><td>«minus»,</td></tr>
+<tr><td>arrow reversed,</td><td>«less»,</td></tr>
+<tr><td>arrow,</td><td>«greater»,</td></tr>
+<tr><td>t,</td><td>«t»,</td></tr>
+<tr><td>T,</td><td>«T»,</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="a-g-stripes-group-group"><a class="header" href="#a-g-stripes-group-group">«A-g» stripes-group group</a></h1>
-<pre><code> «A-g» stripes-group group:
-
-     «1»                Create one stripe group
-
-     «g»                Create stripes group
-
-     «u»                Ungroup stripes group
-</code></pre>
+<h1 id="fixed-vs-dynamic-connectors"><a class="header" href="#fixed-vs-dynamic-connectors">Fixed vs Dynamic Connectors</a></h1>
+<p>Fixed connectors remain the same regardless of arrow direction while dynamic connectors change according to the arrow direction</p>
+<p><img src="fixed_vs_dynamic_connectors.gif" alt="Fixed vs dynamiv connectors"></p>
+<h2 id="example-bindings-for-both-connectors-fixed"><a class="header" href="#example-bindings-for-both-connectors-fixed">Example: Bindings for Both Connectors Fixed</a></h2>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#arrow-manipulation">Arrow Operations</a> &gt; <a href="#arrow-connectors-operations">Connectors</a> &gt; <a href="#both-connectors">Both_connectors</a> &gt; Fixed</p>
+<p><strong>Prefix:</strong> Press <code>«a» </code>«c»<code> </code>«b»<code> </code>«f»` to enter this group</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to both connectors configuration</p>
+<h2 id="fixed-connector-styles"><a class="header" href="#fixed-connector-styles">Fixed Connector Styles</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Dash fixed (both)</td><td><code>«-»</code></td><td>Use dash (-) at both ends</td></tr>
+<tr><td>Dot fixed (both)</td><td><code>«.»</code></td><td>Use dot (.) at both ends</td></tr>
+<tr><td>Star fixed (both)</td><td><code>«Shift+*»</code></td><td>Use star (*) at both ends</td></tr>
+<tr><td>Circle fixed small (both)</td><td><code>«o»</code></td><td>Use small circle (o) at both ends</td></tr>
+<tr><td>Circle fixed large (both)</td><td><code>«Shift+O»</code></td><td>Use large circle (O) at both ends</td></tr>
+<tr><td>Bullet fixed (both)</td><td><code>«d»</code></td><td>Use bullet (•) at both ends</td></tr>
+</tbody>
+</table>
+</div>
+<p>The same bindings exist when changing the start or the end connector.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="z-display-group"><a class="header" href="#z-display-group">«z» display group</a></h1>
-<pre><code> «z» display group:
-
-     «C»                Change grid color
-
-     «c»                Change Asciio background color
-
-     «g»                Flip grid display
-
-     «s»                Flip color scheme
-
-     «t»                Flip transparent element background
-</code></pre>
+<h1 id="yank-operations"><a class="header" href="#yank-operations">Yank Operations</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Yank Operations</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«y»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<p>Yank operations copy selected elements to the clipboard in various formats.</p>
+<h2 id="copy-operations"><a class="header" href="#copy-operations">Copy Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Copy to clipboard</td><td><code>«y»</code></td><td>Copy selection to system clipboard (native format)</td></tr>
+<tr><td>Export as ASCII</td><td><code>«Shift+Y»</code></td><td>Copy as plain ASCII text to clipboard and primary</td></tr>
+<tr><td>Export as markup</td><td><code>«m»</code></td><td>Copy with markup/formatting to clipboard and primary</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="s-slides-group"><a class="header" href="#s-slides-group">«S» slides group</a></h1>
-<pre><code> «S» slides group:
-
-     «N»                Previous slide
-
-     «g»                First slide
-
-     «l»                Load slides
-
-     «n»                Next slide
-</code></pre>
+<h1 id="mouse-operations-reference"><a class="header" href="#mouse-operations-reference">Mouse Operations Reference</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Mouse Operations</p>
+<p>Complete reference for all mouse-based interactions in Asciio.</p>
+<h2 id="basic-mouse-operations"><a class="header" href="#basic-mouse-operations">Basic Mouse Operations</a></h2>
+<h3 id="clicking"><a class="header" href="#clicking">Clicking</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Left-click</td><td><code>«Left-click»</code></td><td>Select element at cursor position</td></tr>
+<tr><td>Double-click</td><td><code>«Double-click-1»</code></td><td>Edit element at cursor position</td></tr>
+<tr><td>Right-click</td><td><code>«Right-click»</code></td><td>Open context menu</td></tr>
+<tr><td>Shift+Left-click</td><td><code>«Shift+Left-click»</code></td><td>Toggle element selection (add/remove from selection)</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="drag-operations"><a class="header" href="#drag-operations">Drag Operations</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Drag elements</td><td><code>«Left-click+drag»</code></td><td>Move selected elements</td></tr>
+<tr><td>Start drag and drop</td><td><code>«Ctrl+Left-click»</code></td><td>Begin drag and drop operation</td></tr>
+<tr><td>Release</td><td><code>«Left-release»</code></td><td>Complete drag operation</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="quick-creation"><a class="header" href="#quick-creation">Quick Creation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Quick link</td><td><code>«Alt+Left-click»</code></td><td>Create arrow from selection to click point</td></tr>
+<tr><td>Quick link orthogonal</td><td><code>«Alt+Shift+Left-click»</code></td><td>Create orthogonal arrow to click point</td></tr>
+<tr><td>Quick box</td><td><code>«Ctrl+Shift+Left-click»</code></td><td>Create box at click location</td></tr>
+<tr><td>Duplicate element</td><td><code>«,»</code></td><td>Duplicate selected elements</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="interactive-arrow-editing-1"><a class="header" href="#interactive-arrow-editing-1">Interactive Arrow Editing</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Arrow to mouse</td><td><code>«Ctrl+Alt+motion»</code></td><td>Extend/modify arrow following mouse cursor</td></tr>
+<tr><td>Arrow change direction</td><td><code>«Ctrl+Alt+Double-click»</code></td><td>Change arrow direction at click point</td></tr>
+<tr><td>Add arrow section</td><td><code>«Ctrl+Alt+Left-click»</code></td><td>Add section to multi-segment arrow</td></tr>
+<tr><td>Insert flex point</td><td><code>«Ctrl+Alt+Middle-click»</code></td><td>Insert flexible point in arrow path</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-motion-tracking"><a class="header" href="#mouse-motion-tracking">Mouse Motion Tracking</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Standard motion</td><td><code>«motion»</code></td><td>Track mouse position for hover effects</td></tr>
+<tr><td>Extended motion</td><td><code>«Alt+Shift+motion»</code></td><td>Track with alternate behavior</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-emulation-mode"><a class="header" href="#mouse-emulation-mode">Mouse Emulation Mode</a></h2>
+<p>Mouse emulation allows full mouse control via keyboard.</p>
+<h3 id="activation"><a class="header" href="#activation">Activation</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Toggle mouse emulation</td><td><code>«'»</code></td><td>Enable/disable keyboard mouse control</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="cursor-movement"><a class="header" href="#cursor-movement">Cursor Movement</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move cursor left</td><td><code>«Ctrl+Left»</code></td><td>Move mouse cursor one character left</td></tr>
+<tr><td>Move cursor right</td><td><code>«Ctrl+Right»</code></td><td>Move mouse cursor one character right</td></tr>
+<tr><td>Move cursor up</td><td><code>«Ctrl+Up»</code></td><td>Move mouse cursor one character up</td></tr>
+<tr><td>Move cursor down</td><td><code>«Ctrl+Down»</code></td><td>Move mouse cursor one character down</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="clicking-1"><a class="header" href="#clicking-1">Clicking</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Emulated left-click</td><td><code>«ö»</code></td><td>Simulate left mouse button click</td></tr>
+<tr><td>Emulated right-click</td><td><code>«ä»</code></td><td>Simulate right mouse button click</td></tr>
+<tr><td>Expand selection</td><td><code>«Shift+Ö»</code></td><td>Expand selection at cursor</td></tr>
+<tr><td>Toggle selection</td><td><code>«Ctrl+ö»</code></td><td>Add/remove element at cursor from selection</td></tr>
+</tbody>
+</table>
+</div>
+<h3 id="dragging"><a class="header" href="#dragging">Dragging</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Drag left</td><td><code>«Shift+Left»</code></td><td>Drag selection while moving left</td></tr>
+<tr><td>Drag right</td><td><code>«Shift+Right»</code></td><td>Drag selection while moving right</td></tr>
+<tr><td>Drag up</td><td><code>«Shift+Up»</code></td><td>Drag selection while moving up</td></tr>
+<tr><td>Drag down</td><td><code>«Shift+Down»</code></td><td>Drag selection while moving down</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="zoom-with-mouse"><a class="header" href="#zoom-with-mouse">Zoom with Mouse</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Zoom in</td><td><code>«Ctrl+scroll-up»</code></td><td>Increase zoom level</td></tr>
+<tr><td>Zoom out</td><td><code>«Ctrl+scroll-down»</code></td><td>Decrease zoom level</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="d-debug-group"><a class="header" href="#d-debug-group">«D» Debug group</a></h1>
-<pre><code> «D» debug group:
-
-     «E»                Dump selected elements
-
-     «e»                Dump all elements
-
-     «S»                Display undo stack statistics
-
-     «o»                Test
-
-     «s»                Dump self
-
-     «t»                Display numbered objects
-</code></pre>
+<h1 id="display-options-1"><a class="header" href="#display-options-1">Display options</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Display options</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«z»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<h2 id="element-modification-1"><a class="header" href="#element-modification-1">Element Modification</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Change font</td><td>«f»</td></tr>
+<tr><td><a href="#color-configuration">Change color -&gt;</a></td><td>«c»</td></tr>
+<tr><td>Flip binding completion</td><td>«b»</td></tr>
+<tr><td>Flip transparent element background</td><td>«t»</td></tr>
+<tr><td>Flip grid display</td><td>«g»</td></tr>
+<tr><td>Flip rulers display</td><td>«r»</td></tr>
+<tr><td>Flip hint lines</td><td>«h»</td></tr>
+<tr><td>Flip edit inline</td><td>«i»</td></tr>
+<tr><td>Flip show/hide connectors</td><td>«v»</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-groups-3"><a class="header" href="#related-groups-3">Related Groups</a></h2>
+<ul>
+<li><a href="#color-configuration">Color options</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="color-configuration"><a class="header" href="#color-configuration">Color Configuration</a></h1>
+<p><strong>navigation:</strong> <a href="#asciio-keyboard-bindings-reference">index</a> &gt; <a href="#display-options-1">display options</a> &gt; color configuration</p>
+<p><strong>Prefix:</strong> Press <code>«z»</code> then <code>«c»</code> to enter this group</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to display options</p>
+<h2 id="color-operations"><a class="header" href="#color-operations">Color Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Flip color scheme</td><td><code>«s»</code></td><td>Toggle between color schemes</td></tr>
+<tr><td>Change element foreground</td><td><code>«f»</code></td><td>Set foreground color for selected elements</td></tr>
+<tr><td>Change element background</td><td><code>«b»</code></td><td>Set background color for selected elements</td></tr>
+<tr><td>Change canvas background</td><td><code>«Shift+B»</code></td><td>Set overall canvas background color</td></tr>
+<tr><td>Change grid color</td><td><code>«g»</code></td><td>Set grid line color</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-groups-4"><a class="header" href="#related-groups-4">Related Groups</a></h2>
+<ul>
+<li><a href="#display-options-1">Display options</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="debug-operations"><a class="header" href="#debug-operations">Debug Operations</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Debug Operations</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«D»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<p>Debug operations provide diagnostic information for development and troubleshooting.</p>
+<h2 id="debug-operations-1"><a class="header" href="#debug-operations-1">Debug Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Display undo stack statistics</td><td><code>«u»</code></td><td>Show undo/redo stack information</td></tr>
+<tr><td>Dump self</td><td><code>«s»</code></td><td>Output Asciio object state</td></tr>
+<tr><td>Dump all elements</td><td><code>«e»</code></td><td>Output all element information</td></tr>
+<tr><td>Dump selected elements</td><td><code>«E»</code></td><td>Output selected element information</td></tr>
+<tr><td>Toggle numbered objects</td><td><code>«t»</code></td><td>Show/hide object ID numbers</td></tr>
+<tr><td>Test</td><td><code>«o»</code></td><td>Run test operation</td></tr>
+<tr><td>ZBuffer test</td><td><code>«z»</code></td><td>Display z-buffer crossing information</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="modes-1"><a href="#modes-1" class="header">Modes</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="clone-mode-bindings"><a class="header" href="#clone-mode-bindings">Clone Mode Bindings</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Clone Mode</p>
+<p><strong>Prefix:</strong> Press «c» to enter clone mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
+<p>Clone mode allows cloning selected elements and placing copies interactively.</p>
+<h2 id="mode-control"><a class="header" href="#mode-control">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit clone mode</td><td>«Escape»</td><td>Return to normal mode</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="clone-placement"><a class="header" href="#clone-placement">Clone Placement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Clone motion</td><td>«motion»</td><td>Move clone preview following mouse</td></tr>
+<tr><td>Insert clone</td><td>«Left-click» or «Return»</td><td>Place clone at current position</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="clone-template-selection"><a class="header" href="#clone-template-selection">Clone Template Selection</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Clone arrow</td><td>«a»</td><td>Set clone template to arrow</td></tr>
+<tr><td>Clone angled arrow</td><td>«Shift+A»</td><td>Set clone template to angled arrow</td></tr>
+<tr><td>Clone box</td><td>«b»</td><td>Set clone template to box</td></tr>
+<tr><td>Clone text</td><td>«t»</td><td>Set clone template to text</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="display-options-2"><a class="header" href="#display-options-2">Display Options</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Flip hint lines</td><td>«h»</td><td>Toggle hint lines in clone mode</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="keyboard-movement"><a class="header" href="#keyboard-movement">Keyboard Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move clone left</td><td>«Left»</td><td>Move clone position left</td></tr>
+<tr><td>Move clone right</td><td>«Right»</td><td>Move clone position right</td></tr>
+<tr><td>Move clone up</td><td>«Up»</td><td>Move clone position up</td></tr>
+<tr><td>Move clone down</td><td>«Down»</td><td>Move clone position down</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-emulation-in-clone-mode"><a class="header" href="#mouse-emulation-in-clone-mode">Mouse Emulation in Clone Mode</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Emulation move left</td><td>«Ctrl+Left»</td><td>Move mouse cursor left</td></tr>
+<tr><td>Emulation move right</td><td>«Ctrl+Right»</td><td>Move mouse cursor right</td></tr>
+<tr><td>Emulation move up</td><td>«Ctrl+Up»</td><td>Move mouse cursor up</td></tr>
+<tr><td>Emulation move down</td><td>«Ctrl+Down»</td><td>Move mouse cursor down</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="eraser-mode"><a class="header" href="#eraser-mode">Eraser Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Eraser Mode</p>
+<p><strong>Prefix:</strong> Press «E» to enter eraser mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
+<p>Eraser mode removes elements by hovering the mouse over them.</p>
+<h2 id="mode-control-1"><a class="header" href="#mode-control-1">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit eraser mode</td><td>«Escape»</td><td>Return to normal mode</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="erasing-operations"><a class="header" href="#erasing-operations">Erasing Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Erase motion</td><td>«motion»</td><td>Erase elements under mouse cursor</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="pen-mode"><a class="header" href="#pen-mode">Pen Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Pen Mode</p>
+<p><strong>Prefix:</strong> Press «P» to enter pen mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
+<p>Pen mode provides character-by-character drawing with keyboard navigation.</p>
+<h2 id="mode-control-2"><a class="header" href="#mode-control-2">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit pen mode</td><td>«Escape»</td><td>Return to normal mode</td></tr>
+<tr><td>Switch pen/eraser</td><td>«Ctrl+Shift+Tab»</td><td>Toggle between pen and eraser</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="character-placement"><a class="header" href="#character-placement">Character Placement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Insert or delete character</td><td>«Left-click» or «Return»</td><td>Place/remove character at cursor</td></tr>
+<tr><td>Change character</td><td>«Right-click»</td><td>Change character at cursor position</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="cursor-movement-1"><a class="header" href="#cursor-movement-1">Cursor Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move left</td><td>«Left» or «Ctrl+h»</td><td>Move cursor one character left</td></tr>
+<tr><td>Move right</td><td>«Right» or «Ctrl+l»</td><td>Move cursor one character right</td></tr>
+<tr><td>Move up</td><td>«Up» or «Ctrl+k»</td><td>Move cursor one character up</td></tr>
+<tr><td>Move down</td><td>«Down» or «Ctrl+j»</td><td>Move cursor one character down</td></tr>
+<tr><td>Move left (fast)</td><td>«Alt+h»</td><td>Move cursor multiple characters left</td></tr>
+<tr><td>Move right (fast)</td><td>«Alt+l»</td><td>Move cursor multiple characters right</td></tr>
+<tr><td>Move up (fast)</td><td>«Alt+k»</td><td>Move cursor multiple characters up</td></tr>
+<tr><td>Move down (fast)</td><td>«Alt+j»</td><td>Move cursor multiple characters down</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="special-movement"><a class="header" href="#special-movement">Special Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Space</td><td>«Space»</td><td>Move according to direction setting</td></tr>
+<tr><td>Left tab</td><td>«Shift+Tab»</td><td>Move to previous tab stop</td></tr>
+<tr><td>Right tab</td><td>«Tab»</td><td>Move to next tab stop</td></tr>
+<tr><td>Enter</td><td>«Shift+Return»</td><td>Move to beginning of next line</td></tr>
+<tr><td>Toggle direction</td><td>«Ctrl+Tab»</td><td>Change auto-movement direction</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="character-deletion"><a class="header" href="#character-deletion">Character Deletion</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Delete forward</td><td>«Delete»</td><td>Delete character at cursor</td></tr>
+<tr><td>Delete backward</td><td>«BackSpace»</td><td>Delete character before cursor and move back</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="character-set-management"><a class="header" href="#character-set-management">Character Set Management</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Next character set</td><td>«Ctrl+Return»</td><td>Switch to next character mapping</td></tr>
+<tr><td>Previous character set</td><td>«Alt+Return»</td><td>Switch to previous character mapping</td></tr>
+<tr><td>Toggle help location</td><td>«Ctrl+Shift+Return»</td><td>Change where character set help is displayed</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="direct-character-input"><a class="header" href="#direct-character-input">Direct Character Input</a></h2>
+<p>Pen mode allows direct entry of alphanumeric and special characters. Simply type the character to place it at the cursor position.</p>
+<h3 id="lowercase-letters"><a class="header" href="#lowercase-letters">Lowercase Letters</a></h3>
+<p>Type «a» through «z» to insert lowercase letters.</p>
+<h3 id="uppercase-letters"><a class="header" href="#uppercase-letters">Uppercase Letters</a></h3>
+<p>Type «Shift+A» through «Shift+Z» to insert uppercase letters.</p>
+<h3 id="numbers"><a class="header" href="#numbers">Numbers</a></h3>
+<p>Type «0» through «9» to insert digits.</p>
+<h3 id="special-characters-shifted"><a class="header" href="#special-characters-shifted">Special Characters (Shifted)</a></h3>
+<ul>
+<li>«Shift+Å» - Å</li>
+<li>«Shift+Ä» - Ä</li>
+<li>«Shift+Ö» - Ö</li>
+<li>«Shift+*» - *</li>
+<li>«Shift+(» - (</li>
+<li>«Shift+!» - !</li>
+<li>«Shift+@» - @</li>
+<li>«Shift+#» - #</li>
+<li>«Shift+$» - $</li>
+<li>«Shift+%» - %</li>
+<li>«Shift+^» - ^</li>
+<li>«Shift+&amp;» - &amp;</li>
+<li>«Shift+)» - )</li>
+<li>«Shift+_» - _</li>
+<li>«Shift++» - +</li>
+<li>«Shift+{» - {</li>
+<li>«Shift+}» - }</li>
+<li>«Shift+:» - :</li>
+<li>«Shift+“» - “</li>
+<li>«Shift+~» - ~</li>
+<li>«Shift+|» - |</li>
+<li>«Shift+?» - ?</li>
+<li>«Shift+&lt;» - &lt;</li>
+<li>«Shift+&gt;» - &gt;</li>
+</ul>
+<h3 id="special-characters-unshifted"><a class="header" href="#special-characters-unshifted">Special Characters (Unshifted)</a></h3>
+<ul>
+<li>«å» - å</li>
+<li>«ä» - ä</li>
+<li>«ö» - ö</li>
+<li>«-» - -</li>
+<li>«=» - =</li>
+<li>«[» - [</li>
+<li>«]» - ]</li>
+<li>«;» - ;</li>
+<li>«’» - ’</li>
+<li>«<code>» - </code></li>
+<li>«\» - \</li>
+<li>«/» - /</li>
+<li>«,» - ,</li>
+<li>«.» - .</li>
+</ul>
+<h2 id="mouse-operations-1"><a class="header" href="#mouse-operations-1">Mouse Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Pen motion</td><td>«motion»</td><td>Track mouse position in pen mode</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="move-arrow-ends-mode"><a class="header" href="#move-arrow-ends-mode">Move Arrow Ends Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Move Arrow Ends Mode</p>
+<p><strong>Prefix:</strong> Press «Alt+a» to enter arrow ends mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
+<p>Move arrow ends mode allows precise adjustment of arrow start and end points.</p>
+<h2 id="arrow-start-movement"><a class="header" href="#arrow-start-movement">Arrow Start Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move start up</td><td>«Up» or «k»</td><td>Move arrow start point up</td></tr>
+<tr><td>Move start down</td><td>«Down» or «j»</td><td>Move arrow start point down</td></tr>
+<tr><td>Move start left</td><td>«Left» or «h»</td><td>Move arrow start point left</td></tr>
+<tr><td>Move start right</td><td>«Right» or «l»</td><td>Move arrow start point right</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="arrow-end-movement"><a class="header" href="#arrow-end-movement">Arrow End Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move end up</td><td>«Shift+Up» or «Shift+K»</td><td>Move arrow end point up</td></tr>
+<tr><td>Move end down</td><td>«Shift+Down» or «Shift+J»</td><td>Move arrow end point down</td></tr>
+<tr><td>Move end left</td><td>«Shift+Left» or «Shift+H»</td><td>Move arrow end point left</td></tr>
+<tr><td>Move end right</td><td>«Shift+Right» or «Shift+L»</td><td>Move arrow end point right</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-operations"><a class="header" href="#related-operations">Related Operations</a></h2>
+<ul>
+<li><a href="#arrow-manipulation">Arrow manipulation</a></li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="find-mode"><a class="header" href="#find-mode">Find Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Find Mode</p>
+<p><strong>Prefix:</strong> Press «f» to enter find mode</p>
+<p><strong>Exit:</strong> Press «f» or «Escape» to return to root bindings</p>
+<p>Find mode searches for text within elements and navigates through results.</p>
+<h2 id="mode-control-3"><a class="header" href="#mode-control-3">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit find mode</td><td>«f» or «Escape»</td><td>Return to normal mode</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="search-operations"><a class="header" href="#search-operations">Search Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Perform new search</td><td>«s»</td><td>Enter new search term</td></tr>
+<tr><td>Find next</td><td>«n»</td><td>Navigate to next match</td></tr>
+<tr><td>Find previous</td><td>«Shift+N»</td><td>Navigate to previous match</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="view-control-in-find-mode"><a class="header" href="#view-control-in-find-mode">View Control in Find Mode</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Zoom in</td><td>«+» or «Ctrl+Shift+J» or «Ctrl+scroll-up»</td><td>Increase zoom</td></tr>
+<tr><td>Zoom out</td><td>«-» or «Ctrl+Shift+H» or «Ctrl+scroll-down»</td><td>Decrease zoom</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="git-mode"><a class="header" href="#git-mode">Git Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Git Mode</p>
+<p><strong>Prefix:</strong> Press «Shift+G» to enter git mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
+<p>Git mode provides a simplified interface optimized for creating diagrams quickly.</p>
+<h2 id="mode-control-4"><a class="header" href="#mode-control-4">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Show git bindings</td><td>«Shift+?»</td><td>Display available git mode bindings</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="quick-creation-1"><a class="header" href="#quick-creation-1">Quick Creation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Quick git link</td><td>«Right-click» or «c»</td><td>Create quick connection</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-creation"><a class="header" href="#element-creation">Element Creation</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Add box</td><td>«b»</td><td>Insert box with edit</td></tr>
+<tr><td>Add text</td><td>«t»</td><td>Insert text with edit</td></tr>
+<tr><td>Add arrow</td><td>«a»</td><td>Insert arrow</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-operations-1"><a class="header" href="#element-operations-1">Element Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Edit element</td><td>«Double-click» or «Return»</td><td>Edit selected element</td></tr>
+<tr><td>Delete elements</td><td>«Delete» or «x»</td><td>Remove selected elements</td></tr>
+<tr><td>Change arrow direction</td><td>«d»</td><td>Toggle arrow direction</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="editing-operations-1"><a class="header" href="#editing-operations-1">Editing Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Undo</td><td>«u»</td><td>Undo last operation</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-operations-2"><a class="header" href="#mouse-operations-2">Mouse Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Left-click</td><td>«Left-click»</td><td>Select element</td></tr>
+<tr><td>Right-click</td><td>«Alt+Right-click»</td><td>Context menu</td></tr>
+<tr><td>Motion</td><td>«motion»</td><td>Track mouse position</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="element-movement"><a class="header" href="#element-movement">Element Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move left</td><td>«Left»</td><td>Move selection left</td></tr>
+<tr><td>Move right</td><td>«Right»</td><td>Move selection right</td></tr>
+<tr><td>Move up</td><td>«Up»</td><td>Move selection up</td></tr>
+<tr><td>Move down</td><td>«Down»</td><td>Move selection down</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="display"><a class="header" href="#display">Display</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Flip hint lines</td><td>«h»</td><td>Toggle hint lines</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="selection-mode"><a class="header" href="#selection-mode">Selection Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Selection Mode</p>
+<p><strong>Prefix:</strong> Press <code>«s»</code> to enter selection mode</p>
+<p><strong>Exit:</strong> Press <code>«s»</code> or <code>«Escape»</code> to return to root bindings</p>
+<p>Selection mode provides interactive rectangle and polygon selection of elements.</p>
+<h2 id="mode-control-5"><a class="header" href="#mode-control-5">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit selection mode</td><td><code>«s»</code> or <code>«Escape»</code></td><td>Return to normal mode</td></tr>
+<tr><td>Flip selection mode</td><td><code>«e»</code></td><td>Toggle between add/remove selection mode</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="mouse-operations-3"><a class="header" href="#mouse-operations-3">Mouse Operations</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Select motion</td><td><code>«motion»</code></td><td>Track mouse for selection rectangle</td></tr>
+<tr><td>Select elements</td><td><code>«Left-click»</code></td><td>Select elements within rectangle</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="polygon-selection"><a class="header" href="#polygon-selection">Polygon Selection</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Enter polygon selection</td><td><code>«x»</code></td><td>Enter <a href="#polygon-selection-mode">polygon selection mode</a></td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="polygon-selection-mode"><a class="header" href="#polygon-selection-mode">Polygon Selection Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#selection-mode">Selection Mode</a> &gt; Polygon Selection</p>
+<p><strong>Prefix:</strong> Press «s» «x» to enter polygon selection</p>
+<p><strong>Exit:</strong> Press «x» or «Escape» to return to selection mode</p>
+<p>Polygon selection allows drawing a free form polygon to select elements.</p>
+<h2 id="mode-control-6"><a class="header" href="#mode-control-6">Mode Control</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit polygon selection</td><td>«x» or «Escape»</td><td>Return to selection mode</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="polygon-drawing"><a class="header" href="#polygon-drawing">Polygon Drawing</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Polygon select motion</td><td>«motion»</td><td>Draw selection polygon</td></tr>
+<tr><td>Polygon deselect motion</td><td>«Ctrl+motion»</td><td>Draw deselection polygon</td></tr>
+<tr><td>Complete polygon</td><td>«Left-release»</td><td>Finish polygon and apply selection</td></tr>
+<tr><td>Complete polygon (alternate)</td><td>«Ctrl+Left-release»</td><td>Finish deselection polygon</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="slides-script-execution"><a class="header" href="#slides-script-execution">Slides Script Execution</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#modes-1">Modes</a> &gt; Slide Script Execution</p>
+<p><strong>Prefix:</strong> Press «Shift+S» then «s» to enter script execution</p>
+<p><strong>Exit:</strong> Press «Escape» to return to slides mode</p>
+<p>Execute presentation scripts bound to alphanumeric keys.</p>
+<h2 id="script-keys"><a class="header" href="#script-keys">Script Keys</a></h2>
+<p>Scripts can be bound to any letter or number key. Press the corresponding key to execute the associated script.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Key Range</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>«a» through «z»</td><td>Execute script bound to that letter</td></tr>
+<tr><td>«0» through «9»</td><td>Execute script bound to that number</td></tr>
+</tbody>
+</table>
+</div>
+<p>Scripts are configured in the slide presentation file and can perform various actions during presentations.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
 <h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
@@ -2860,7 +4435,7 @@ accessed with shortcuts that start with the same letter.</p>
 <li>routing hooks are defined</li>
 <li>document importers and exporters are defined</li>
 </ul>
-<h3 id="actions"><a class="header" href="#actions">Actions</a></h3>
+<h3 id="actions-1"><a class="header" href="#actions-1">Actions</a></h3>
 <p>Code that is added to <strong>asciio</strong> (a plugin in an other term).</p>
 <p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a keyboard shortcut.</p>
 <h3 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h3>

@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Bindings - Asciio</title>
+        <title>Arrow - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-ab7c909a.js";
+            window.path_to_searchindex_js = "searchindex-5617d0da.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-07fdbbe9.js"></script>
+        <script src="toc-47770481.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,46 +174,53 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="bindings"><a class="header" href="#bindings">Bindings</a></h1>
-<p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.</p>
-<p>It’s faster and easier to work with keyboard shortcuts than the mouse and the number of combination of mouse buttons * control-keys is very limited.</p>
-<p><em>Asciio</em> bindings are vim-like, they initially take more time to get used to, and often take multiple key presses but they are much more logical as families of commands are
-accessed with shortcuts that start with the same letter.</p>
-<p>The bindings can be changed in your user configuration, See configuration/user_bindings</p>
-<h1 id="bindings-help"><a class="header" href="#bindings-help">Bindings help</a></h1>
-<p><em><strong>Binding:</strong></em> zb</p>
-<p><img src="bindings_help.gif" alt="bindings_help"></p>
-<p>You can get a pop up showing the bindings (<em>?</em> in the top level) Or you can configure it:</p>
-<pre><code>USE_BINDINGS_COMPLETION =&gt; 1,
-</code></pre>
-<h2 id="bindings-map"><a class="header" href="#bindings-map">Bindings map</a></h2>
-<p><strong>bindings change, truth is in the config not this snapshot</strong></p>
-<p><img src="asciio_bindings.png" alt="bindings"></p>
-<h2 id="embedded-bindings"><a class="header" href="#embedded-bindings">Embedded bindings</a></h2>
-<p>Extra bindings can be embedded in an asciio document with command line options</p>
+                        <h1 id="move-arrow-ends-mode"><a class="header" href="#move-arrow-ends-mode">Move Arrow Ends Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="bindings_index.html">Index</a> &gt; Move Arrow Ends Mode</p>
+<p><strong>Prefix:</strong> Press «Alt+a» to enter arrow ends mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
+<p>Move arrow ends mode allows precise adjustment of arrow start and end points.</p>
+<h2 id="arrow-start-movement"><a class="header" href="#arrow-start-movement">Arrow Start Movement</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>option</th><th></th><th></th></tr>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>add_binding=s</td><td>file containing bindings to embedd</td><td></td></tr>
-<tr><td>reset_bindings</td><td>remove all embedded bindings from document</td><td></td></tr>
-<tr><td>dump_bindings</td><td>write the embedded bindings to files</td><td></td></tr>
-<tr><td>dump_binding_names</td><td>display name of embbeded bindings</td><td></td></tr>
+<tr><td>Move start up</td><td>«Up» or «k»</td><td>Move arrow start point up</td></tr>
+<tr><td>Move start down</td><td>«Down» or «j»</td><td>Move arrow start point down</td></tr>
+<tr><td>Move start left</td><td>«Left» or «h»</td><td>Move arrow start point left</td></tr>
+<tr><td>Move start right</td><td>«Right» or «l»</td><td>Move arrow start point right</td></tr>
 </tbody>
 </table>
 </div>
+<h2 id="arrow-end-movement"><a class="header" href="#arrow-end-movement">Arrow End Movement</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>Move end up</td><td>«Shift+Up» or «Shift+K»</td><td>Move arrow end point up</td></tr>
+<tr><td>Move end down</td><td>«Shift+Down» or «Shift+J»</td><td>Move arrow end point down</td></tr>
+<tr><td>Move end left</td><td>«Shift+Left» or «Shift+H»</td><td>Move arrow end point left</td></tr>
+<tr><td>Move end right</td><td>«Shift+Right» or «Shift+L»</td><td>Move arrow end point right</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="related-operations"><a class="header" href="#related-operations">Related Operations</a></h2>
+<ul>
+<li><a href="arrow_operation.html">Arrow manipulation</a></li>
+</ul>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
-                            <a rel="prev" href="videos/videos.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                            <a rel="prev" href="pen_mode.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="bindings/mouse.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="find_mode.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -223,11 +230,11 @@ accessed with shortcuts that start with the same letter.</p>
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
-                    <a rel="prev" href="videos/videos.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                    <a rel="prev" href="pen_mode.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="bindings/mouse.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="find_mode.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
