@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5617d0da.js";
+            window.path_to_searchindex_js = "searchindex-9584c60e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-47770481.js"></script>
+        <script src="toc-5a65138d.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1170,6 +1170,108 @@ TEXT
 </div>
 <p><img src="stencils/asciio_shapes.gif" alt="asciio shapes"></p>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="asciio-image-box"><a class="header" href="#asciio-image-box">Asciio image box</a></h1>
+<p>The purpose of an image box is to have a background image; it’s ideal as a background when creating ASCII Art in <strong>Pen Mode</strong>.</p>
+<ul>
+<li>Image boxes have grayscale and transparency settings</li>
+<li>Images aren’t exported instead a text placeholders will be exported</li>
+</ul>
+<p><img src="stencils/image_box_example.gif" alt="image_box_example"></p>
+<h2 id="bindings"><a class="header" href="#bindings">Bindings</a></h2>
+<p><strong>Prefix:</strong> All operations require pressing <code>«I»</code> to enter the <strong>image Box</strong> group.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Enter image box group</td><td><code>«I»</code></td></tr>
+<tr><td><a href="#image-box-operations-1">All bindings</a></td><td></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="create-an-image-box-from-a-file"><a class="header" href="#create-an-image-box-from-a-file">Create an image box from a file</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>biding</th></tr>
+</thead>
+<tbody>
+<tr><td>inserted from file</td><td><code>«i»</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><img src="stencils/image_box_insert_from_file.gif" alt="image_box_insert_from_file"></p>
+<h2 id="image-box-operations"><a class="header" href="#image-box-operations">Image box operations</a></h2>
+<p>Image boxes, like ordinary boxes, support resizing and moving.</p>
+<p><img src="stencils/image_box_normal_operations.gif" alt="image_box_normal_operations"></p>
+<h3 id="image-box-visual-controls-sub-group"><a class="header" href="#image-box-visual-controls-sub-group">image box visual controls sub group</a></h3>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>rendering control</td><td><code>«&lt;c»</code></td></tr>
+</tbody>
+</table>
+</div>
+<hr>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>bingding</th></tr>
+</thead>
+<tbody>
+<tr><td>increase gray scale</td><td><code>«g»</code></td></tr>
+<tr><td>decrease gray scale</td><td><code>«G»</code></td></tr>
+<tr><td>increase alpha</td><td><code>«a»</code></td></tr>
+<tr><td>decrease alpha</td><td><code>«A»</code></td></tr>
+<tr><td>revert to default</td><td><code>«o»</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><img src="stencils/image_box_special_operations.gif" alt="image_box_special_operations"></p>
+<h2 id="freezing-image-boxes"><a class="header" href="#freezing-image-boxes">Freezing image boxes</a></h2>
+<p>Bindings:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>freeze</td><td>’«f»`</td></tr>
+<tr><td>thaw</td><td>’«t»`</td></tr>
+</tbody>
+</table>
+</div>
+<p>Frozen image boxes</p>
+<ul>
+<li>Can’t be resized.</li>
+<li>Can’t be moved.</li>
+<li>Can’t be deleted.</li>
+</ul>
+<p>Only image boxes can be frozen.</p>
+<p><img src="stencils/image_box_freeze.gif" alt="image_box_freeze"></p>
+<h2 id="copy-and-paste-the-image-from-the-clipboard"><a class="header" href="#copy-and-paste-the-image-from-the-clipboard">Copy and paste the image from the clipboard</a></h2>
+<p>Under <code>Linux</code> system, we need to install the <code>xclip</code> tool.</p>
+<p>Copy an image to the clipboard through one of the following commands:</p>
+<ul>
+<li>If the image is in <code>PNG</code> format then use the following command</li>
+</ul>
+<pre><code class="language-bash">xclip -selection clipboard -t image/png -i image.png
+</code></pre>
+<ul>
+<li>If the image is in <code>JGEG/JPG</code> format, then use the following command</li>
+</ul>
+<pre><code class="language-bash">xclip -selection clipboard -t image/jpeg -i image.jpg
+</code></pre>
+<p>Under the <code>Windows</code> system, we can directly use the system function to copy a
+picture.</p>
+<p>Use <code>Ctrl+v</code> directly in the canvas to paste the image into the canvas,
+and it will automatically create an image box.</p>
+<p><img src="stencils/image_box_insert.gif" alt="image_box_insert"></p>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="verbatim-objects"><a class="header" href="#verbatim-objects">verbatim objects</a></h1>
 <p>Text elements with ASCII art or normal text. <em>Asciio</em> has as set of verbatim elements in its stencils which can be accessed via the popup menu, or you can add a binding if you use them often. The element’s text can be edited. You can also use any Ascii-art/Text you have in a file via an exec-box.</p>
 <p><img src="stencils/verbatim_objects.gif" alt="verbatim_objects"></p>
@@ -2098,7 +2200,7 @@ of intersection, but the strip group element itself has no cross attribute.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="slides"><a class="header" href="#slides">slides</a></h1>
 <p>You can create a slide show with Asciio … but it’s a work in progress. We write some documentation here but you’re better off asking the developers directly.</p>
-<h2 id="bindings"><a class="header" href="#bindings">Bindings</a></h2>
+<h2 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -2701,7 +2803,7 @@ to convert text files to SVG.</p>
 <h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
 <p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
 <p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a shortcut.</p>
-<h2 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h2>
+<h2 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h2>
 <p>Registration of shortcuts that execute actions.</p>
 <p>The default Bindings are setup by the <strong>register_action_handlers</strong> in the following files:</p>
 <ul>
@@ -3811,6 +3913,40 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 </table>
 </div>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="image-box-operations-1"><a class="header" href="#image-box-operations-1">Image Box Operations</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Image Box</p>
+<p><strong>Prefix:</strong> All operations require pressing <code>«I»</code> first</p>
+<p><strong>Exit:</strong> Press <code>«Escape»</code> to return to root bindings</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>inserted from file</td><td>«i»</td></tr>
+<tr><td>freeze</td><td>«f»</td></tr>
+<tr><td>thaw</td><td>«t»</td></tr>
+<tr><td>rendering controls</td><td>«c»</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="rendering-controls"><a class="header" href="#rendering-controls">Rendering controls:</a></h2>
+<p><strong>Prefix:</strong> All operations require pressing <code>«I»</code> <code>«c»</code> first</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>increase gray scale</td><td><code>«g»</code></td></tr>
+<tr><td>decrease gray scale</td><td><code>«G»</code></td></tr>
+<tr><td>increase alpha</td><td><code>«a»</code></td></tr>
+<tr><td>decrease alpha</td><td><code>«A»</code></td></tr>
+<tr><td>reset to default</td><td><code>«r»</code></td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="display-options-1"><a class="header" href="#display-options-1">Display options</a></h1>
 <p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Display options</p>
 <p><strong>Prefix:</strong> All operations require pressing <code>«z»</code> first</p>
@@ -4438,7 +4574,7 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <h3 id="actions-1"><a class="header" href="#actions-1">Actions</a></h3>
 <p>Code that is added to <strong>asciio</strong> (a plugin in an other term).</p>
 <p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a keyboard shortcut.</p>
-<h3 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h3>
+<h3 id="bindings-3"><a class="header" href="#bindings-3">Bindings</a></h3>
 <p>Registered keyboards shortcuts that execute actions.</p>
 <h2 id="asciio-configuration-file"><a class="header" href="#asciio-configuration-file">Asciio configuration file</a></h2>
 <p>The default configuration is defined in :</p>
@@ -5000,7 +5136,7 @@ new_box(TEXT_ONLY =&gt;'text') ;
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="modifying-asciio-1"><a class="header" href="#modifying-asciio-1">Modifying Asciio</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="bindings-3"><a class="header" href="#bindings-3">Bindings</a></h1>
+<h1 id="bindings-4"><a class="header" href="#bindings-4">Bindings</a></h1>
 <p>Goals when adding bindings:</p>
 <ul>
 <li>
