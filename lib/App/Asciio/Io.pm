@@ -288,7 +288,7 @@ if(defined $name && $name ne q[])
 
 sub serialize_self
 {
-my ($self, $indent) = @_ ;
+my ($self) = @_ ;
 
 local $self->{widget}                     = undef ;
 local $self->{ACTIONS}                    = [] ;

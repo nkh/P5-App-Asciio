@@ -903,7 +903,7 @@ sub draw_image_box_element
 {
 my ($self, $element, $gc, $character_width, $character_height) = @_ ;
 
-my $cache_key = $element->{WIDTH} . '-' . $element->{HEIGHT} . '-' . $character_width . $character_height ;
+my $cache_key = $element->{WIDTH} . '-' . $element->{HEIGHT} . '-' . $character_width . '-' . $character_height ;
 my $rendering = $element->{CACHE}{RENDERING}{$cache_key} ;
 
 unless (defined $rendering)

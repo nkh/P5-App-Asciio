@@ -144,16 +144,16 @@ if ($image_data)
 	
 	my $image_box = new App::Asciio::GTK::Asciio::stripes::image_box
 		({
-		NAME => 'image_box',
-		TEXT_ONLY => ' ',
-		TITLE => '',
-		EDITABLE => 0,
-		RESIZABLE => 1,
-		AUTO_SHRINK => 0,
-		CHARACTER_WIDTH => $character_width,
+		NAME             => 'image_box',
+		TEXT_ONLY        => ' ',
+		TITLE            => '',
+		EDITABLE         => 0,
+		RESIZABLE        => 1,
+		AUTO_SHRINK      => 0,
+		CHARACTER_WIDTH  => $character_width,
 		CHARACTER_HEIGHT => $character_height,
-		IMAGE => $image_data,
-		IMAGE_TYPE => $image_type,
+		IMAGE            => $image_data,
+		IMAGE_TYPE       => $image_type,
 		});
 	
 	$self->add_element_at($image_box, $self->{MOUSE_X}, $self->{MOUSE_Y}) ;

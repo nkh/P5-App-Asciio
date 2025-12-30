@@ -109,7 +109,7 @@ my $serialized_self ;
 
 {
 	local $self->{DO_STACK} = undef ;
-	$serialized_self = $self->serialize_self()  ;
+	$serialized_self = $self->serialize_self() ;
 }
 
 splice(@{$self->{DO_STACK}}, min($self->{DO_STACK_POINTER}, scalar(@{$self->{DO_STACK}}))) ; # new do branch

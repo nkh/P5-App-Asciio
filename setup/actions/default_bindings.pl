@@ -954,7 +954,7 @@ TOP_LEVEL_GROUP
 	'group_image_control' => GROUP
 		(
 		SHORTCUTS   => 'group_image_control',
-		ESCAPE_KEYS => [ '000-v', '000-Escape' ],
+		ESCAPE_KEYS => [ '000-c', '000-Escape' ],
 			
 		'increase gray scale'     => ['000-g',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1 ],
 		'decrease gray scale'     => ['00S-G',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1],

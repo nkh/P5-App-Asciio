@@ -296,13 +296,13 @@ my ($self, $as_one_stripe, $no_group_insertion) = @_ ;
 
 my $strip_group ;
 
-my @selected_elements = grep { !$_->is_frozen() } $self->get_selected_elements(1) ;
+my @selected_elements = grep { defined $_ && !($_->is_background_element) } $self->get_selected_elements(1) ;
 
 if(@selected_elements >= 1)
 	{
 	my @connections ;
 	
-	my %selected_elements = map { $_ => 1 } grep { !$_->is_frozen() } $self->get_selected_elements(1) ;
+	my %selected_elements = map { $_ => 1 } @selected_elements ;
 	
 	my @selected_elements_connected ;
 	
@@ -316,8 +316,6 @@ if(@selected_elements >= 1)
 		}
 	
 	$self->select_elements(1, @selected_elements_connected) ;
-	
-	@selected_elements = grep { !$_->is_frozen() } $self->get_selected_elements(1) ;
 	
 	delete $_->{CACHE}{RENDERING} for @selected_elements ;
 	

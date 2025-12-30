@@ -80,11 +80,7 @@ Copy an image to the clipboard through one of the following commands:
 xclip -selection clipboard -t image/png -i image.png
 ```
 
--  If the image is in `JGEG/JPG` format, then use the following command
-
-```bash
-xclip -selection clipboard -t image/jpeg -i image.jpg
-```
+Only `PNG` format is supported.
 
 Under the `Windows` system, we can directly use the system function to copy a
 picture.

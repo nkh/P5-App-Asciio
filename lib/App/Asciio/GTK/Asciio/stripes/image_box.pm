@@ -39,22 +39,41 @@ eval { $pixbuf = $self->get_pixbuf($image, $image_type); } ;
 
 if ($@ || ! defined $pixbuf)
 	{
-	my $error_message = "Image load failed!" ;
+	my $error_message = "Image load failed: unsupported or unreadable image format." ;
 	
 	my $error_box = $self->SUPER::new
 				({
 				TEXT_ONLY => $error_message,
-				TITLE => '',
-				EDITABLE => 1,
+				TITLE     => '',
+				EDITABLE  => 1,
 				RESIZABLE => 1,
 				}) ;
 	
 	return $error_box ;
 	}
 
+my ($max_width, $max_height) = (640, 480) ;
+
 my ($character_width, $character_height) = ($element_definition->{CHARACTER_WIDTH}, $element_definition->{CHARACTER_HEIGHT}) ;
 my ($pixbuf_width, $pixbuf_height)       = ($pixbuf->get_width(), $pixbuf->get_height()) ;
-my ($chars_x_cnt, $chars_y_cnt)          = (int($pixbuf_width / $character_width), int($pixbuf_height / $character_height)) ;
+
+if ($pixbuf_width > $max_width || $pixbuf_height > $max_height)
+	{
+	my $scale_w = $max_width  / $pixbuf_width ;
+	my $scale_h = $max_height / $pixbuf_height ;
+	
+	my $scale = $scale_w < $scale_h ? $scale_w : $scale_h ;
+	
+	my $new_w = int($pixbuf_width  * $scale) ;
+	my $new_h = int($pixbuf_height * $scale) ;
+	
+	($pixbuf_width, $pixbuf_height) = ($new_w, $new_h) ;
+	}
+
+my ($chars_x_cnt, $chars_y_cnt) = (
+	int($pixbuf_width  / $character_width),
+	int($pixbuf_height / $character_height),
+	) ;
 
 $self->setup
 	(
@@ -66,7 +85,7 @@ $self->setup
 	$element_definition->{EDITABLE},
 	$element_definition->{AUTO_SHRINK},
 	$image,
-	undef,
+	0,
 	$image_type,
 	$image_type,
 	1,
@@ -85,7 +104,7 @@ my
 	$self,
 	$text_only, $title_text, $box_type, $end_x, $end_y, $resizable,
 	$editable, $auto_shrink,
-	$image, $draw_image, $image_type, $default_image_type, $gray_scale_factor, $alpha_factor
+	$image, $use_gray, $image_type, $default_image_type, $gray_scale_factor, $alpha_factor
 	) = @_ ;
 
 $self->SUPER::setup
@@ -99,13 +118,13 @@ $self->SUPER::setup
 	$auto_shrink,
 	) ;
 
-$self->{IMAGE}              //= $image ;
-$self->{DRAW_IMAGE}         //= $draw_image ;
-$self->{IMAGE_TYPE}         //= $image_type ;
-$self->{DEFAULT_IMAGE_TYPE} //= $default_image_type ;
-$self->{NAME}               //= 'image_box' ;
-$self->{GRAY_SCALE_FACTOR}  //= $gray_scale_factor ;
-$self->{ALPHA_FACTOR}       //= $alpha_factor ;
+$self->{IMAGE}               //= $image ;
+$self->{USE_GRAY}            //= $use_gray ;
+$self->{IMAGE_TYPE}          //= $image_type ;
+$self->{DEFAULT_IMAGE_TYPE}  //= $default_image_type ;
+$self->{NAME}                //= 'image_box' ;
+$self->{GRAY_SCALE_FACTOR}   //= $gray_scale_factor ;
+$self->{ALPHA_FACTOR}        //= $alpha_factor ;
 }
 
 #-----------------------------------------------------------------------------
@@ -155,11 +174,11 @@ sub get_gray_png
 {
 my ($self, $pixbuf, $gray_scale_factor, $alpha_factor) = @_ ;
 
-my $alpha = int($alpha_factor * 100) ;
+my $alpha = int($alpha_factor * 255) ;
 
 # print "scale:${gray_scale_factor}; alpha:${alpha_factor}\n";
 
-my $src_pixbuf = $pixbuf->add_alpha(0, 0, 0, 0);
+my $src_pixbuf = $pixbuf->add_alpha(1, 0, 0, 0);
 
 my $gray_pixbuf = Gtk3::Gdk::Pixbuf->new
 			(
@@ -189,8 +208,7 @@ $gray_pixbuf->composite
 		$alpha
 		) ;
 
-$self->{IMAGE_TYPE} = 'png' ;
-return $dest_pixbuf->save_to_bufferv($self->{IMAGE_TYPE}, [], []) ;
+return $dest_pixbuf ;
 }
 
 #-----------------------------------------------------------------------------
@@ -203,8 +221,6 @@ delete $self->{CACHE}{RENDERING} ;
 
 if(defined $gray_scale_factor_step || defined $alpha_factor_step)
 	{
-	my $pixbuf = $self->get_pixbuf($self->{IMAGE}, $self->{IMAGE_TYPE}) ;
-	
 	$self->{GRAY_SCALE_FACTOR} -= $gray_scale_factor_step if defined $gray_scale_factor_step ;
 	$self->{GRAY_SCALE_FACTOR}  = max($self->{GRAY_SCALE_FACTOR}, 0) ;
 	$self->{GRAY_SCALE_FACTOR}  = min($self->{GRAY_SCALE_FACTOR}, 1) ;
@@ -213,14 +229,14 @@ if(defined $gray_scale_factor_step || defined $alpha_factor_step)
 	$self->{ALPHA_FACTOR}       = max($self->{ALPHA_FACTOR}, 0.05) ;
 	$self->{ALPHA_FACTOR}       = min($self->{ALPHA_FACTOR}, 1) ;
 	
-	$self->{DRAW_IMAGE}         = $self->get_gray_png($pixbuf, $self->{GRAY_SCALE_FACTOR}, $self->{ALPHA_FACTOR}) ;
+	$self->{USE_GRAY}         = 1 ;
 	}
 else
 	{
 	$self->{GRAY_SCALE_FACTOR} = 1 ;
 	$self->{ALPHA_FACTOR}      = 1 ;
 	$self->{IMAGE_TYPE}        = $self->{DEFAULT_IMAGE_TYPE} ;
-	$self->{DRAW_IMAGE}        = undef ;
+	$self->{USE_GRAY}          = 0 ;
 	}
 }
 
@@ -247,7 +263,12 @@ my ($self, $character_width, $character_height) = @_ ;
 my $pixbuf_width  = $self->{WIDTH}  * $character_width ;
 my $pixbuf_height = $self->{HEIGHT} * $character_height ;
 
-my $pixbuf = $self->get_pixbuf($self->{DRAW_IMAGE} // $self->{IMAGE}, $self->{IMAGE_TYPE}) ;
+my $pixbuf = $self->get_pixbuf($self->{IMAGE}, $self->{IMAGE_TYPE}) ;
+if ($self->{USE_GRAY})
+	{
+	$pixbuf = $self->get_gray_png($pixbuf, $self->{GRAY_SCALE_FACTOR}, $self->{ALPHA_FACTOR}) ;
+	}
+
 my $scaled = $pixbuf->scale_simple($pixbuf_width, $pixbuf_height, 'GDK_INTERP_BILINEAR') ;
 
 return $scaled ;
