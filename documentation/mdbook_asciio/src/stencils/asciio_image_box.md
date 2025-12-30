@@ -54,18 +54,17 @@ Image boxes, like ordinary boxes, support resizing and moving.
 
 Bindings:
 
-| action                         | binding |
-| ------------------------------ | ------- |
-| freeze               | '«f»`   |
+| action               | binding |
+| --------------       | ------- |
+| freeze to background | '«f»`   |
 | thaw                 | '«t»`   |
 
 Frozen image boxes
 
-- Can't be resized.
-- Can't be moved.
-- Can't be deleted.
-
-Only image boxes can be frozen.
+- can't be resized
+- can't be moved
+- are put in the background
+    - they can't be deleted if frozen and in the background, thaw to delete
 
 ![image_box_freeze](image_box_freeze.gif)
 

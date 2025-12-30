@@ -16,6 +16,14 @@
 | Convert to big text       | `«g»`     | Merge selected elements into single text element |
 | Convert to dots           | `«G»`     | Convert selected elements to dot characters      |
 
+## Freeze Thaw
+
+| Operation            | Binding   | Description                                     |
+| -----------          | --------- | -------------                                   |
+| freeze               | «f»       | freeze elements, they can't be moved or resized |
+| freeze to background | «F'»      | freese elements and move them to the background |
+| thaw                 | «t'»      | thaws the elements                              |
+
 ## Element Attributes
 
 | Operation                | Binding      | Description                           |
@@ -33,7 +41,7 @@
 
 ## Element Type Change
 
-**Prefix:** All operations require pressing `«t»` first
+**Prefix:** All operations require pressing `«T»` first
 
 | Operation            | Binding   | 
 | -----------          | --------- | 

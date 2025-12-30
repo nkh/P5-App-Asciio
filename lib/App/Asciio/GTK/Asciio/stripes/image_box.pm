@@ -112,15 +112,19 @@ $self->{ALPHA_FACTOR}       //= $alpha_factor ;
 
 sub freeze
 {
-my ($self, $freeze) = @_ ;
+my ($self) = @_ ;
 
 delete $self->{CACHE}{RENDERING} ;
-
-$self->{FROZEN}    = $freeze ;
-$self->{RESIZABLE} = $freeze ^ 1 ;
+$self->SUPER::freeze() ;
 }
 
-#-----------------------------------------------------------------------------
+sub thaw
+{
+my ($self) = @_ ;
+
+delete $self->{CACHE}{RENDERING} ;
+$self->SUPER::thaw() ;
+}
 
 sub is_frozen
 {

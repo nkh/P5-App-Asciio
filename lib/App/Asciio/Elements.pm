@@ -217,11 +217,13 @@ sub move_elements
 {
 my ($self, $x_offset, $y_offset, @elements) = @_ ;
 
-my @unfrozen_elements = grep { !$_->is_frozen() } @elements ;
+$self->blink_element(grep { $_->is_frozen } @elements) ;
 
-my %selected_elements = map { $_ => 1} @unfrozen_elements ;
+@elements = grep { !$_->is_frozen() } @elements ;
 
-for my $element (@unfrozen_elements)
+my %selected_elements = map { $_ => 1} @elements ;
+
+for my $element (@elements)
 	{
 	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset) ;
 	
@@ -444,11 +446,21 @@ $self->{MODIFIED }++ ;
 
 #-----------------------------------------------------------------------------
 
+sub blink_element
+{
+my ($self, @elements) = @_ ;
+
+$self->{BLINK_ELEMENTS}{$_}++ for @elements ;
+}
+
+
 sub delete_elements
 {
 my($self, @elements) = @_ ;
 
-my %elements_to_delete = map {$_, 1} grep { defined $_ && !$_->is_frozen() } @elements ;
+$self->blink_element(grep { defined $_ && ($_->is_background_element && $_->is_frozen) } @elements) ;
+
+my %elements_to_delete = map {$_, 1} grep { defined $_ && !($_->is_background_element && $_->is_frozen) } @elements ;
 
 for my $element (@{$self->{ELEMENTS}})
 	{

@@ -551,7 +551,11 @@ TOP_LEVEL_GROUP
 	'enable elements cross'            => ['000-x',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1    ],
 	'disable elements cross'           => ['00S-X',             \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 0    ],
 	
-	'change type'                      => ['000-t', USE_GROUP('change_type')],
+	'freeze'                           => ['000-f',             \&App::Asciio::Actions::Elements::freeze_selected_elements                 ],
+	'freeze to background'             => ['00S-F',             \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background   ],
+	'thaw'                             => ['000-t',             \&App::Asciio::Actions::Elements::thaw_selected_elements                   ],
+
+	'change type'                      => ['00S-T', USE_GROUP('change_type')],
 	),
 
 	'group_change_type' => GROUP
@@ -922,9 +926,9 @@ TOP_LEVEL_GROUP
 	(
 	SHORTCUTS => '00S-I',
 	
-	'inserted from file'     => ['000-i', \&App::Asciio::GTK::Asciio::Actions::File::open_image          ],
-	'freeze'                 => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements     ],
-	'thaw'                   => ['000-t', \&App::Asciio::Actions::Elements::thaw_selected_elements       ],
+	'inserted from file'     => ['000-i', \&App::Asciio::GTK::Asciio::Actions::File::open_image                    ],
+	'freeze to background'   => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background ],
+	'thaw'                   => ['000-t', \&App::Asciio::Actions::Elements::thaw_selected_elements                 ],
 	
 	'rendering controls ->'  => ['000-c', USE_GROUP('image_control')],
 	),

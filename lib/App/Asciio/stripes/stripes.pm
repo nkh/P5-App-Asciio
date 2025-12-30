@@ -204,11 +204,45 @@ sub enable_crossover { my ($self, $enable) = @_ ; $self->{CROSSOVER_DISABLED} = 
 
 #-----------------------------------------------------------------------------
 
-sub is_frozen { ; }
+sub freeze
+{
+my ($self, $freeze) = @_ ;
+
+$self->{FROZEN}++ ;
+$self->{RESIZABLE} = 0 ;
+}
+
+
+sub thaw
+{
+my ($self) = @_ ;
+
+$self->{FROZEN}    = 0 ;
+$self->{RESIZABLE} = 1 ;
+}
+
+sub is_frozen
+{
+my ($self) = @_ ;
+
+return $self->{FROZEN} ;
+}
 
 #-----------------------------------------------------------------------------
 
-sub freeze { ; }
+sub make_background_element
+{
+my ($self, $background_element) = @_ ;
+
+$self->{BACKGROUND_ELEMENT}++ ;
+}
+
+sub is_background_element
+{
+my ($self) = @_ ;
+
+return $self->{BACKGROUND_ELEMENT} ;
+}
 
 #-----------------------------------------------------------------------------
 

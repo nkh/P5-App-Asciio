@@ -475,7 +475,11 @@ if(@selected_elements >= 1)
 	
 	delete $_->{CACHE}{RENDERING} for @selected_elements ;
 	
-	($strip_group, my $ex, my $ey) = App::Asciio::stripes::group->new(\@selected_elements, \@connections, $as_one_stripe, $self->get_color('element_background'), $self->get_color('element_foreground')) ;
+	($strip_group, my $ex, my $ey) = App::Asciio::stripes::group->new
+							(
+							\@selected_elements, \@connections, $as_one_stripe,
+							$self->get_color('element_background'), $self->get_color('element_foreground')
+							) ;
 	
 	@$strip_group{'X', 'Y', 'SELECTED'} = ($ex, $ey, 1) ;
 	

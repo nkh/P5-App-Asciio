@@ -771,6 +771,23 @@ else
 	{
 	$self->draw_stripe_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
 	}
+
+if(exists $self->{BLINK_ELEMENTS}{$element})
+	{
+	$gc->set_line_width(1) ;
+	$gc->set_source_rgb(@{$self->get_color('new_connection')});
+	$gc->rectangle
+		(
+		$element->{X} * $character_width,
+		$element->{Y} * $character_height,
+		$element->{WIDTH} * $character_width,
+		$element->{HEIGHT} * $character_height,
+		);
+	
+	$gc->stroke ;
+	
+	delete $self->{BLINK_ELEMENTS}{$element} ;
+	}
 }
 
 # ------------------------------------------------------------------------------

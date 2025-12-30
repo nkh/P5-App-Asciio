@@ -6,23 +6,23 @@
 
 **Exit:** Press `«Escape»` to return to root bindings
 
-| Operation          | Binding   |
-| -----------        | --------- |
-| inserted from file | «i»       |
-| freeze             | «f»       |
-| thaw               | «t»       |
-| rendering controls | «c»       |
+| Operation          | Binding   | description                                |
+| -----------        | --------- | -----                                      |
+| inserted from file | «i»       |                                            |
+| freeze             | «f»       | freeze and put image box in the background |
+| thaw               | «t»       |                                            |
+| rendering controls | «c»       |                                            |
 
 ## Rendering controls:
 
 **Prefix:** All operations require pressing `«I»` `«c»` first
 
-| Operation                       | Binding        |
-| ------------------------------- | -------------- |
-| increase gray scale   | `«g»`          |
-| decrease gray scale   | `«G»`          |
-| increase alpha        | `«a»`          |
-| decrease alpha        | `«A»`          |
-| reset to default      | `«r»`          |
+| Operation           | Binding |
+| ---------------     | -----   |
+| increase gray scale | `«g»`   |
+| decrease gray scale | `«G»`   |
+| increase alpha      | `«a»`   |
+| decrease alpha      | `«A»`   |
+| reset to default    | `«r»`   |
 
 

@@ -461,10 +461,32 @@ if(@selected_elements >= 1)
 	
 	$self->select_elements(0, @selected_elements) ;
 	
-	$_->freeze(1) for @selected_elements ; 
+	$_->freeze() for @selected_elements ; 
+	
+	$self->update_display() ;
+	}
+}
+
+sub freeze_selected_elements_to_background
+{
+my ($self) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements >= 1)
+	{
+	$self->create_undo_snapshot();
+	
+	$self->select_elements(0, @selected_elements) ;
+	
+	for (@selected_elements)
+		{ 
+		$_->freeze()  ;
+		$_->make_background_element(1) ;
+		}
 	
 	# Frozen elements should not obscure other elements
-	$self->move_elements_to_back(grep { $_->is_frozen() } @selected_elements) ;
+	$self->move_elements_to_back(@selected_elements) ;
 	
 	$self->update_display() ;
 	}
@@ -482,7 +504,7 @@ if(@selected_elements >= 1)
 	{
 	$self->create_undo_snapshot() ;
 	
-	$_->freeze(0) for @selected_elements ; 
+	$_->thaw() for @selected_elements ; 
 	
 	$self->update_display() ;
 	}
