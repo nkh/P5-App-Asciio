@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-9584c60e.js";
+            window.path_to_searchindex_js = "../searchindex-0e986d57.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-5a65138d.js"></script>
@@ -244,18 +244,21 @@
 <tr><th>action</th><th>binding</th></tr>
 </thead>
 <tbody>
-<tr><td>freeze</td><td>’«f»`</td></tr>
+<tr><td>freeze to background</td><td>’«f»`</td></tr>
 <tr><td>thaw</td><td>’«t»`</td></tr>
 </tbody>
 </table>
 </div>
 <p>Frozen image boxes</p>
 <ul>
-<li>Can’t be resized.</li>
-<li>Can’t be moved.</li>
-<li>Can’t be deleted.</li>
+<li>can’t be resized</li>
+<li>can’t be moved</li>
+<li>are put in the background
+<ul>
+<li>they can’t be deleted if frozen and in the background, thaw to delete</li>
 </ul>
-<p>Only image boxes can be frozen.</p>
+</li>
+</ul>
 <p><img src="image_box_freeze.gif" alt="image_box_freeze"></p>
 <h2 id="copy-and-paste-the-image-from-the-clipboard"><a class="header" href="#copy-and-paste-the-image-from-the-clipboard">Copy and paste the image from the clipboard</a></h2>
 <p>Under <code>Linux</code> system, we need to install the <code>xclip</code> tool.</p>
