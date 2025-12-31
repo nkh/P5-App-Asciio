@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-4e31115e.js";
+            window.path_to_searchindex_js = "../searchindex-5a721567.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-5a65138d.js"></script>
@@ -175,14 +175,71 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="selection"><a class="header" href="#selection">selection</a></h1>
-<h2 id="introduction"><a class="header" href="#introduction">Introduction</a></h2>
-<p>In addition to using rectangular selection boxes or directly clicking on them,
-there are other options for selecting elements, which is to use the selection
-operation group, which allows us to conveniently select elements in irregular
-areas. There are two main forms: mouse-drawn polygon selection or mouse-move
-selection (with the left mouse button held down).</p>
-<h2 id="basic-operations"><a class="header" href="#basic-operations">Basic operations</a></h2>
+<p>Select elements by:</p>
+<ul>
+<li>clicking on them
+<ul>
+<li>«left-click» - select the element</li>
+<li>«Shift» + «left-click» - add the element to the current selection</li>
+</ul>
+</li>
+<li>using the rectangular selection boxes - «left-click» + «drag»</li>
+</ul>
+<p>There are more options for selecting elements:</p>
+<ul>
+<li>graph selection group</li>
+<li>mouse-drawn polygon selection</li>
+<li>mouse-move selection (with the left mouse button held down)</li>
+</ul>
+<h2 id="graph-selection-group"><a class="header" href="#graph-selection-group">Graph selection group</a></h2>
+<p><strong>Prefix:</strong> All operations require pressing <code>«S»</code> to enter the graph selection mode</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Select all connected</td><td>«c»</td></tr>
+<tr><td>Select neighbors</td><td>«n»</td></tr>
+<tr><td>Select predecessors</td><td>«p»</td></tr>
+<tr><td>Select ancestors</td><td>«a»</td></tr>
+<tr><td>Select successors</td><td>«s»</td></tr>
+<tr><td>Select descendants</td><td>«d»</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-text">.---------------------------------------------------------.
+|                   all connected nodes                   |
+|---------------------------------------------------------|
+|             .----------.       .----------.             |
+|             | ancestor |---.---| ancestor |             |
+|             '----------'   |   '----------'             |
+|                            |                            |
+|                            |                            |
+|                            v                            |
+|                .----------------------.                 |
+|                | predecessor-neighbor |                 |
+|                '----------------------'                 |
+|                            |                            |
+|                            v                            |
+|                        .------.                         |
+|                .-------| node |--------.                |
+|                |       '------'        |                |
+|                |                       |                |
+|                v                       v                |
+|     .--------------------.  .--------------------.      |
+|     | successor-neighbor |  | successor-neighbor |      |
+|     '--------------------'  '--------------------'      |
+|                |                                        |
+|                v                                        |
+|         .------------.                                  |
+|         | descendant |                                  |
+|         '------------'                                  |
+'---------------------------------------------------------'
+</code></pre>
+<h2 id="polygon-and-mouse-move-selection-mode"><a class="header" href="#polygon-and-mouse-move-selection-mode">Polygon and Mouse-move selection mode</a></h2>
 <h3 id="entering-and-exiting-selection-mode"><a class="header" href="#entering-and-exiting-selection-mode">Entering and exiting selection mode</a></h3>
+<p><strong>Prefix:</strong> All operations require pressing <code>«s»</code> to enter the selection mode</p>
 <div class="table-wrapper">
 <table>
 <thead>

@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-4e31115e.js";
+            window.path_to_searchindex_js = "searchindex-5a721567.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5a65138d.js"></script>
@@ -175,7 +175,7 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="introduction-5"><a href="#introduction-5" class="header">Introduction</a></h1>
+                        <h1 id="introduction-4"><a href="#introduction-4" class="header">Introduction</a></h1>
 <pre><code>    ___                               .-------.
    /   |  __________________          | Tokyo |
   / /| | / ___/ ___/ / / __ \         '-------'   .-----------.
@@ -2210,7 +2210,7 @@ of intersection, but the strip group element itself has no cross attribute.</p>
 <tr><th>binding</th><th>action</th></tr>
 </thead>
 <tbody>
-<tr><td>S</td><td>enter slides mode</td></tr>
+<tr><td>Alt+s</td><td>enter slides mode</td></tr>
 <tr><td>Escape</td><td>escape slides mode</td></tr>
 <tr><td>L</td><td>Load slides</td></tr>
 <tr><td>n</td><td>next slide</td></tr>
@@ -2289,14 +2289,71 @@ EOT
 <p>Utilities are defined in <em>lib/App/Asciio/Utils/Presentation.pm</em></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="selection"><a class="header" href="#selection">selection</a></h1>
-<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
-<p>In addition to using rectangular selection boxes or directly clicking on them,
-there are other options for selecting elements, which is to use the selection
-operation group, which allows us to conveniently select elements in irregular
-areas. There are two main forms: mouse-drawn polygon selection or mouse-move
-selection (with the left mouse button held down).</p>
-<h2 id="basic-operations"><a class="header" href="#basic-operations">Basic operations</a></h2>
+<p>Select elements by:</p>
+<ul>
+<li>clicking on them
+<ul>
+<li>«left-click» - select the element</li>
+<li>«Shift» + «left-click» - add the element to the current selection</li>
+</ul>
+</li>
+<li>using the rectangular selection boxes - «left-click» + «drag»</li>
+</ul>
+<p>There are more options for selecting elements:</p>
+<ul>
+<li>graph selection group</li>
+<li>mouse-drawn polygon selection</li>
+<li>mouse-move selection (with the left mouse button held down)</li>
+</ul>
+<h2 id="graph-selection-group"><a class="header" href="#graph-selection-group">Graph selection group</a></h2>
+<p><strong>Prefix:</strong> All operations require pressing <code>«S»</code> to enter the graph selection mode</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Select all connected</td><td>«c»</td></tr>
+<tr><td>Select neighbors</td><td>«n»</td></tr>
+<tr><td>Select predecessors</td><td>«p»</td></tr>
+<tr><td>Select ancestors</td><td>«a»</td></tr>
+<tr><td>Select successors</td><td>«s»</td></tr>
+<tr><td>Select descendants</td><td>«d»</td></tr>
+</tbody>
+</table>
+</div>
+<pre><code class="language-text">.---------------------------------------------------------.
+|                   all connected nodes                   |
+|---------------------------------------------------------|
+|             .----------.       .----------.             |
+|             | ancestor |---.---| ancestor |             |
+|             '----------'   |   '----------'             |
+|                            |                            |
+|                            |                            |
+|                            v                            |
+|                .----------------------.                 |
+|                | predecessor-neighbor |                 |
+|                '----------------------'                 |
+|                            |                            |
+|                            v                            |
+|                        .------.                         |
+|                .-------| node |--------.                |
+|                |       '------'        |                |
+|                |                       |                |
+|                v                       v                |
+|     .--------------------.  .--------------------.      |
+|     | successor-neighbor |  | successor-neighbor |      |
+|     '--------------------'  '--------------------'      |
+|                |                                        |
+|                v                                        |
+|         .------------.                                  |
+|         | descendant |                                  |
+|         '------------'                                  |
+'---------------------------------------------------------'
+</code></pre>
+<h2 id="polygon-and-mouse-move-selection-mode"><a class="header" href="#polygon-and-mouse-move-selection-mode">Polygon and Mouse-move selection mode</a></h2>
 <h3 id="entering-and-exiting-selection-mode"><a class="header" href="#entering-and-exiting-selection-mode">Entering and exiting selection mode</a></h3>
+<p><strong>Prefix:</strong> All operations require pressing <code>«s»</code> to enter the selection mode</p>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -2336,7 +2393,7 @@ selection (with the left mouse button held down).</p>
 <p><img src="modes/selection_polygon.gif" alt="selection_polygon"></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="pen"><a class="header" href="#pen">pen</a></h1>
-<h2 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h2>
+<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
 <p>Pen mode is used to draw one character at a time into the canvas, often used
 for small ascii art creations. It is also very convenient to use it for stencil
 making .This is a special feature of the GUI port.</p>
@@ -2346,7 +2403,7 @@ making .This is a special feature of the GUI port.</p>
 <p>Here are a few examples of making stencil.</p>
 <p><img src="modes/pen_draw_disk.gif" alt="pen_draw_disk"></p>
 <p><img src="modes/pen_draw_book.gif" alt="pen_draw_book"></p>
-<h2 id="basic-operations-1"><a class="header" href="#basic-operations-1">Basic operations</a></h2>
+<h2 id="basic-operations"><a class="header" href="#basic-operations">Basic operations</a></h2>
 <h3 id="entering-and-exiting-pen-mode"><a class="header" href="#entering-and-exiting-pen-mode">Entering and exiting pen mode</a></h3>
 <div class="table-wrapper">
 <table>
@@ -2575,12 +2632,12 @@ ascii art template text box</p>
 <p><img src="modes/split_elements_into_dots.gif" alt="split_elements_into_dots"></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="find"><a class="header" href="#find">find</a></h1>
-<h2 id="introduction-4"><a class="header" href="#introduction-4">Introduction</a></h2>
+<h2 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h2>
 <p>The find mode is mainly used to find the location where our target text appears
 in all asciio objects, and can quickly locate those matching positions and
 highlight them. This is a special feature on the GUI port.</p>
 <p><img src="modes/find_example.gif" alt="find_example"></p>
-<h2 id="basic-operations-2"><a class="header" href="#basic-operations-2">Basic operations</a></h2>
+<h2 id="basic-operations-1"><a class="header" href="#basic-operations-1">Basic operations</a></h2>
 <h3 id="entering-and-exiting-find-mode"><a class="header" href="#entering-and-exiting-find-mode">Entering and exiting find mode</a></h3>
 <div class="table-wrapper">
 <table>
@@ -4558,7 +4615,7 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="slides-script-execution"><a class="header" href="#slides-script-execution">Slides Script Execution</a></h1>
 <p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#modes-1">Modes</a> &gt; Slide Script Execution</p>
-<p><strong>Prefix:</strong> Press «Shift+S» then «s» to enter script execution</p>
+<p><strong>Prefix:</strong> Press «Alt+s» then «s» to enter script execution</p>
 <p><strong>Exit:</strong> Press «Escape» to return to slides mode</p>
 <p>Execute presentation scripts bound to alphanumeric keys.</p>
 <h2 id="script-keys"><a class="header" href="#script-keys">Script Keys</a></h2>
