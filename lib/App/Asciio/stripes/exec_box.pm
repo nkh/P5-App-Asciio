@@ -51,9 +51,9 @@ App::Asciio::stripes::editable_box2::setup
 	$element_definition->{AUTO_SHRINK},
 	) ;
 
-$self->{RUN_VERBATIM} = $element_definition->{RUN_VERBATIM} // 0 ; 
-$self->{VERBATIM_COMMAND} = $element_definition->{VERBATIM_COMMAND} // '' ; 
-$self->{RUN_ONCE} = $element_definition->{RUN_ONCE} // 0 ; 
+$self->{RUN_VERBATIM}     = $element_definition->{RUN_VERBATIM} // 0 ;
+$self->{VERBATIM_COMMAND} = $element_definition->{VERBATIM_COMMAND} // '' ;
+$self->{RUN_ONCE}         = $element_definition->{RUN_ONCE} // 0 ;
 
 return $self ;
 }

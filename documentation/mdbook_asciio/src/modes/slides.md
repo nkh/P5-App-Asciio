@@ -6,7 +6,7 @@ You can create a slide show with Asciio ... but it's a work in progress. We writ
 
 | binding | action                |
 | ------- | ------                |
-| S       | enter slides mode     |
+| Alt+s   | enter slides mode     |
 | Escape  | escape slides mode    |
 | L       | Load slides           |
 | n       | next slide            |

@@ -13,6 +13,7 @@ TOP_LEVEL_GROUP
 	'clone ->'          ,
 	'arrow ->'          ,
 	'move arrow ends ->',
+	'graph selection ->',
 	'selection ->'      ,
 	'yank ->'           ,
 	'paste ->'          ,
@@ -42,18 +43,18 @@ TOP_LEVEL_GROUP
 'Zoom in'                            => [['000-plus', 'C00-j', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                          ],
 'Zoom out'                           => [['000-minus', 'C00-h', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                         ],
 
-'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 0]  ],
-'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 0]  ],
-'Select next non arrow'              => ['000-n',                                  \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 1]  ],
-'Select previous non arrow'          => ['00S-N',                                  \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 1]  ],
-'Select next arrow'                  => ['000-m',                                  \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [1, 0, 2]  ],
-'Select previous arrow'              => ['00S-M',                                  \&App::Asciio::Actions::ElementsManipulation::select_element_direction, [0, 0, 2]  ],
+'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 0]  ],
+'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 0]  ],
+'Select next non arrow'              => ['000-n',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 1]  ],
+'Select previous non arrow'          => ['00S-N',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 1]  ],
+'Select next arrow'                  => ['000-m',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 2]  ],
+'Select previous arrow'              => ['00S-M',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 2]  ],
 
-'Select all elements'                => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementsManipulation::select_all_elements                  ],
-'Deselect all elements'              => ['000-Escape',                             \&App::Asciio::Actions::ElementsManipulation::deselect_all_elements                ],
-'Select connected elements'          => ['000-v',                                  \&App::Asciio::Actions::ElementsManipulation::select_connected                     ],
-'Select elements by word'            => ['C00-f',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_words         ],
-'Select elements by word no group'   => ['C0S-F',                                  \&App::Asciio::Actions::ElementsManipulation::select_all_elements_by_words_no_group],
+'Select all elements'                => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementSelection::select_all_elements                  ],
+'Deselect all elements'              => ['000-Escape',                             \&App::Asciio::Actions::ElementSelection::deselect_all_elements                ],
+
+'Select elements by word'            => ['C00-f',                                  \&App::Asciio::Actions::ElementSelection::select_all_elements_by_words         ],
+'Select elements by word no group'   => ['C0S-F',                                  \&App::Asciio::Actions::ElementSelection::select_all_elements_by_words_no_group],
 
 'Delete selected elements'           => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements             ],
 
@@ -152,6 +153,18 @@ TOP_LEVEL_GROUP
 	
 	'last tab'          => ['000-dollar', \ &App::Asciio::Actions::Tabs::last_tab, undef, undef, undef, { NO_COMPLETION => 1 } ],
 	map { ("tab $_"     => ["000-$_",     \ &App::Asciio::Actions::Tabs::focus_tab, $_, undef, undef, { NO_COMPLETION => 1 } ] ) } (0..9), 
+	),
+
+'graph selection ->' => GROUP
+	(
+	SHORTCUTS   => '00S-S',
+	
+	'Select all connected' => ['000-c', \&App::Asciio::Actions::ElementSelection::select_all_connected ] ,
+	'Select neighbors'     => ['000-n', \&App::Asciio::Actions::ElementSelection::select_neighbors     ] ,
+	'Select predecessors'  => ['000-p', \&App::Asciio::Actions::ElementSelection::select_predecessors  ] ,
+	'Select ancestors'     => ['000-a', \&App::Asciio::Actions::ElementSelection::select_ancestors     ] ,
+	'Select successors'    => ['000-s', \&App::Asciio::Actions::ElementSelection::select_successors    ] ,
+	'Select decendants'    => ['000-d', \&App::Asciio::Actions::ElementSelection::select_descendants   ] ,
 	),
 
 'yank ->' => GROUP
@@ -774,7 +787,7 @@ TOP_LEVEL_GROUP
 
 'slides ->' => GROUP
 	(
-	SHORTCUTS   => '00S-S',
+	SHORTCUTS   => '0A0-s',
 	ESCAPE_KEYS => '000-Escape',
 	
 	'Load slides'           => ['000-l', \&App::Asciio::Actions::Presentation::load_slides          ] ,
@@ -969,6 +982,7 @@ use App::Asciio::Actions::Debug ;
 use App::Asciio::Actions::Elements ;
 use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::ElementAttributes ;
+use App::Asciio::Actions::ElementSelection ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
 use App::Asciio::GTK::Asciio::Actions::File ;

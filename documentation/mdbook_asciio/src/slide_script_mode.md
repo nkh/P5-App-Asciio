@@ -2,7 +2,7 @@
 
 **Navigation:** [Index](bindings_index.md) > [Modes](modes_operation.md) > Slide Script Execution
 
-**Prefix:** Press «Shift+S» then «s» to enter script execution
+**Prefix:** Press «Alt+s» then «s» to enter script execution
 
 **Exit:** Press «Escape» to return to slides mode
 

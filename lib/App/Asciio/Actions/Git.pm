@@ -181,11 +181,11 @@ if($unconnected_connector_name)
 	$element->{X} += $x_offset ;
 	$element->{Y} += $y_offset ;
 	
-	my $new_connection = 
+	my $new_connection  =
 		{
-		CONNECTED => $element,
-		CONNECTOR =>$unconnected_connector,
-		CONNECTEE => $destination_element,
+		CONNECTED  => $element,
+		CONNECTOR  => $unconnected_connector,
+		CONNECTEE  => $destination_element,
 		CONNECTION => $destination_connection,
 		} ;
 		

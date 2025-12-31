@@ -1,16 +1,68 @@
 # selection
 
-## Introduction
+Select elements by:
 
-In addition to using rectangular selection boxes or directly clicking on them,
-there are other options for selecting elements, which is to use the selection
-operation group, which allows us to conveniently select elements in irregular
-areas. There are two main forms: mouse-drawn polygon selection or mouse-move
-selection (with the left mouse button held down).
+- clicking on them
+    - «left-click» - select the element
+    - «Shift» + «left-click» - add the element to the current selection
+- using the rectangular selection boxes - «left-click» + «drag»
 
-## Basic operations
+There are more options for selecting elements:
+
+- graph selection group
+- mouse-drawn polygon selection
+- mouse-move selection (with the left mouse button held down)
+
+## Graph selection group
+
+**Prefix:** All operations require pressing `«S»` to enter the graph selection mode
+
+| action               | binding |
+| -------              | ------- |
+| Select all connected | «c»     |
+| Select neighbors     | «n»     |
+| Select predecessors  | «p»     |
+| Select ancestors     | «a»     |
+| Select successors    | «s»     |
+| Select descendants   | «d»     |
+
+
+```text
+.---------------------------------------------------------.
+|                   all connected nodes                   |
+|---------------------------------------------------------|
+|             .----------.       .----------.             |
+|             | ancestor |---.---| ancestor |             |
+|             '----------'   |   '----------'             |
+|                            |                            |
+|                            |                            |
+|                            v                            |
+|                .----------------------.                 |
+|                | predecessor-neighbor |                 |
+|                '----------------------'                 |
+|                            |                            |
+|                            v                            |
+|                        .------.                         |
+|                .-------| node |--------.                |
+|                |       '------'        |                |
+|                |                       |                |
+|                v                       v                |
+|     .--------------------.  .--------------------.      |
+|     | successor-neighbor |  | successor-neighbor |      |
+|     '--------------------'  '--------------------'      |
+|                |                                        |
+|                v                                        |
+|         .------------.                                  |
+|         | descendant |                                  |
+|         '------------'                                  |
+'---------------------------------------------------------'
+```
+
+## Polygon and Mouse-move selection mode
 
 ### Entering and exiting selection mode
+
+**Prefix:** All operations require pressing `«s»` to enter the selection mode
 
 | action                                      | binding                        |
 |---------------------------------------------|--------------------------------|
