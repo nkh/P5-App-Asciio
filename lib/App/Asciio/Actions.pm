@@ -41,8 +41,6 @@ if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 	my $max_length = 0 ;
 	my @actions ;
 	
-	die "should not happen\n" unless exists $self->{ACTIONS_ORDERED}{$self->{CURRENT_ACTIONS}{NAME}} ;
-	
 	@actions = map {[ $_->{SHORTCUTS}, $_->{NAME} ]}
 			grep
 				{
@@ -129,6 +127,7 @@ for my $action (@actions)
 		my $start_actions = $self->{CURRENT_ACTIONS} ;
 		
 		delete $self->{BINDINGS_COMPLETION} unless $self->{KEEP_BINDINGS_COMPLETION} ;
+		
 		
 		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
 			{

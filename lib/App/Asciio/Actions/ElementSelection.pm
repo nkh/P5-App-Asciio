@@ -135,6 +135,7 @@ sub select_neighbors     { select_filtered($_[0], $_[1] // 0, sub { 1 }) ; }
 
 sub select_descendants   { select_recusrsive($_[0], \&select_successors) ; }
 sub select_ancestors     { select_recusrsive($_[0], \&select_predecessors) ; }
+sub select_reachable     { select_descendants($_[0]) ; select_ancestors($_[0]) ; }
 sub select_all_connected { select_recusrsive($_[0], \&select_neighbors) ; }
 
 #----------------------------------------------------------------------------------------------
@@ -147,8 +148,6 @@ sub select_filtered
 # CONNECTION => the element's connection that the arrow's connector is connected to, name, position, ...
 
 my ($self, $no_undo_snapshot, $filter) = @_ ;
-
-print "no undo snapshot: $no_undo_snapshot\n" ;
 
 $self->create_undo_snapshot() unless $no_undo_snapshot ;
 

@@ -26,7 +26,9 @@ sub new
 my ($class) = @_ ;
 
 my $vbox = Gtk3::Box->new('vertical', 0) ;
+
 my $notebook = Gtk3::Notebook->new() ;
+$notebook->set_scrollable(TRUE) ; 
 
 my $self = bless
 	{
@@ -108,34 +110,33 @@ $asciio->setup_dnd ;
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 $asciio->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
 
-push @{$self->{asciios}}, $asciio ;
-
 my %signal_handlers =
 	(
-	close_tab         => sub { my ($w, $asciio) = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 1, 1) ; },
-	close_tab_no_save => sub { my ($w, $asciio) = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 0, 1) ; },
-	copy_tab          => sub { my ($w, $data) = @_   ; $self->{MODIFIED}++ ; $self->create_tab($data)                 ; },
-	focus_tab         => sub { my ($w, $index) = @_                        ; $self->focus_tab($index)                 ; },
+	close_tab              => sub { my ($w, $asciio) = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 1, 1) ; },
+	close_tab_no_save      => sub { my ($w, $asciio) = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 0, 1) ; },
+	copy_tab               => sub { my ($w, $data)   = @_ ; $self->{MODIFIED}++ ; $self->create_tab($data) ;                 },
+	focus_tab              => sub { my ($w, $index)  = @_ ;                       $self->focus_tab($index) ;                 },
 	# get_all_asciios 
 	# get_keys         
 	# get_kv           
-	last_tab          => sub { my ($w) = @_                                ; $self->last_tab()                        ; },
-	move_tab_left     => sub { my ($w) = @_          ; $self->{MODIFIED}++ ; $self->move_tab_left()                   ; },
-	move_tab_right    => sub { my ($w) = @_          ; $self->{MODIFIED}++ ; $self->move_tab_right()                  ; },
-	new_tab           => sub { my ($w, $data) = @_   ; $self->{MODIFIED}++ ; $self->create_tab()                      ; },
-	next_tab          => sub { my ($w) = @_                                ; $self->next_tab()                        ; },
-	open_project      => sub { my ($w, $data) = @_                         ; $self->open_project($data, 1)            ; },
-	previous_tab      => sub { my ($w) = @_                                ; $self->previous_tab()                    ; },
-	quit_app          => sub { my ($w) = @_                                ; $self->quit_application(1)               ; },
-	quit_app_no_save  => sub { my ($w) = @_                                ; $self->quit_application(0)               ; },
-	
-	rename_tab        => sub { my ($w, $name) = @_   ; $self->{MODIFIED}++ ; $self->rename_tab($name)                 ; },
+	last_tab               => sub { my ($w)          = @_ ; $self->last_tab() ;                                              },
+	move_tab_left          => sub { my ($w)          = @_ ; $self->{MODIFIED}++ ; $self->move_tab_left() ;                   },
+	move_tab_right         => sub { my ($w)          = @_ ; $self->{MODIFIED}++ ; $self->move_tab_right() ;                  },
+	new_tab                => sub { my ($w, $data)   = @_ ; $self->{MODIFIED}++ ; $self->create_tab() ;                      },
+	next_tab               => sub { my ($w)          = @_ ;                       $self->next_tab() ;                        },
+	open_project           => sub { my ($w, $data)   = @_ ;                       $self->open_project($data, 1) ;            },
+	previous_tab           => sub { my ($w)          = @_ ;                       $self->previous_tab() ;                    },
+	quit_app               => sub { my ($w)          = @_ ;                       $self->quit_application(1) ;               },
+	quit_app_no_save       => sub { my ($w)          = @_ ;                       $self->quit_application(0) ;               },
+	hide_all_bindings_help => sub { my ($w)          = @_ ;                       $self->hide_all_bindings_help() ;          },
+	show_all_bindings_help => sub { my ($w)          = @_ ;                       $self->show_all_bindings_help() ;          },
+	rename_tab             => sub { my ($w, $name)   = @_ ; $self->{MODIFIED}++ ; $self->rename_tab($name) ;                 },
 	# send_to_asciio  
 	# set_kv           
-	read              => sub { my ($w, $file) = @_                         ; $self->read($file)                       ; },
-	save_project      => sub { my ($w, $as) = @_                           ; $self->save_project($as)                 ; },
-	show_help_tab     => sub { my ($w) = @_                                ; $self->show_help_tab()                   ; },
-	toggle_tab_labels => sub { my ($w) = @_                                ; $self->toggle_tab_labels()               ; },
+	read                   => sub { my ($w, $file)   = @_ ;                       $self->read($file) ;                       },
+	save_project           => sub { my ($w, $as)     = @_ ;                       $self->save_project($as) ;                 },
+	show_help_tab          => sub { my ($w)          = @_ ;                       $self->show_help_tab() ;                   },
+	toggle_tab_labels      => sub { my ($w)          = @_ ;                       $self->toggle_tab_labels() ;               },
 	) ;
 
 while (my ($signal, $sub) = each %signal_handlers)
@@ -143,7 +144,7 @@ while (my ($signal, $sub) = each %signal_handlers)
 	$asciio->signal_connect($signal, $sub) 
 	}
 
-my $label = Gtk3::Label->new($self->{tab_counter}) ;
+my $label = $self->create_tab_label($asciio->get_title() // 'untitled_' . $self->{tab_counter}) ;
 
 my $scroller = Gtk3::ScrolledWindow->new() ;
 $scroller->set_policy('automatic', 'automatic') ;  # show scrollbars as needed
@@ -153,19 +154,54 @@ $scroller->add($asciio) ;
 
 $asciio->set_hexpand(TRUE); $asciio->set_vexpand(TRUE) ;
 
-my $page_num = $self->{notebook}->append_page($scroller, $label) ;
+# my $page_num = $self->{notebook}->append_page($scroller, $label) ;
+# push @{$self->{asciios}}, $asciio ;
+my $current_page = $self->{notebook}->get_current_page() ;
+my $page_num = $self->{notebook}->insert_page($scroller, $label, $current_page + 1) ;
 $self->{tab_counter}++ ;
+
+splice $self->{asciios}->@*, $current_page + 1, 0, $asciio ;
 
 $self->{labels_visible} = $self->{tab_counter} == 1 ? FALSE : TRUE ;
 $self->{notebook}->set_show_tabs($self->{labels_visible}) ;
+
+# use small margins around tab labels
+my $css_provider = Gtk3::CssProvider->new() ;
+$css_provider->load_from_data("tab { padding-left: 3px; padding-right: 3px; padding-top: 2px; padding-bottom: 2px; }") ;
+$self->{notebook}->get_style_context()->add_provider($css_provider, Gtk3::STYLE_PROVIDER_PRIORITY_APPLICATION) ;
 
 $scroller->show_all() ;
 
 $self->{notebook}->set_current_page($page_num) ;
 $asciio->grab_focus() ;
 
-
 return ($asciio_config, $asciio) ;
+}
+
+sub create_tab_label
+{
+my ($self, $text) = @_ ;
+
+my $max_chars    = 35 ;
+my $text_length  = length($text) ;
+my $display_text = $text ;
+
+if ($text_length > $max_chars)
+	{
+	# Shorten from the left
+	$display_text = '...' . substr($text, -($max_chars - 3)) ;
+	}
+
+my $label = Gtk3::Label->new($display_text) ;
+$label->set_single_line_mode(TRUE) ;
+
+$label->set_width_chars(0) ;
+$label->set_margin_start(0) ;
+$label->set_margin_end(0) ;
+$label->set_margin_top(0) ;
+$label->set_margin_bottom(0) ;
+
+return $label ;
 }
 
 # ----------------------------------------------------------------------------
@@ -409,10 +445,14 @@ my $n_pages = $self->{notebook}->get_n_pages() ;
 
 if ($current < $n_pages - 1)
 	{
-	$self->{notebook}->reorder_child(
-		$self->{notebook}->get_nth_page($current),
-		$current + 1
-	) ;
+	$self->{notebook}->reorder_child
+				(
+				$self->{notebook}->get_nth_page($current),
+				$current + 1
+				) ;
+	
+	my $asciio = splice $self->{asciios}->@*, $current, 1 ;
+	splice $self->{asciios}->@*, $current + 1, 0, $asciio ;
 	
 	if ($self->{help_page_num} == $current)
 		{
@@ -435,10 +475,14 @@ my $current = $self->{notebook}->get_current_page() ;
 
 if ($current > 0)
 	{
-	$self->{notebook}->reorder_child(
-		$self->{notebook}->get_nth_page($current),
-		$current - 1
-	) ;
+	$self->{notebook}->reorder_child
+				(
+				$self->{notebook}->get_nth_page($current),
+				$current - 1
+				) ;
+	
+	my $asciio = splice $self->{asciios}->@*, $current, 1 ;
+	splice $self->{asciios}->@*, $current - 1, 0, $asciio ;
 	
 	if ($self->{help_page_num} == $current)
 		{
@@ -463,6 +507,24 @@ $self->{notebook}->set_show_tabs($self->{labels_visible}) ;
 
 # ----------------------------------------------------------------------------
 
+sub hide_all_bindings_help
+{
+my ($self, $name) = @_ ;
+
+$_->set_use_bindings_completion(0) for $self->{asciios}->@* ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub show_all_bindings_help
+{
+my ($self, $name) = @_ ;
+
+$_->set_use_bindings_completion(1) for $self->{asciios}->@* ;
+}
+
+# ----------------------------------------------------------------------------
+
 sub rename_tab
 {
 my ($self, $name) = @_ ;
@@ -470,10 +532,12 @@ my ($self, $name) = @_ ;
 my $current = $self->{notebook}->get_current_page() ;
 my $tab     = $self->{notebook}->get_nth_page($current) ;
 
+my $new_label = $self->create_tab_label($name) ;
+$self->{notebook}->set_tab_label($tab, $new_label) ;
+$new_label->show() ;
+
 # my $asciio = $self->{asciios}[$current] ;
 # $asciio->set_title($name) ;
-
-$self->{notebook}->set_tab_label_text($tab, $name) ;
 }
 
 # ----------------------------------------------------------------------------
@@ -553,7 +617,6 @@ if(! $delete_tabs || $self->save_project(undef))
 		
 		$self->set_title($project_name) if $delete_tabs ;
 		$self->{MODIFIED} = 0 if $delete_tabs ;
-		;
 		}
 	}
 }
@@ -604,7 +667,7 @@ if(defined $project_name && $project_name ne q[])
 					"Override file!",
 					"File '$project_name' exists!\nOverride file?"
 					) ;
-					
+		
 		$project_name = undef unless $override eq 'yes' ;
 		}
 	
@@ -653,6 +716,7 @@ for my $asciio ($self->{asciios}->@*)
 	$seen_titles{$title}++ ;
 	
 	push $project_data->{documents}->@*, $title ;
+	$asciio->set_modified_state(0) ;
 	
 	$tar->add_data
 		(

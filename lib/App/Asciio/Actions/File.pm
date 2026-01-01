@@ -13,7 +13,9 @@ sub save
 {
 my ($self, $as, $type, $file_name) = @_ ;
 
-return $self->get_title // 1 unless $self->get_modified_state() ;
+$self->update_display() ;
+
+return $self->get_title // 1 unless $self->get_modified_state() || defined $as ;
 
 Encode::_utf8_on($file_name) ;
 
@@ -84,8 +86,6 @@ if(defined $file_name && $file_name ne q[])
 			}
 		}
 	}
-
-$self->update_display() ;
 
 return $file_name ;
 } ;

@@ -687,6 +687,15 @@ if($has_extents)
 
 #-----------------------------------------------------------------------------
 
+sub set_use_bindings_completion
+{
+my ($self, $state) = @_ ;
+
+$self->{USE_BINDINGS_COMPLETION} = $state // 0 ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub display_bindings_completion
 {
 my ($self, $expose_data) = @_ ;
