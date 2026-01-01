@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5a721567.js";
+            window.path_to_searchindex_js = "searchindex-6c9a6c59.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-5a65138d.js"></script>
@@ -2313,42 +2313,43 @@ EOT
 <tr><th>action</th><th>binding</th></tr>
 </thead>
 <tbody>
-<tr><td>Select all connected</td><td>«c»</td></tr>
 <tr><td>Select neighbors</td><td>«n»</td></tr>
 <tr><td>Select predecessors</td><td>«p»</td></tr>
 <tr><td>Select ancestors</td><td>«a»</td></tr>
 <tr><td>Select successors</td><td>«s»</td></tr>
 <tr><td>Select descendants</td><td>«d»</td></tr>
+<tr><td>select reachable</td><td>«r»</td></tr>
+<tr><td>Select all connected</td><td>«c»</td></tr>
 </tbody>
 </table>
 </div>
 <pre><code class="language-text">.---------------------------------------------------------.
 |                   all connected nodes                   |
 |---------------------------------------------------------|
-|             .----------.       .----------.             |
-|             | ancestor |---.---| ancestor |             |
-|             '----------'   |   '----------'             |
+|             .----------.       .-----------.            |
+|             | ancestor |---.---| reachable |            |
+|             '----------'   |   '-----------'            |
 |                            |                            |
 |                            |                            |
 |                            v                            |
 |                .----------------------.                 |
-|                | predecessor-neighbor |                 |
-|                '----------------------'                 |
-|                            |                            |
-|                            v                            |
-|                        .------.                         |
-|                .-------| node |--------.                |
-|                |       '------'        |                |
-|                |                       |                |
+|        .-------| predecessor-neighbor |                 |
+|        |       '----------------------'                 |
+|        |                  |                             |
+|        v                  v                             |
+| .-----------.          .------.                         |
+| |    not    |  .-------| node |--------.                |
+| | reachable |  |       '------'        |                |
+| '-----------'  |                       |                |
 |                v                       v                |
 |     .--------------------.  .--------------------.      |
 |     | successor-neighbor |  | successor-neighbor |      |
 |     '--------------------'  '--------------------'      |
-|                |                                        |
-|                v                                        |
-|         .------------.                                  |
-|         | descendant |                                  |
-|         '------------'                                  |
+|                |                       |                |
+|                v                       v                |
+|         .------------.          .-----------.           |
+|         | descendant |          | reachable |           |
+|         '------------'          '-----------'           |
 '---------------------------------------------------------'
 </code></pre>
 <h2 id="polygon-and-mouse-move-selection-mode"><a class="header" href="#polygon-and-mouse-move-selection-mode">Polygon and Mouse-move selection mode</a></h2>
