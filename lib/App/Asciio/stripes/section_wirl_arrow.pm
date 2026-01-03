@@ -1378,22 +1378,6 @@ sub is_over_element
 my ($self, $element, $x, $y, $field, $element_offset_x, $element_offset_y, ) = @_ ;
 
 $field ||= 0 ;
-
-# use Data::TreeDumper ;
-# print DumpTree $element, "$element", MAX_DEPTH => 2 ;
-my ($emin_x, $emin_y, $emax_x, $emax_y) = @{ $element->{EXTENTS} } ;
-
-if	
-	(
-	   ($emin_y + $element->{Y} > $y + $field)
-	|| ($emax_y + $element->{Y}  < $y - $field)
-	|| ($emin_x + $element->{X}  > $x + $field)
-	|| ($emax_x + $element->{X}  < $x - $field)
-	)
-	{
-	return 0 ;
-	}
-
 my $is_under = 0 ;
 
 for my $strip (@{$element->get_stripes()})
