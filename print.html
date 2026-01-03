@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-0ec55441.js";
+            window.path_to_searchindex_js = "searchindex-0d3c4e0e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-5a65138d.js"></script>
+        <script src="toc-5c679a27.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1557,7 +1557,7 @@ ACTION_FILES =&gt;
         'actions/mouse.pl',
         'actions/colors.pl',
         'actions/unsorted.pl',
-        'actions/presentation.pl',
+        'actions/animation.pl',
 
         'actions/context_menu_multi_wirl.pl',
         'actions/context_menu_box.pl',
@@ -2039,251 +2039,6 @@ inefficient. Users of other systems do not have this requirement!</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="modes"><a class="header" href="#modes">Modes</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="git"><a class="header" href="#git">git</a></h1>
-<pre><code>
-                     .*-----*------------------------------*
-                    /                                       \
-                   /                                         \
-           *------*---------*-----BETA---.                    \
-                   \                      \                    \
-                    \    .-----.           '                    \
- .-------------.     *---| fix |---*-----RELEASE 1.3------&gt;*-----*---------*
- | Release 2.0 |         '-----'    \                     /               /
- |-------------|                     \                   /               /
- | changes     |-------------------&gt;  '---*-------*--------------*------*
- | tag: ...    |                           \           /
- | eta: ...    |                            \         /
- '-------------'                             *-------'
-
-</code></pre>
-<p>The <em>git mode</em> allows you to draw git graph quickly.</p>
-<p>The <em>git mode</em> redefines some bindings to allow you to work faster. Only the bindings listed below are available when editing.</p>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Exit git mode</td><td>«Escape»</td></tr>
-<tr><td>Undo</td><td>«u»</td></tr>
-<tr><td><em><strong>Insert and link node</strong></em></td><td>«g» «right-click»</td></tr>
-<tr><td>Change arrow direction</td><td>«d»</td></tr>
-<tr><td>Add box</td><td>«b»</td></tr>
-<tr><td>Add text</td><td>«t»</td></tr>
-<tr><td>Add arrow</td><td>«a»</td></tr>
-<tr><td>Select objects</td><td>«left-click»</td></tr>
-<tr><td>Edit Selected element</td><td>«Return» «double-click»</td></tr>
-<tr><td>Delete elements</td><td>«Delete» «x»</td></tr>
-<tr><td>Flip hint lines</td><td>«h»</td></tr>
-<tr><td>Display popup menu</td><td>«alt+right-click»</td></tr>
-</tbody>
-</table>
-</div>
-<p>When you <em><strong>insert and link a node</strong></em>:</p>
-<ul>
-<li>if nothing is under the pointer or selected, it will insert a commit node</li>
-<li>if a node is selected and nothing under the pointer, it will insert a new node and connect with the previously selected node</li>
-<li>if a node is selected and the pointer is over a node, it will link the nodes</li>
-</ul>
-<p>Let’s create a git graph.</p>
-<p><img src="modes/git_graph_feature_branch.gif" alt="git graph"></p>
-<p>You can export the text and use it in our documentation</p>
-<pre><code>                 .----------------------------------.
-                 |          feature branch          |
-                 |                                  |
-                 |       *-------------------*      |
-                 |      /                     \     |
-                 |     /                       \    |
-                 '----/-------------------------\---'
-                     /                           \
-          *---------*---------*---------*---------*---------*
-                    ^                             ^
-                    |                             |
-                    |                             |
-                    |                             |
-             we need a new              we want to merge here
-             feature branch
-
-</code></pre>
-<p>or you can generate some fancy SVGs for a presentation.</p>
-<p><img src="modes/git_graph_feature_branch.svg" alt="git graph"></p>
-<p><img src="modes/git_graph.svg" alt="git graph"></p>
-<p>The connector and arrow type of the git mode can be changed.</p>
-<p>In the user configuration for the connector,</p>
-<pre><code class="language-perl">GIT_MODE_CONNECTOR_CHAR_LIST =&gt; ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
-</code></pre>
-<p>or in the popup menu for both.</p>
-<p><img src="modes/git_popup_menu.png" alt="git_popup menu"></p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
-<h2 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h2>
-<p>Previously, crossover was a separate mode. But not anymore, crossover is just an
-attribute of the element. By default, the following shortcut keys are used to
-switch the cross attribute of the element. By default, the element has no cross
-attribute. The intersection of the boundaries of elements with the cross
-attribute will present special visual effects.</p>
-<p><em><strong>Binding:</strong></em></p>
-<pre><code>- «e»     enters the element operation group
-</code></pre>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Enable elements cross</td><td><code>&lt;&lt;x&gt;&gt;</code></td></tr>
-<tr><td>Disable elements cross</td><td><code>&lt;&lt;Shift-X&gt;&gt;</code></td></tr>
-</tbody>
-</table>
-</div>
-<p><img src="modes/cross_effect.gif" alt="cross_effect"></p>
-<h2 id="complex-graphics"><a class="header" href="#complex-graphics">Complex graphics</a></h2>
-<p>The element cross attribute allows you to draw complex tables like the following:</p>
-<p><img src="modes/cross_complex.gif" alt="cross_complex"></p>
-<pre><code>
-           ╔═══════╤═══════════════════════════════════════════════╗
-           ║       │     test scores                               ║
-           ║ Name  ├───────┬────────┬───────┬───────┬──────┬───────╢
-           ║       │   Math│ Physics│       │       │      │       ║
-           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
-           ║ Jim   │    A+ │  B     │       │       │      │       ║
-           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
-           ║Stephen│    B  │  A     │       │       │      │       ║
-           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
-           ║ Kate  │    A  │  C     │       │       │      │       ║
-           ╚═══════╧═══════╧════════╧═══════╧═══════╧══════╧═══════╝
-</code></pre>
-<h2 id="stripe-group-situation"><a class="header" href="#stripe-group-situation">Stripe group situation</a></h2>
-<p>When we merge elements into a strip group, if the merged elements themself has
-a cross attribute, the merged strip group will also presents the visual effect
-of intersection, but the strip group element itself has no cross attribute.</p>
-<p><img src="modes/cross_stripes.gif" alt="cross_stripes"></p>
-<h2 id="exported-to-text"><a class="header" href="#exported-to-text">Exported to text</a></h2>
-<pre><code>        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
-        |        |      │        │    ┃        ┃    ║        ║
-        |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
-        |        |      │        │    ┃  ┃        ┃ ║        ║
-        '--------'      ╰────────╯    ┗━━┫        ┃ ╚════════╝
-                                         ┃        ┃
-                                         ┗━━━━━━━━┛
-
-                |               │            ┃           ║
-                |               │            ┃           ║
-                |               │            ┃           ║
-                |               │       ━━━━━╋━━━━━━     ║
-                |               │            ┃           ║
-                |               │            ┃           ║
-                |               │            ┃           ║
-                |               │            ┃           ║
-                |               │            ┃           ║
-
-
-
-
-
-                .--------.
-                |        |          ╭─┬────────┬─────╮
-                |  .-----'--.       │ │        │     │
-                |  |        |       │ │        │     │
-                '--.        |       │ │        │     │    ╔══════════════╗
-                   |        |       │ ╰────────╯     │    ║              ║
-                   '--------'       │                │    ║              ║
-                                    │                │    ║              ║
-                                    │        ╔═══════╧╗   ║              ║
-                                    │        ║        ║   ║              ║
-                                    ╰────────╢        ║   ║              ║
-                                             ║        ║   ║              ║
-                                             ╚════════╝   ╚══════════════╝
-
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="slides"><a class="header" href="#slides">slides</a></h1>
-<p>You can create a slide show with Asciio … but it’s a work in progress. We write some documentation here but you’re better off asking the developers directly.</p>
-<h2 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>binding</th><th>action</th></tr>
-</thead>
-<tbody>
-<tr><td>Alt+s</td><td>enter slides mode</td></tr>
-<tr><td>Escape</td><td>escape slides mode</td></tr>
-<tr><td>L</td><td>Load slides</td></tr>
-<tr><td>n</td><td>next slide</td></tr>
-<tr><td>N</td><td>previous slide</td></tr>
-<tr><td>g</td><td>first slide</td></tr>
-<tr><td>s</td><td>run script</td></tr>
-<tr><td>n/a</td><td>show previous message</td></tr>
-<tr><td>n/a</td><td>show next message</td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="slides-format"><a class="header" href="#slides-format">Slides Format</a></h2>
-<p>Slides are a very simplified script.</p>
-<pre><code>use strict ;
-use warnings ;
-
-use App::Asciio::Utils::Presentation ;
-
-# the slides definition
-[
-	# first slide
-	[ 
-		# text is added to a box at 0, 0
-		"0 intro", 
-	
-		# you can add scritpt with shortcuts per slide
-		{
-		a =&gt; sub
-			{
-			my ($self) = @_ ;
-			App::Asciio::Actions::Elements::add_element($self, ['Asciio/box', 0, 20, 20]) ;
-			},
-		},
-	],
-	
-	# second slide
-	[ 
-		# if you have multiple elements in squre bracket, Asciio uses them as steps in your slide
-		[ "1.0", ],
-		[ "1.1", ],
-		
-		# a step within a step, thereäs no limit but navigation becomes more intricate
-		[ 
-			["1.2.0", ]
-		],
-	],
-	
-	# third slide
-	[
-	clear_and_box_at(0, 0, "2"), ], 
-	],
-	
-	# fourth slide
-	[ 
-		# you can load an asciio file
-		load(0, 0, 'path/file.asciio'),
-		
-		# and add elements to the slide
-		box(10, 20, 'title', '3', 0),
-	],
-	
-	# final slide
-	[
-	clear_all(),
-	
-	# multiline box
-	box(19, 11, '', &lt;&lt;'EOT', 0), 
-6.0
-(\_/)
-(O.o) ASCII world domination is near!
-(&gt; &lt;) 
-EOT
-	],
-]
-</code></pre>
-<p>Utilities are defined in <em>lib/App/Asciio/Utils/Presentation.pm</em></p>
-<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="selection"><a class="header" href="#selection">selection</a></h1>
 <p>Select elements by:</p>
 <ul>
@@ -2390,7 +2145,7 @@ EOT
 <p><img src="modes/selection_polygon.gif" alt="selection_polygon"></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="pen"><a class="header" href="#pen">pen</a></h1>
-<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
+<h2 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h2>
 <p>Pen mode is used to draw one character at a time into the canvas, often used
 for small ascii art creations. It is also very convenient to use it for stencil
 making .This is a special feature of the GUI port.</p>
@@ -2629,7 +2384,7 @@ ascii art template text box</p>
 <p><img src="modes/split_elements_into_dots.gif" alt="split_elements_into_dots"></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="find"><a class="header" href="#find">find</a></h1>
-<h2 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h2>
+<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
 <p>The find mode is mainly used to find the location where our target text appears
 in all asciio objects, and can quickly locate those matching positions and
 highlight them. This is a special feature on the GUI port.</p>
@@ -2687,6 +2442,239 @@ by default before pressing <code>&lt;&lt;s&gt;&gt;</code> to perform a new searc
 automatically jump to the first match. If you need to jump, press <code>&lt;&lt;n&gt;&gt;</code> or
 <code>&lt;&lt;N&gt;&gt;</code> again to perform the jump.</p>
 <p><img src="modes/find_repeat.gif" alt="find_repeat"></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="git"><a class="header" href="#git">git</a></h1>
+<pre><code>
+                     .*-----*------------------------------*
+                    /                                       \
+                   /                                         \
+           *------*---------*-----BETA---.                    \
+                   \                      \                    \
+                    \    .-----.           '                    \
+ .-------------.     *---| fix |---*-----RELEASE 1.3------&gt;*-----*---------*
+ | Release 2.0 |         '-----'    \                     /               /
+ |-------------|                     \                   /               /
+ | changes     |-------------------&gt;  '---*-------*--------------*------*
+ | tag: ...    |                           \           /
+ | eta: ...    |                            \         /
+ '-------------'                             *-------'
+
+</code></pre>
+<p>The <em>git mode</em> allows you to draw git graph quickly.</p>
+<p>The <em>git mode</em> redefines some bindings to allow you to work faster. Only the bindings listed below are available when editing.</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Exit git mode</td><td>«Escape»</td></tr>
+<tr><td>Undo</td><td>«u»</td></tr>
+<tr><td><em><strong>Insert and link node</strong></em></td><td>«g» «right-click»</td></tr>
+<tr><td>Change arrow direction</td><td>«d»</td></tr>
+<tr><td>Add box</td><td>«b»</td></tr>
+<tr><td>Add text</td><td>«t»</td></tr>
+<tr><td>Add arrow</td><td>«a»</td></tr>
+<tr><td>Select objects</td><td>«left-click»</td></tr>
+<tr><td>Edit Selected element</td><td>«Return» «double-click»</td></tr>
+<tr><td>Delete elements</td><td>«Delete» «x»</td></tr>
+<tr><td>Flip hint lines</td><td>«h»</td></tr>
+<tr><td>Display popup menu</td><td>«alt+right-click»</td></tr>
+</tbody>
+</table>
+</div>
+<p>When you <em><strong>insert and link a node</strong></em>:</p>
+<ul>
+<li>if nothing is under the pointer or selected, it will insert a commit node</li>
+<li>if a node is selected and nothing under the pointer, it will insert a new node and connect with the previously selected node</li>
+<li>if a node is selected and the pointer is over a node, it will link the nodes</li>
+</ul>
+<p>Let’s create a git graph.</p>
+<p><img src="modes/git_graph_feature_branch.gif" alt="git graph"></p>
+<p>You can export the text and use it in our documentation</p>
+<pre><code>                 .----------------------------------.
+                 |          feature branch          |
+                 |                                  |
+                 |       *-------------------*      |
+                 |      /                     \     |
+                 |     /                       \    |
+                 '----/-------------------------\---'
+                     /                           \
+          *---------*---------*---------*---------*---------*
+                    ^                             ^
+                    |                             |
+                    |                             |
+                    |                             |
+             we need a new              we want to merge here
+             feature branch
+
+</code></pre>
+<p>or you can generate some fancy SVGs for a presentation.</p>
+<p><img src="modes/git_graph_feature_branch.svg" alt="git graph"></p>
+<p><img src="modes/git_graph.svg" alt="git graph"></p>
+<p>The connector and arrow type of the git mode can be changed.</p>
+<p>In the user configuration for the connector,</p>
+<pre><code class="language-perl">GIT_MODE_CONNECTOR_CHAR_LIST =&gt; ['*', 'o', '+', 'x', 'X', '┼', '╋', '╬'],
+</code></pre>
+<p>or in the popup menu for both.</p>
+<p><img src="modes/git_popup_menu.png" alt="git_popup menu"></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
+<h2 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h2>
+<p>Previously, crossover was a separate mode. But not anymore, crossover is just an
+attribute of the element. By default, the following shortcut keys are used to
+switch the cross attribute of the element. By default, the element has no cross
+attribute. The intersection of the boundaries of elements with the cross
+attribute will present special visual effects.</p>
+<p><em><strong>Binding:</strong></em></p>
+<pre><code>- «e»     enters the element operation group
+</code></pre>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>action</th><th>binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Enable elements cross</td><td><code>&lt;&lt;x&gt;&gt;</code></td></tr>
+<tr><td>Disable elements cross</td><td><code>&lt;&lt;Shift-X&gt;&gt;</code></td></tr>
+</tbody>
+</table>
+</div>
+<p><img src="modes/cross_effect.gif" alt="cross_effect"></p>
+<h2 id="complex-graphics"><a class="header" href="#complex-graphics">Complex graphics</a></h2>
+<p>The element cross attribute allows you to draw complex tables like the following:</p>
+<p><img src="modes/cross_complex.gif" alt="cross_complex"></p>
+<pre><code>
+           ╔═══════╤═══════════════════════════════════════════════╗
+           ║       │     test scores                               ║
+           ║ Name  ├───────┬────────┬───────┬───────┬──────┬───────╢
+           ║       │   Math│ Physics│       │       │      │       ║
+           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
+           ║ Jim   │    A+ │  B     │       │       │      │       ║
+           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
+           ║Stephen│    B  │  A     │       │       │      │       ║
+           ╟───────┼───────┼────────┼───────┼───────┼──────┼───────╢
+           ║ Kate  │    A  │  C     │       │       │      │       ║
+           ╚═══════╧═══════╧════════╧═══════╧═══════╧══════╧═══════╝
+</code></pre>
+<h2 id="stripe-group-situation"><a class="header" href="#stripe-group-situation">Stripe group situation</a></h2>
+<p>When we merge elements into a strip group, if the merged elements themself has
+a cross attribute, the merged strip group will also presents the visual effect
+of intersection, but the strip group element itself has no cross attribute.</p>
+<p><img src="modes/cross_stripes.gif" alt="cross_stripes"></p>
+<h2 id="exported-to-text"><a class="header" href="#exported-to-text">Exported to text</a></h2>
+<pre><code>        .--------.      ╭────────╮    ┏━━━━━━━━┓    ╔════════╗
+        |        |      │        │    ┃        ┃    ║        ║
+        |        |      │        │    ┃  ┏━━━━━┻━━┓ ║        ║
+        |        |      │        │    ┃  ┃        ┃ ║        ║
+        '--------'      ╰────────╯    ┗━━┫        ┃ ╚════════╝
+                                         ┃        ┃
+                                         ┗━━━━━━━━┛
+
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │       ━━━━━╋━━━━━━     ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+                |               │            ┃           ║
+
+
+
+
+
+                .--------.
+                |        |          ╭─┬────────┬─────╮
+                |  .-----'--.       │ │        │     │
+                |  |        |       │ │        │     │
+                '--.        |       │ │        │     │    ╔══════════════╗
+                   |        |       │ ╰────────╯     │    ║              ║
+                   '--------'       │                │    ║              ║
+                                    │                │    ║              ║
+                                    │        ╔═══════╧╗   ║              ║
+                                    │        ║        ║   ║              ║
+                                    ╰────────╢        ║   ║              ║
+                                             ║        ║   ║              ║
+                                             ╚════════╝   ╚══════════════╝
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="slides"><a class="header" href="#slides">Slides</a></h1>
+<p>Slides are multiple asciio documents contained in a single project.</p>
+<p>You can add, remove, reorder slides with the tab commands.</p>
+<p>You can enter the slides mode which defines a few commands that you can use when presenting your slides.</p>
+<p><a href="#slides-1">Bindings</a></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="animations"><a class="header" href="#animations">Animations</a></h1>
+<p>You can create animations with Asciio</p>
+<p><a href="#animation">Bindings</a></p>
+<h2 id="animation-format"><a class="header" href="#animation-format">Animation Format</a></h2>
+<p>Animations are simple scripts that are run within a single asciio document.</p>
+<pre><code>use strict ;
+use warnings ;
+
+use App::Asciio::Utils::Animation ;
+
+# the slides definition
+[
+	# first slide
+	[ 
+		# text is added to a box at 0, 0
+		"0 intro", 
+	
+		# you can add scritpt with shortcuts per slide
+		{
+		a =&gt; sub
+			{
+			my ($self) = @_ ;
+			App::Asciio::Actions::Elements::add_element($self, ['Asciio/box', 0, 20, 20]) ;
+			},
+		},
+	],
+	
+	# second slide
+	[ 
+		# if you have multiple elements in squre bracket, Asciio uses them as steps in your slide
+		[ "1.0", ],
+		[ "1.1", ],
+		
+		# a step within a step, thereäs no limit but navigation becomes more intricate
+		[ 
+			["1.2.0", ]
+		],
+	],
+	
+	# third slide
+	[
+	clear_and_box_at(0, 0, "2"), ], 
+	],
+	
+	# fourth slide
+	[ 
+		# you can load an asciio file
+		load(0, 0, 'path/file.asciio'),
+		
+		# and add elements to the slide
+		box(10, 20, 'title', '3', 0),
+	],
+	
+	# final slide
+	[
+	clear_all(),
+	
+	# multiline box
+	box(19, 11, '', &lt;&lt;'EOT', 0), 
+6.0
+(\_/)
+(O.o) ASCII world domination is near!
+(&gt; &lt;) 
+EOT
+	],
+]
+</code></pre>
+<p>Utilities are defined in <em>lib/App/Asciio/Utils/Animation.pm</em></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="examples-1"><a class="header" href="#examples-1">Examples</a></h1>
 <h1 id="unix-structure"><a class="header" href="#unix-structure">Unix structure</a></h1>
@@ -2860,7 +2848,7 @@ to convert text files to SVG.</p>
 <h2 id="actions"><a class="header" href="#actions">Actions</a></h2>
 <p>Code that is added to <strong>asciio</strong> (a plugin is another term).</p>
 <p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a shortcut.</p>
-<h2 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h2>
+<h2 id="bindings-1"><a class="header" href="#bindings-1">Bindings</a></h2>
 <p>Registration of shortcuts that execute actions.</p>
 <p>The default Bindings are setup by the <strong>register_action_handlers</strong> in the following files:</p>
 <ul>
@@ -4610,11 +4598,65 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 </table>
 </div>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="slides-script-execution"><a class="header" href="#slides-script-execution">Slides Script Execution</a></h1>
-<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#modes-1">Modes</a> &gt; Slide Script Execution</p>
-<p><strong>Prefix:</strong> Press «Alt+s» then «s» to enter script execution</p>
-<p><strong>Exit:</strong> Press «Escape» to return to slides mode</p>
-<p>Execute presentation scripts bound to alphanumeric keys.</p>
+<h1 id="slides-1"><a class="header" href="#slides-1">Slides</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#modes-1">Modes</a> &gt; Slides</p>
+<p><strong>Prefix:</strong> Press «S» to enter slide mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to normal mode</p>
+<h2 id="bindings-2"><a class="header" href="#bindings-2">Bindings</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>«n»</td><td>next slide</td></tr>
+<tr><td>«N»</td><td>previous slide</td></tr>
+<tr><td>«g»</td><td>first slide</td></tr>
+<tr><td>«s»</td><td>run slideshow</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="bindings-while-running-a-slideshow"><a class="header" href="#bindings-while-running-a-slideshow">Bindings while running a slideshow</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>«n»</td><td>next slide</td></tr>
+<tr><td>«N»</td><td>previous slide</td></tr>
+<tr><td>«s»</td><td>slower</td></tr>
+<tr><td>«f»</td><td>faster</td></tr>
+<tr><td>«p»</td><td>pause</td></tr>
+</tbody>
+</table>
+</div>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="animation"><a class="header" href="#animation">Animation</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#modes-1">Modes</a> &gt; Animation</p>
+<p><strong>Prefix:</strong> Press «Alt+A» to enter animation mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to normal mode</p>
+<h2 id="bindings-3"><a class="header" href="#bindings-3">Bindings</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>binding</th><th>Description</th></tr>
+</thead>
+<tbody>
+<tr><td>«l»</td><td>Load animation</td></tr>
+<tr><td>«g»</td><td>first animation</td></tr>
+<tr><td>«n»</td><td>next animation</td></tr>
+<tr><td>«N»</td><td>previous animation</td></tr>
+<tr><td>«s»</td><td>run script</td></tr>
+</tbody>
+</table>
+</div>
+<p>Scripts can be configured in the animation file and can be run during presentations.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="animation-script-execution"><a class="header" href="#animation-script-execution">Animation Script Execution</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#modes-1">Modes</a> &gt; <a href="#animation">Animation</a> &gt; Script execution</p>
+<p><strong>Prefix:</strong> Press «S» «a» enter the automation mode then «s»</p>
+<p><strong>Exit:</strong> Press «Escape» to exit animatioexit animationanimation scripts bound to alphanumeric keys.</p>
 <h2 id="script-keys"><a class="header" href="#script-keys">Script Keys</a></h2>
 <p>Scripts can be bound to any letter or number key. Press the corresponding key to execute the associated script.</p>
 <div class="table-wrapper">
@@ -4623,12 +4665,12 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <tr><th>Key Range</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>«a» through «z»</td><td>Execute script bound to that letter</td></tr>
+<tr><td>«a» through «f»</td><td>Execute script bound to that letter</td></tr>
 <tr><td>«0» through «9»</td><td>Execute script bound to that number</td></tr>
 </tbody>
 </table>
 </div>
-<p>Scripts are configured in the slide presentation file and can perform various actions during presentations.</p>
+<p>Scripts are configured in the animation file.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="configuration"><a class="header" href="#configuration">Configuration</a></h1>
 <h2 id="definitions"><a class="header" href="#definitions">Definitions</a></h2>
@@ -4644,7 +4686,7 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <h3 id="actions-1"><a class="header" href="#actions-1">Actions</a></h3>
 <p>Code that is added to <strong>asciio</strong> (a plugin in an other term).</p>
 <p><strong>Asciio</strong> provides many actions but you can write your own and bind it to a keyboard shortcut.</p>
-<h3 id="bindings-3"><a class="header" href="#bindings-3">Bindings</a></h3>
+<h3 id="bindings-4"><a class="header" href="#bindings-4">Bindings</a></h3>
 <p>Registered keyboards shortcuts that execute actions.</p>
 <h2 id="asciio-configuration-file"><a class="header" href="#asciio-configuration-file">Asciio configuration file</a></h2>
 <p>The default configuration is defined in :</p>
@@ -4831,8 +4873,10 @@ register_action_handlers
 </thead>
 <tbody>
 <tr><td>SHORTCUTS</td><td>Scalar or ArrayRef</td><td>The keybinding(s) that activate/enter this group</td></tr>
+<tr><td>ENTER_GROUP</td><td>CodeRef,ArrayRef or undef</td><td>Optional code to execute <em>when</em> the group is activated.</td></tr>
 <tr><td>ESCAPE_KEYS</td><td>Scalar or ArrayRef</td><td>Optional keybinding(s) that deactivate/exit the group</td></tr>
-<tr><td>ENTER_GROUP</td><td>CodeRef or undef</td><td>Optional code to execute <em>when</em> the group is activated.</td></tr>
+<tr><td>ESCAPE_GROUP</td><td>CodeRef</td><td>Optional code to execute <em>when</em> the group is exited.</td></tr>
+<tr><td>CAPTURE_KEYS</td><td></td><td>Pass as sub to ENTER_GROUP if you just want to capture keys</td></tr>
 <tr><td>HIDE</td><td>Scalar (0 or 1)</td><td>Optional atrribute, the group is hidden from bindingsdisplays.</td></tr>
 </tbody>
 </table>
@@ -5206,7 +5250,7 @@ new_box(TEXT_ONLY =&gt;'text') ;
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="modifying-asciio-1"><a class="header" href="#modifying-asciio-1">Modifying Asciio</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="bindings-4"><a class="header" href="#bindings-4">Bindings</a></h1>
+<h1 id="bindings-5"><a class="header" href="#bindings-5">Bindings</a></h1>
 <p>Goals when adding bindings:</p>
 <ul>
 <li>

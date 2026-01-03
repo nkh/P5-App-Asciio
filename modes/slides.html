@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Slides - Asciio</title>
+        <title>Slide - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-0ec55441.js";
+            window.path_to_searchindex_js = "../searchindex-0d3c4e0e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-5a65138d.js"></script>
+        <script src="../toc-5c679a27.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,92 +174,11 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="slides"><a class="header" href="#slides">slides</a></h1>
-<p>You can create a slide show with Asciio … but it’s a work in progress. We write some documentation here but you’re better off asking the developers directly.</p>
-<h2 id="bindings"><a class="header" href="#bindings">Bindings</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>binding</th><th>action</th></tr>
-</thead>
-<tbody>
-<tr><td>Alt+s</td><td>enter slides mode</td></tr>
-<tr><td>Escape</td><td>escape slides mode</td></tr>
-<tr><td>L</td><td>Load slides</td></tr>
-<tr><td>n</td><td>next slide</td></tr>
-<tr><td>N</td><td>previous slide</td></tr>
-<tr><td>g</td><td>first slide</td></tr>
-<tr><td>s</td><td>run script</td></tr>
-<tr><td>n/a</td><td>show previous message</td></tr>
-<tr><td>n/a</td><td>show next message</td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="slides-format"><a class="header" href="#slides-format">Slides Format</a></h2>
-<p>Slides are a very simplified script.</p>
-<pre><code>use strict ;
-use warnings ;
-
-use App::Asciio::Utils::Presentation ;
-
-# the slides definition
-[
-	# first slide
-	[ 
-		# text is added to a box at 0, 0
-		"0 intro", 
-	
-		# you can add scritpt with shortcuts per slide
-		{
-		a =&gt; sub
-			{
-			my ($self) = @_ ;
-			App::Asciio::Actions::Elements::add_element($self, ['Asciio/box', 0, 20, 20]) ;
-			},
-		},
-	],
-	
-	# second slide
-	[ 
-		# if you have multiple elements in squre bracket, Asciio uses them as steps in your slide
-		[ "1.0", ],
-		[ "1.1", ],
-		
-		# a step within a step, thereäs no limit but navigation becomes more intricate
-		[ 
-			["1.2.0", ]
-		],
-	],
-	
-	# third slide
-	[
-	clear_and_box_at(0, 0, "2"), ], 
-	],
-	
-	# fourth slide
-	[ 
-		# you can load an asciio file
-		load(0, 0, 'path/file.asciio'),
-		
-		# and add elements to the slide
-		box(10, 20, 'title', '3', 0),
-	],
-	
-	# final slide
-	[
-	clear_all(),
-	
-	# multiline box
-	box(19, 11, '', &lt;&lt;'EOT', 0), 
-6.0
-(\_/)
-(O.o) ASCII world domination is near!
-(&gt; &lt;) 
-EOT
-	],
-]
-</code></pre>
-<p>Utilities are defined in <em>lib/App/Asciio/Utils/Presentation.pm</em></p>
+                        <h1 id="slides"><a class="header" href="#slides">Slides</a></h1>
+<p>Slides are multiple asciio documents contained in a single project.</p>
+<p>You can add, remove, reorder slides with the tab commands.</p>
+<p>You can enter the slides mode which defines a few commands that you can use when presenting your slides.</p>
+<p><a href="../slide_mode.html">Bindings</a></p>
 
                     </main>
 
@@ -269,7 +188,7 @@ EOT
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
-                            <a rel="next prefetch" href="../modes/selection.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="../modes/animations.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -283,7 +202,7 @@ EOT
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
-                    <a rel="next prefetch" href="../modes/selection.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="../modes/animations.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>

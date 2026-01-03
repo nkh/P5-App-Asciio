@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-0ec55441.js";
+            window.path_to_searchindex_js = "../searchindex-0d3c4e0e.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-5a65138d.js"></script>
+        <script src="../toc-5c679a27.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -246,8 +246,10 @@ register_action_handlers
 </thead>
 <tbody>
 <tr><td>SHORTCUTS</td><td>Scalar or ArrayRef</td><td>The keybinding(s) that activate/enter this group</td></tr>
+<tr><td>ENTER_GROUP</td><td>CodeRef,ArrayRef or undef</td><td>Optional code to execute <em>when</em> the group is activated.</td></tr>
 <tr><td>ESCAPE_KEYS</td><td>Scalar or ArrayRef</td><td>Optional keybinding(s) that deactivate/exit the group</td></tr>
-<tr><td>ENTER_GROUP</td><td>CodeRef or undef</td><td>Optional code to execute <em>when</em> the group is activated.</td></tr>
+<tr><td>ESCAPE_GROUP</td><td>CodeRef</td><td>Optional code to execute <em>when</em> the group is exited.</td></tr>
+<tr><td>CAPTURE_KEYS</td><td></td><td>Pass as sub to ENTER_GROUP if you just want to capture keys</td></tr>
 <tr><td>HIDE</td><td>Scalar (0 or 1)</td><td>Optional atrribute, the group is hidden from bindingsdisplays.</td></tr>
 </tbody>
 </table>
