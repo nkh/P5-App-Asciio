@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Introduction - Asciio</title>
+        <title>Functionality Log - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -174,56 +174,21 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <pre><code>    ___                               .-------.
-   /   |  __________________          | Tokyo |
-  / /| | / ___/ ___/ / / __ \         '-------'   .-----------.
- / ___ |(__  ) /__/ / / /_/ /             ^       | Tuju-Tuju |
-/_/  |_/____/\___/_/_/\____/              |       '-----------'
-                                          |             ^
-                                      .-------.         |
-                           .------.---| Malmö |---------'  .-------.
-                           |      |   '-------'            | Korba |
-                           v      |       ^                '-------'
-                      .--------.  |       |     .-------.      |
-                      | Dallas |  |       '-----| Paris |&lt;-----'
-                      '--------'  |             '-------'
-                                  v
-                             .--------.
-                             | Moscow |
-                             '--------'
-</code></pre>
-<p>Asciio allows you to draw ASCII diagrams in a GUI or TUI. The diagrams can be saved as ASCII text or in a format that allows you to modify them later.</p>
-<p>Diagrams consist of boxes and text elements connected by arrows. The elements stay connected when you move them around.</p>
-<p>Both GUI and TUI have vim-like bindings, the GUI has a few extra bindings that are usually found in GUI applications; bindings can be modified.</p>
-<p>ASCII format is easy and universal, many tools exist to manipulate it and even transform it to other formats.</p>
-<p>I’ve used it a lot to draw trees and graphs when my hand drawn pictures were not good enough for presentations. Having the possibility to copy and modify the graphs/diagrams makes it possible to present changes in an attractive way.</p>
-<h2 id="history"><a class="header" href="#history">History</a></h2>
-<p>Asciio was born … as a dare; the cool name was coined at a conference in Oslo.</p>
-<pre><code>                          .------.
-              .-----------| root |---------.
-              |           '------'         |       other process
-              |               .------------|-------------.
-              v               |            v             |
-            .--.              |          .--.            |
-        .---'--'              |      .---'--'---.        |
-        |     |               |      |          |        |
-        v     |               |      v          v        |
-      .--.    |      link     |    .--.       .--.       |
-   .--'--'    .--------------------'--'       '--'       |
-   |          |               |      |                   |
-   v          |               |      v                   |
- .--.         v               |    .--.                  |
- '--'       .--.              |    '--'                  |
-            '--'              |                          |
-                              '--------------------------'
-</code></pre>
+                        <h1 id="functionality-log"><a class="header" href="#functionality-log">Functionality Log</a></h1>
+<p><em><strong>Freeze Element [30 Dec 2025]</strong></em></p>
+<p><a href="functionality_log/30_12_2025_freeze_elements.gif">Watch video</a> | <a href="element_operation.html?highlight=freeze#freeze-thaw">Bindings</a></p>
+<p><em><strong>Graph Selection [1 Jan 2026]</strong></em></p>
+<p><a href="functionality_log/01_01_2026_graph_selection.gif">Watch video</a> | <a href="modes/selection.html#graph-selection-group">Bindings</a></p>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="guide/running_asciio.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
 
-                            <a rel="next prefetch" href="guide/running_asciio.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                            <a rel="next prefetch" href="guide/installation.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                             </a>
 
@@ -233,8 +198,11 @@
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="guide/running_asciio.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
 
-                    <a rel="next prefetch" href="guide/running_asciio.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                    <a rel="next prefetch" href="guide/installation.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
                     </a>
             </nav>
