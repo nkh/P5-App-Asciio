@@ -14,11 +14,13 @@ lib/App/Asciio/Actions.pm
 lib/App/Asciio/Ascii.pm
 lib/App/Asciio/Boxes.pm
 lib/App/Asciio/Connections.pm
-lib/App/Asciio/Markup.pm
 lib/App/Asciio/Cross.pm
 lib/App/Asciio/Dialogs.pm
 lib/App/Asciio/Elements.pm
+lib/App/Asciio/FindAndReplace.pm
+lib/App/Asciio/Geometry.pm
 lib/App/Asciio/Io.pm
+lib/App/Asciio/Markup.pm
 lib/App/Asciio/Menues.pm
 lib/App/Asciio/Options.pm
 lib/App/Asciio/Scripting.pm
@@ -26,38 +28,38 @@ lib/App/Asciio/Server.pm
 lib/App/Asciio/Setup.pm
 lib/App/Asciio/Stencil.pm
 lib/App/Asciio/String.pm
-lib/App/Asciio/Geometry.pm
 lib/App/Asciio/Undo.pm
 lib/App/Asciio/ZBuffer.pm
 
 lib/App/Asciio/Actions/Align.pm
-lib/App/Asciio/Actions/Asciio.pm
+lib/App/Asciio/Actions/Animation.pm
 lib/App/Asciio/Actions/Arrow.pm
+lib/App/Asciio/Actions/Asciio.pm
 lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Clone.pm
 lib/App/Asciio/Actions/Colors.pm
 lib/App/Asciio/Actions/Debug.pm
+lib/App/Asciio/Actions/ElementAttributes.pm
+lib/App/Asciio/Actions/ElementSelection.pm
 lib/App/Asciio/Actions/Elements.pm
 lib/App/Asciio/Actions/ElementsManipulation.pm
-lib/App/Asciio/Actions/ElementSelection.pm
-lib/App/Asciio/Actions/ElementAttributes.pm
 lib/App/Asciio/Actions/Eraser.pm
 lib/App/Asciio/Actions/File.pm
 lib/App/Asciio/Actions/Git.pm
 lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Multiwirl.pm
-lib/App/Asciio/Actions/Animation.pm
 lib/App/Asciio/Actions/Presentation.pm
 lib/App/Asciio/Actions/Ruler.pm
 lib/App/Asciio/Actions/Selection.pm
 lib/App/Asciio/Actions/Shapes.pm
+lib/App/Asciio/Actions/Tabs.pm
 lib/App/Asciio/Actions/Unsorted.pm
 lib/App/Asciio/Actions/ZBuffer.pm
-lib/App/Asciio/Actions/Tabs.pm
 
 lib/App/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/stripes/center_connect_box.pm
+lib/App/Asciio/stripes/dot.pm
 lib/App/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/stripes/ellipse.pm
@@ -72,7 +74,6 @@ lib/App/Asciio/stripes/stripes.pm
 lib/App/Asciio/stripes/triangle_down.pm
 lib/App/Asciio/stripes/triangle_up.pm
 lib/App/Asciio/stripes/wirl_arrow.pm
-lib/App/Asciio/stripes/dot.pm
 
 lib/App/Asciio/Utils/Animation.pm
 lib/App/Asciio/Utils/Scripting.pm
@@ -86,21 +87,21 @@ lib/App/Asciio/GTK/Asciio/TabManager/WebApi.pm
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/DnD.pm
-lib/App/Asciio/GTK/Asciio/Selection.pm
-lib/App/Asciio/GTK/Asciio/Pen.pm
 lib/App/Asciio/GTK/Asciio/Find.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
+lib/App/Asciio/GTK/Asciio/Pen.pm
+lib/App/Asciio/GTK/Asciio/Selection.pm
 
+lib/App/Asciio/GTK/Asciio/Actions/File.pm
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_exec_box.pm
 lib/App/Asciio/GTK/Asciio/stripes/ellipse.pm
+lib/App/Asciio/GTK/Asciio/stripes/image_box.pm
 lib/App/Asciio/GTK/Asciio/stripes/rhombus.pm
 lib/App/Asciio/GTK/Asciio/stripes/section_wirl_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/wirl_arrow.pm
-lib/App/Asciio/GTK/Asciio/stripes/image_box.pm
-lib/App/Asciio/GTK/Asciio/Actions/File.pm
 
 lib/App/Asciio/Text/Asciio.pm
 lib/App/Asciio/Text/Asciio/Dialogs.pm
@@ -322,7 +323,6 @@ my $build = $class->new
 		'HTTP::Request::Params'           => 0,
 		'Module::Install'                 => 0,
 		'Hash::Slice'                     => 0,
-		'Gtk3::Helper'                    => 0,
 		'HTTP::Daemon'                    => 0,
 		'HTTP::Request::Params'           => 0,
 		'JSON'                            => 0,

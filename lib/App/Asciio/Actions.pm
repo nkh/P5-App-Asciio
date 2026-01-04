@@ -118,7 +118,9 @@ for my $action (@actions)
 				coderef2name($self->{CURRENT_ACTIONS}{$action}{CODE}) =~ s/App::Asciio:://r,
 				# $self->{CURRENT_ACTIONS}{$action}{ORIGIN},
 				)
-			) if $self->{ACTION_VERBOSE} && $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion' ;
+			) if $self->{ACTION_VERBOSE}
+				&&    $self->{CURRENT_ACTIONS}{$action}{NAME} ne 'Mouse motion'
+				&& ! ($self->{CURRENT_ACTIONS}{$action}{OPTIONS}{HIDE}) ;
 		
 		# Note: action sub is what changes $self->{CURRENT_ACTIONS} to a new action group
 		my $start_actions = $self->{CURRENT_ACTIONS} ;

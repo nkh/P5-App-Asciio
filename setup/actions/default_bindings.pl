@@ -99,14 +99,14 @@ TOP_LEVEL_GROUP
 'Mouse duplicate elements'           => [[                      '000-comma'],      \&App::Asciio::Actions::Mouse::mouse_duplicate_element                             ],
 'Mouse quick box'                    => [['C0S-button-press-1'],                   \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                   ],
 
-'Arrow to mouse'                     => ['CA0-motion_notify',                      \&App::Asciio::Actions::Arrow::interactive_to_mouse                                ], 
+'Arrow to mouse'                     => ['CA0-motion_notify',                      \&App::Asciio::Actions::Arrow::interactive_to_mouse, undef, { HIDE => 1}           ],
 'Arrow mouse change direction'       => ['CA0-2button-press-1',                    \&App::Asciio::Actions::Arrow::change_arrow_direction                              ],      
 'Arrow change direction'             => ['CA0-d',                                  \&App::Asciio::Actions::Arrow::interactive_change_arrow_direction                  ],      
 'Wirl arrow add section'             => ['CA0-button-press-1',                     \&App::Asciio::Actions::Multiwirl::interactive_add_section                         ],
 'Wirl arrow insert flex point'       => ['CA0-button-press-2',                     \&App::Asciio::Actions::Multiwirl::insert_wirl_arrow_section                       ],
 
-'Mouse motion'                       => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                        ], 
-'Mouse motion 2'                     => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion                                        ],
+'Mouse motion'                       => ['000-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion, undef, { HIDE => 1}                   ], 
+'Mouse motion 2'                     => ['0AS-motion_notify',                      \&App::Asciio::Actions::Mouse::mouse_motion, undef, { HIDE => 1}                   ],
 
 # mouse emulation
 'Mouse emulation toggle'             => [['000-apostrophe', "'"],                  \&App::Asciio::Actions::Mouse::toggle_mouse                                        ],
@@ -411,8 +411,8 @@ TOP_LEVEL_GROUP
 	'Dump self'                     => ['000-s', \&App::Asciio::Actions::Debug::dump_self                        ],
 	'Dump all elements'             => ['000-e', \&App::Asciio::Actions::Debug::dump_all_elements                ],
 	'Dump selected elements'        => ['00S-E', \&App::Asciio::Actions::Debug::dump_selected_elements           ],
-	'Display numbered objects'      => ['000-t', sub { $_[0]->{NUMBERED_OBJECTS} ^= 1 ; $_[0]->update_display() }],
-	'Test'                          => ['000-o', \&App::Asciio::Actions::Debug::test                             ],
+	'Display numbered objects'      => ['00S-T', sub { $_[0]->{NUMBERED_OBJECTS} ^= 1 ; $_[0]->update_display() }],
+	'Test'                          => ['000-t', \&App::Asciio::Actions::Debug::test                             ],
 	'ZBuffer Test'                  => ['000-z', \&App::Asciio::Actions::ZBuffer::dump_crossings                 ],
 	),
 
@@ -700,12 +700,12 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::Actions::Selection::selection_enter,
 	ESCAPE_KEYS => ['000-s', '000-Escape'],
 	
-	'Selection escape'     => ['000-s',             \&App::Asciio::Actions::Selection::selection_escape   ],
-	'Selection escape2'    => ['000-Escape',        \&App::Asciio::Actions::Selection::selection_escape   ],
+	'Selection escape'     => ['000-s',             \&App::Asciio::Actions::Selection::selection_escape                        ],
+	'Selection escape2'    => ['000-Escape',        \&App::Asciio::Actions::Selection::selection_escape                        ],
 	
-	'select flip mode'     => ['000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip],
-	'select motion'        => ['000-motion_notify', \&App::Asciio::Actions::Selection::select_motion      ],
-	'select mouse click'   => ['000-button-press-1',\&App::Asciio::Actions::Selection::select_elements    ],
+	'select flip mode'     => ['000-e',             \&App::Asciio::Actions::Selection::selection_mode_flip                     ],
+	'select motion'        => ['000-motion_notify', \&App::Asciio::Actions::Selection::select_motion, undef, { HIDE => 1 }     ],
+	'select mouse click'   => ['000-button-press-1',\&App::Asciio::Actions::Selection::select_elements                         ],
 
 	'polygon selection ->' => ['000-x', USE_GROUP('polygon')] ,
 	),
@@ -716,12 +716,12 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::polygon_selection_enter,
 	ESCAPE_KEYS => ['000-x', '000-Escape'],
 	
-	'Polygon selection escape'      => ['000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape        ],
-	'Polygon selection escape2'     => ['000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape        ],
-	'Polygon select motion'         => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1     ],
-	'Polygon deselect motion'       => ['C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0     ],
-	'Polygon select left-release'   => ['000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release],
-	'Polygon select left-release 2' => ['C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release],
+	'Polygon selection escape'      => ['000-x',               \&App::Asciio::GTK::Asciio::polygon_selection_escape                  ],
+	'Polygon selection escape2'     => ['000-Escape',          \&App::Asciio::GTK::Asciio::polygon_selection_escape                  ],
+	'Polygon select motion'         => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 1, { HIDE => 1 }],
+	'Polygon deselect motion'       => ['C00-motion_notify',   \&App::Asciio::GTK::Asciio::polygon_selection_motion, 0, { HIDE => 1 }],
+	'Polygon select left-release'   => ['000-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release          ],
+	'Polygon select left-release 2' => ['C00-button-release-1',\&App::Asciio::GTK::Asciio::polygon_selection_button_release          ],
 	),
 
 'eraser ->' => GROUP
@@ -730,8 +730,8 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::Actions::Eraser::eraser_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'Eraser escape' => ['000-Escape',        \&App::Asciio::Actions::Eraser::eraser_escape ],
-	'Eraser motion' => ['000-motion_notify', \&App::Asciio::Actions::Eraser::erase_elements],
+	'Eraser escape' => ['000-Escape',        \&App::Asciio::Actions::Eraser::eraser_escape                       ],
+	'Eraser motion' => ['000-motion_notify', \&App::Asciio::Actions::Eraser::erase_elements, undef, { HIDE => 1 }],
 	),
 
 'clone ->' => GROUP
@@ -740,25 +740,25 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::Actions::Clone::clone_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'clone escape'          => ['000-Escape',          \&App::Asciio::Actions::Clone::clone_escape                                 ],
-	'clone motion'          => ['000-motion_notify',   \&App::Asciio::Actions::Clone::clone_mouse_motion                           ], 
+	'clone escape'          => ['000-Escape',         \&App::Asciio::Actions::Clone::clone_escape                                 ],
+	'clone motion'          => ['000-motion_notify',  \&App::Asciio::Actions::Clone::clone_mouse_motion, undef, { HIDE => 1 }     ], 
 	
-	'clone insert'          => ['000-button-press-1',  \&App::Asciio::Actions::Clone::clone_add_element                            ],
-	'clone insert2'         => ['000-Return',          \&App::Asciio::Actions::Clone::clone_add_element                            ],
-	'clone arrow'           => ['000-a',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/wirl_arrow', 0]  ],
-	'clone angled arrow'    => ['00S-A',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/angled_arrow', 0]],
-	'clone box'             => ['000-b',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box', 0]         ],
-	'clone text'            => ['000-t',               \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]        ],
-	'clone flip hint lines' => ['000-h',               \&App::Asciio::Actions::Unsorted::flip_hint_lines                           ],
-	'clone left'            => ['000-Left',             \&App::Asciio::Actions::ElementsManipulation::move_selection_left           ],
-	'clone right'           => ['000-Right',            \&App::Asciio::Actions::ElementsManipulation::move_selection_right          ],
-	'clone up'              => ['000-Up',               \&App::Asciio::Actions::ElementsManipulation::move_selection_up             ],
-	'clone down'            => ['000-Down',             \&App::Asciio::Actions::ElementsManipulation::move_selection_down           ],
+	'clone insert'          => ['000-button-press-1', \&App::Asciio::Actions::Clone::clone_add_element                            ],
+	'clone insert2'         => ['000-Return',         \&App::Asciio::Actions::Clone::clone_add_element                            ],
+	'clone arrow'           => ['000-a',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/wirl_arrow',   0]],
+	'clone angled arrow'    => ['00S-A',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/angled_arrow', 0]],
+	'clone box'             => ['000-b',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box',  0]        ],
+	'clone text'            => ['000-t',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]        ],
+	'clone flip hint lines' => ['000-h',              \&App::Asciio::Actions::Unsorted::flip_hint_lines                           ],
+	'clone left'            => ['000-Left',           \&App::Asciio::Actions::ElementsManipulation::move_selection_left           ],
+	'clone right'           => ['000-Right',          \&App::Asciio::Actions::ElementsManipulation::move_selection_right          ],
+	'clone up'              => ['000-Up',             \&App::Asciio::Actions::ElementsManipulation::move_selection_up             ],
+	'clone down'            => ['000-Down',           \&App::Asciio::Actions::ElementsManipulation::move_selection_down           ],
 	
-	'clone emulation left'  => ['C00-Left',             \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]                         ],
-	'clone emulation right' => ['C00-Right',            \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                         ],
-	'clone emulation up'    => ['C00-Up',               \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                         ],
-	'clone emulation down'  => ['C00-Down',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                         ],
+	'clone emulation left'  => ['C00-Left',           \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]                         ],
+	'clone emulation right' => ['C00-Right',          \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                         ],
+	'clone emulation up'    => ['C00-Up',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                         ],
+	'clone emulation down'  => ['C00-Down',           \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                         ],
 	),
 
 'git ->' => GROUP
@@ -780,7 +780,7 @@ TOP_LEVEL_GROUP
 	'Git undo'                   => ['000-u',                               \&App::Asciio::Actions::Unsorted::undo                                 ],
 	'Git delete elements'        => [['000-Delete', '000-x'],               \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements ],
 	
-	'Git mouse motion'           => ['000-motion_notify',                   \&App::Asciio::Actions::Mouse::mouse_motion                            ], 
+	'Git mouse motion'           => ['000-motion_notify',                   \&App::Asciio::Actions::Mouse::mouse_motion, undef, { HIDE => 1 }      ], 
 	'Git move elements left'     => ['000-Left',                            \&App::Asciio::Actions::ElementsManipulation::move_selection_left      ],
 	'Git move elements right'    => ['000-Right',                           \&App::Asciio::Actions::ElementsManipulation::move_selection_right     ],
 	'Git move elements up'       => ['000-Up',                              \&App::Asciio::Actions::ElementsManipulation::move_selection_up        ],
@@ -871,12 +871,12 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'pen escape'                      => ['000-Escape',          \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_escape             ],
-	'pen motion'                      => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion, undef, { HIDE => 1 } ],
+	'pen escape'                      => ['000-Escape',          \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_escape              ],
+	'pen motion'                      => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion, undef, { HIDE => 1 }  ],
 	
-	'pen insert or delete'            => ['000-button-press-1',  \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0           ],
-	'pen insert2 or delete2'          => ['000-Return',          \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0           ],
-	'pen mouse change char'           => ['000-button-press-3',  \&App::Asciio::GTK::Asciio::Pen::mouse_change_char                      ],
+	'pen insert or delete'            => ['000-button-press-1',  \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0            ],
+	'pen insert2 or delete2'          => ['000-Return',          \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0            ],
+	'pen mouse change char'           => ['000-button-press-3',  \&App::Asciio::GTK::Asciio::Pen::mouse_change_char                       ],
 	'pen eraser switch'               => [ 'C0S-ISO_Left_Tab',    \&App::Asciio::GTK::Asciio::Pen::pen_eraser_switch                      ],
 	
 	'pen mouse toggle direction'      => [ 'C00-Tab',              \&App::Asciio::GTK::Asciio::Pen::toggle_mouse_emulation_move_direction ],
@@ -966,7 +966,7 @@ TOP_LEVEL_GROUP
 	'find Zoom in'             => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::GTK::Asciio::Find::find_zoom, 1   ],
 	'find Zoom out'            => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::GTK::Asciio::Find::find_zoom, -1  ],
 	'find perform new search'  => [ '000-s',                                 \&App::Asciio::GTK::Asciio::Find::find_new_search],
-	# 'find Mouse drag canvas'   => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas  ],
+	# 'find Mouse drag canvas'   => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas, undef, { HIDE => 1 } ],
 	),
 
 'image box ->' => GROUP

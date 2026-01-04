@@ -51,6 +51,7 @@ lib/App/Asciio/Markup.pm
 lib/App/Asciio/Cross.pm
 lib/App/Asciio/Dialogs.pm
 lib/App/Asciio/Elements.pm
+lib/App/Asciio/FindAndReplace.pm
 lib/App/Asciio/Io.pm
 lib/App/Asciio/Menues.pm
 lib/App/Asciio/Options.pm
