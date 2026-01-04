@@ -134,6 +134,8 @@
 
 -----------
 
+[Functionality Log](functionality_log.md)
+
 [Contributors and License](misc/contributors.md)
 
 [See Also](misc/see_also.md)
