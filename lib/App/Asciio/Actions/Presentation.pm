@@ -88,7 +88,7 @@ App::Asciio::Actions::Tabs::focus_tab() ;
 sub slower_speed
 {
 my ($self) = @_ ;
-$slideshow_delay *= 1.5 ;
+$slideshow_delay *= 1.5 unless $slideshow_delay > 50_000_000 ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -96,7 +96,7 @@ $slideshow_delay *= 1.5 ;
 sub faster_speed
 {
 my ($self) = @_ ;
-$slideshow_delay /= 1.5 ;
+$slideshow_delay /= 1.5 unless $slideshow_delay < 2 ;
 }
 
 #----------------------------------------------------------------------------------------------
