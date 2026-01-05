@@ -16,6 +16,7 @@ use List::MoreUtils qw(any minmax first_value) ;
 use Readonly ;
 
 use App::Asciio::Connections ;
+use App::Asciio::FindAndReplace ;
 
 use App::Asciio::GTK::Asciio::stripes::editable_exec_box ;
 use App::Asciio::GTK::Asciio::stripes::editable_box2 ;
@@ -467,6 +468,8 @@ for my $element (@{$self->{ELEMENTS}})
 	if(exists $elements_to_delete{$element})
 		{
 		$self->delete_connections_containing($element) ;
+		$self->delete_matching_element($element) ;
+		
 		$element = undef ;
 		}
 	}

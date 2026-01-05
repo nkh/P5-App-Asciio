@@ -346,6 +346,8 @@ else
 	
 	$self->{notebook}->remove_page($current_page) ;
 	$self->{tab_counter}-- ;
+	
+	$self->quit_application() if $quit && $n_pages - 1 == 0 ;
 	}
 }
 
@@ -833,7 +835,21 @@ sub read_asciio_file
 {
 my ($self, $project_name) = @_  ;
 
-my $tar = Archive::Tar->new($project_name) or print STDERR "Can't open '$project_name': " . Archive::Tar->error() . "\n";
+
+# save original settings. You could also use lexical typeglobs.
+*OLD_STDOUT = *STDOUT;
+*OLD_STDERR = *STDERR;
+
+# reassign STDOUT, STDERR
+open my $log_fh, '>>', 'asciio_io.log' ;
+*STDOUT = $log_fh;
+*STDERR = $log_fh;
+
+my $tar = Archive::Tar->new($project_name) ; 
+
+# restore STDOUT/STDERR
+*STDOUT = *OLD_STDOUT;
+*STDERR = *OLD_STDERR;
 
 if($tar)
 	{
@@ -848,6 +864,7 @@ if($tar)
 		}
 	else
 		{
+		print "loaded tar\n" ;
 		for my $document_name ($asciio_project->{documents}->@*) 
 			{
 			my ($config, $asciio) = $self->create_tab({serialized => $tar->get_content($document_name)}) ;
@@ -868,6 +885,8 @@ if($tar)
 	}
 else
 	{
+	print STDERR "Asciio: can't open project '$project_name', trying as asciio document\n";
+
 	my ($config, $asciio) = $self->create_tab() ;
 	my $document_name     = $asciio->load_file($project_name) ;
 	

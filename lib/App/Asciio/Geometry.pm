@@ -15,7 +15,6 @@ our @EXPORT_OK =
 	) ;
 
 #-----------------------------------------------------------------------------
-# nkh: see that there is a space before ; 
 
 sub point_in_polygon 
 {

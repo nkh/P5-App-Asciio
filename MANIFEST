@@ -78,6 +78,7 @@ lib/App/Asciio/Actions/ElementSelection.pm
 lib/App/Asciio/Actions/ElementsManipulation.pm
 lib/App/Asciio/Actions/Eraser.pm
 lib/App/Asciio/Actions/File.pm
+lib/App/Asciio/Actions/FindAndReplace.pm
 lib/App/Asciio/Actions/Git.pm
 lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Multiwirl.pm
@@ -152,7 +153,6 @@ lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/DnD.pm
 lib/App/Asciio/GTK/Asciio/Selection.pm
 lib/App/Asciio/GTK/Asciio/Pen.pm
-lib/App/Asciio/GTK/Asciio/Find.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
@@ -360,6 +360,9 @@ documentation/mdbook_asciio/src/for_developers/scripting.md
 documentation/mdbook_asciio/src/for_developers/scripting_api.md
 documentation/mdbook_asciio/src/for_developers/scripting_execute.md
 documentation/mdbook_asciio/src/for_developers/unicode_support.md
+documentation/mdbook_asciio/src/functionality_log/2025_12_20_freeze_elements.gif
+documentation/mdbook_asciio/src/functionality_log/2026_01_01_graph_selection.gif
+documentation/mdbook_asciio/src/functionality_log/026_01_08_search_and_replace.gif
 documentation/mdbook_asciio/src/gen_doc
 documentation/mdbook_asciio/src/git_mode.md
 documentation/mdbook_asciio/src/grouping.md

@@ -152,27 +152,19 @@ $self->draw_new_connection         ($expose_data) ;
 $self->draw_selection              ($expose_data) ;
 $self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
 $self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
-$self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
 $self->draw_pen_mapping_help       ($expose_data) ;
-$self->draw_find_highlight         ($expose_data) ;
+# $self->draw_find_keywords_highlight($expose_data) ;
+$self->draw_element_state          ($expose_data) ;
+$self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
 
 return TRUE ;
 }
 
-#-----------------------------------------------------------------------------
 
 sub draw_pen_mapping_help
 {
 my ($self, $expose_data) = @_ ;
 App::Asciio::GTK::Asciio::Pen::pen_show_mapping_help($self, $expose_data->{gc}) ;
-}
-
-#-----------------------------------------------------------------------------
-
-sub draw_find_highlight
-{
-my ($self, $expose_data) = @_ ;
-App::Asciio::GTK::Asciio::Find::draw_find_keywords_highlight($self, $expose_data->{gc}, $expose_data->{character_width}, $expose_data->{character_height}) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -769,20 +761,20 @@ sub draw_element
 {
 my ($self, $element, $element_index, $expose_data) = @_ ;
 
-my ($gc, $font_description, $character_width, $character_height)
-	= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
-
 if ($element->isa('App::Asciio::GTK::Asciio::stripes::image_box'))
 	{
-	$self->draw_image_box_element($element, $gc, $character_width, $character_height) ;
+	$self->draw_image_box_element($element, $expose_data) ;
 	}
 else
 	{
-	$self->draw_stripe_element($element, $element_index, $gc, $font_description, $character_width, $character_height) ;
+	$self->draw_stripe_element($element, $element_index, $expose_data) ;
 	}
 
 if(exists $self->{BLINK_ELEMENTS}{$element})
 	{
+	my ($gc, $font_description, $character_width, $character_height)
+		= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
+	
 	$gc->set_line_width(1) ;
 	$gc->set_source_rgb(@{$self->get_color('new_connection')});
 	$gc->rectangle
@@ -803,18 +795,20 @@ if(exists $self->{BLINK_ELEMENTS}{$element})
 
 sub draw_stripe_element
 {
-my ($self, $element, $element_index, $gc, $font_description, $character_width, $character_height) = @_ ;
+my ($self, $element, $element_index, $expose_data) = @_ ;
+
+my ($gc, $font_description, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
 
 my $is_selected = $element->{SELECTED} // 0 ;
 $is_selected = 1 if $is_selected > 0 ;
 
 my ($background_color, $foreground_color) = $self->get_element_colors($element) ;
-my $tmstf = ($self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0] // '0') eq $element ; 
 
 my $color_set = $is_selected . '-'
 		. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
-		. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) . '-'
-		. $tmstf ;
+		. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0)  . '-'
+		. ($self->{ACTIONS_STORAGE}{find}{regexp} // '') ; 
 
 my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
 
@@ -828,24 +822,27 @@ unless (defined $renderings)
 		{
 		my $line_index = 0 ;
 		
-		my $strip_background_color = $background_color ;
-		my $strip_foreground_color = $foreground_color ;
-		
-		unless ($is_selected)
-			{
-			$strip_background_color = $strip->{BACKGROUND} // $background_color ;
-			$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
-			}
-		
-		if ($tmstf)
-			{
-			$strip_background_color = $self->get_color('temporary_to_front_background') ;
-			}
-		
-		my $strip_color_set .= $strip_background_color . $strip_foreground_color ;
-		
 		for my $line (split /\n/, $strip->{TEXT})
 			{
+			my $strip_background_color = $background_color ;
+			my $strip_foreground_color = $foreground_color ;
+			
+			unless ($is_selected)
+				{
+				$strip_background_color = $strip->{BACKGROUND} // $background_color ;
+				$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
+				}
+			
+			if($self->{DISPLAY_MATCHING_STRIPE} && defined $self->{ACTIONS_STORAGE}{find}{regexp})
+				{
+				if($line =~ $self->{ACTIONS_STORAGE}{find}{regexp})
+					{
+					$strip_background_color = $self->get_color('find_match_bg') ;
+					}
+				}
+			
+			my $strip_color_set .= $strip_background_color . $strip_foreground_color ;
+			
 			$line = "$line-$element" if $self->{NUMBERED_OBJECTS} ; # don't share rendering with other objects
 			
 			unless (exists $self->{CACHE}{STRIPS}{$strip_color_set}{$line})
@@ -908,7 +905,10 @@ for my $rendering (@$renderings)
 
 sub draw_image_box_element
 {
-my ($self, $element, $gc, $character_width, $character_height) = @_ ;
+my ($self, $element, $expose_data) = @_ ;
+
+my ($gc, $font_description, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
 
 my $cache_key = $element->{WIDTH} . '-' . $element->{HEIGHT} . '-' . $character_width . '-' . $character_height ;
 my $rendering = $element->{CACHE}{RENDERING}{$cache_key} ;
@@ -937,6 +937,46 @@ if ($element->{SELECTED})
 		) ;
 	$gc->fill() ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub draw_element_state
+{
+my ($self, $expose_data) = @_ ;
+
+for my $element ($self->{ELEMENTS}->@*)
+	{
+	if (($self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0] // '0') eq $element)
+		{
+		highlight_characters($self, $expose_data, @{$element}{qw/X Y/}, $self->get_color('temporary_to_front_background')) ;
+		}
+	
+	if (exists $self->{ACTIONS_STORAGE}{find}{matches}{$element})
+		{
+		highlight_characters($self, $expose_data, @{$element}{qw/X Y/}, $self->get_color('find_match')) ;
+		
+		if ($self->{ACTIONS_STORAGE}{find}{current} == $self->{ACTIONS_STORAGE}{find}{matches}{$element} )
+			{
+			highlight_characters($self, $expose_data, @{$element}{qw/X Y/}, $self->get_color('find_current')) ;
+			}
+		}
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub highlight_characters
+{
+my ($self, $expose_data, $x, $y, $color, $length) = @_ ;
+$length //= 1 ;
+
+my ($gc, $character_width, $character_height) = @{$expose_data}{qw/ gc character_width character_height /} ;
+
+$gc->set_source_rgba($color->@*) ;
+$gc->rectangle($x * ${character_width}, $y * ${character_height}, ${character_width} * $length, ${character_height}) ;
+$gc->fill() ;
+$gc->stroke() ;
 }
 
 #-----------------------------------------------------------------------------

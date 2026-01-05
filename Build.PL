@@ -46,6 +46,7 @@ lib/App/Asciio/Actions/Elements.pm
 lib/App/Asciio/Actions/ElementsManipulation.pm
 lib/App/Asciio/Actions/Eraser.pm
 lib/App/Asciio/Actions/File.pm
+lib/App/Asciio/Actions/FindAndReplace.pm
 lib/App/Asciio/Actions/Git.pm
 lib/App/Asciio/Actions/Mouse.pm
 lib/App/Asciio/Actions/Multiwirl.pm
@@ -87,12 +88,12 @@ lib/App/Asciio/GTK/Asciio/TabManager/WebApi.pm
 lib/App/Asciio/GTK/Asciio/Boxfuncs.pm
 lib/App/Asciio/GTK/Asciio/Dialogs.pm
 lib/App/Asciio/GTK/Asciio/DnD.pm
-lib/App/Asciio/GTK/Asciio/Find.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 lib/App/Asciio/GTK/Asciio/Pen.pm
 lib/App/Asciio/GTK/Asciio/Selection.pm
 
 lib/App/Asciio/GTK/Asciio/Actions/File.pm
+
 lib/App/Asciio/GTK/Asciio/stripes/angled_arrow.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_arrow2.pm
 lib/App/Asciio/GTK/Asciio/stripes/editable_box2.pm

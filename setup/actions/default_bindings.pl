@@ -43,18 +43,24 @@ TOP_LEVEL_GROUP
 'Zoom in'                            => [['000-plus', 'C00-j', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                          ],
 'Zoom out'                           => [['000-minus', 'C00-h', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                         ],
 
-'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 0]  ],
-'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 0]  ],
-'Select next non arrow'              => ['000-n',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 1]  ],
-'Select previous non arrow'          => ['00S-N',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 1]  ],
-'Select next arrow'                  => ['000-m',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 2]  ],
-'Select previous arrow'              => ['00S-M',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 2]  ],
+'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 0]      ],
+'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 0]      ],
 
-'Select all elements'                => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementSelection::select_all_elements                  ],
-'Deselect all elements'              => ['000-Escape',                             \&App::Asciio::Actions::ElementSelection::deselect_all_elements                ],
+'find clear'                         => ['C00-l',                                  \&App::Asciio::Actions::FindAndReplace::clear                                      ] ,
+'find search'                        => ['00S-asterisk',                           \&App::Asciio::Actions::FindAndReplace::new_search                                 ] ,
+'find next'                          => ['000-n',                                  \&App::Asciio::Actions::FindAndReplace::next                                       ],
+'find previous'                      => ['00S-N',                                  \&App::Asciio::Actions::FindAndReplace::previous                                   ] ,
+# 'Select next non arrow'              => ['000-n',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 1]      ],
+# 'Select previous non arrow'          => ['00S-N',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 1]      ],
 
-'Select elements by word'            => ['C00-f',                                  \&App::Asciio::Actions::ElementSelection::select_all_elements_by_words         ],
-'Select elements by word no group'   => ['C0S-F',                                  \&App::Asciio::Actions::ElementSelection::select_all_elements_by_words_no_group],
+'Select next arrow'                  => ['000-m',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 2]      ],
+'Select previous arrow'              => ['00S-M',                                  \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 2]      ],
+
+'Select all elements'                => [['C00-a', '00S-V'],                       \&App::Asciio::Actions::ElementSelection::select_all_elements                      ],
+'Deselect all elements'              => ['000-Escape',                             \&App::Asciio::Actions::ElementSelection::deselect_all_elements                    ],
+
+'Select elements by word'            => ['C00-f',                                  \&App::Asciio::Actions::ElementSelection::select_all_elements_by_words             ],
+'Select elements by word no group'   => ['C0S-F',                                  \&App::Asciio::Actions::ElementSelection::select_all_elements_by_words_no_group    ],
 
 'Delete selected elements'           => [['000-Delete', '000-d'],                  \&App::Asciio::Actions::ElementsManipulation::delete_selected_elements             ],
 
@@ -871,32 +877,32 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'pen escape'                      => ['000-Escape',          \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_escape              ],
-	'pen motion'                      => ['000-motion_notify',   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion, undef, { HIDE => 1 }  ],
+	'pen escape'                      => ['000-Escape',           \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_escape            ],
+	'pen motion'                      => ['000-motion_notify',    \&App::Asciio::GTK::Asciio::Pen::pen_mouse_motion, undef, { HIDE => 1 }],
 	
-	'pen insert or delete'            => ['000-button-press-1',  \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0            ],
-	'pen insert2 or delete2'          => ['000-Return',          \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0            ],
-	'pen mouse change char'           => ['000-button-press-3',  \&App::Asciio::GTK::Asciio::Pen::mouse_change_char                       ],
-	'pen eraser switch'               => [ 'C0S-ISO_Left_Tab',    \&App::Asciio::GTK::Asciio::Pen::pen_eraser_switch                      ],
+	'pen insert or delete'            => ['000-button-press-1',   \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0          ],
+	'pen insert2 or delete2'          => ['000-Return',           \&App::Asciio::GTK::Asciio::Pen::pen_add_or_delete_element, 0          ],
+	'pen mouse change char'           => ['000-button-press-3',   \&App::Asciio::GTK::Asciio::Pen::mouse_change_char                     ],
+	'pen eraser switch'               => [ 'C0S-ISO_Left_Tab',    \&App::Asciio::GTK::Asciio::Pen::pen_eraser_switch                     ],
 	
-	'pen mouse toggle direction'      => [ 'C00-Tab',              \&App::Asciio::GTK::Asciio::Pen::toggle_mouse_emulation_move_direction ],
-	'pen mouse move left'             => [['000-Left', 'C00-h'],   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_left         ],
-	'pen mouse move right'            => [['000-Right', 'C00-l'],  \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_right        ],
-	'pen mouse move up'               => [['000-Up', 'C00-k'],     \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_up           ],
-	'pen mouse move down'             => [['000-Down', 'C00-j'],   \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_down         ],
-	'pen mouse move left quick'       => ['0A0-h',                 \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_left_quick   ],
-	'pen mouse move right quick'      => ['0A0-l',                 \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_right_quick  ],
-	'pen mouse move up quick'         => ['0A0-k',                 \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_up_quick     ],
-	'pen mouse move down quick'       => ['0A0-j',                 \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_down_quick   ],
-	'pen mouse move space'            => ['000-space',             \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_space        ],
-	'pen mouse move left tab'         => ['00S-ISO_Left_Tab',      \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_left_tab     ],
-	'pen mouse move right tab'        => ['000-Tab',               \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_right_tab    ],
-	'pen mouse enter'                 => ['00S-Return',            \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_press_enter_key       ],
-	'pen mouse delete dot'            => ['000-Delete',            \&App::Asciio::GTK::Asciio::Pen::pen_delete_element, 1                 ],
-	'pen mouse back delete dot'       => ['000-BackSpace',         \&App::Asciio::GTK::Asciio::Pen::pen_back_delete_element, 1            ],
-	'pen mouse switch chars next'     => ['C00-Return',            \&App::Asciio::GTK::Asciio::Pen::pen_switch_next_character_sets, 1     ],
-	'pen mouse change help '          => ['C0S-Return',            \&App::Asciio::GTK::Asciio::Pen::pen_switch_show_mapping_help_location,],
-	'pen mouse switch chars previous' => ['0A0-Return',            \&App::Asciio::GTK::Asciio::Pen::pen_switch_previous_character_sets, 1 ],
+	'pen mouse toggle direction'      => [ 'C00-Tab',             \&App::Asciio::GTK::Asciio::Pen::toggle_mouse_emulation_move_direction ],
+	'pen mouse move left'             => [['000-Left', 'C00-h'],  \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_left         ],
+	'pen mouse move right'            => [['000-Right', 'C00-l'], \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_right        ],
+	'pen mouse move up'               => [['000-Up', 'C00-k'],    \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_up           ],
+	'pen mouse move down'             => [['000-Down', 'C00-j'],  \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_down         ],
+	'pen mouse move left quick'       => ['0A0-h',                \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_left_quick   ],
+	'pen mouse move right quick'      => ['0A0-l',                \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_right_quick  ],
+	'pen mouse move up quick'         => ['0A0-k',                \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_up_quick     ],
+	'pen mouse move down quick'       => ['0A0-j',                \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_down_quick   ],
+	'pen mouse move space'            => ['000-space',            \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_space        ],
+	'pen mouse move left tab'         => ['00S-ISO_Left_Tab',     \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_left_tab     ],
+	'pen mouse move right tab'        => ['000-Tab',              \&App::Asciio::GTK::Asciio::Pen::pen_mouse_emulation_move_right_tab    ],
+	'pen mouse enter'                 => ['00S-Return',           \&App::Asciio::GTK::Asciio::Pen::mouse_emulation_press_enter_key       ],
+	'pen mouse delete dot'            => ['000-Delete',           \&App::Asciio::GTK::Asciio::Pen::pen_delete_element, 1                 ],
+	'pen mouse back delete dot'       => ['000-BackSpace',        \&App::Asciio::GTK::Asciio::Pen::pen_back_delete_element, 1            ],
+	'pen mouse switch chars next'     => ['C00-Return',           \&App::Asciio::GTK::Asciio::Pen::pen_switch_next_character_sets, 1     ],
+	'pen mouse change help '          => ['C0S-Return',           \&App::Asciio::GTK::Asciio::Pen::pen_switch_show_mapping_help_location,],
+	'pen mouse switch chars previous' => ['0A0-Return',           \&App::Asciio::GTK::Asciio::Pen::pen_switch_previous_character_sets, 1 ],
 	
 	(
 	map { "pen insert " . $_->[0] => ["00S-" . $_->[0], \&App::Asciio::GTK::Asciio::Pen::pen_enter_then_move_mouse, [$_->[1]], { HIDE => 1 }]}
@@ -953,31 +959,38 @@ TOP_LEVEL_GROUP
 	(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::GTK::Asciio::Pen::pen_enter_then_move_mouse, [$_], { HIDE => 1 }] }('a'..'z', '0'..'9')),
 	),
 
+
 'find ->' => GROUP
 	(
 	SHORTCUTS   => '000-f',
-	ENTER_GROUP => \&App::Asciio::GTK::Asciio::Find::find_enter,
-	ESCAPE_KEYS => ['000-Escape', '000-f'],
+	ESCAPE_KEYS => '000-Escape',
 	
-	'find escape'              => ['000-Escape',                            \&App::Asciio::GTK::Asciio::Find::find_escape    ],
-	'find escape2'             => ['000-f',                                 \&App::Asciio::GTK::Asciio::Find::find_escape    ],
-	'find next'                => ['000-n',                                 \&App::Asciio::GTK::Asciio::Find::find_next      ],
-	'find previous'            => ['00S-N',                                 \&App::Asciio::GTK::Asciio::Find::find_previous  ],
-	'find Zoom in'             => [['000-plus', 'C0S-J', 'C00-scroll-up'],   \&App::Asciio::GTK::Asciio::Find::find_zoom, 1   ],
-	'find Zoom out'            => [['000-minus', 'C0S-H', 'C00-scroll-down'],\&App::Asciio::GTK::Asciio::Find::find_zoom, -1  ],
-	'find perform new search'  => [ '000-s',                                 \&App::Asciio::GTK::Asciio::Find::find_new_search],
-	# 'find Mouse drag canvas'   => [ 'C00-motion_notify',                     \&App::Asciio::Actions::Mouse::mouse_drag_canvas, undef, { HIDE => 1 } ],
+	'find search'             => ['000-f',      \&App::Asciio::Actions::FindAndReplace::new_search               ] ,
+	'find replace'            => ['000-r',      \&App::Asciio::Actions::FindAndReplace::replace                  ] ,
+	'find next'               => ['000-n',      \&App::Asciio::Actions::FindAndReplace::next                     ],
+	'find previous'           => ['00S-N',      \&App::Asciio::Actions::FindAndReplace::previous                 ] ,
+	'find clear'              => ['000-c',      \&App::Asciio::Actions::FindAndReplace::clear                    ] ,
+	'find select'             => ['000-Return', \&App::Asciio::Actions::FindAndReplace::select                   ] ,
+	'find select add'         => ['00S-Return', \&App::Asciio::Actions::FindAndReplace::select, 'add'            ] ,
+	'find select All'         => ['C00-Return', \&App::Asciio::Actions::FindAndReplace::select, 'all'            ] ,
+	'find zoom in'            => ['000-plus',   \&App::Asciio::Actions::FindAndReplace::zoom, 1                  ] ,
+	'find zoom out'           => ['000-minus',  \&App::Asciio::Actions::FindAndReplace::zoom, -1                 ] ,
+	'find zoom extents'       => ['00S-minus',  \&App::Asciio::Actions::FindAndReplace::zoom, 0                  ] ,
+	
+	# search and replace in all tabs, not implemented yet, reserving the shortcuts
+	# 'find search all'         => ['C00-f',      \&App::Asciio::Actions::FindAndReplace::new_search, 'all'        ] ,
+	# 'find replace all'        => ['00S-R',      \&App::Asciio::Actions::FindAndReplace::replace, 'all'           ] ,
 	),
 
 'image box ->' => GROUP
 	(
 	SHORTCUTS => '00S-I',
 	
-	'inserted from file'     => ['000-i', \&App::Asciio::GTK::Asciio::Actions::File::open_image                    ],
-	'freeze to background'   => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background ],
-	'thaw'                   => ['000-t', \&App::Asciio::Actions::Elements::thaw_selected_elements                 ],
+	'inserted from file'    => ['000-i', \&App::Asciio::GTK::Asciio::Actions::File::open_image                    ],
+	'freeze to background'  => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background ],
+	'thaw'                  => ['000-t', \&App::Asciio::Actions::Elements::thaw_selected_elements                 ],
 	
-	'rendering controls ->'  => ['000-c', USE_GROUP('image_control')],
+	'rendering controls ->' => ['000-c', USE_GROUP('image_control')],
 	),
 	
 	'group_image_control' => GROUP
@@ -985,11 +998,11 @@ TOP_LEVEL_GROUP
 		SHORTCUTS   => 'group_image_control',
 		ESCAPE_KEYS => [ '000-c', '000-Escape' ],
 			
-		'increase gray scale'     => ['000-g',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1 ],
-		'decrease gray scale'     => ['00S-G',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1],
-		'increase alpha'          => ['000-a',      \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1      ],
-		'decrease alpha'          => ['00S-A',      \&App::Asciio::Actions::Box::image_box_change_alpha, -0.1     ],
-		'revert to default'       => ['000-r',      \&App::Asciio::Actions::Box::image_box_revert_to_default_image],
+		'increase gray scale' => ['000-g',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, 0.1 ],
+		'decrease gray scale' => ['00S-G',      \&App::Asciio::Actions::Box::image_box_change_gray_scale, -0.1],
+		'increase alpha'      => ['000-a',      \&App::Asciio::Actions::Box::image_box_change_alpha, 0.1      ],
+		'decrease alpha'      => ['00S-A',      \&App::Asciio::Actions::Box::image_box_change_alpha, -0.1     ],
+		'revert to default'   => ['000-r',      \&App::Asciio::Actions::Box::image_box_revert_to_default_image],
 		),
 
 CONTEXT_MENU('Asciio context_menu'       => 'as_context_menu', \&App::Asciio::Actions::Asciio::context_menu                ),
@@ -1019,6 +1032,7 @@ use App::Asciio::Actions::Elements ;
 use App::Asciio::Actions::ElementsManipulation ;
 use App::Asciio::Actions::Eraser ;
 use App::Asciio::Actions::File ;
+use App::Asciio::Actions::FindAndReplace ;
 use App::Asciio::Actions::Git ;
 use App::Asciio::Actions::Mouse ;
 use App::Asciio::Actions::Multiwirl ;

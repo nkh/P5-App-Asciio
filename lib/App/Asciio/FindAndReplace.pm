@@ -102,6 +102,41 @@ for my $element (@elements)
 return $modified ;
 }
 
+sub delete_matching_element
+{
+my ($self, $element) = @_ ;
+
+return unless exists $self->{ACTIONS_STORAGE}{find} ;
+return unless exists $self->{ACTIONS_STORAGE}{find}{matches}{$element} ;
+
+my $find          = $self->{ACTIONS_STORAGE}{find} ;
+my $matches_array = $find->{matches_array} ;
+my $removed_index = $find->{matches}{$element} ;
+
+if (@$matches_array == 1)
+	{
+	delete $self->{ACTIONS_STORAGE}{find} ;
+	return ;
+	}
+
+splice(@$matches_array, $removed_index, 1) ;
+delete $find->{matches}{$element} ;
+
+for my $i ($removed_index .. $#$matches_array)
+	{
+	$find->{matches}{$matches_array->[$i]} = $i ;
+	}
+
+if ($find->{current} >= @$matches_array)
+	{
+	$find->{current} = $#$matches_array ;
+	}
+elsif ($removed_index < $find->{current})
+	{
+	$find->{current}-- ;
+	}
+}
+
 #----------------------------------------------------------------------------------------------
 1 ;
 

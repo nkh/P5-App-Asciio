@@ -198,7 +198,7 @@ $self->update_display() ;
 
 #----------------------------------------------------------------------------------------------
 
-sub temporary_move_selected_element_to_front
+sub move_temporary_back
 {
 my ($self) = @_ ;
 
@@ -211,12 +211,8 @@ if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0]
 		{
 		if($element == $_)
 			{
-			$self->create_undo_snapshot() ;
-			
 			splice @{$self->{ELEMENTS}}, $current_position, 1 ;
 			splice @{$self->{ELEMENTS}}, $position, 0, $element ;
-			
-			$self->update_display() ;
 			last ;
 			}
 			
@@ -225,30 +221,49 @@ if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0]
 		
 	delete $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front} ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub temporary_move_element_to_front
+{
+my ($self, $element) = @_ ;
+
+return unless defined $element ;
+
+move_temporary_back($self) ;
+
+my $position = 0 ;
+for (@{$self->{ELEMENTS}})
+	{
+	last if $element == $_ ;
+	$position++ ;
+	}
+
+$self->move_elements_to_front($element) ;
+$self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front} = [$element, $position] ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub temporary_move_selected_element_to_front
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0])
+	{
+	move_temporary_back($self) ;
+	}
 else
 	{
 	my @selected_elements = $self->get_selected_elements(1)  ;
 	
-	if(@selected_elements == 1 )
-		{
-		$self->create_undo_snapshot() ;
-		
-		my $selected_element = $selected_elements[0] ;
-		
-		my $position = 0 ;
-		for (@{$self->{ELEMENTS}})
-			{
-			last if $selected_element == $_ ;
-			$position++ ;
-			}
-		
-		$self->move_elements_to_front($selected_element) ;
-		$self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front} = 
-			[$selected_element, $position] ;
-			
-		$self->update_display() ;
-		}
+	temporary_move_element_to_front($self, $selected_elements[0]) if @selected_elements == 1  ;
 	}
+
+$self->update_display() ;
 }
 
 #-----------------------------------------------------------------------------
