@@ -809,10 +809,12 @@ my $is_selected = $element->{SELECTED} // 0 ;
 $is_selected = 1 if $is_selected > 0 ;
 
 my ($background_color, $foreground_color) = $self->get_element_colors($element) ;
+my $tmstf = ($self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0] // '0') eq $element ; 
 
 my $color_set = $is_selected . '-'
 		. ($background_color // 'undef') . '-' . ($foreground_color // 'undef') . '-' 
-		. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) ; 
+		. ($self->{OPAQUE_ELEMENTS} // 1) . '-' . ($self->{NUMBERED_OBJECTS} // 0) . '-'
+		. $tmstf ;
 
 my $renderings = $element->{CACHE}{RENDERING}{$color_set} ;
 
@@ -833,6 +835,11 @@ unless (defined $renderings)
 			{
 			$strip_background_color = $strip->{BACKGROUND} // $background_color ;
 			$strip_foreground_color = $strip->{FOREGROUND} // $foreground_color ;
+			}
+		
+		if ($tmstf)
+			{
+			$strip_background_color = $self->get_color('temporary_to_front_background') ;
 			}
 		
 		my $strip_color_set .= $strip_background_color . $strip_foreground_color ;

@@ -202,7 +202,7 @@ sub temporary_move_selected_element_to_front
 {
 my ($self) = @_ ;
 
-if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front})
+if(defined $self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}[0])
 	{
 	my ($element, $position)  = @{$self->{ACTIONS_STORAGE}{temporary_move_selected_element_to_front}} ;
 	
