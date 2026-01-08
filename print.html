@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-c9dafbbf.js";
+            window.path_to_searchindex_js = "searchindex-c44d2cc3.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-2e5de7e3.js"></script>
@@ -175,7 +175,7 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="introduction-4"><a href="#introduction-4" class="header">Introduction</a></h1>
+                        <h1 id="introduction-3"><a href="#introduction-3" class="header">Introduction</a></h1>
 <pre><code>    ___                               .-------.
    /   |  __________________          | Tokyo |
   / /| | / ___/ ___/ / / __ \         '-------'   .-----------.
@@ -2383,65 +2383,33 @@ ascii art template text box</p>
 <p>For example, in the picture below, we want to add a nose to the kitten:</p>
 <p><img src="modes/split_elements_into_dots.gif" alt="split_elements_into_dots"></p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="find"><a class="header" href="#find">find</a></h1>
-<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
-<p>The find mode is mainly used to find the location where our target text appears
-in all asciio objects, and can quickly locate those matching positions and
-highlight them. This is a special feature on the GUI port.</p>
-<p><img src="modes/find_example.gif" alt="find_example"></p>
-<h2 id="basic-operations-1"><a class="header" href="#basic-operations-1">Basic operations</a></h2>
-<h3 id="entering-and-exiting-find-mode"><a class="header" href="#entering-and-exiting-find-mode">Entering and exiting find mode</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Enter find mode</td><td><code>&lt;&lt;f&gt;&gt;</code></td></tr>
-<tr><td>Exit find mode</td><td><code>&lt;&lt;Escape&gt;&gt;</code></td></tr>
-</tbody>
-</table>
-</div>
-<p>When you enter find mode, the mouse cursor will turn into a spider.After
-exiting, the mouse pointer changes to the default shape.</p>
-<h3 id="operation-after-entering-find-mode"><a class="header" href="#operation-after-entering-find-mode">Operation after entering find mode</a></h3>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>action</th><th>binding</th></tr>
-</thead>
-<tbody>
-<tr><td>Perform new search</td><td><code>&lt;&lt;s&gt;&gt;</code></td></tr>
-<tr><td>Jump to next match</td><td><code>&lt;&lt;n&gt;&gt;</code></td></tr>
-<tr><td>Jump to previous match</td><td><code>&lt;&lt;Shift+N&gt;&gt;</code></td></tr>
-<tr><td>Zoom in</td><td><code>&lt;&lt;000-plus&gt;&gt;</code> <code>&lt;&lt;C0S-J&gt;&gt;</code> <code>&lt;&lt;C00-scroll-up&gt;&gt;</code></td></tr>
-<tr><td>Zoom out</td><td><code>&lt;&lt;000-minus&gt;&gt;</code> <code>&lt;&lt;C0S-H&gt;&gt;</code> <code>&lt;&lt;C00-scroll-donw&gt;&gt;</code></td></tr>
-</tbody>
-</table>
-</div>
-<p>After entering find mode, if we do not perform any search, no content will be
-highlighted. At this time, press the <code>&lt;&lt;s&gt;&gt;</code> key to pop up a dialog box, enter
-the characters to be found (regular expressions in Perl format are supported).</p>
-<p>If a match is found, it will jump to the first matching character position,
-and highlight the first match in blue, and other matches in purple. If you
-press <code>&lt;&lt;n&gt;&gt;</code> or <code>&lt;&lt;N&gt;&gt;</code> to switch to the next or previous match, the current
-match will be highlighted in blue and other matches will be highlighted in
-purple.</p>
-<p>If the position of the matching character is not in the current window,
-it will automatically jump to the corresponding position. Canvas zoom can be
-used during the search process to better locate character positions.</p>
-<p>Example of finding a normal string:</p>
-<p><img src="modes/find_normal_string.gif" alt="find_normal_string"></p>
-<p>Find examples of regular expressions:</p>
-<p><img src="modes/find_regex.gif" alt="find_regex"></p>
-<p>Example of canvas zooming:</p>
-<p><img src="modes/find_canvas_zooming.gif" alt="find_canvas_zooming"></p>
-<h3 id="repeat-find"><a class="header" href="#repeat-find">Repeat find</a></h3>
-<p>If we exit the find mode and re-enter, the last keyword search will be performed
-by default before pressing <code>&lt;&lt;s&gt;&gt;</code> to perform a new search. It just won’t
-automatically jump to the first match. If you need to jump, press <code>&lt;&lt;n&gt;&gt;</code> or
-<code>&lt;&lt;N&gt;&gt;</code> again to perform the jump.</p>
-<p><img src="modes/find_repeat.gif" alt="find_repeat"></p>
+<h1 id="find"><a class="header" href="#find">Find</a></h1>
+<p>Asciio lets you search for text using regular expressions and navigate the matching elements list.</p>
+<p>The find functionality is accessed with direct bindings or via a find mode which offers some extra functionality.</p>
+<p>Matching elements will be have a color tag added, green for the matching elements and blueish for the current matching element.</p>
+<p><img src="matching_elements.png" alt="matching elements"></p>
+<ul>
+<li>
+<p>Direct operations</p>
+<ul>
+<li>search for text</li>
+<li>navigate matches</li>
+<li>clear the search</li>
+</ul>
+</li>
+<li>
+<p>Find Mode operation</p>
+<ul>
+<li>select matching elements</li>
+<li>zoom the canvas.</li>
+</ul>
+</li>
+</ul>
+<p><em><strong>Bindings:</strong></em>  <a href="#find-1"><strong>«Find and Find modes»</strong></a></p>
+<h2 id="demo"><a class="header" href="#demo">Demo</a></h2>
+<p><img src="functionality_log/2026_01_08_search_and_replace.gif" alt="Seach_And_Replace"></p>
+<h2 id="display-option"><a class="header" href="#display-option">Display Option</a></h2>
+<p>You can set <strong>DISPLAY_MATCHING_STRIPE</strong> in your configuration to display where the match is in an element (best effort).</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="git"><a class="header" href="#git">git</a></h1>
 <pre><code>
@@ -2520,7 +2488,7 @@ automatically jump to the first match. If you need to jump, press <code>&lt;&lt;
 <p><img src="modes/git_popup_menu.png" alt="git_popup menu"></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="cross-mode"><a class="header" href="#cross-mode">Cross Mode</a></h1>
-<h2 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h2>
+<h2 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h2>
 <p>Previously, crossover was a separate mode. But not anymore, crossover is just an
 attribute of the element. By default, the following shortcut keys are used to
 switch the cross attribute of the element. By default, the element has no cross
@@ -4381,44 +4349,41 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <li><a href="#arrow-manipulation">Arrow manipulation</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="find-mode"><a class="header" href="#find-mode">Find Mode</a></h1>
-<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Find Mode</p>
-<p><strong>Prefix:</strong> Press «f» to enter find mode</p>
-<p><strong>Exit:</strong> Press «f» or «Escape» to return to root bindings</p>
+<h1 id="find-1"><a class="header" href="#find-1">Find</a></h1>
 <p>Find mode searches for text within elements and navigates through results.</p>
-<h2 id="mode-control-3"><a class="header" href="#mode-control-3">Mode Control</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+<tr><th>Operation</th><th>Binding</th></tr>
 </thead>
 <tbody>
-<tr><td>Exit find mode</td><td>«f» or «Escape»</td><td>Return to normal mode</td></tr>
+<tr><td>clear search</td><td>«Ctl+l»</td></tr>
+<tr><td>start search</td><td>«*»</td></tr>
+<tr><td>find next</td><td>«n»</td></tr>
+<tr><td>find previous</td><td>«N»</td></tr>
 </tbody>
 </table>
 </div>
-<h2 id="search-operations"><a class="header" href="#search-operations">Search Operations</a></h2>
+<h1 id="find-mode"><a class="header" href="#find-mode">Find Mode</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Find and Find Mode</p>
+<p><strong>Prefix:</strong> Press «f» to enter find mode</p>
+<p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
 <div class="table-wrapper">
 <table>
 <thead>
-<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
+<tr><th>Operation</th><th>Binding</th></tr>
 </thead>
 <tbody>
-<tr><td>Perform new search</td><td>«s»</td><td>Enter new search term</td></tr>
-<tr><td>Find next</td><td>«n»</td><td>Navigate to next match</td></tr>
-<tr><td>Find previous</td><td>«Shift+N»</td><td>Navigate to previous match</td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="view-control-in-find-mode"><a class="header" href="#view-control-in-find-mode">View Control in Find Mode</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
-</thead>
-<tbody>
-<tr><td>Zoom in</td><td>«+» or «Ctrl+Shift+J» or «Ctrl+scroll-up»</td><td>Increase zoom</td></tr>
-<tr><td>Zoom out</td><td>«-» or «Ctrl+Shift+H» or «Ctrl+scroll-down»</td><td>Decrease zoom</td></tr>
+<tr><td>clear search</td><td>«Ctl+l»</td></tr>
+<tr><td>start search</td><td>«*»</td></tr>
+<tr><td>find next</td><td>«n»</td></tr>
+<tr><td>find previous</td><td>«N»</td></tr>
+<tr><td>select’</td><td>«Return»</td></tr>
+<tr><td>select add’</td><td>«Shift+Return»</td></tr>
+<tr><td>select all’</td><td>«Ctl+Return»</td></tr>
+<tr><td>zoom in’</td><td></td></tr>
+<tr><td>zoom out’</td><td></td></tr>
+<tr><td>zoom extent</td><td></td></tr>
 </tbody>
 </table>
 </div>
@@ -4428,7 +4393,7 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <p><strong>Prefix:</strong> Press «Shift+G» to enter git mode</p>
 <p><strong>Exit:</strong> Press «Escape» to return to root bindings</p>
 <p>Git mode provides a simplified interface optimized for creating diagrams quickly.</p>
-<h2 id="mode-control-4"><a class="header" href="#mode-control-4">Mode Control</a></h2>
+<h2 id="mode-control-3"><a class="header" href="#mode-control-3">Mode Control</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -4531,7 +4496,7 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <p><strong>Prefix:</strong> Press <code>«s»</code> to enter selection mode</p>
 <p><strong>Exit:</strong> Press <code>«s»</code> or <code>«Escape»</code> to return to root bindings</p>
 <p>Selection mode provides interactive rectangle and polygon selection of elements.</p>
-<h2 id="mode-control-5"><a class="header" href="#mode-control-5">Mode Control</a></h2>
+<h2 id="mode-control-4"><a class="header" href="#mode-control-4">Mode Control</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -4572,7 +4537,7 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <p><strong>Prefix:</strong> Press «s» «x» to enter polygon selection</p>
 <p><strong>Exit:</strong> Press «x» or «Escape» to return to selection mode</p>
 <p>Polygon selection allows drawing a free form polygon to select elements.</p>
-<h2 id="mode-control-6"><a class="header" href="#mode-control-6">Mode Control</a></h2>
+<h2 id="mode-control-5"><a class="header" href="#mode-control-5">Mode Control</a></h2>
 <div class="table-wrapper">
 <table>
 <thead>
@@ -5778,9 +5743,11 @@ sub callback_escape { my ($asciio) = @_ ; $asciio-&gt;show_cursor ; ... }
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="functionality-log"><a class="header" href="#functionality-log">Functionality Log</a></h1>
 <p><em><strong>Freeze Element [30 Dec 2025]</strong></em></p>
-<p><a href="functionality_log/30_12_2025_freeze_elements.gif">Watch video</a> | <a href="element_operation.html?highlight=freeze#freeze-thaw">Bindings</a></p>
+<p><a href="functionality_log/2025_12_30_freeze_elements.gif">Watch video</a> | <a href="element_operation.html?highlight=freeze#freeze-thaw">Bindings</a></p>
 <p><em><strong>Graph Selection [1 Jan 2026]</strong></em></p>
-<p><a href="functionality_log/01_01_2026_graph_selection.gif">Watch video</a> | <a href="#graph-selection-group">Bindings</a></p>
+<p><a href="functionality_log/2026_01_01_graph_selection.gif">Watch video</a> | <a href="#graph-selection-group">Bindings</a></p>
+<p><em><strong>Search And Replace [8 Jan 2026]</strong></em></p>
+<p><a href="functionality_log/2026_01_08_search_and_replace.gif">Watch video</a> | <a href="../find_mode.html">Bindings</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="contributors"><a class="header" href="#contributors">Contributors</a></h1>
 <pre><code>    Khemir Nadim ibn Hamouda
