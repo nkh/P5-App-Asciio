@@ -191,7 +191,7 @@ my $help_path = File::HomeDir->my_home() . '/.config/Asciio/help_box' ;
 
 if(-e $help_path)
 	{
-	my $help_text = read_text($help_path, {bin_mode => ':utf8'});
+	my $help_text = read_text($help_path);
 	
 	Encode::_utf8_on($help_text);
 	$help_text =~ s/\t/$self->{TAB_AS_SPACES}/g;

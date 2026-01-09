@@ -42,6 +42,7 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		ruler_line                    => [0.10, 0.23, 0.31      ],
 		selected_element_background   => [0.10, 0.16, 0.20      ],
 		selection_rectangle           => [0.43, 0.00, 0.43      ],
+		spelling_error                => [1.00, 0.00, 0.00, 0.60],
 		temporary_to_front_background => [0.80, 0.30, 0.80, 0.40],
 		test                          => [0.00, 1.00, 1.00      ],
 		}, 
@@ -79,6 +80,7 @@ COLOR_SCHEMES => # asciio has two color schemes, and a binding to flip between t
 		ruler_line                    => [0.33, 0.61, 0.88      ],
 		selected_element_background   => [0.70, 0.95, 1.00      ],
 		selection_rectangle           => [1.00, 0.00, 1.00      ],
+		spelling_error                => [1.00, 0.00, 0.00, 0.60],
 		temporary_to_front_background => [0.80, 0.30, 0.80, 0.40],
 		test                          => [0.00, 1.00, 1.00      ],
 		} 
@@ -132,12 +134,12 @@ RULER_LINES => # default ruler lines
 	],
 
 TAB_AS_SPACES            => '   ', # replacement for \t
-USE_MARKUP_MODE          => '',    # enable editing text directly on the canvas
+USE_MARKUP_MODE          => '',    # specific type of markup, 'zimwiki' or ''
 USE_BINDINGS_COMPLETION  => 1,     # show binding completion popup
 ZOOM_STEP                => 3,     # increment for font size
 
 PEN_KEYBOARD_LAYOUT_NAME => 'US_QWERTY', # US_QWERTY or SWE_QWERTY
-PEN_CHARS_SETS           =>        # keys to inserted characters in pen mode
+PEN_CHARS_SETS           =>              # keys to inserted characters in pen mode
 				[
 					{
 					'~' => '─' , '!' => '▀' , '@' => '▁' , '#' => '▂'  , '$' => '▃' , '%' => '▄' ,

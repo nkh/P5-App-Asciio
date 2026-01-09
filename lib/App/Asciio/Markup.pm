@@ -3,9 +3,7 @@ package App::Asciio::Markup ;
 
 require Exporter ;
 @ISA = qw(Exporter) ;
-@EXPORT = qw(
-	$USE_MARKUP_CLASS
-	) ;
+@EXPORT = qw($USE_MARKUP_CLASS) ;
 
 $|++ ;
 
@@ -15,9 +13,7 @@ use utf8;
 
 use App::Asciio::String ;
 
-
-our ($USE_MARKUP_CLASS) ;
-$USE_MARKUP_CLASS = App::Asciio::Markup->new() ;
+our $USE_MARKUP_CLASS = App::Asciio::Markup->new() ;
 
 #-----------------------------------------------------------------------------
 
@@ -32,9 +28,9 @@ sub new {
 
 sub use_markup
 {
-my ($use_it) = @_ ;
+my ($markup_class) = @_ ;
 
-if($use_it eq 'zimwiki')
+if($markup_class eq 'zimwiki')
 	{
 	$USE_MARKUP_CLASS = App::Asciio::Zimwiki->new() ;
 	}
@@ -86,8 +82,11 @@ sub is_markup_string
 {
 my ($string) = @_;
 
-return (   $string =~ /(<[bius]>)+([^<]+)(<\/[bius]>)+/ 
-		|| $string =~ /<span link="[^<]+">([^<]+)<\/span>/) ;
+return 
+	(
+	   $string =~ /(<[bius]>)+([^<]+)(<\/[bius]>)+/ 
+	|| $string =~ /<span link="[^<]+">([^<]+)<\/span>/
+	) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -111,6 +110,7 @@ return del_markup_characters($string);
 }
 
 #-----------------------------------------------------------------------------
+
 sub get_markup_coordinates
 {
 my ($self, $element_x, $strip_line, $strip_x, $y) = @_ ;
@@ -125,29 +125,33 @@ if(is_markup_string($strip_line))
 		my $sub_str = substr($strip_line, 0, pos($strip_line));
 		$ori_x = $element_x + $strip_x + App::Asciio::String::unicode_length($sub_str) ;
 		my $fit_str = $&;
+		
 		$fit_str =~ s/<\/?b>/\*\*/g;
 		$fit_str =~ s/<\/?u>/__/g;
 		$fit_str =~ s/<\/?i>/\/\//g;
 		$fit_str =~ s/<\/?s>/~~/g;
+		
 		# link [[link|link description]]
 		if($fit_str =~ /<span link="[^<]+">/)
 			{
 			$fit_str =~ s/<span link="([^<]+)">/$1/g;
 			$fit_str = '[[' . $fit_str . '|';
 			}
+		
 		if($fit_str =~ /<\/span>/)
 			{
 			$fit_str = ']]';
 			}
+		
 		$markup_coordinate{$y . '-' . $ori_x} = $fit_str if($ori_x >= 0 && $y >=0);
 		}
 	}
 
 return %markup_coordinate ;
-
 }
 
 #-----------------------------------------------------------------------------
+
 sub get_markup_characters_array
 {
 my ($self, $markup_coordinate, @lines) = @_ ;
@@ -167,10 +171,12 @@ for my $row (0 .. $#lines)
 				$new_col += App::Asciio::String::unicode_length($single_char);
 				}
 			}
+		
 		$new_lines[$row][$new_col] = $lines[$row][$col] if(defined($lines[$row][$col]));
 		$new_col += 1;
 		}
 	}
+
 return(@new_lines);
 }
 
@@ -191,6 +197,7 @@ if(is_markup_string($string))
 	{
 	$use_markup_formart = 1 ;
 	$string =~ s/<span link="[^<]+">([^<]+)<\/span>/<span underline="double">$1<\/span>/g;
+	
 	# convert bold fonts to precise size control 
 	$font_size -= 1 ;
 	$string =~ s/(<b>)((<[ius]>)*)([^<]+)((<\/[ius]>)*)(<\/b>)/<span font_desc="$font_size" weight="bold">$2$4$5<\/span>/g ;
