@@ -1009,7 +1009,6 @@ CONTEXT_MENU('Asciio context_menu'       => 'as_context_menu', \&App::Asciio::Ac
 CONTEXT_MENU('Box context_menu'          => 'bo_context_menu', \&App::Asciio::Actions::Box::context_menu                   ),
 CONTEXT_MENU('Multi_wirl context_menu'   => 'mw_context_menu', \&App::Asciio::Actions::Multiwirl::multi_wirl_context_menu  ),
 CONTEXT_MENU('Angled arrow context_menu' => 'aa_ontext menu',  \&App::Asciio::Actions::Multiwirl::angled_arrow_context_menu),
-CONTEXT_MENU('Ruler context_menu'        => 'ru_context_menu', \&App::Asciio::Actions::Ruler::context_menu                 ),
 CONTEXT_MENU('Shapes context_menu'       => 'sh_context_menu', \&App::Asciio::Actions::Shapes::context_menu                ),
 ) ;
 

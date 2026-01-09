@@ -20,32 +20,45 @@ my ($self, $event) = @_;
 my ($popup_x, $popup_y) = @{$self}{'MOUSE_X', 'MOUSE_Y'} ;
 
 my @menu_items ;
-
-for my $element (@{$self->{ELEMENT_TYPES}})
-	{
-	(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
-	
-	push @menu_items, [ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef] ;
-	}
+my @element_items ;
 
 for my $menu_entry (@{$self->get_context_menu_entries($popup_x, $popup_y)})
 	{
 	my ($name, $sub, $data) = @{$menu_entry} ;
 	(my $name_with_underscore = $name) =~ s/_/__/g ;
 	
-	push @menu_items, [ $name_with_underscore, undef , $self->menu_entry_wrapper($sub, $data), 0, '<Item>', undef],
+	push @element_items, [ $name_with_underscore, undef , $self->menu_entry_wrapper($sub, $data), 0, '<Item>', undef],
 	}
 
-push @menu_items, 
-	(
-	['/File/open',     undef , sub { $self->run_actions_by_name('Open') ; },      0 , '<Item>', undef],
-	['/File/save',     undef , sub { $self->run_actions_by_name('Save') ; },      0 , '<Item>', undef],
-	['/File/save as',  undef , sub { $self->run_actions_by_name(['Save', 1]) ; }, 0 , '<Item>', undef],
-	) ;
-
-if($self->get_selected_elements(1) == 1)
+if (@element_items == 0)
 	{
+	push @menu_items, App::Asciio::Actions::Ruler::context_menu($self, $popup_x, $popup_y) ;
+	
+	push @menu_items, 
+		(
+		['/File/open',     undef , sub { $self->run_actions_by_name('Open') ; },      0 , '<Item>', undef],
+		['/File/save',     undef , sub { $self->run_actions_by_name('Save') ; },      0 , '<Item>', undef],
+		['/File/save as',  undef , sub { $self->run_actions_by_name(['Save', 1]) ; }, 0 , '<Item>', undef],
+		) ;
+	
 	push @menu_items, [ '/File/save stencil', undef , $self->menu_entry_wrapper(\&App::Asciio::save_stencil), 0 , '<Item>', undef ] ;
+	
+	for my $element (@{$self->{ELEMENT_TYPES}})
+		{
+		(my $name_with_underscore = $element->{NAME}) =~ s/_/__/g ;
+		
+		push @menu_items, [ "/$name_with_underscore", undef , insert_generator($self, $element, $popup_x, $popup_y), 0 , '<Item>', undef] ;
+		}
+	
+	push @menu_items, [ '/Git/' . $_, \&App::Asciio::Actions::Git::set_default_connector, $_ ] for @{$self->{GIT_MODE_CONNECTOR_CHAR_LIST}} ;
+	
+	push @menu_items, 
+		[ '/Asciio/Git/use dash arrow',     \&App::Asciio::Actions::Git::set_default_arrow, 'angled_arrow_dash'    ] ,
+		[ '/Asciio/Git/use unicode arrow',  \&App::Asciio::Actions::Git::set_default_arrow, 'angled_arrow_unicode' ] ;
+	}
+else
+	{
+	@menu_items = @element_items ;
 	}
 
 my $menu = Gtk3::Menu->new() ;

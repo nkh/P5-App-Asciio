@@ -17,12 +17,6 @@ my $element = $selected_elements[0] ;
 
 my @context_menu_entries ;
 
-push @context_menu_entries, [ '/Git/' . $_, \&App::Asciio::Actions::Git::set_default_connector, $_ ] for @{$self->{GIT_MODE_CONNECTOR_CHAR_LIST}} ;
-
-push @context_menu_entries, 
-	[ '/Asciio/Git/use dash arrow',     \&App::Asciio::Actions::Git::set_default_arrow, 'angled_arrow_dash'    ] ,
-	[ '/Asciio/Git/use unicode arrow',  \&App::Asciio::Actions::Git::set_default_arrow, 'angled_arrow_unicode' ] ;
-
 if(@selected_elements == 1)
 	{
 	if 
