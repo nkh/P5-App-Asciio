@@ -14,3 +14,7 @@
 [Watch video](functionality_log/2026_01_08_search_and_replace.gif) | [Bindings](../find_mode.md)
 
 
+***Spellchecking [8 Jan 2026]***
+
+[Snapshot](functionality_log/2026_01_09_spellcheck.png) | [Bindings](spellchecking_operation.md)
+
