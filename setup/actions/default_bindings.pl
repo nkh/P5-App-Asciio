@@ -593,8 +593,17 @@ TOP_LEVEL_GROUP
 	'freeze to background'             => ['00S-F',             \&App::Asciio::Actions::Elements::freeze_selected_elements_to_background   ],
 	'thaw'                             => ['000-t',             \&App::Asciio::Actions::Elements::thaw_selected_elements                   ],
 
+	'spellcheck'                       => ['00S-S', USE_GROUP('spellcheck')],
 	'change type'                      => ['00S-T', USE_GROUP('change_type')],
 	),
+
+	'group_spellcheck' => GROUP
+		(
+		SHORTCUTS => 'group_spellcheck',
+		
+		'spellcheck' => ['00S-S', \&App::Asciio::Actions::Unsorted::spellcheck_elements],
+		'clear'      => ['000-c', \&App::Asciio::Actions::Unsorted::clear_spellcheck],
+		),
 
 	'group_change_type' => GROUP
 		(

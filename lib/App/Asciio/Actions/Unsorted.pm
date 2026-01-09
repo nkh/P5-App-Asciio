@@ -11,6 +11,8 @@ use File::Slurper qw/ write_text / ;
 use Data::TreeDumper ;
 use List::Util qw(min max) ;
 
+use constant HAS_SPELLCHECKER => defined eval { require Text::SpellChecker };
+
 #----------------------------------------------------------------------------------------------
 
 sub manpage_in_browser
@@ -463,6 +465,44 @@ sub toggle_edit_inline
 my ($self) = @_ ;
 $self->{EDIT_TEXT_INLINE} ^= 1 ;
 }
+
+#----------------------------------------------------------------------------------------------
+
+sub spellcheck_elements
+{
+my ($self, $elements) = @_ ;
+
+if(HAS_SPELLCHECKER)
+	{
+	$elements //= $self->{ELEMENTS} ;
+
+	my $element_index = 0 ;
+	for my $element ($elements->@*)
+		{
+		my $error = 0 ;
+		my $input = $element->{TEXT} ;
+		
+		my $checker = Text::SpellChecker->new(text => $input) ;
+		$checker->set_options(aspell => { 'lang' => 'en' });
+		
+		while (my $word = $checker->next_word) 
+			{
+			printf STDERR "Asciio: invalid word %-30s in element[%d] at %d,%d\n", "'$word'", $element_index, @{$element}{qw/X Y/} ;
+			
+			$error++ ;
+			$self->{ACTIONS_STORAGE}{spell}{matches}{$element}++ ;
+			}
+		
+		delete $self->{ACTIONS_STORAGE}{spell}{matches}{$element} unless $error ;
+		
+		$element_index++ ;
+		}
+	}
+
+$self->update_display() ;
+}
+
+sub clear_spellcheck { my ($self) = @_ ; delete $self->{ACTIONS_STORAGE}{spell} ; $self->update_display() ; }
 
 #----------------------------------------------------------------------------------------------
 

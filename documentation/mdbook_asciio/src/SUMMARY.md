@@ -35,6 +35,7 @@
 	
 - [Editing elements text and attributes](editing_elements.md)
 	- [Markup mode](editing_elements/markup_mode.md)
+	- [Spellchecking](spellcheck.md)
 
 - [Working efficiently](working_efficiently.md)
 	- [Keyboard](editing/keyboard.md)
@@ -86,6 +87,7 @@
     - [Element manipulation](element_operation.md)
 		- [Resizing elements](bindings/resizing.md)
         - [Grouping elements](element_grouping_operation.md)
+        - [Spellchecking](spellchecking_operation.md)
     - [Arrow manipulation](arrow_operation.md)
         - [Arrow - Connectors](bindings_group_arrow_connectors.md)
             - [Start Connector](bindings_group_arrow_connectors_start.md) 

@@ -952,6 +952,11 @@ for my $element ($self->{ELEMENTS}->@*)
 		highlight_characters($self, $expose_data, @{$element}{qw/X Y/}, $self->get_color('temporary_to_front_background')) ;
 		}
 	
+	if (exists $self->{ACTIONS_STORAGE}{spell}{matches}{$element})
+		{
+		highlight_characters($self, $expose_data, @{$element}{qw/X Y/}, $self->get_color('spelling_error')) ;
+		}
+	
 	if (exists $self->{ACTIONS_STORAGE}{find}{matches}{$element})
 		{
 		highlight_characters($self, $expose_data, @{$element}{qw/X Y/}, $self->get_color('find_match')) ;
