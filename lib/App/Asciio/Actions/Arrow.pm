@@ -260,7 +260,11 @@ return unless @arrows ;
 
 $self->create_undo_snapshot() ;
 
-$_->allow_diagonals($allow) for @arrows ;
+for (@arrows)
+	{
+	$_->allow_diagonals($allow) ;
+	$_->resize(0, 0, 0, 0) ;
+	}
 
 $self->update_display() ;
 }
