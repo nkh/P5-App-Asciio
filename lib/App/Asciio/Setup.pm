@@ -177,6 +177,15 @@ for my $action_file (@{ $action_files })
 	
 	my $group_sub = sub { return bless [@_], 'action_group' ; } ;
 	
+	my $set_macro = 
+		sub 
+		{ 
+		my $macro_commands = \@_ ;
+		my $sub  = sub { $_[0]->run_macro($macro_commands) ; } ;
+		set_subname("App::Asciio::Actions::Macro", $sub ) ;
+		return $sub ;
+		} ;
+	
 	$context->eval
 		(
 		REMOVE_PACKAGE_AFTER_EVAL => 0, # VERY IMPORTANT as we return code references that will cease to exist otherwise
@@ -188,6 +197,7 @@ for my $action_file (@{ $action_files })
 				GROUP                                  => $group_sub, 
 				CONTEXT_MENU                           => sub { push @context_menues, [@_] ; return () ; },
 				CAPTURE_KEYS                           => sub { return sub {} ; },
+				MACRO                                  => $set_macro,
 				},
 		PRE_CODE => "use strict;\nuse warnings;\nuse utf8;\n",
 		(defined $from_code ? (CODE => $from_code) : (CODE_FROM_FILE => $location)) ,

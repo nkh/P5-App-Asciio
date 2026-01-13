@@ -13,4 +13,6 @@
 
 [Watch video](functionality_log/2026_01_08_search_and_replace.gif) | [Bindings](../find_mode.md)
 
+***MACRO bindings [14 jan 2026]***
 
+[Bindings Documentation](config/binding_format.html#macros)

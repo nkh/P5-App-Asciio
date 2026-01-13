@@ -16,6 +16,7 @@ Use the following commands to define commands:
 | GROUP                                  | Used to declare a nested, ordered, action group.                    |                               |
 | USE_GROUP                              | binds a shortcut with a group                                       |                               |
 | CONTEXT_MENU                           | Defines actions that are only accessible via a context menu         |                               |
+| MACRO                                  | associate a action to set of commands                               |                               |
 
 ## Action Definition Formats
 
@@ -117,4 +118,31 @@ register_action_handlers
 'group_other_group_name' => GROUP ( ...), # note that 'group_' is needed in the declaration of groups referred to by USE_GROUP
 ```
 
+#### Macros
+
+Macros allows ***Single Action Definition*** to run multiple commands.
+
+The commands can be:
+- the name of another action
+- an array containing
+    - a Perl subroutine reference to execute
+    - optional arguments to be passed to the CODE subroutine
+
+
+**Example of MACRO usage:**
+
+```perl
+
+'Add diagonal arrow' => 
+	[
+	'0A0-a',
+	MACRO
+		(
+		'Add arrow',
+		'enable diagonals',
+		# you can also call actions directly
+		# [\&App::Asciio::Actions::Arrow::allow_diagonals, 1],
+		)
+	],
+```
 

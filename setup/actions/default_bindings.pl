@@ -34,8 +34,11 @@ TOP_LEVEL_GROUP
 	# bindings will not be shown
 	{ SHORTCUTS => '000-space', HIDE => 1} ,
 	
-	# use 'Add box' shortcut, instead of typing i + i + b, we can type 'space' + b
+	# will use 'Add box' shortcut, instead of typing i + i + b, we can type 'space' + b
 	'Add box',
+	
+	# we can run macros using their shortcut
+	'Add diagonal arrow'
 	),
 
 'Undo'                               => [['C00-z', '000-u'],                       \&App::Asciio::Actions::Unsorted::undo                                             ],
@@ -448,13 +451,24 @@ TOP_LEVEL_GROUP
 	(
 	SHORTCUTS => '000-i',
 	
-	'Box ->'           => ['000-b', USE_GROUP('insert_box')                                                  ] ,
-	'Add text'         => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]        ],
-	'Add arrow'        => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]  ],
-	'Add angled arrow' => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]],
-	'Add connector'    => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]   ],
+	'Box ->'             => ['000-b', USE_GROUP('insert_box')                                                  ] ,
+	'Add text'           => ['000-t', \&App::Asciio::Actions::Elements::add_element, ['Asciio/text', 1]        ],
+	'Add arrow'          => ['000-a', \&App::Asciio::Actions::Elements::add_element, ['Asciio/wirl_arrow', 0]  ],
+	'Add angled arrow'   => ['00S-A', \&App::Asciio::Actions::Elements::add_element, ['Asciio/angled arrow', 0]],
+	'Add diagonal arrow' =>
+				[
+				'0A0-a',
+				MACRO
+					(
+					'Add arrow',
+					'enable diagonals',
+					# you can also call actions directly
+					# [\&App::Asciio::Actions::Arrow::allow_diagonals, 1],
+					)
+				],
+	'Add connector'      => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]   ],
 	
-	'Unicode ->'       => ['000-u', USE_GROUP('insert_unicode')  ] ,
+	# 'Unicode ->'       => ['000-u', USE_GROUP('insert_unicode')  ] ,
 	'Multiple ->'      => ['000-m', USE_GROUP('insert_multiple') ] ,
 	'Connected ->'     => ['000-k', USE_GROUP('insert_connected')] ,
 	'Stencil ->'       => ['000-s', USE_GROUP('insert_stencil')  ] ,

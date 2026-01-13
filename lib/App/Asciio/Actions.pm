@@ -21,6 +21,8 @@ my ($self, $action) = @_ ; ;
 $self->{CURRENT_ACTIONS} = $self->{ACTIONS}{$action} // $self->{ACTIONS_BY_NAME}{$action} ;
 }
 
+#------------------------------------------------------------------------------------------------------
+
 sub show_binding_completions
 {
 my ($self, $keep_visible) = @_ ;
@@ -229,7 +231,7 @@ for my $action (@actions)
 		{
 		($action, @arguments) = @{ $action } ;
 		}
-		
+	
 	if(exists $current_actions_by_name->{$action})
 		{
 		if('HASH' eq ref $self->{CURRENT_ACTIONS}{$action})
@@ -248,7 +250,7 @@ for my $action (@actions)
 					$current_actions_by_name->{$action}{CODE}->
 						(
 						$self,
-						$self->{CURRENT_ACTIONS}{$action}{ARGUMENTS},
+						$current_actions_by_name->{$action}{ARGUMENTS},
 						@arguments
 						)
 					] ;
@@ -271,6 +273,33 @@ for my $action (@actions)
 
 return @results ;
 }
+
+#------------------------------------------------------------------------------------------------------
+
+sub run_macro
+{
+my ($self, $commands) = @_ ; ;
+
+for my $command ($commands->@*)
+	{
+	if('ARRAY' eq ref $command)
+		{
+		my ($action, @arguments) = @{ $command } ;
+		my $action_name = (coderef2name($action) =~ s/App::Asciio:://r) ;
+		
+		$self->{ACTION_VERBOSE}->(sprintf '%30s %s', '', "\e[32m$action_name\e[0m") if $self->{ACTION_VERBOSE} ;
+		
+		$action->($self, @arguments) ;
+		}
+	else
+		{
+		$self->run_actions_by_name($command) ;
+		}
+	}
+
+$self->update_display() ;
+}
+
 
 #------------------------------------------------------------------------------------------------------
 
