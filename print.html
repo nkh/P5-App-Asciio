@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-c44d2cc3.js";
+            window.path_to_searchindex_js = "searchindex-3da22b7e.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-2e5de7e3.js"></script>
@@ -4783,6 +4783,7 @@ RULER_LINES =&gt; # default ruler lines
 <tr><td>GROUP</td><td>Used to declare a nested, ordered, action group.</td><td></td></tr>
 <tr><td>USE_GROUP</td><td>binds a shortcut with a group</td><td></td></tr>
 <tr><td>CONTEXT_MENU</td><td>Defines actions that are only accessible via a context menu</td><td></td></tr>
+<tr><td>MACRO</td><td>associate a action to set of commands</td><td></td></tr>
 </tbody>
 </table>
 </div>
@@ -4887,6 +4888,32 @@ register_action_handlers
 );
         
 'group_other_group_name' =&gt; GROUP ( ...), # note that 'group_' is needed in the declaration of groups referred to by USE_GROUP
+</code></pre>
+<h4 id="macros"><a class="header" href="#macros">Macros</a></h4>
+<p>Macros allows <em><strong>Single Action Definition</strong></em> to run multiple commands.</p>
+<p>The commands can be:</p>
+<ul>
+<li>the name of another action</li>
+<li>an array containing
+<ul>
+<li>a Perl subroutine reference to execute</li>
+<li>optional arguments to be passed to the CODE subroutine</li>
+</ul>
+</li>
+</ul>
+<p><strong>Example of MACRO usage:</strong></p>
+<pre><code class="language-perl">
+'Add diagonal arrow' =&gt; 
+	[
+	'0A0-a',
+	MACRO
+		(
+		'Add arrow',
+		'enable diagonals',
+		# you can also call actions directly
+		# [\&amp;App::Asciio::Actions::Arrow::allow_diagonals, 1],
+		)
+	],
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="binding-override"><a class="header" href="#binding-override">Binding override</a></h1>
