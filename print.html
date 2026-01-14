@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-2d44acc8.js";
+            window.path_to_searchindex_js = "searchindex-871bb8cc.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-2e5de7e3.js"></script>
+        <script src="toc-62db257a.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -1739,6 +1739,14 @@ can be recognized by <a href="https://zim-wiki.org/">zim</a>.</p>
 </code></pre>
 <p>In the zim environment, they will be rendered like this:</p>
 <p><img src="editing_elements/markup_mode_zim.png" alt="markup_mode_zim"></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="spellchecking-elements"><a class="header" href="#spellchecking-elements">Spellchecking Elements</a></h1>
+<p><a href="#spellchecking"><strong>Bindings</strong></a></p>
+<p>Asciio can optionally spellcheck for erroneous words in your elements and mark them.</p>
+<p><img src="functionality_log/2026_01_09_spellcheck.png" alt="Elements with spelling errors"></p>
+<p>Asciio will display the errors in the terminal.</p>
+<p><img src="spellcheck_errors.png" alt="Spelling errors"></p>
+<p>You need to have module <em><strong>Text::SpellChecker</strong></em> installed, that module requires that you have Aspell dev installed as well as a compiler, making spellchecking an option.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="working-efficiently"><a class="header" href="#working-efficiently">Working efficiently</a></h1>
 <p>You can do a lot of thing with just the mouse and the popup menus but that would be a mistake, keyboard bindings are much faster and more efficient, including moving elements around.</p>
@@ -3608,6 +3616,21 @@ or more files that will be loaded by <strong>asciio</strong>.</p>
 <p><img src="editing/grouping_elements.gif" alt="Grouping"></p>
 <p>Only arrows that are fully connected will be grouped.</p>
 <p><img src="editing/group_only_fully_connected_arrows.gif" alt="Grouping arrows"></p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="spellchecking"><a class="header" href="#spellchecking">Spellchecking</a></h1>
+<p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; <a href="#element-operations">Element operations</a> &gt; Spellchecking</p>
+<p><strong>Prefix:</strong> All operations require pressing «e» + «S»</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Operation</th><th>Binding</th></tr>
+</thead>
+<tbody>
+<tr><td>Spellcheck elements</td><td>«S»</td></tr>
+<tr><td>clear spellcheck taga</td><td>«c»</td></tr>
+</tbody>
+</table>
+</div>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="arrow-manipulation"><a class="header" href="#arrow-manipulation">Arrow Manipulation</a></h1>
 <p><strong>Navigation:</strong> <a href="#asciio-keyboard-bindings-reference">Index</a> &gt; Arrow Operations</p>
@@ -5775,6 +5798,8 @@ sub callback_escape { my ($asciio) = @_ ; $asciio-&gt;show_cursor ; ... }
 <p><a href="functionality_log/2026_01_01_graph_selection.gif">Watch video</a> | <a href="#graph-selection-group">Bindings</a></p>
 <p><em><strong>Search And Replace [8 Jan 2026]</strong></em></p>
 <p><a href="functionality_log/2026_01_08_search_and_replace.gif">Watch video</a> | <a href="../find_mode.html">Bindings</a></p>
+<p><em><strong>Spellchecking [8 Jan 2026]</strong></em></p>
+<p><a href="functionality_log/2026_01_09_spellcheck.png">Snapshot</a> | <a href="#spellchecking">Bindings</a></p>
 <p><em><strong>MACRO bindings [14 jan 2026]</strong></em></p>
 <p><a href="#macros">Bindings Documentation</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
