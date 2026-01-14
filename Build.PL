@@ -54,6 +54,7 @@ lib/App/Asciio/Actions/Presentation.pm
 lib/App/Asciio/Actions/Ruler.pm
 lib/App/Asciio/Actions/Selection.pm
 lib/App/Asciio/Actions/Shapes.pm
+lib/App/Asciio/Actions/SVG.pm
 lib/App/Asciio/Actions/Tabs.pm
 lib/App/Asciio/Actions/Unsorted.pm
 lib/App/Asciio/Actions/ZBuffer.pm
