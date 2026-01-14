@@ -761,6 +761,15 @@ $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_charac
 
 #-----------------------------------------------------------------------------
 
+sub flash_display 
+{
+my ($self, $arg) = @_;
+$arg //= 1 ;
+$self->{FLASH_DISPLAY} = $arg ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub call_hook
 {
 my ($self, $hook_name,  @arguments) = @_;

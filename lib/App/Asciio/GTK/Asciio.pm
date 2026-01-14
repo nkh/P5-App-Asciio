@@ -153,18 +153,11 @@ $self->draw_selection              ($expose_data) ;
 $self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
 $self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
 $self->draw_pen_mapping_help       ($expose_data) ;
-# $self->draw_find_keywords_highlight($expose_data) ;
 $self->draw_element_state          ($expose_data) ;
 $self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
+$self->draw_flash                  ($expose_data) if $self->{FLASH_DISPLAY} ;
 
 return TRUE ;
-}
-
-
-sub draw_pen_mapping_help
-{
-my ($self, $expose_data) = @_ ;
-App::Asciio::GTK::Asciio::Pen::pen_show_mapping_help($self, $expose_data->{gc}) ;
 }
 
 #-----------------------------------------------------------------------------
@@ -570,6 +563,22 @@ for my $element (
 
 #-----------------------------------------------------------------------------
 
+sub draw_flash
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $grid_width, $grid_height) = @{$expose_data}{qw/ gc grid_width grid_height /} ;
+
+$gc->set_source_rgb(@{$self->get_color('flash')}) ;
+$gc->set_line_width($self->{FLASH_DISPLAY}) ;
+$gc->rectangle(0, 0, $grid_width, $grid_height) ;
+$gc->stroke() ;
+
+delete $self->{FLASH_DISPLAY} ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub draw_new_connection
 {
 my ($self, $expose_data) = @_ ;
@@ -937,6 +946,14 @@ if ($element->{SELECTED})
 		) ;
 	$gc->fill() ;
 	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_pen_mapping_help
+{
+my ($self, $expose_data) = @_ ;
+App::Asciio::GTK::Asciio::Pen::pen_show_mapping_help($self, $expose_data->{gc}) ;
 }
 
 #----------------------------------------------------------------------------------------------

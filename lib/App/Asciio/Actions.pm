@@ -205,6 +205,8 @@ for my $action (@actions)
 			{
 			$self->{ACTION_VERBOSE}->(sprintf "\e[31m%-30s\e[0m", "$action") if $self->{ACTION_VERBOSE} ; 
 			$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
+			$self->flash_display(2) if $self->{FLASH_ON_MISSING_BINDING} ;
+			$self->update_display() ;
 			}
 		
 		delete $self->{BINDINGS_COMPLETION} ;

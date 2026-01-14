@@ -17,23 +17,23 @@ use List::MoreUtils qw(any first_value);
 
 my $pen_state =
 	{
+	char_index                => 0,
+	chars                     => ['?'],
+	chars_sets                => [],
 	dot_elements_to_insert    => [],
-	overlay_element           => undef,
+	enable                    => 0,
 	existing_points           => [],
 	is_eraser                 => 0,
+	mouse_emulation_direction => 'static',
 	mouse_states              => 
 					{
 					right  => { next => 'down',   type => 'right_triangle' },
 					down   => { next => 'static', type => 'down_triangle' },
 					static => { next => 'right',  type => 'rectangle' },
 					},
-	mouse_emulation_direction => 'static',
-	enable                    => 0,
-	prompt_panel_location     => 'left',
-	chars_sets                => [],
-	chars                     => ['?'],
-	char_index                => 0,
+	overlay_element           => undef,
 	prev_char_length          => 1,
+	prompt_panel_location     => 'left',
 	} ;
 
 #----------------------------------------------------------------------------------------------
@@ -89,10 +89,11 @@ if ($pen_state->{enable} && (scalar keys %{$pen_state->{chars_sets}->[0]}))
 	my ($prompt_background, $prompt_foreground) = ($asciio->get_color("prompt_background"), $asciio->get_color("prompt_foreground")) ;
 	my $cache_key                               = $pen_state->{chars_sets}->[0] . '-' . $prompt_background . '-' . $prompt_foreground ;
 	my $pen_rendering_cache                     = $asciio->{CACHE}{PEN_CHARS_MAPPING_RENDERING_CACHE}{$cache_key} ;
+	
 	unless (defined $pen_rendering_cache)
 		{
-		my $measure_surface = Cairo::ImageSurface->create('argb32', 1, 1) ;
-		my $measure_context = Cairo::Context->create($measure_surface) ;
+		my $measure_surface  = Cairo::ImageSurface->create('argb32', 1, 1) ;
+		my $measure_context  = Cairo::Context->create($measure_surface) ;
 		my $layout           = Pango::Cairo::create_layout($measure_context) ;
 		my $font_family      = "sarasa mono sc, $asciio->{FONT_FAMILY}" ;
 		my $font_description = Pango::FontDescription->from_string("$font_family 12") ;
@@ -100,12 +101,13 @@ if ($pen_state->{enable} && (scalar keys %{$pen_state->{chars_sets}->[0]}))
 		$layout->set_font_description($font_description) ;
 		
 		my $current_mapping_group = $pen_state->{chars_sets}->[0] ;
-		my $keyboard_ascii = get_keyboard_layout($current_mapping_group, $asciio->{PEN_KEYBOARD_LAYOUT_NAME}) ;
+		my $keyboard_ascii        = get_keyboard_layout($current_mapping_group, $asciio->{PEN_KEYBOARD_LAYOUT_NAME}) ;
+		
 		$layout->set_text($keyboard_ascii) ;
 		
 		my ($ink_rect, $logical_rect) = $layout->get_extents() ;
-		my $text_w = $ink_rect->{width}  / Pango::SCALE ;
-		my $text_h = $ink_rect->{height} / Pango::SCALE ;
+		my $text_w                    = $ink_rect->{width}  / Pango::SCALE ;
+		my $text_h                    = $ink_rect->{height} / Pango::SCALE ;
 		
 		my $surface = Cairo::ImageSurface->create('argb32', $text_w, $text_h) ;
 		my $gco     = Cairo::Context->create($surface) ;
@@ -127,6 +129,7 @@ if ($pen_state->{enable} && (scalar keys %{$pen_state->{chars_sets}->[0]}))
 		}
 	
 	my ($overlay_location_x, $overlay_location_y) = ($asciio->{SC_WINDOW}->get_hadjustment()->get_value(), $asciio->{SC_WINDOW}->get_vadjustment()->get_value()) ;
+	
 	if ($pen_state->{prompt_panel_location} eq 'right')
 		{
 		my ($window_width, undef)          = $asciio->{ROOT_WINDOW}->get_size() ;
@@ -469,15 +472,16 @@ else
 	if($asciio->get_selected_elements(1) && (!defined $no_selected_elements))
 		{
 		my $select_elements_zbuffer = App::Asciio::ZBuffer->new(0, $asciio->get_selected_elements(1)) ;
-		for my $key (
-				sort
-					{
-					my ($ay, $ax) = split /;/, $a ;
-					my ($by, $bx) = split /;/, $b ;
-					
-					$ay <=> $by || $ax <=> $bx
-					} keys %{$select_elements_zbuffer->{coordinates}}
-				)
+		for my $key
+			(
+			sort
+				{
+				my ($ay, $ax) = split /;/, $a ;
+				my ($by, $bx) = split /;/, $b ;
+				
+				$ay <=> $by || $ax <=> $bx
+				} keys %{$select_elements_zbuffer->{coordinates}}
+			)
 			{
 			my $value = $select_elements_zbuffer->{coordinates}{$key} ;
 			
@@ -553,7 +557,8 @@ if($event->{STATE} eq 'dragging-button1' && ($asciio->{PREVIOUS_X} != $x || $asc
 	my @points = interpolate
 			(
 			$asciio->{PREVIOUS_X}, $asciio->{PREVIOUS_Y}, $x, $y,
-			sub { 
+			sub 
+				{ 
 				my $len = scalar @{ $pen_state->{dot_elements_to_insert} } ;
 				$pen_state->{is_eraser} ? 1 : unicode_length($pen_state->{chars}->[($pen_state->{char_index}+shift) % $len - 1])
 				},
@@ -567,6 +572,7 @@ if($event->{STATE} eq 'dragging-button1' && ($asciio->{PREVIOUS_X} != $x || $asc
 		($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) = @$point ;
 		pen_add_or_delete_element($asciio) ;
 		}
+	
 	@{$pen_state->{existing_points}} = @points ;
 	}
 
@@ -626,7 +632,7 @@ sub pen_add_element
 {
 my ($asciio, $mouse_move_direction) = @_ ;
 
-my $add_dot = Clone::clone($pen_state->{dot_elements_to_insert}->[$pen_state->{char_index}]) ;
+my $add_dot                    = Clone::clone($pen_state->{dot_elements_to_insert}->[$pen_state->{char_index}]) ;
 $pen_state->{prev_char_length} = unicode_length($pen_state->{chars}->[$pen_state->{char_index}]) ;
 
 @$add_dot{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
@@ -635,8 +641,9 @@ $pen_state->{prev_char_length} = unicode_length($pen_state->{chars}->[$pen_state
 pen_delete_element($asciio, 1) ;
 
 $asciio->add_elements($add_dot);
-my $len = scalar @{ $pen_state->{dot_elements_to_insert} } ;
-$pen_state->{char_index} = ($pen_state->{char_index} + 1) % $len ;
+
+my $len                          = scalar @{ $pen_state->{dot_elements_to_insert} } ;
+$pen_state->{char_index}         = ($pen_state->{char_index} + 1) % $len ;
 @{$pen_state->{existing_points}} = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]) ;
 
 @{$asciio->{MOUSE_EMULATION_FIRST_COORDINATE}} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) unless(defined $asciio->{MOUSE_EMULATION_FIRST_COORDINATE}) ;
@@ -656,8 +663,11 @@ my @elements ;
 
 if($dot_delete_only)
 	{
-	@elements = grep { ( ref($_) eq 'App::Asciio::stripes::dot' )  
-					   && ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) } reverse @{$asciio->{ELEMENTS}} ;
+	@elements = grep
+			{
+			   ( ref($_) eq 'App::Asciio::stripes::dot' )  
+			&& ( $asciio->is_over_element($_, $asciio->{MOUSE_X}, $asciio->{MOUSE_Y}) ) 
+			} reverse @{$asciio->{ELEMENTS}} ;
 	}
 else
 	{
@@ -667,7 +677,7 @@ else
 if(@elements)
 	{
 	$asciio->delete_elements(@elements) ;
-
+	
 	@{$pen_state->{existing_points}} = ([$asciio->{MOUSE_X}, $asciio->{MOUSE_Y}]) ;
 	$asciio->update_display() ;
 	}
