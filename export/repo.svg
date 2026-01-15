@@ -1,0 +1,596 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="650" height="598" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect x="0" y="322" width="630" height="23" fill="#ffffff" />
+<text x="0" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="10" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="20" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="30" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="40" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="50" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="60" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="70" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="80" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="90" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="100" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="110" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="120" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="130" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="140" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="150" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="160" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="170" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="180" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="190" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="200" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="210" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="220" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="230" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="240" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="250" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="260" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="270" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="280" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="290" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="430" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="440" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="450" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="480" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="490" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="500" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="510" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="520" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="530" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="540" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="550" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="560" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="570" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="580" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="590" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="600" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="610" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="620" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<rect x="280" y="23" width="150" height="23" fill="#ffffff" />
+<text x="280" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<text x="290" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="42.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<rect x="280" y="46" width="150" height="23" fill="#ffffff" />
+<text x="280" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="65.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">s</text>
+<text x="310" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="320" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">u</text>
+<text x="330" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="340" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="350" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="360" y="65.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="380" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="390" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">p</text>
+<text x="400" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="410" y="65.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="65.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="69" width="150" height="23" fill="#ffffff" />
+<text x="280" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="88.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="92" width="150" height="23" fill="#ffffff" />
+<text x="280" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="310" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="320" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="330" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="340" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="350" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="380" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="390" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="400" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="115" width="150" height="23" fill="#ffffff" />
+<text x="280" y="134.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="310" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="320" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="330" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="340" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="350" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="380" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="390" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="400" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="134.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="134.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="138" width="150" height="23" fill="#ffffff" />
+<text x="280" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<text x="290" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="280" y="184" width="150" height="23" fill="#ffffff" />
+<text x="280" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<text x="290" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<rect x="280" y="207" width="150" height="23" fill="#ffffff" />
+<text x="280" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="226.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">f</text>
+<text x="310" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="320" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="330" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">k</text>
+<text x="340" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="350" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">d</text>
+<text x="360" y="226.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="380" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="390" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">p</text>
+<text x="400" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="410" y="226.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="230" width="150" height="23" fill="#ffffff" />
+<text x="280" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="249.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="253" width="150" height="23" fill="#ffffff" />
+<text x="280" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="310" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="320" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="330" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="340" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="350" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="380" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="390" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="400" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="272.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="276" width="150" height="23" fill="#ffffff" />
+<text x="280" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="310" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="320" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="330" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="340" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="350" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="380" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="390" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="400" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="295.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="299" width="150" height="23" fill="#ffffff" />
+<text x="280" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<text x="290" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="280" y="345" width="150" height="23" fill="#ffffff" />
+<text x="280" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<text x="290" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<rect x="280" y="368" width="150" height="23" fill="#ffffff" />
+<text x="280" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="387.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">l</text>
+<text x="310" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="320" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="330" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">a</text>
+<text x="340" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">l</text>
+<text x="350" y="387.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="370" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="380" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">p</text>
+<text x="390" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="400" y="387.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="387.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="391" width="150" height="23" fill="#ffffff" />
+<text x="280" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="410.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="414" width="150" height="23" fill="#ffffff" />
+<text x="280" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="310" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="320" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="330" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="340" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="350" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="380" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="390" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="400" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="437" width="150" height="23" fill="#ffffff" />
+<text x="280" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<text x="290" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="300" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="310" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="320" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="330" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="340" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="350" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="360" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="370" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="380" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="390" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="400" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="410" y="456.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="420" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="280" y="460" width="150" height="23" fill="#ffffff" />
+<text x="280" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<text x="290" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="300" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="310" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="320" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="330" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="340" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="350" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="220" y="92" width="60" height="23" fill="#ffffff" />
+<text x="220" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<text x="230" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="240" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="250" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="260" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="270" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<rect x="220" y="115" width="10" height="23" fill="#ffffff" />
+<text x="220" y="134.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="138" width="10" height="23" fill="#ffffff" />
+<text x="220" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">v</text>
+<rect x="220" y="138" width="10" height="23" fill="#ffffff" />
+<text x="220" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="161" width="10" height="23" fill="#ffffff" />
+<text x="220" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="184" width="10" height="23" fill="#ffffff" />
+<text x="220" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="207" width="10" height="23" fill="#ffffff" />
+<text x="220" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="230" y="207" width="50" height="23" fill="#ffffff" />
+<text x="230" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="240" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="250" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="260" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="270" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">&gt;</text>
+<rect x="220" y="138" width="10" height="23" fill="#ffffff" />
+<text x="220" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="253" width="60" height="23" fill="#ffffff" />
+<text x="220" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<text x="230" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="240" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="250" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="260" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="270" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<rect x="220" y="276" width="10" height="23" fill="#ffffff" />
+<text x="220" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="299" width="10" height="23" fill="#ffffff" />
+<text x="220" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="322" width="10" height="23" fill="#ffffff" />
+<text x="220" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="345" width="10" height="23" fill="#ffffff" />
+<text x="220" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="220" y="368" width="10" height="23" fill="#ffffff" />
+<text x="220" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">v</text>
+<rect x="220" y="368" width="60" height="23" fill="#ffffff" />
+<text x="220" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="230" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="240" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="250" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="260" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="270" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">&gt;</text>
+<rect x="220" y="368" width="10" height="23" fill="#ffffff" />
+<text x="220" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="430" y="207" width="60" height="23" fill="#ffffff" />
+<text x="430" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="440" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="450" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="480" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">&gt;</text>
+<rect x="480" y="92" width="10" height="23" fill="#ffffff" />
+<text x="480" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<rect x="480" y="115" width="10" height="23" fill="#ffffff" />
+<text x="480" y="134.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="138" width="10" height="23" fill="#ffffff" />
+<text x="480" y="157.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="161" width="10" height="23" fill="#ffffff" />
+<text x="480" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="184" width="10" height="23" fill="#ffffff" />
+<text x="480" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="207" width="10" height="23" fill="#ffffff" />
+<text x="480" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="440" y="92" width="40" height="23" fill="#ffffff" />
+<text x="440" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">&lt;</text>
+<text x="450" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<rect x="480" y="207" width="10" height="23" fill="#ffffff" />
+<text x="480" y="226.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="400" y="529" width="70" height="23" fill="#ffffff" />
+<text x="400" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="410" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">h</text>
+<text x="420" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">a</text>
+<text x="430" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">n</text>
+<text x="440" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">g</text>
+<text x="450" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="460" y="548.55" font-family="monospace" font-size="18.4" fill="#000000">s</text>
+<rect x="510" y="437" width="60" height="23" fill="#ffffff" />
+<text x="510" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="520" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="530" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">m</text>
+<text x="540" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">m</text>
+<text x="550" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">i</text>
+<text x="560" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">t</text>
+<rect x="510" y="92" width="120" height="23" fill="#ffffff" />
+<text x="510" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">p</text>
+<text x="520" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">u</text>
+<text x="530" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">l</text>
+<text x="540" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">l</text>
+<text x="550" y="111.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="560" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="570" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="580" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">q</text>
+<text x="590" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">u</text>
+<text x="600" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<text x="610" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">s</text>
+<text x="620" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">t</text>
+<rect x="430" y="368" width="60" height="23" fill="#ffffff" />
+<text x="430" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="440" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="450" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="480" y="387.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="480" y="299" width="10" height="23" fill="#ffffff" />
+<text x="480" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">^</text>
+<rect x="480" y="322" width="10" height="23" fill="#ffffff" />
+<text x="480" y="341.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="345" width="10" height="23" fill="#ffffff" />
+<text x="480" y="364.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="253" width="10" height="23" fill="#ffffff" />
+<text x="480" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<rect x="480" y="276" width="10" height="23" fill="#ffffff" />
+<text x="480" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="299" width="10" height="23" fill="#ffffff" />
+<text x="480" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="430" y="253" width="50" height="23" fill="#ffffff" />
+<text x="430" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">&lt;</text>
+<text x="440" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="450" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<rect x="480" y="299" width="10" height="23" fill="#ffffff" />
+<text x="480" y="318.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="510" y="276" width="40" height="23" fill="#ffffff" />
+<text x="510" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">p</text>
+<text x="520" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">u</text>
+<text x="530" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">s</text>
+<text x="540" y="295.55" font-family="monospace" font-size="18.4" fill="#000000">h</text>
+<rect x="150" y="92" width="40" height="23" fill="#ffffff" />
+<text x="150" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">f</text>
+<text x="160" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="170" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">r</text>
+<text x="180" y="111.55" font-family="monospace" font-size="18.4" fill="#000000">k</text>
+<rect x="130" y="253" width="50" height="23" fill="#ffffff" />
+<text x="130" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="140" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">l</text>
+<text x="150" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="160" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">n</text>
+<text x="170" y="272.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<rect x="350" y="483" width="10" height="23" fill="#ffffff" />
+<text x="350" y="502.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="350" y="506" width="10" height="23" fill="#ffffff" />
+<text x="350" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">v</text>
+<rect x="350" y="506" width="140" height="23" fill="#ffffff" />
+<text x="350" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="360" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="370" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="380" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="390" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="400" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="410" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="420" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="430" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="440" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="450" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="480" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="480" y="483" width="10" height="23" fill="#ffffff" />
+<text x="480" y="502.55" font-family="monospace" font-size="18.4" fill="#000000">^</text>
+<rect x="480" y="414" width="10" height="23" fill="#ffffff" />
+<text x="480" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<rect x="480" y="437" width="10" height="23" fill="#ffffff" />
+<text x="480" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="460" width="10" height="23" fill="#ffffff" />
+<text x="480" y="479.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="480" y="483" width="10" height="23" fill="#ffffff" />
+<text x="480" y="502.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="430" y="414" width="50" height="23" fill="#ffffff" />
+<text x="430" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">&lt;</text>
+<text x="440" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="450" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="460" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<text x="470" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">-</text>
+<rect x="350" y="506" width="10" height="23" fill="#ffffff" />
+<text x="350" y="525.55" font-family="monospace" font-size="18.4" fill="#000000">&apos;</text>
+<rect x="480" y="483" width="10" height="23" fill="#ffffff" />
+<text x="480" y="502.55" font-family="monospace" font-size="18.4" fill="#000000">|</text>
+<rect x="0" y="161" width="110" height="23" fill="#ffffff" />
+<text x="0" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">G</text>
+<text x="10" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">i</text>
+<text x="20" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">t</text>
+<text x="30" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">h</text>
+<text x="40" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="50" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">s</text>
+<text x="60" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">t</text>
+<text x="70" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">.</text>
+<text x="80" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="90" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="100" y="180.55" font-family="monospace" font-size="18.4" fill="#000000">m</text>
+<rect x="0" y="184" width="110" height="23" fill="#ffffff" />
+<text x="0" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="10" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="20" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="30" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="40" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="50" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="60" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="70" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="80" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="90" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="100" y="203.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<rect x="0" y="414" width="130" height="23" fill="#ffffff" />
+<text x="0" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">L</text>
+<text x="10" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">o</text>
+<text x="20" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="30" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">a</text>
+<text x="40" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">l</text>
+<text x="50" y="433.55" font-family="monospace" font-size="18.4" fill="#000000"> </text>
+<text x="60" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">m</text>
+<text x="70" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">a</text>
+<text x="80" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">c</text>
+<text x="90" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">h</text>
+<text x="100" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">i</text>
+<text x="110" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">n</text>
+<text x="120" y="433.55" font-family="monospace" font-size="18.4" fill="#000000">e</text>
+<rect x="0" y="437" width="130" height="23" fill="#ffffff" />
+<text x="0" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="10" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="20" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="30" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="40" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="50" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="60" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="70" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="80" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="90" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="100" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="110" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+<text x="120" y="456.55" font-family="monospace" font-size="18.4" fill="#000000">=</text>
+</svg>
