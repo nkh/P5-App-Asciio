@@ -115,12 +115,12 @@ else
 
 my $text_width = max(map {unicode_length $_} @text_lines);
 my $text_heigh = @text_lines;
-$text_width = max($text_width, 3) ;
-$text_heigh =max($text_heigh, 3) ;
+$text_width    = max($text_width, 3) ;
+$text_heigh    = max($text_heigh, 3) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
-my ($root_x, $root_y) = $asciio->{ROOT_WINDOW}->get_window()->get_origin() ;
-my ($v_value, $h_value) = ($asciio->{SC_WINDOW}->get_vadjustment()->get_value(), $asciio->{SC_WINDOW}->get_hadjustment()->get_value());
+my ($root_x, $root_y)                    = $asciio->get_window()->get_origin() ;
+my ($v_value, $h_value)                  = ($asciio->{vadjustment}->get_value(), $asciio->{hadjustment}->get_value());
 
 my $window = new Gtk3::Window() ;
 

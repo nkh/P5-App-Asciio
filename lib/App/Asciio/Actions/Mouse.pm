@@ -235,33 +235,33 @@ sub connect_from_box
 my ($self,  $element, $source_connection, $destination_element, $destination_connection) = @_ ;
 
 my $wirl_arrow = new App::Asciio::stripes::section_wirl_arrow
-					({
-					POINTS => 
-					[
-						[
-						($destination_element->{X} + $destination_connection->{X})
-						 - ($element->{X} + $source_connection->{X}),
-								
-						($destination_element->{Y} + $destination_connection->{Y})
-						- ($element->{Y} + $source_connection->{Y}),
+			({
+			POINTS => 
+			[
+				[
+				($destination_element->{X} + $destination_connection->{X})
+				 - ($element->{X} + $source_connection->{X}),
 						
-						$PREFERED_DIRECTION,
-						],
-					],		 
-					DIRECTION => $PREFERED_DIRECTION,
-					ALLOW_DIAGONAL_LINES => 0,
-					EDITABLE => 1,
-					RESIZABLE => 1,
-					}) ;
+				($destination_element->{Y} + $destination_connection->{Y})
+				- ($element->{Y} + $source_connection->{Y}),
+				
+				$PREFERED_DIRECTION,
+				],
+			],		 
+			DIRECTION => $PREFERED_DIRECTION,
+			ALLOW_DIAGONAL_LINES => 0,
+			EDITABLE => 1,
+			RESIZABLE => 1,
+			}) ;
 
 App::Asciio::Actions::ElementAttributes::paste_attributes($self, $wirl_arrow) ;
 
 $self->add_element_at_no_connection
-		(
-		$wirl_arrow, 
-		$element->{X} + $source_connection->{X},
-		$element->{Y} + $source_connection->{Y},
-		) ;
+	(
+	$wirl_arrow, 
+	$element->{X} + $source_connection->{X},
+	$element->{Y} + $source_connection->{Y},
+	) ;
 
 $self->add_connections
 	({
@@ -413,15 +413,15 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	{
 	my ($character_width, $character_height) = $self->get_character_size() ;
 	
-	my $h_value = $self->{SC_WINDOW}->get_hadjustment()->get_value() ;
-	my $v_value = $self->{SC_WINDOW}->get_vadjustment()->get_value() ;
+	my $h_value = $self->{hadjustment}->get_value() ;
+	my $v_value = $self->{vadjustment}->get_value() ;
 	
 	my $new_h_value = $h_value - (($x - $self->{PREVIOUS_X}) * $character_width) ;
 	my $new_v_value = $v_value - (($y - $self->{PREVIOUS_Y}) * $character_height) ;
 	
 	if($new_h_value >= 0)
 		{
-		$self->{SC_WINDOW}->get_hadjustment()->set_value($new_h_value) ;
+		$self->{hadjustment}->set_value($new_h_value) ;
 		}
 	else
 		{
@@ -430,7 +430,7 @@ if($event->{STATE} eq 'dragging-button1' && ($self->{PREVIOUS_X} != $x || $self-
 	
 	if($new_v_value >= 0)
 		{
-		$self->{SC_WINDOW}->get_vadjustment()->set_value($new_v_value) ;
+		$self->{vadjustment}->set_value($new_v_value) ;
 		}
 	else
 		{

@@ -130,6 +130,8 @@ App::Asciio::Actions::ElementsManipulation::temporary_move_element_to_front
 	$self->{ACTIONS_STORAGE}{find}{matches_array}[$self->{ACTIONS_STORAGE}{find}{current}],
 	) ;
 
+App::Asciio::Actions::Unsorted::scroll_to_element($self, $self->{ACTIONS_STORAGE}{find}{matches_array}[$self->{ACTIONS_STORAGE}{find}{current}]) ;
+
 $self->update_display() ;
 }
 
@@ -159,41 +161,19 @@ $self->update_display() ;
 sub zoom
 {
 my ($self, $type) = @_ ;
-# -1  0 1
+
 if ( 0 == $type)
 	{
-	zoom_extents($self) ;
+	App::Asciio::Actions::Unsorted::zoom_extents
+						(
+						$self,
+						$self->{ACTIONS_STORAGE}{find}{matches_array}->@*,
+						) ;
 	}
 else
 	{
 	App::Asciio::Actions::Unsorted::zoom($self, $type) ;
 	}
-}
-
-sub zoom_extents
-{
-return ;
-
-my ($self) = @_ ;
-
-my ($window_width,    $window_height)    = $self->{ROOT_WINDOW}->get_size() ;
-my ($window_x_start,  $window_y_start)   = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
-my ($window_x_end,    $window_y_end)     = ($window_width + $window_x_start, $window_height + $window_y_start) ;
-my ($character_width, $character_height) = $self->get_character_size() ;
-
-my ($first_match_x, $first_match_y)      = @{$self->{CACHE}{FIND}[0]}{qw/x y/} ;
-
-if ($first_match_x < $window_x_start || $window_x_end < $first_match_x)
-	{
-	$self->{SC_WINDOW}->get_hadjustment()->set_value($first_match_x * $character_width) ;
-	}
-
-if ($first_match_y < $window_y_start || $window_y_end < $first_match_y)
-	{
-	$self->{SC_WINDOW}->get_vadjustment()->set_value($first_match_y * $character_height) ;
-	}
-
-$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------

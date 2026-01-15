@@ -163,10 +163,8 @@ my $final_width = max($title_width, $text_width) ;
 my $final_heigh = $text_heigh + $title_heigh + 1;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
-my ($root_x, $root_y) = $asciio->{ROOT_WINDOW}->get_window()->get_origin() ;
-# my ($v_value, $h_value) = ($asciio->{SC_WINDOW}->get_vadjustment()->get_value(), $asciio->{SC_WINDOW}->get_hadjustment()->get_value());
-my ($v_value, $h_value) = (0, 0) ;
-
+my ($root_x, $root_y) = $asciio->get_window()->get_origin() ;
+my ($v_value, $h_value) = ($asciio->{vadjustment}->get_value(), $asciio->{hadjustment}->get_value());
 
 my $window = new Gtk3::Window() ;
 

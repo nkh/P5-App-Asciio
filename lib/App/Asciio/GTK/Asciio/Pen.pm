@@ -128,11 +128,11 @@ if ($pen_state->{enable} && (scalar keys %{$pen_state->{chars_sets}->[0]}))
 		$asciio->{CACHE}{PEN_CHARS_MAPPING_RENDERING_CACHE}{$cache_key} = $pen_rendering_cache = $surface ;
 		}
 	
-	my ($overlay_location_x, $overlay_location_y) = ($asciio->{SC_WINDOW}->get_hadjustment()->get_value(), $asciio->{SC_WINDOW}->get_vadjustment()->get_value()) ;
+	my ($overlay_location_x, $overlay_location_y) = ($asciio->{hadjustment}->get_value(), $asciio->{vadjustment}->get_value()) ;
 	
 	if ($pen_state->{prompt_panel_location} eq 'right')
 		{
-		my ($window_width, undef)          = $asciio->{ROOT_WINDOW}->get_size() ;
+		my $window_width    = $asciio->get_allocated_width() ;
 		$overlay_location_x = max($overlay_location_x, $overlay_location_x + $window_width - $pen_rendering_cache->get_width()) ;
 		}
 	

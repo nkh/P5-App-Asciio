@@ -230,6 +230,9 @@ $scroller->add($asciio) ;
 
 $asciio->set_hexpand(TRUE); $asciio->set_vexpand(TRUE) ;
 
+$asciio->{hadjustment} = $scroller->get_hadjustment() ;
+$asciio->{vadjustment} = $scroller->get_vadjustment() ;
+
 # my $page_num = $self->{notebook}->append_page($scroller, $label) ;
 # push @{$self->{asciios}}, $asciio ;
 my $current_page = $self->{notebook}->get_current_page() ;

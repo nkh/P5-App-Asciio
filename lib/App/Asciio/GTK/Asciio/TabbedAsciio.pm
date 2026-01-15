@@ -140,9 +140,6 @@ my $asciio = App::Asciio::new($class) ;
 $asciio->{UI} = 'GUI' ;
 $asciio->{widget} = $self ;
 
-$asciio->{ROOT_WINDOW} = $self ;
-$asciio->{SC_WINDOW} = $self ;
-
 if(defined $asciio_data)
 	{
 	$asciio->load_serialized_self($asciio_data->{serialized}) ;
@@ -260,10 +257,9 @@ sub on_draw
 my ($self, $widget, $gc) = @_ ;
 
 my ($widget_width, $widget_height)       = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
-my ($window_width, $window_height)       = ($widget_width, $widget_height) ; #$self->{ROOT_WINDOW}->get_size() ;
+my ($window_width, $window_height)       = ($widget_width, $widget_height) ;
 my ($character_width, $character_height) = $self->get_character_size() ;
-# my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
-my ($v_value, $h_value)                  = (0, 0) ;
+my ($v_value, $h_value)                  = ($self->{vadjustment}->get_value(), $self->{hadjustment}->get_value()) ;
 my $grid_width                           = (int ($window_width / $character_width) + 2)   * $character_width ;
 my $grid_height                          = (int ($window_height / $character_height) + 2) * $character_height ;
 

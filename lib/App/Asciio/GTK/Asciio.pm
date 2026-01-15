@@ -48,10 +48,6 @@ $sc_window->signal_connect(scroll_event => \&mouse_scroll_event, $self) ;
 
 my $drawing_area = Gtk3::DrawingArea->new ;
 
-$self->{widget}      = $drawing_area ;
-$self->{ROOT_WINDOW} = $window ;
-$self->{SC_WINDOW}   = $sc_window ;
-
 $drawing_area->signal_connect(draw => \&expose_event, $self);
 
 $drawing_area->set_events
@@ -111,9 +107,9 @@ sub expose_event
 my ($widget, $gc, $self) = @_;
 
 my ($widget_width, $widget_height)       = ($widget->get_allocated_width(), $widget->get_allocated_height()) ;
-my ($window_width, $window_height)       = ($widget_width, $widget_height) ; #$self->{ROOT_WINDOW}->get_size() ;
+my ($window_width, $window_height)       = ($self->get_allocated_width(), $self->get_allocated_height());
 my ($character_width, $character_height) = $self->get_character_size() ;
-my ($v_value, $h_value)                  = ($self->{SC_WINDOW}->get_vadjustment()->get_value(), $self->{SC_WINDOW}->get_hadjustment()->get_value()) ;
+my ($v_value, $h_value)                  = ($self->{vadjustment}->get_value(), $self->{hadjustment}->get_value()) ;
 my $grid_width                           = (int ($window_width / $character_width) + 2)   * $character_width ;
 my $grid_height                          = (int ($window_height / $character_height) + 2) * $character_height ;
 
@@ -712,10 +708,7 @@ my ($width, $height) = ($self->{BINDINGS_COMPLETION_LENGTH} * $font_character_wi
 $width += $font_character_width / 2 ;
 
 my ($window_width, $window_height) = ($self->get_allocated_width, $self->get_allocated_height);
-my ($scroll_bar_x, $scroll_bar_y)  = (0, 0) ;
-
-# my ($window_width, $window_height) = $self->{ROOT_WINDOW}->get_size() ;
-# my ($scroll_bar_x, $scroll_bar_y)  = ($self->{SC_WINDOW}->get_hadjustment()->get_value(), $self->{SC_WINDOW}->get_vadjustment()->get_value()) ;
+my ($scroll_bar_x, $scroll_bar_y)  = ($self->{hadjustment}->get_value(), $self->{vadjustment}->get_value()) ;
 my $window_end                     = $window_width + $scroll_bar_x ;
 
 my $start_x ;
@@ -1166,8 +1159,8 @@ else
 	unless (exists $self->{CACHE}{CHARACTER_SIZE}{$font}{$size})
 		{
 		my $surface = Cairo::ImageSurface->create('argb32', 100, 100);
-		my $gc = Cairo::Context->create($surface);
-		my $layout = Pango::Cairo::create_layout($gc) ;
+		my $gc      = Cairo::Context->create($surface);
+		my $layout  = Pango::Cairo::create_layout($gc) ;
 		
 		my $font_description = Pango::FontDescription->from_string($font . ' ' . $size) ;
 		

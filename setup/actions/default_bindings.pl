@@ -19,6 +19,7 @@ TOP_LEVEL_GROUP
 	'paste ->'          ,
 	'align ->'          ,
 	'grouping ->'       ,
+	'find ->'       ,
 	'stripes ->'        ,
 	' '                 ,
 	'debug ->'          ,
@@ -45,6 +46,7 @@ TOP_LEVEL_GROUP
 'Redo'                               => [['C00-y', 'C00-r'],                       \&App::Asciio::Actions::Unsorted::redo                                             ],
 'Zoom in'                            => [['000-plus', 'C00-j', 'C00-scroll-up'],   \&App::Asciio::Actions::Unsorted::zoom, 1                                          ],
 'Zoom out'                           => [['000-minus', 'C00-h', 'C00-scroll-down'],\&App::Asciio::Actions::Unsorted::zoom, -1                                         ],
+'Zoom extents'                       => ['C00-minus',                              \&App::Asciio::Actions::Unsorted::zoom_extents                                     ],
 
 'Select next element'                => ['000-Tab',                                \&App::Asciio::Actions::ElementSelection::select_element_direction, [1, 0, 0]      ],
 'Select previous element'            => ['00S-ISO_Left_Tab',                       \&App::Asciio::Actions::ElementSelection::select_element_direction, [0, 0, 0]      ],
@@ -769,25 +771,26 @@ TOP_LEVEL_GROUP
 	ENTER_GROUP => \&App::Asciio::Actions::Clone::clone_enter,
 	ESCAPE_KEYS => '000-Escape',
 	
-	'clone escape'          => ['000-Escape',         \&App::Asciio::Actions::Clone::clone_escape                                 ],
-	'clone motion'          => ['000-motion_notify',  \&App::Asciio::Actions::Clone::clone_mouse_motion, undef, { HIDE => 1 }     ], 
+	'clone escape'          => ['000-Escape',           \&App::Asciio::Actions::Clone::clone_escape                                 ],
+	'clone motion'          => ['000-motion_notify',    \&App::Asciio::Actions::Clone::clone_mouse_motion, undef, { HIDE => 1 }     ], 
+	'clone release'         => ['000-button-release-1', \&App::Asciio::Actions::Clone::clone_mouse_motion, undef, { HIDE => 1 }     ], 
 	
-	'clone insert'          => ['000-button-press-1', \&App::Asciio::Actions::Clone::clone_add_element                            ],
-	'clone insert2'         => ['000-Return',         \&App::Asciio::Actions::Clone::clone_add_element                            ],
-	'clone arrow'           => ['000-a',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/wirl_arrow',   0]],
-	'clone angled arrow'    => ['00S-A',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/angled_arrow', 0]],
-	'clone box'             => ['000-b',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box',  0]        ],
-	'clone text'            => ['000-t',              \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]        ],
-	'clone flip hint lines' => ['000-h',              \&App::Asciio::Actions::Unsorted::flip_hint_lines                           ],
-	'clone left'            => ['000-Left',           \&App::Asciio::Actions::ElementsManipulation::move_selection_left           ],
-	'clone right'           => ['000-Right',          \&App::Asciio::Actions::ElementsManipulation::move_selection_right          ],
-	'clone up'              => ['000-Up',             \&App::Asciio::Actions::ElementsManipulation::move_selection_up             ],
-	'clone down'            => ['000-Down',           \&App::Asciio::Actions::ElementsManipulation::move_selection_down           ],
+	'clone insert'          => ['000-button-press-1',   \&App::Asciio::Actions::Clone::clone_add_element                            ],
+	'clone insert2'         => ['000-Return',           \&App::Asciio::Actions::Clone::clone_add_element                            ],
+	'clone arrow'           => ['000-a',                \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/wirl_arrow',   0]],
+	'clone angled arrow'    => ['00S-A',                \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/angled_arrow', 0]],
+	'clone box'             => ['000-b',                \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/box',  0]        ],
+	'clone text'            => ['000-t',                \&App::Asciio::Actions::Clone::clone_set_overlay, ['Asciio/text', 0]        ],
+	'clone flip hint lines' => ['000-h',                \&App::Asciio::Actions::Unsorted::flip_hint_lines                           ],
+	'clone left'            => ['000-Left',             \&App::Asciio::Actions::ElementsManipulation::move_selection_left           ],
+	'clone right'           => ['000-Right',            \&App::Asciio::Actions::ElementsManipulation::move_selection_right          ],
+	'clone up'              => ['000-Up',               \&App::Asciio::Actions::ElementsManipulation::move_selection_up             ],
+	'clone down'            => ['000-Down',             \&App::Asciio::Actions::ElementsManipulation::move_selection_down           ],
 	
-	'clone emulation left'  => ['C00-Left',           \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]                         ],
-	'clone emulation right' => ['C00-Right',          \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                         ],
-	'clone emulation up'    => ['C00-Up',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                         ],
-	'clone emulation down'  => ['C00-Down',           \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                         ],
+	'clone emulation left'  => ['C00-Left',             \&App::Asciio::Actions::Mouse::mouse_move, [-1,  0]                         ],
+	'clone emulation right' => ['C00-Right',            \&App::Asciio::Actions::Mouse::mouse_move, [ 1,  0]                         ],
+	'clone emulation up'    => ['C00-Up',               \&App::Asciio::Actions::Mouse::mouse_move, [ 0, -1]                         ],
+	'clone emulation down'  => ['C00-Down',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                         ],
 	),
 
 'git ->' => GROUP
@@ -982,7 +985,6 @@ TOP_LEVEL_GROUP
 	(map { "pen insert " . $_ => ["000-" . $_, \&App::Asciio::GTK::Asciio::Pen::pen_enter_then_move_mouse, [$_], { HIDE => 1 }] }('a'..'z', '0'..'9')),
 	),
 
-
 'find ->' => GROUP
 	(
 	SHORTCUTS   => '000-f',
@@ -998,7 +1000,7 @@ TOP_LEVEL_GROUP
 	'find select All'         => ['C00-Return', \&App::Asciio::Actions::FindAndReplace::select, 'all'            ] ,
 	'find zoom in'            => ['000-plus',   \&App::Asciio::Actions::FindAndReplace::zoom, 1                  ] ,
 	'find zoom out'           => ['000-minus',  \&App::Asciio::Actions::FindAndReplace::zoom, -1                 ] ,
-	'find zoom extents'       => ['00S-minus',  \&App::Asciio::Actions::FindAndReplace::zoom, 0                  ] ,
+	'find zoom extents'       => ['C00-minus',  \&App::Asciio::Actions::FindAndReplace::zoom, 0                  ] ,
 	
 	# search and replace in all tabs, not implemented yet, reserving the shortcuts
 	# 'find search all'         => ['C00-f',      \&App::Asciio::Actions::FindAndReplace::new_search, 'all'        ] ,

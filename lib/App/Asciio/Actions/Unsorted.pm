@@ -10,6 +10,7 @@ use File::Temp qw/ tempfile / ;
 use File::Slurper qw/ write_text / ;
 use Data::TreeDumper ;
 use List::Util qw(min max) ;
+use List::MoreUtils qw(minmax) ;
 
 use constant HAS_SPELLCHECKER => defined eval { require Text::SpellChecker };
 
@@ -41,19 +42,16 @@ my ($self) = @_ ;
 
 
 $self->display_message_modal(<<EOM) ;
+"alt+lef_mouse" "."        Quick link
 
-"alt+lef_mouse" "."         Quick link
-
-"ib",                       insert a box
-"iB",                       insert a shrink box
-"i^b"                       Add multiple boxes
-
+"ibb",                      insert a box
+"ibs",                      insert a shrink box
+"imb",                      Add multiple boxes
 "it",                       Add a text element
-"i^t"                       Add multiple texts
+"imt"                       Add multiple texts
 
 "ia"                        Add a wirl arrow
 "ad"                        Change arrow direction
-"af"                        Flip the arrows
 "as"                        Append multi_wirl section
 
 "ctl-z" "u"                 Undo
@@ -64,15 +62,9 @@ $self->display_message_modal(<<EOM) ;
 
 "ctl-c/ctl-v" "y/p"         Copy/Paste elements
 "ctl-e" "Y"                 Export as ascii
-"ctl-V" "P"                 Import to box
-"alt-p" "A-P"               Import to text
 
 "gg"                        Group selected elements
 "gu"                        Group object
-
-"double-click/enter"        Edit object
-
-"right-clik"                Show context menu.
 
 "+"                         Zoom in
 "-"                         Zoom out
@@ -82,7 +74,6 @@ $self->display_message_modal(<<EOM) ;
 ":q"                        Quit
 
 ":m"                        Displays manpage
-
 EOM
 }
 
@@ -92,65 +83,102 @@ sub zoom
 {
 my ($self, $direction) = @_ ;
 
-my ($family, $size) = $self->get_font() ;
-
-my ($zoom_lower_limit, $zoom_upper_limit) = ($self->{FONT_MIN} // 0, $self->{FONT_MAX} // 28) ;
-
-if($direction > 0) 
-	{
-	return if($size >= $zoom_upper_limit) ;
-	}
-elsif($direction < 0)
-	{
-	return if($size <= $zoom_lower_limit) ;
-	}
-
+my ($family, $size)                      = $self->get_font() ;
+my ($font_min, $font_max)                = ($self->{FONT_MIN}  // 1, $self->{FONT_MAX} // 28) ;
+my ($zoom_step, $remainder)              = ($self->{ZOOM_STEP} // 1, 0) ;
 my ($character_width, $character_height) = $self->get_character_size() ;
 
-$self->set_font($family, $size + $direction) ;
+return if $direction < 0 && $size <= $font_min ;
+return if $direction > 0 && $size >= $font_max ;
 
-my $zoom_step = $self->{ZOOM_STEP} // 1 ;
-my $font_min = $self->{FONT_MIN} // 1  ;
+$size     += ($direction * $zoom_step) ;
+$remainder = $size % $zoom_step ;
+$size     += $zoom_step - $remainder if $remainder ;
+$size      = $font_min if $size < $font_min ;
 
-$size += ($direction * $zoom_step) ;
-
-my $remainder = $size % $zoom_step ;
-$size += $zoom_step - $remainder if $remainder ;
-
-$size = $font_min if $size < $font_min ;
-
-# making the character size change
 $self->set_font($family, $size);
 
 # resize canvas
 if($self->{UI} eq 'GUI')
 	{
-	my $h_value = $self->{SC_WINDOW}->get_hadjustment()->get_value() ;
-	my $v_value = $self->{SC_WINDOW}->get_vadjustment()->get_value() ;
-
-	$self->invalidate_rendering_cache() ;
-
 	my ($new_character_width, $new_character_height) = $self->get_character_size() ;
-	my ($canvas_width, $canvas_height) = ($self->{CANVAS_WIDTH} * $new_character_width, $self->{CANVAS_HEIGHT} * $new_character_height) ;
-
+	my ($canvas_width, $canvas_height)               = ($self->{CANVAS_WIDTH} * $new_character_width, $self->{CANVAS_HEIGHT} * $new_character_height) ;
+	
 	$self->{widget}->set_size_request($canvas_width, $canvas_height);
-
-	# The state equation of the scroll bar before and after zooming, 
-	# using the coordinates of the mouse as the zoom point
-	# MOUSE_X * character_width - h_value = MOUSE_X * new_character_width - new_h_value
-	# MOUSE_Y * character_height - v_value = MOUSE_Y * new_character_height - new_v_value
-	my $new_h_value = $self->{MOUSE_X} * ($new_character_width-$character_width) + $h_value ;
-	my $new_v_value = $self->{MOUSE_Y} * ($new_character_height-$character_height) + $v_value ;
-
+	
+	my ($h_value, $v_value) = ($self->{hadjustment}->get_value(), $self->{vadjustment}->get_value()) ;
+	
+	my $new_h_value = $self->{MOUSE_X} * ($new_character_width  - $character_width)  + $h_value ;
+	my $new_v_value = $self->{MOUSE_Y} * ($new_character_height - $character_height) + $v_value ;
+	
 	$new_h_value = max(0, min($canvas_width, $new_h_value)) ;
 	$new_v_value = max(0, min($canvas_height, $new_v_value)) ;
-
-	$self->{SC_WINDOW}->get_hadjustment()->set_value($new_h_value) ;
-	$self->{SC_WINDOW}->get_vadjustment()->set_value($new_v_value) ;
-
+	
+	$self->{hadjustment}->set_value($new_h_value) ;
+	$self->{vadjustment}->set_value($new_v_value) ;
 	}
 
 $self->invalidate_rendering_cache() ;
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub zoom_extents
+{
+my ($self, @elements) = @_ ;
+
+@elements = $self->{ELEMENTS}->@* unless @elements ;
+
+my ($min_x, $max_x) = minmax( map { $_->{X} + $_->{EXTENTS}[0],  $_->{X} + $_->{EXTENTS}[2] } @elements );
+my ($min_y, $max_y) = minmax( map { $_->{Y} + $_->{EXTENTS}[1],  $_->{Y} + $_->{EXTENTS}[3]} @elements );
+my $characters_x   = $max_x - $min_x ;
+my $characters_y   = $max_y - $min_y ;
+
+my ($family, $start_size) = $self->get_font() ;
+my $visible_width         = $self->{hadjustment}->get_page_size() ;
+my $visible_height        = $self->{vadjustment}->get_page_size() ;
+
+my $font_size ;
+for ($font_size = $self->{FONT_MAX} // 28 ; $font_size > $self->{FONT_MIN} // 1 ; $font_size -= $self->{ZOOM_STEP} // 1) 
+	{
+	$self->set_font($family, $font_size);
+	
+	my ($character_width, $character_height) = $self->get_character_size() ;
+	my ($needed_width, $needed_height)       = ($characters_x * $character_width,  $characters_y * $character_height) ;
+	
+	last if $visible_width >= $needed_width && $visible_height >= $needed_height ;
+	}
+
+scroll_to($self, $min_x, $min_y) ;
+
+$self->invalidate_rendering_cache() if $font_size != $start_size ;
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub scroll_to_element
+{
+my ($self, $element) = @_ ;
+
+return unless $element ;
+
+return ;
+scroll_to($self, $element->{X}, $element->{Y}) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub scroll_to
+{
+my ($self, $x, $y) = @_ ;
+
+my ($character_width, $character_height) = $self->get_character_size() ;
+
+$self->{hadjustment}->set_value($x * $character_width) ;
+$self->{vadjustment}->set_value($y * $character_height) ;
+
 $self->update_display() ;
 }
 
@@ -171,6 +199,8 @@ else
 	$self->display_message_modal("Environmen variable 'BROWSER' not set.") ;
 	}
 }
+
+#----------------------------------------------------------------------------------------------
 
 sub get_keyboard_mapping_file
 {
