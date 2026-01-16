@@ -505,12 +505,12 @@ my ($self, $elements) = @_ ;
 if(HAS_SPELLCHECKER)
 	{
 	$elements //= $self->{ELEMENTS} ;
-
+	
 	my $element_index = 0 ;
 	for my $element ($elements->@*)
 		{
 		my $error = 0 ;
-		my $input = $element->{TEXT} ;
+		my $input = $element->{TEXT} // '' ;
 		
 		my $checker = Text::SpellChecker->new(text => $input) ;
 		$checker->set_options(aspell => { 'lang' => 'en' });
