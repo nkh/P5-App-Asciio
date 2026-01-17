@@ -335,11 +335,9 @@ my $build = $class->new
 	
 	script_files => [qw(
 			script/asciio
-			script/tasciio
 			script/asciio_to_text
 			script/text_to_asciio
 			script/A
-			script/TA
 			script/AV
 			script/T
 			script/stdin_to_asciio

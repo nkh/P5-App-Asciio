@@ -1,2 +1,0 @@
-./Build
-perl -Mblib script/tab_asciio $@

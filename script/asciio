@@ -1,145 +1,42 @@
 #!/usr/bin/env perl
-
-package main ;
-
 use strict;
 use warnings;
 
-use Glib ':constants';
 use Gtk3 -init;
-Gtk3->init;
+use Glib::Object::Introspection;
+use Glib qw(TRUE FALSE);
 
-use App::Asciio::Setup ;
-use App::Asciio::GTK::Asciio ;
-use App::Asciio::Server ;
-use App::Asciio::GTK::Asciio::DnD ;
+use App::Asciio::GTK::Asciio::TabManager ;
 
-use Module::Util qw(find_installed) ;
-use File::Basename ;
+my $window = Gtk3::Window->new('toplevel') ;
+$window->set_title('Asciio') ;
+$window->set_default_size(600, 400) ;
 
-#-----------------------------------------------------------------------------
+my $tab_manager =  App::Asciio::GTK::Asciio::TabManager->new() ;
 
-my $window = Gtk3::Window->new('toplevel');
-$window->set_title("asciio");
-$window->set_default_size(1000, 1000) ;
-$window->signal_connect("destroy", sub { exit(0); });
+$window->add($tab_manager->get_widget()) ;
 
-my $scwin = Gtk3::ScrolledWindow->new();
-$scwin->set_policy('automatic', 'automatic');
-
-$window->add($scwin);
-
-my @asciios ;
-
-push @asciios, my $asciio = new App::Asciio::GTK::Asciio($window, 50, 25, $scwin) ;
-
-$scwin->add_with_viewport($asciio->{widget});
-$scwin->show_all();
-
-my ($command_line_switch_parse_ok, $command_line_parse_message, $asciio_config)
-	= $asciio->ParseSwitches([@ARGV], 0) ;
-
-die "Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
-
-my %object_override ; 
-if(defined $asciio_config->{DEBUG_FD})
-	{
-	open my $fh, ">&=", $asciio_config->{DEBUG_FD} or die "can't open fd $asciio_config->{DEBUG_FD}: $!\n" ; 
-	$fh->autoflush(1) ;
-	%object_override = (WARN => sub { print $fh "@_" }, ACTION_VERBOSE => sub { print $fh "$_[0]\n" ; } ) ;
-	}
-else
-	{
-	%object_override = (WARN => sub { print STDERR "@_" }, ACTION_VERBOSE => sub { print STDERR "$_[0]\n" ; } ) ;
-	}
-
-my $setup_paths = [] ;
-
-$asciio->{DISPLAY_SETUP_INFORMATION}++ if $asciio_config->{DISPLAY_SETUP_INFORMATION} ;
-
-if(@{$asciio_config->{SETUP_PATHS}})
-	{
-	$setup_paths = $asciio_config->{SETUP_PATHS} ;
-	}
-else
-	{
-	my ($basename, $path, $ext) = File::Basename::fileparse(find_installed('App::Asciio'), ('\..*')) ;
-	my $setup_path = $path . $basename . '/setup/' ;
-	
-	$setup_paths = 
-		[
-		$setup_path . 'setup.ini', 
-		$setup_path . 'GTK/setup.ini', 
-		$ENV{HOME} . '/.config/Asciio/Asciio.ini',
-		] ;
-	}
-
-$asciio->setup($setup_paths, \%object_override) ;
-
-my ($character_width, $character_height) = $asciio->get_character_size() ;
-
-if(defined $asciio_config->{TARGETS}[0])
-	{
-	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
-	
-	delete $asciio->{BINDINGS_COMPLETION} ;
-	
-	$window->set_default_size(@{$asciio->{WINDOW_SIZE}})  if defined $asciio->{WINDOW_SIZE} ;
-	}
-
-App::Asciio::setup_embedded_bindings($asciio, $asciio_config) ;
-
-$window->show_all();
-
-$asciio->{widget}->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
-$asciio->set_modified_state(0) ;
-
-if(defined $asciio_config->{SCRIPT})
-	{
-	require App::Asciio::Scripting ;
-	
-	App::Asciio::Utils::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
-	}
-
-$asciio->setup_dnd($window) ;
-
-#--------------------------------------------------------------------------
-
-$window->signal_connect (delete_event => \&delete_event, \@asciios) ;
-
-sub delete_event
-{
-my ($window, $event, $asciios) = @_;
-
-my $answer = 'yes';
-
-my $should_save ;
-for my $asciio (@{$asciios})
-	{
-	$should_save++ if $asciio->get_modified_state() ;
-	}
-
-if($should_save) 
-	{
-	$answer = $asciios[0]->display_quit_dialog('asciio', ' ' x 25 . "Document is modified!\n\nAre you sure you want to quit and lose your changes?\n") ;
-	}
-
-if($answer eq 'save_and_quit')
-	{
-	for my $asciio (@{$asciios})
+$window->signal_connect
+	(
+	destroy => sub
 		{
-		my @saved_result = $asciio->run_actions_by_name('Save') ;
-		
-		$answer = 'cancel' if(! defined $saved_result[0][0] || $saved_result[0][0] eq '') ;
+		Gtk3::main_quit() ;
 		}
-	}
+	) ;
 
-return $answer eq 'cancel';
-}
+$window->show_all() ;
 
-#--------------------------------------------------------------------------
+# $window->signal_connect
+# 	(
+# 	'key-press-event' => sub
+# 				{
+# 				my ($widget, $event) = @_ ;
+# 				$widget->grab_focus() ;
+# 				# App::Asciio::GTK::Asciio::button_press_event(undef, $event, $self) ;
+# 				print"in main window key-press-event\n" ;
+# 				return TRUE ;
+# 				}
+# 	) ;
 
-App::Asciio::Server::start_web_server($asciios[0], $asciio_config->{WEB_PORT} // 4444) ; 
-
-Gtk3->main();
+Gtk3::main() ;
 

@@ -9,9 +9,9 @@ META.json
 META.yml
 
 script/A
-script/TA
 script/AV
 script/T
+script/asciio
 script/asciio_to_text
 script/text_to_asciio
 script/startup_script.pl
@@ -361,9 +361,10 @@ documentation/mdbook_asciio/src/for_developers/scripting.md
 documentation/mdbook_asciio/src/for_developers/scripting_api.md
 documentation/mdbook_asciio/src/for_developers/scripting_execute.md
 documentation/mdbook_asciio/src/for_developers/unicode_support.md
-documentation/mdbook_asciio/src/functionality_log/026_01_08_search_and_replace.gif
 documentation/mdbook_asciio/src/functionality_log/2025_12_20_freeze_elements.gif
 documentation/mdbook_asciio/src/functionality_log/2026_01_01_graph_selection.gif
+documentation/mdbook_asciio/src/functionality_log/2026_01_08_search_and_replace.gif
+documentation/mdbook_asciio/src/functionality_log/2026_01_09_spellcheck.png
 documentation/mdbook_asciio/src/gen_doc
 documentation/mdbook_asciio/src/git_mode.md
 documentation/mdbook_asciio/src/grouping.md
@@ -385,11 +386,6 @@ documentation/mdbook_asciio/src/modes/cross_effect.gif
 documentation/mdbook_asciio/src/modes/cross_stripes.gif
 documentation/mdbook_asciio/src/modes/eraser_mode.gif
 documentation/mdbook_asciio/src/modes/find.md
-documentation/mdbook_asciio/src/modes/find_canvas_zooming.gif
-documentation/mdbook_asciio/src/modes/find_example.gif
-documentation/mdbook_asciio/src/modes/find_normal_string.gif
-documentation/mdbook_asciio/src/modes/find_regex.gif
-documentation/mdbook_asciio/src/modes/find_repeat.gif
 documentation/mdbook_asciio/src/modes/git.md
 documentation/mdbook_asciio/src/modes/git_graph.svg
 documentation/mdbook_asciio/src/modes/git_graph_feature_branch.gif
@@ -426,7 +422,6 @@ documentation/mdbook_asciio/src/selection_mode_operation.md
 documentation/mdbook_asciio/src/selection_polygon_mode.md
 documentation/mdbook_asciio/src/slide_script_mode.md
 documentation/mdbook_asciio/src/spellcheck.md
-documentation/mdbook_asciio/src/spellcheck.png
 documentation/mdbook_asciio/src/spellcheck_errors.png
 documentation/mdbook_asciio/src/spellchecking_operation.md
 documentation/mdbook_asciio/src/stencils.md
