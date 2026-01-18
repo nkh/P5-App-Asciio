@@ -140,7 +140,6 @@ $text_heigh    = max($text_heigh, 3) ;
 
 my ($character_width, $character_height) = $asciio->get_character_size() ;
 my ($root_x, $root_y)                    = $asciio->get_window()->get_origin() ;
-my ($v_value, $h_value)                  = ($asciio->{vadjustment}->get_value(), $asciio->{hadjustment}->get_value());
 
 my $window = new Gtk3::Window() ;
 
@@ -148,7 +147,7 @@ my $dialog = Gtk3::Dialog->new('Ellips attributes', $window, 'destroy-with-paren
 $dialog->set_default_size($text_width, $text_heigh);
 $dialog->set_border_width(0);
 $dialog->set_decorated(0);
-$dialog->move($root_x+(($X+$text_x)*$character_width)-$h_value, $root_y+(($Y+$text_y)*$character_height)-$v_value);
+$dialog->move($root_x+(($X+$text_x)*$character_width), $root_y+(($Y+$text_y)*$character_height));
 
 my $vbox = Gtk3::VBox->new(FALSE, 5);
 $vbox->add(Gtk3::Label->new (""));
