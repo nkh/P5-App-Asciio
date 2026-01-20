@@ -227,11 +227,16 @@ $scroller->set_policy('automatic', 'automatic') ;  # show scrollbars as needed
 $scroller->set_hexpand(TRUE) ;
 $scroller->set_vexpand(TRUE) ;
 $scroller->add($asciio) ;
+$scroller->signal_connect
+	(
+	'map' => sub
+			{
+			$asciio->{hadjustment} = $scroller->get_hadjustment() ;
+			$asciio->{vadjustment} = $scroller->get_vadjustment() ;
+			}
+	) ;
 
 $asciio->set_hexpand(TRUE); $asciio->set_vexpand(TRUE) ;
-
-$asciio->{hadjustment} = $scroller->get_hadjustment() ;
-$asciio->{vadjustment} = $scroller->get_vadjustment() ;
 
 # my $page_num = $self->{notebook}->append_page($scroller, $label) ;
 # push @{$self->{asciios}}, $asciio ;
