@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-b77da321.js";
+            window.path_to_searchindex_js = "../searchindex-69d314d1.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-62db257a.js"></script>
@@ -196,17 +196,34 @@
 <p><img src="il.gif" alt="il"></p>
 <h2 id="examples"><a class="header" href="#examples">Examples</a></h2>
 <h3 id="using-previously-generated-output"><a class="header" href="#using-previously-generated-output">Using previously generated output</a></h3>
-<p>If you already have text in a file you can use ‘cat your_file’ as the command.</p>
+<p>Use ‘cat your_file’ as the command in the <strong>exec-box</strong>.</p>
 <h3 id="tables"><a class="header" href="#tables">Tables</a></h3>
-<p>tbd: Command: …</p>
-<pre><code>  +------------+------------+------------+------------+
-  | input_size ‖ algorithmA | algorithmB | algorithmC |
-  +============+============+============+============+
-  |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |
-  +------------+------------+------------+------------+
-  |    250     ‖     -      |  80 min.   | 2.27 sec.  |
-  +------------+------------+------------+------------+
+<p>If you have data you want to use in a table, the simplest is to run an external command (there are tens of ASCII table generator in perl, go, JS, …) and insert the result in a text element.</p>
+<pre><code class="language-text">      +------------+------------+------------+------------+
+      | input_size ‖ algorithmA | algorithmB | algorithmC |
+      +============+============+============+============+
+      |     1      ‖ 206.4 sec. | 206.4 sec. | 0.02 sec.  |
+      +------------+------------+------------+------------+
+      |    250     ‖     -      |  80 min.   | 2.27 sec.  |
+      +------------+------------+------------+------------+
 </code></pre>
+<p>I you just want to type your table data, use an exec-box to pass your table data to you favorite Markdown formatter.</p>
+<p>If you don’t have a favorite formatter or it doesn’t render the tables as you want them, Asciio installs  <a href="https://github.com/nkh/md-table-formatter"><strong>md-table-formatter</strong></a>  which may do just what you want.</p>
+<p><a href="https://github.com/nkh/md-table-formatter"><strong>md-table-formatter</strong></a> can render in multiple style and has some rendering options.</p>
+<p>Insert an <strong>exec-box</strong>, remove all borders, and type the following below, you can re-edit your command later.</p>
+<p><em>md-table-formatter</em> will parse your table description, align, and format your table</p>
+<pre><code class="language-bash">cat &lt;&lt;EOT | md-table-formatter
+| Operation              | Bg     | 
+| -----------                  | -----   |
+| Edit selected element | douck |
+| Add to selection                    | C00-1 |
+| Quick link                   | 0A0-1 |
+| Duplicate elements           | 0AS-1 |
+| Insert flex point (in arrow) | CA0-1 |
+EOT
+</code></pre>
+<p><img src="table0.png" alt="exec-box"></p>
+<p><img src="table1.png" alt="formatted table"></p>
 <h3 id="figlet"><a class="header" href="#figlet">FIGlet</a></h3>
 <p><a href="http://www.figlet.org/">Figlet</a>  generates large letters out of ordinary text.</p>
 <p><img src="FIGlet_asciio.gif" alt="FIGlet_asciio"></p>
