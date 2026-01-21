@@ -83,7 +83,7 @@ else
 			}
 		else
 			{
-			($command_stderr_redirected = $command) =~ s/$/ 2>&1/gsm ;
+			($command_stderr_redirected = $command) =~ s/$/ 2>&1/sm ;
 			}
 		
 		$output = `timeout 2 $command_stderr_redirected` ;

@@ -17,7 +17,11 @@
 
 [Snapshot](functionality_log/2026_01_09_spellcheck.png) | [Bindings](spellchecking_operation.md)
 
-***MACRO bindings [14 jan 2026]***
+***MACRO Bindings [14 jan 2026]***
 
 [Bindings Documentation](config/binding_format.html#macros)
+
+***Markdown Table Renderer [21 jan 2026]***
+
+[Snapshot](stencils/table1.png) | [Documentation](stencils/asciio_exec_box.html?Examples#tables)  
 

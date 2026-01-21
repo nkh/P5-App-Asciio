@@ -18,6 +18,7 @@ script/startup_script.pl
 script/stdin_to_asciio
 script/get_keyboard_bindings
 script/json_dtd_to_asciio_script
+script/md-table-formatter
 
 setup/setup.ini
 
@@ -434,6 +435,8 @@ documentation/mdbook_asciio/src/stencils/arrow_section.gif
 documentation/mdbook_asciio/src/stencils/asciio_arrows.md
 documentation/mdbook_asciio/src/stencils/asciio_boxes.md
 documentation/mdbook_asciio/src/stencils/asciio_exec_box.md
+documentation/mdbook_asciio/src/stencils/table0.png
+documentation/mdbook_asciio/src/stencils/table1.png
 documentation/mdbook_asciio/src/stencils/asciio_if_and_process.md
 documentation/mdbook_asciio/src/stencils/asciio_image_box.md
 documentation/mdbook_asciio/src/stencils/asciio_objects.md

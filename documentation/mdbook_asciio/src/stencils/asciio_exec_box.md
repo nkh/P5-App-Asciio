@@ -42,12 +42,13 @@ This is an example of a custom stencil which will add line numbers to your input
 
 ### Using previously generated output
 
-If you already have text in a file you can use 'cat your_file' as the command.
+Use 'cat your_file' as the command in the **exec-box**.
 
 ### Tables
 
-tbd: Command: ...
+If you have data you want to use in a table, the simplest is to run an external command (there are tens of ASCII table generator in perl, go, JS, ...) and insert the result in a text element.
 
+```text
       +------------+------------+------------+------------+
       | input_size ‖ algorithmA | algorithmB | algorithmC |
       +============+============+============+============+
@@ -55,6 +56,33 @@ tbd: Command: ...
       +------------+------------+------------+------------+
       |    250     ‖     -      |  80 min.   | 2.27 sec.  |
       +------------+------------+------------+------------+
+```
+
+I you just want to type your table data, use an exec-box to pass your table data to you favorite Markdown formatter.
+
+If you don't have a favorite formatter or it doesn't render the tables as you want them, Asciio installs  [**md-table-formatter**](https://github.com/nkh/md-table-formatter)  which may do just what you want.
+
+[**md-table-formatter**](https://github.com/nkh/md-table-formatter) can render in multiple style and has some rendering options.
+
+Insert an **exec-box**, remove all borders, and type the following below, you can re-edit your command later.
+
+*md-table-formatter* will parse your table description, align, and format your table
+
+```bash
+cat <<EOT | md-table-formatter
+| Operation              | Bg     | 
+| -----------                  | -----   |
+| Edit selected element | douck |
+| Add to selection                    | C00-1 |
+| Quick link                   | 0A0-1 |
+| Duplicate elements           | 0AS-1 |
+| Insert flex point (in arrow) | CA0-1 |
+EOT
+```
+
+![exec-box](table0.png)
+
+![formatted table](table1.png)
 
 ### FIGlet
 

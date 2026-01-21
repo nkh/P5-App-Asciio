@@ -1,0 +1,524 @@
+#!/usr/bin/env perl
+use strict ;
+use warnings ;
+use utf8 ;
+
+binmode(STDOUT, ':utf8') ;
+binmode(STDIN, ':utf8') ;
+
+# ----------------------------------------------------------------------------
+
+main(@ARGV)  ;
+
+# ----------------------------------------------------------------------------
+
+sub main
+{
+my @args = @_  ;
+
+my $style     = 1 ;
+my $align_all = 0 ;
+my $no_top    = 0 ;
+my $no_bottom = 0 ;
+my $no_sides  = 0 ;
+
+my $input_file ;
+
+while (@args)
+	{
+	my $arg = shift @args ;
+	
+	if ($arg eq '-s' || $arg eq '--style')
+		{
+		$style = shift @args || 1 ;
+		$style = int($style) ;
+		$style = 1 if $style < 1 || $style > 7 ;
+		}
+	elsif ($arg eq '-a' || $arg eq '--align-all')
+		{
+		$align_all = 1 ;
+		}
+	elsif ($arg eq '--no-top')
+		{
+		$no_top = 1 ;
+		}
+	elsif ($arg eq '--no-bottom')
+		{
+		$no_bottom = 1 ;
+		}
+	elsif ($arg eq '--no-sides')
+		{
+		$no_sides = 1 ;
+		}
+	elsif ($arg eq '-h' || $arg eq '--help')
+		{
+		print_help() ;
+		exit 0 ;
+		}
+	elsif (!defined $input_file && $arg !~ /^-/)
+		{
+		$input_file = $arg ;
+		}
+	else
+		{
+		print_help() ;
+		exit 1 ;
+		}
+	}
+
+my @lines ;
+if (defined $input_file)
+	{
+	open(my $fh, '<:utf8', $input_file) or die "Cannot open file '$input_file': $!\n"  ;
+	@lines = <$fh> ;
+	close $fh ;
+	chomp @lines ;
+	}
+else
+	{
+	@lines = <STDIN> ;
+	chomp @lines ;
+	}
+
+process_input(\@lines, $style, $align_all, $no_top, $no_bottom, $no_sides) ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub print_help
+{
+print <<'HELP' ;
+Usage: md-table-formatter.pl [OPTIONS] [FILE]
+
+Formats markdown tables read from stdin or FILE and outputs to stdout.
+
+Options:
+  -s, --style N    Select table style (1-6, default: 1)
+                   1 = Asciio style
+                   2 = ASCII style (+, -, |)
+                   3 = Light box-drawing (Unicode)
+                   4 = Heavy box-drawing (Unicode)
+                   5 = Markdown style (|)
+                   6 = Minimal style (spaces only)
+  -a, --align-all  Align columns across all tables in the document
+  -h, --help       Show this help message
+  --no-top         no top line
+  --no-bottom      no bottom line
+  --no-sides       no side lines
+
+Arguments:
+  FILE             Input file (reads from stdin if not specified)
+
+Example:
+  cat table.md | md-table-formatter.pl -s 2
+  md-table-formatter.pl -s 1 --align-all table.md
+HELP
+}
+
+# ----------------------------------------------------------------------------
+
+sub process_input
+{
+my ($lines, $style, $align_all, $no_top, $no_bottom, $no_sides) = @_ ;
+
+my $i = 0 ;
+my @all_tables ;
+my @output_plan ;
+
+while ($i < @$lines)
+	{
+	if ($lines->[$i] =~ /^\s*\|/)
+		{
+		my @table_lines ;
+		my $start = $i ;
+		
+		while ($i < @$lines && $lines->[$i] =~ /^\s*\|/)
+			{
+			push @table_lines, $lines->[$i] ;
+			$i++ ;
+			}
+		
+		my ($headers, $alignments, $rows) = parse_table(\@table_lines) ;
+		
+		if (@$headers > 0)
+			{
+			my $table_data = 
+				{
+				headers => $headers,
+				alignments => $alignments,
+				rows => $rows,
+				original_lines => \@table_lines
+				} ;
+			
+			push @all_tables, $table_data ;
+			push @output_plan, { type => 'table', index => $#all_tables } ;
+			}
+		else
+			{
+			push @output_plan, { type => 'text', lines => \@table_lines } ;
+			}
+		}
+	else
+		{
+		push @output_plan, { type => 'text', lines => [$lines->[$i]] } ;
+		$i++ ;
+		}
+	}
+
+if ($align_all && @all_tables > 0)
+	{
+	my $global_max_cols = 0 ;
+	foreach my $table (@all_tables)
+		{
+		my $max          = max_columns($table->{headers}, $table->{rows}) ;
+		$global_max_cols = $max if $max > $global_max_cols ;
+		}
+	
+	my @global_widths = (0) x $global_max_cols ;
+	
+	foreach my $table (@all_tables)
+		{
+		my $max_cols = max_columns($table->{headers}, $table->{rows}) ;
+		my $widths   = calculate_widths($table->{headers}, $table->{rows}, $max_cols) ;
+		
+		for (my $j = 0; $j < @$widths; $j++)
+			{
+			$global_widths[$j] = $widths->[$j] if $widths->[$j] > $global_widths[$j] ;
+			}
+		}
+	
+	foreach my $item (@output_plan)
+		{
+		if ($item->{type} eq 'table')
+			{
+			my $table    = $all_tables[$item->{index}] ;
+			my $max_cols = max_columns($table->{headers}, $table->{rows}) ;
+			
+			print_table
+				(
+				$table->{headers},
+				$table->{alignments},
+				$table->{rows},
+				\@global_widths,
+				$global_max_cols,
+				$style,
+				$no_top,
+				$no_bottom,
+				$no_sides,
+				) ;
+			}
+		else
+			{
+			foreach my $line (@{$item->{lines}})
+				{
+				print $line . "\n"  ;
+				}
+			}
+		}
+	}
+else
+	{
+	foreach my $item (@output_plan)
+		{
+		if ($item->{type} eq 'table')
+			{
+			my $table      = $all_tables[$item->{index}] ;
+			my $max_cols   = max_columns($table->{headers}, $table->{rows}) ;
+			my $col_widths = calculate_widths($table->{headers}, $table->{rows}, $max_cols) ;
+			
+			print_table
+				(
+				$table->{headers},
+				$table->{alignments},
+				$table->{rows},
+				$col_widths,
+				$max_cols,
+				$style,
+				$no_top,
+				$no_bottom,
+				$no_sides,
+				) ;
+			}
+		else
+			{
+			foreach my $line (@{$item->{lines}})
+				{
+				print $line . "\n"  ;
+				}
+			}
+		}
+	}
+}
+
+# ----------------------------------------------------------------------------
+
+sub parse_table
+{
+my ($lines) = @_ ;
+
+my (@headers, @alignments, @rows) ;
+my $header_found = 0 ;
+
+foreach my $line (@$lines)
+	{
+	$line =~ s/^\s+|\s+$//g ;
+	
+	if ($line =~ /^\|/ && $line =~ /\|/)
+		{
+		my @cells = split(/\|/, $line) ;
+		shift @cells ;
+		pop @cells if defined $cells[-1] && $cells[-1] eq '' ;
+		
+		@cells = map { s/^\s+|\s+$//gr } @cells ;
+		
+		if (!$header_found && @headers == 0)
+			{
+			@headers = @cells ;
+			}
+		elsif (!$header_found && is_separator_row(\@cells))
+			{
+			@alignments   = parse_alignments(\@cells) ;
+			$header_found = 1 ;
+			}
+		else
+			{
+			push @rows, \@cells ;
+			}
+		}
+	else
+		{
+		last if @headers > 0 ;
+		}
+	}
+
+return (\@headers, \@alignments, \@rows) ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub is_separator_row
+{
+my ($cells) = @_ ;
+
+foreach my $cell (@$cells)
+	{
+	return 0 unless $cell =~ /^:?-+:?$/ ;
+	}
+
+return 1 ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub parse_alignments
+{
+my ($cells) = @_ ;
+my @aligns ;
+foreach my $cell (@$cells)
+	{
+	if ($cell =~ /^:-+:$/)
+		{
+		push @aligns, 'center' ;
+		}
+	elsif ($cell =~ /^-+:$/)
+		{
+		push @aligns, 'right' ;
+		}
+	else
+		{
+		push @aligns, 'left' ;
+		}
+	}
+
+return @aligns ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub max_columns
+{
+my ($headers, $rows) = @_ ;
+my $max = scalar @$headers ;
+
+foreach my $row (@$rows)
+	{
+	my $count = scalar @$row ;
+	$max      = $count if $count > $max ;
+	}
+
+return $max ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub calculate_widths
+{
+my ($headers, $rows, $max_cols) = @_ ;
+my @widths = (0) x $max_cols ;
+
+for (my $i = 0; $i < @$headers; $i++)
+	{
+	my $len     = length($headers->[$i]) ;
+	$widths[$i] = $len if $len > $widths[$i] ;
+	}
+
+foreach my $row (@$rows)
+	{
+	for (my $i = 0; $i < @$row; $i++)
+		{
+		my $len     = length($row->[$i]) ;
+		$widths[$i] = $len if $len > $widths[$i] ;
+		}
+	}
+
+return \@widths ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub print_table
+{
+my ($headers, $alignments, $rows, $widths, $max_cols, $style, $no_top, $no_bottom, $no_sides) = @_ ;
+
+	my %styles = (
+	1 => 
+		{
+		tl => '.', tr => '.', bl    => "'", br => "'",
+		h  => '-', v  => '|', cross => '+',
+		t  => '-', b  => '-', l     => '|', r  => '|'
+		},
+	2 =>
+		{
+		tl => '+', tr => '+', bl    => '+', br => '+',
+		h  => '-', v  => '|', cross => '+',
+		t  => '+', b  => '+', l     => '+', r  => '+'
+		},
+	3 =>
+		{
+		tl => '┌', tr => '┐', bl    => '└', br => '┘',
+		h  => '─', v  => '│', cross => '┼',
+		t  => '┬', b  => '┴', l     => '├', r  => '┤'
+		},
+	4 =>
+		{
+		tl => '╔', tr => '╗', bl    => '╚', br => '╝',
+		h  => '═', v  => '║', cross => '╬',
+		t  => '╦', b  => '╩', l     => '╠', r  => '╣'
+		},
+	5 =>
+		{
+		tl => '|', tr => '|', bl    => '|', br => '|',
+		h  => '-', v  => '|', cross => '|',
+		t  => '|', b  => '|', l     => '|', r  => '|'
+		},
+	6 => 
+		{
+		tl => ' ', tr => ' ', bl    => ' ', br => ' ',
+		h  => ' ', v  => ' ', cross => ' ',
+		t  => ' ', b  => ' ', l     => ' ', r  => ' '
+		},
+	7 => 
+		{
+		tl => ' ', tr => ' ', bl    => ' ', br => ' ',
+		h  => '_', v  => ' ', cross => '_',
+		t  => '_', b  => '_', l     => ' ', r  => ' '
+		}
+	) ;
+
+my $s = $styles{$style} ;
+
+if ($no_sides)
+	{
+	$s->{tl} = '' ; $s->{tr} = '' ;
+	$s->{l}  = '' ; $s->{r}  = '' ;
+	$s->{bl} = '' ; $s->{br} = '' ;
+	}
+
+print_border('top', $widths, $s) unless $no_top ;
+print_row($headers, $widths, $alignments, $max_cols, $s, $no_sides) ;
+print_border('middle', $widths, $s) ;
+
+foreach my $row (@$rows)
+	{
+	print_row($row, $widths, $alignments, $max_cols, $s, $no_sides) ;
+	}
+
+print_border('bottom', $widths, $s) unless $no_bottom ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub print_border
+{
+my ($type, $widths, $s) = @_ ;
+my @parts ;
+
+for (my $i = 0; $i < @$widths; $i++)
+	{
+	push @parts, $s->{h} x ($widths->[$i] + 2) ;
+	}
+
+if ($type eq 'top')
+	{
+	print $s->{tl} . join($s->{t}, @parts) . $s->{tr} . "\n"  ;
+	}
+elsif ($type eq 'middle')
+	{
+	print $s->{l} . join($s->{cross}, @parts) . $s->{r} . "\n"  ;
+	}
+elsif ($type eq 'bottom')
+	{
+	print $s->{bl} . join($s->{b}, @parts) . $s->{br} . "\n"  ;
+	}
+}
+
+# ----------------------------------------------------------------------------
+
+sub print_row
+{
+my ($cells, $widths, $alignments, $max_cols, $s, $no_sides) = @_ ;
+
+my @formatted ;
+for (my $i = 0; $i < $max_cols; $i++)
+	{
+	my $cell  = $i < @$cells ? $cells->[$i] : '' ;
+	my $width = $widths->[$i] ;
+	my $align = $i < @$alignments ? $alignments->[$i] : 'left' ;
+	
+	my $formatted = format_cell($cell, $width, $align) ;
+	push @formatted, $formatted ;
+	}
+
+if($no_sides)
+	{
+	print ' ' . join(' ' . $s->{v} . ' ', @formatted) . ' ' . "\n"  ;
+	}
+else
+	{
+	print $s->{v} . ' ' . join(' ' . $s->{v} . ' ', @formatted) . ' ' . $s->{v} . "\n"  ;
+	}
+}
+
+# ----------------------------------------------------------------------------
+
+sub format_cell
+{
+my ($text, $width, $align) = @_ ;
+
+if ($align eq 'center')
+	{
+	my $total_pad = $width - length($text) ;
+	my $left_pad  = int($total_pad / 2) ;
+	my $right_pad = $total_pad - $left_pad ;
+	
+	return ' ' x $left_pad . $text . ' ' x $right_pad ;
+	}
+elsif ($align eq 'right')
+	{
+	return sprintf("%${width}s", $text) ;
+	}
+else
+	{
+	return sprintf("%-${width}s", $text) ;
+	}
+}

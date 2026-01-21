@@ -340,6 +340,7 @@ my $build = $class->new
 			script/A
 			script/AV
 			script/T
+			script/md-table-formatter
 			script/stdin_to_asciio
 			script/json_dtd_to_asciio_script)
 			],
