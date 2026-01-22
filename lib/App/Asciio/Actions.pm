@@ -48,8 +48,7 @@ if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 				{
 				my $shortcut = $_->{SHORTCUTS} ;
 				
-				   ! exists $reserved{$shortcut} 
-				&& ! ($self->{CURRENT_ACTIONS}{$shortcut}{OPTIONS}{HIDE})
+				! exists $reserved{$shortcut} && ! $_->{OPTIONS}{HIDE}
 				} $self->{ACTIONS_ORDERED}{$self->{CURRENT_ACTIONS}{NAME}}->@* ;
 	
 	$self->{BINDINGS_COMPLETION} = 
@@ -129,7 +128,6 @@ for my $action (@actions)
 		
 		delete $self->{BINDINGS_COMPLETION} unless $self->{KEEP_BINDINGS_COMPLETION} ;
 		
-		
 		if(defined $self->{CURRENT_ACTIONS}{$action}{ARGUMENTS})
 			{
 			push @results,
@@ -163,11 +161,7 @@ for my $action (@actions)
 			}
 		else
 			{
-			unless ($self->{KEEP_BINDINGS_COMPLETION})
-				{
-				delete $self->{BINDINGS_COMPLETION} ;
-				}
-			
+			delete $self->{BINDINGS_COMPLETION} unless $self->{KEEP_BINDINGS_COMPLETION} ;
 			delete $self->{KEEP_BINDINGS_COMPLETION} ;
 			
 			if(defined $self->{CURRENT_ACTIONS}{ESCAPE_KEYS} && any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
