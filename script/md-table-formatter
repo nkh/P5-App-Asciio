@@ -1,6 +1,6 @@
 #!/usr/bin/env perl
-use strict ;
-use warnings ;
+
+use strict ; use warnings ;
 use utf8 ;
 
 binmode(STDOUT, ':utf8') ;
@@ -30,9 +30,16 @@ while (@args)
 	
 	if ($arg eq '-s' || $arg eq '--style')
 		{
-		$style = shift @args || 1 ;
+		$style = shift @args ;
 		$style = int($style) ;
-		$style = 1 if $style < 1 || $style > 7 ;
+		$style = 1 if $style < 0 || $style > 7 ;
+		
+		if ($style == 0)
+			{
+			$style     = 1 ;
+			$no_top    = 1 ;
+			$no_bottom = 1 ;
+			}
 		}
 	elsif ($arg eq '-a' || $arg eq '--align-all')
 		{
@@ -94,6 +101,7 @@ Formats markdown tables read from stdin or FILE and outputs to stdout.
 
 Options:
   -s, --style N    Select table style (1-6, default: 1)
+                   0 = markdown
                    1 = Asciio style
                    2 = ASCII style (+, -, |)
                    3 = Light box-drawing (Unicode)
@@ -168,7 +176,7 @@ while ($i < @$lines)
 if ($align_all && @all_tables > 0)
 	{
 	my $global_max_cols = 0 ;
-	foreach my $table (@all_tables)
+	for my $table (@all_tables)
 		{
 		my $max          = max_columns($table->{headers}, $table->{rows}) ;
 		$global_max_cols = $max if $max > $global_max_cols ;
@@ -176,7 +184,7 @@ if ($align_all && @all_tables > 0)
 	
 	my @global_widths = (0) x $global_max_cols ;
 	
-	foreach my $table (@all_tables)
+	for my $table (@all_tables)
 		{
 		my $max_cols = max_columns($table->{headers}, $table->{rows}) ;
 		my $widths   = calculate_widths($table->{headers}, $table->{rows}, $max_cols) ;
@@ -187,7 +195,7 @@ if ($align_all && @all_tables > 0)
 			}
 		}
 	
-	foreach my $item (@output_plan)
+	for my $item (@output_plan)
 		{
 		if ($item->{type} eq 'table')
 			{
@@ -209,7 +217,7 @@ if ($align_all && @all_tables > 0)
 			}
 		else
 			{
-			foreach my $line (@{$item->{lines}})
+			for my $line (@{$item->{lines}})
 				{
 				print $line . "\n"  ;
 				}
@@ -218,7 +226,7 @@ if ($align_all && @all_tables > 0)
 	}
 else
 	{
-	foreach my $item (@output_plan)
+	for my $item (@output_plan)
 		{
 		if ($item->{type} eq 'table')
 			{
@@ -241,7 +249,7 @@ else
 			}
 		else
 			{
-			foreach my $line (@{$item->{lines}})
+			for my $line (@{$item->{lines}})
 				{
 				print $line . "\n"  ;
 				}
@@ -259,7 +267,7 @@ my ($lines) = @_ ;
 my (@headers, @alignments, @rows) ;
 my $header_found = 0 ;
 
-foreach my $line (@$lines)
+for my $line (@$lines)
 	{
 	$line =~ s/^\s+|\s+$//g ;
 	
@@ -300,7 +308,7 @@ sub is_separator_row
 {
 my ($cells) = @_ ;
 
-foreach my $cell (@$cells)
+for my $cell (@$cells)
 	{
 	return 0 unless $cell =~ /^:?-+:?$/ ;
 	}
@@ -314,7 +322,7 @@ sub parse_alignments
 {
 my ($cells) = @_ ;
 my @aligns ;
-foreach my $cell (@$cells)
+for my $cell (@$cells)
 	{
 	if ($cell =~ /^:-+:$/)
 		{
@@ -340,7 +348,7 @@ sub max_columns
 my ($headers, $rows) = @_ ;
 my $max = scalar @$headers ;
 
-foreach my $row (@$rows)
+for my $row (@$rows)
 	{
 	my $count = scalar @$row ;
 	$max      = $count if $count > $max ;
@@ -362,7 +370,7 @@ for (my $i = 0; $i < @$headers; $i++)
 	$widths[$i] = $len if $len > $widths[$i] ;
 	}
 
-foreach my $row (@$rows)
+for my $row (@$rows)
 	{
 	for (my $i = 0; $i < @$row; $i++)
 		{
@@ -384,7 +392,7 @@ my ($headers, $alignments, $rows, $widths, $max_cols, $style, $no_top, $no_botto
 	1 => 
 		{
 		tl => '.', tr => '.', bl    => "'", br => "'",
-		h  => '-', v  => '|', cross => '+',
+		h  => '-', v  => '|', cross => '|',
 		t  => '-', b  => '-', l     => '|', r  => '|'
 		},
 	2 =>
@@ -438,7 +446,7 @@ print_border('top', $widths, $s) unless $no_top ;
 print_row($headers, $widths, $alignments, $max_cols, $s, $no_sides) ;
 print_border('middle', $widths, $s) ;
 
-foreach my $row (@$rows)
+for my $row (@$rows)
 	{
 	print_row($row, $widths, $alignments, $max_cols, $s, $no_sides) ;
 	}
@@ -479,7 +487,7 @@ sub print_row
 my ($cells, $widths, $alignments, $max_cols, $s, $no_sides) = @_ ;
 
 my @formatted ;
-for (my $i = 0; $i < $max_cols; $i++)
+for (my $i = 0 ; $i < $max_cols ; $i++)
 	{
 	my $cell  = $i < @$cells ? $cells->[$i] : '' ;
 	my $width = $widths->[$i] ;

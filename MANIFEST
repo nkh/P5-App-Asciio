@@ -129,6 +129,7 @@ documentation/scripting/from_command_line/three_boxes.pl
 
 documentation/scripting/web_interface/stdin_to_asciio_web_example
 documentation/scripting/web_interface/asciio_web_example
+documentation/scripting/web_interface/asciio_web_tab_example
 documentation/simple_presentation.pl
 
 documentation/scripting/from_within_asciio/asciio_script.pl
@@ -142,7 +143,6 @@ documentation/presentation.pl
 
 
 # GTK
-script/asciio
 
 lib/App/Asciio/GTK/Asciio.pm
 lib/App/Asciio/GTK/Asciio/HelpWidget.pm
@@ -240,6 +240,7 @@ documentation/mdbook_asciio/book.toml
 
 documentation/mdbook_asciio/src/Bindings_reference.md
 documentation/mdbook_asciio/src/Interface.md
+documentation/mdbook_asciio/src/matching_elements.png
 documentation/mdbook_asciio/src/README.md
 documentation/mdbook_asciio/src/SUMMARY.md
 documentation/mdbook_asciio/src/UI/CLI.md
@@ -251,6 +252,8 @@ documentation/mdbook_asciio/src/UI/tasciio.png
 documentation/mdbook_asciio/src/UI/tui_demo.gif
 documentation/mdbook_asciio/src/UIs.md
 documentation/mdbook_asciio/src/accessing_documentation.md
+documentation/mdbook_asciio/src/animation_mode.md
+documentation/mdbook_asciio/src/animation_script_mode.md
 documentation/mdbook_asciio/src/arrow_mode.md
 documentation/mdbook_asciio/src/arrow_operation.md
 documentation/mdbook_asciio/src/asciio_tabs.png
@@ -284,6 +287,7 @@ documentation/mdbook_asciio/src/bindings_index.md
 documentation/mdbook_asciio/src/check_mdbook_git
 documentation/mdbook_asciio/src/clone_mode_operation.md
 documentation/mdbook_asciio/src/color_operations.md
+documentation/mdbook_asciio/src/config/binding_format.md
 documentation/mdbook_asciio/src/config/config_format.md
 documentation/mdbook_asciio/src/config/user_bindings/binding_override.md
 documentation/mdbook_asciio/src/config/user_bindings/capture_overlay.gif
@@ -343,6 +347,7 @@ documentation/mdbook_asciio/src/export/embedded_png.md
 documentation/mdbook_asciio/src/export/hand_drawn.png
 documentation/mdbook_asciio/src/export/json.md
 documentation/mdbook_asciio/src/export/png.md
+documentation/mdbook_asciio/src/export/repo.svg
 documentation/mdbook_asciio/src/export/svg.md
 documentation/mdbook_asciio/src/export/svg_graph.svg
 documentation/mdbook_asciio/src/export/text.md
@@ -362,6 +367,7 @@ documentation/mdbook_asciio/src/for_developers/scripting.md
 documentation/mdbook_asciio/src/for_developers/scripting_api.md
 documentation/mdbook_asciio/src/for_developers/scripting_execute.md
 documentation/mdbook_asciio/src/for_developers/unicode_support.md
+documentation/mdbook_asciio/src/functionality_log.md
 documentation/mdbook_asciio/src/functionality_log/2025_12_20_freeze_elements.gif
 documentation/mdbook_asciio/src/functionality_log/2026_01_01_graph_selection.gif
 documentation/mdbook_asciio/src/functionality_log/2026_01_08_search_and_replace.gif
@@ -375,12 +381,14 @@ documentation/mdbook_asciio/src/guide/installation.md
 documentation/mdbook_asciio/src/guide/reading.md
 documentation/mdbook_asciio/src/guide/running_asciio.md
 documentation/mdbook_asciio/src/history.md
+documentation/mdbook_asciio/src/image_box_operations.md
 documentation/mdbook_asciio/src/in_git_not_in_mdbook
 documentation/mdbook_asciio/src/in_mdbook_not_in_git
 documentation/mdbook_asciio/src/insert_operation.md
 documentation/mdbook_asciio/src/misc/contributors.md
 documentation/mdbook_asciio/src/misc/see_also.md
 documentation/mdbook_asciio/src/modes.md
+documentation/mdbook_asciio/src/modes/animations.md
 documentation/mdbook_asciio/src/modes/cross.md
 documentation/mdbook_asciio/src/modes/cross_complex.gif
 documentation/mdbook_asciio/src/modes/cross_effect.gif
@@ -393,39 +401,38 @@ documentation/mdbook_asciio/src/modes/git_graph_feature_branch.gif
 documentation/mdbook_asciio/src/modes/git_graph_feature_branch.svg
 documentation/mdbook_asciio/src/modes/git_popup_menu.png
 documentation/mdbook_asciio/src/modes/merge_all_dots_into_a_box.gif
+documentation/mdbook_asciio/src/modes/mergin_dots.md
 documentation/mdbook_asciio/src/modes/pen.md
-documentation/mdbook_asciio/src/modes/pen_change_char_before_enter_pen_mode.gif
-documentation/mdbook_asciio/src/modes/pen_change_char_from_key_press.gif
-documentation/mdbook_asciio/src/modes/pen_change_char_from_right_mouse_button.gif
 documentation/mdbook_asciio/src/modes/pen_char_insertion_direction.gif
 documentation/mdbook_asciio/src/modes/pen_char_prompt_panel.gif
-documentation/mdbook_asciio/src/modes/pen_delete_elements.gif
 documentation/mdbook_asciio/src/modes/pen_draw_bear_head.gif
 documentation/mdbook_asciio/src/modes/pen_draw_book.gif
 documentation/mdbook_asciio/src/modes/pen_draw_disk.gif
 documentation/mdbook_asciio/src/modes/pen_draw_owl.gif
 documentation/mdbook_asciio/src/modes/pen_drawing_characters.gif
+documentation/mdbook_asciio/src/modes/pen_eraser.md
+documentation/mdbook_asciio/src/modes/pen_examples.md
 documentation/mdbook_asciio/src/modes/pen_insert_single_char.gif
-documentation/mdbook_asciio/src/modes/pen_keyboard_move.gif
-documentation/mdbook_asciio/src/modes/pen_mode_enter_and_exit.gif
 documentation/mdbook_asciio/src/modes/pen_newline_and_wrap.gif
-documentation/mdbook_asciio/src/modes/pen_select_multi_char_input.gif
 documentation/mdbook_asciio/src/modes/selection.md
 documentation/mdbook_asciio/src/modes/selection_basic.gif
 documentation/mdbook_asciio/src/modes/selection_polygon.gif
 documentation/mdbook_asciio/src/modes/slides.md
 documentation/mdbook_asciio/src/modes/split_elements_into_dots.gif
+documentation/mdbook_asciio/src/modes/user_character_set.md
 documentation/mdbook_asciio/src/modes_operation.md
 documentation/mdbook_asciio/src/mouse_operations.md
 documentation/mdbook_asciio/src/pen_mode.md
 documentation/mdbook_asciio/src/root_level_bindings.md
 documentation/mdbook_asciio/src/selection_mode_operation.md
 documentation/mdbook_asciio/src/selection_polygon_mode.md
+documentation/mdbook_asciio/src/slide_mode.md
 documentation/mdbook_asciio/src/slide_script_mode.md
 documentation/mdbook_asciio/src/spellcheck.md
 documentation/mdbook_asciio/src/spellcheck_errors.png
 documentation/mdbook_asciio/src/spellchecking_operation.md
 documentation/mdbook_asciio/src/stencils.md
+documentation/mdbook_asciio/src/stencils/2026_01_22_box_connector_interactive.gif
 documentation/mdbook_asciio/src/stencils/FIGlet_asciio.gif
 documentation/mdbook_asciio/src/stencils/FLGlet_asciio_slant_font.gif
 documentation/mdbook_asciio/src/stencils/add_connector.gif

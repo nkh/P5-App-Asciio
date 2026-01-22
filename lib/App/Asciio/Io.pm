@@ -145,6 +145,8 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 		WARN
 		COPIED_ATTRIBUTES
 		COPIED_CONTROL_ATTRIBUTES
+		DRAW_MOUSE_CURSOR
+		PEN_STATE
 		) ;
 
 sub load_serialized_self 
@@ -310,6 +312,8 @@ local $self->{BINDINGS_COMPLETION}        = undef ;
 local $self->{BINDINGS_COMPLETION_LENGTH} = undef ;
 local $self->{COPIED_ATTRIBUTES}          = undef ;
 local $self->{COPIED_CONTROL_ATTRIBUTES}  = undef ;
+local $self->{DRAW_MOUSE_CURSOR}          = undef ;
+local $self->{PEN_STATE}                  = undef ;
 
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 

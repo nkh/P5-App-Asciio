@@ -186,6 +186,7 @@ for my $action (@actions)
 			if(any { $_ eq $action } $self->{CURRENT_ACTIONS}{ESCAPE_KEYS}->@*)
 				{
 				$self->{ACTION_VERBOSE}->("\e[33m[$self->{CURRENT_ACTIONS}{NAME}] leaving\e[0m") if $self->{ACTION_VERBOSE} ; 
+				
 				$self->{CURRENT_ACTIONS}{ESCAPE_GROUP}->($self) if defined $self->{CURRENT_ACTIONS}{ESCAPE_GROUP} ;
 				$self->{CURRENT_ACTIONS} = $self->{ACTIONS} ;
 				}

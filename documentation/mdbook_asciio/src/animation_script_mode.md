@@ -5,7 +5,7 @@
 
 **Prefix:** Press «S» «a» enter the automation mode then «s» 
 
-**Exit:** Press «Escape» to exit animatioexit animationanimation scripts bound to alphanumeric keys.
+**Exit:** Press «Escape» to exit animation 
 
 ## Script Keys
 

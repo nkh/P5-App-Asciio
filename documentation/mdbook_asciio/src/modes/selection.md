@@ -1,4 +1,4 @@
-# selection
+# Selection
 
 Select elements by:
 

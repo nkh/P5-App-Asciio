@@ -8,6 +8,7 @@ use utf8 ;
 use List::MoreUtils qw(first_value);
 use File::Slurper qw(read_text) ;
 use File::HomeDir ;
+use List::Util qw(max any) ;
 
 use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Multiwirl ;
@@ -467,6 +468,8 @@ if(@selected_elements >= 1)
 	}
 }
 
+#----------------------------------------------------------------------------------------------
+
 sub freeze_selected_elements_to_background
 {
 my ($self) = @_ ;
@@ -508,6 +511,177 @@ if(@selected_elements >= 1)
 	
 	$self->update_display() ;
 	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub add_numbered_connector_to_element
+{
+my ($self) = @_ ;
+
+my ($element , @other_elements) = $self->get_selected_elements(1) ;
+
+return unless 
+	(
+	   defined $element 
+	&& @other_elements == 0
+	&& $self->is_over_element($element, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
+	&& exists $element->{CONNECTORS}
+	) ;
+
+$self->create_undo_snapshot() ;
+
+# The connector does not allow setting the outer radius of the element rectangle > 1
+# But outer radius == 1 is allowed
+#
+# .---.------------------------------------------>  X
+# |   |
+# |   |     1
+# |   v┌────o───────┐
+# |   o│.----------.│
+# |    │|     o    |│
+# |  2 o| o   5    |o 4
+# |    │'----------'│
+# |Y   └────o───────┘
+# v         3
+
+my @numbered_connector_names =
+	map { $_->{NAME} }
+		grep { defined $_->{NAME} && $_->{NAME} =~ /^\d+$/ }
+			$element->{CONNECTORS}->@* ;
+
+my $next_connector_name =
+	(@numbered_connector_names ? max(@numbered_connector_names) : 0) + 1 ;
+
+my $connector ;
+
+my $round = sub { my ($num) = @_ ; return int(sprintf("%.0f", $num)) ; } ;
+
+# 4 outer corner vertices
+if ($self->{MOUSE_X} == $element->{X} - 1 && $self->{MOUSE_Y} == $element->{Y} - 1)
+	{
+	$connector = [-1, -1, 0, -1, -1, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} && $self->{MOUSE_Y} == $element->{Y} - 1)
+	{
+	$connector = [0, 10000, 0, -1, -1, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} - 1 && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
+	{
+	$connector = [-1, -1, 0, 0, 10000, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
+	{
+	$connector = [0, 10000, 0, 0, 10000, 0, $next_connector_name] ;
+	}
+# 4 outer edges
+elsif ($self->{MOUSE_Y} == $element->{Y} -1)
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$connector = [0, $scale_x, 0, -1, -1, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT})
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$connector = [0, $scale_x, 0, 0, 10000, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} -1)
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$connector = [-1, -1, 0, 0, $scale_y, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH})
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$connector = [0, 10000, 0, 0, $scale_y, 0, $next_connector_name] ;
+	}
+# 4 inner vertices of the element
+elsif ($self->{MOUSE_X} == $element->{X} && $self->{MOUSE_Y} == $element->{Y})
+	{
+	$connector = [0, -1, 0, 0, -1, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1 && $self->{MOUSE_Y} == $element->{Y})
+	{
+	$connector = [0, 10000, -1, 0, -1, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
+	{
+	$connector = [0, -1, 0, 0, 10000, -1, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1 && $self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
+	{
+	$connector = [0, 10000, -1, 0, 10000, -1, $next_connector_name] ;
+	}
+# 4 inner edges of the element
+elsif ($self->{MOUSE_X} == $element->{X})
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$connector = [0, -1, 0, 0, $scale_y, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_Y} == $element->{Y})
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$connector = [0, $scale_x, 0, 0, -1, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_X} == $element->{X} + $element->{WIDTH} - 1)
+	{
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$connector = [0, 10000, -1, 0, $scale_y, 0, $next_connector_name] ;
+	}
+elsif ($self->{MOUSE_Y} == $element->{Y} + $element->{HEIGHT} - 1)
+	{
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	$connector = [0, $scale_x, 0, 0, 10000, -1, $next_connector_name] ;
+	}
+else
+	{
+	# Inside the element
+	my $scale_x = $round->(($self->{MOUSE_X} - $element->{X}) * 10000 / $element->{WIDTH}) ;
+	my $scale_y = $round->(($self->{MOUSE_Y} - $element->{Y}) * 10000 / $element->{HEIGHT}) ;
+	$connector = [0, $scale_x, 0, 0, $scale_y, 0, $next_connector_name] ;
+	}
+
+$element->add_connector($connector, $element->{WIDTH}, $element->{HEIGHT}) ;
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub remove_numbered_connector_in_element
+{
+my ($self) = @_ ;
+
+my ($element, @other_elements) = $self->get_selected_elements(1) ;
+
+return unless
+	(
+	   defined $element
+	&& @other_elements == 0
+	&& $self->is_over_element($element, $self->{MOUSE_X}, $self->{MOUSE_Y}, 1)
+	&& exists $element->{CONNECTORS}
+	) ;
+
+$self->create_undo_snapshot() ;
+
+#  Only delete numbered connectors
+my @connectors_to_delete = grep 
+
+	{
+	      $_->{X} == $self->{MOUSE_X} - $element->{X}
+	&&    $_->{Y} == $self->{MOUSE_Y} - $element->{Y}
+	&& $_->{NAME} =~ /^\d+$/
+	} @{$element->{CONNECTORS}} ;
+
+for my $connector (@connectors_to_delete)
+	{
+	# connected connector deletion is not allowed
+	$element->remove_connector($connector->{NAME})
+		unless any { $_->{CONNECTION}{NAME} eq $connector->{NAME} }
+			$self->get_connections_with_connectee($element) ;
+	}
+
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------

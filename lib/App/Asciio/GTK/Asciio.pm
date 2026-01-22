@@ -632,14 +632,15 @@ my $start_y = $self->{MOUSE_Y} * $character_height ;
 
 $gc->set_source_rgba(@{$self->get_color('mouse_rectangle')}) ;
 
-if(defined $self->{SIMULATE_MOUSE_TYPE})
+if ($self->{DRAW_MOUSE_CURSOR})
 	{
-	App::Asciio::GTK::Asciio::Pen::pen_draw_mouse_cursor
-		(
+	$self->{DRAW_MOUSE_CURSOR}->(
 		$gc,
 		$self->{SIMULATE_MOUSE_TYPE},
-		$character_width, $character_height,
-		$start_x, $start_y
+		$character_width,
+		$character_height,
+		$start_x,
+		$start_y
 		) ;
 	}
 else
@@ -946,7 +947,7 @@ if ($element->{SELECTED})
 sub draw_pen_mapping_help
 {
 my ($self, $expose_data) = @_ ;
-App::Asciio::GTK::Asciio::Pen::pen_show_mapping_help($self, $expose_data->{gc}) ;
+App::Asciio::GTK::Asciio::Pen::show_mapping_help($self, $expose_data->{gc}) ;
 }
 
 #----------------------------------------------------------------------------------------------

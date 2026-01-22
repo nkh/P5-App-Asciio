@@ -25,3 +25,7 @@
 
 [Snapshot](stencils/table1.png) | [Documentation](stencils/asciio_exec_box.html?Examples#tables)  
 
+***Add connectors interactively [22 jan 2026]***
+
+[watch video](stencils/2026_01_22_box_connector_interactive.gif) | [documentation](stencils/box_connectors.html#interactive-connector-operations)  
+

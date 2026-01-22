@@ -4,11 +4,11 @@ use parent qw/App::Asciio::stripes::single_stripe/ ;
 
 use strict;
 use warnings;
+use utf8 ;
 
-use List::Util qw(min max) ;
+use List::Util qw(min max any) ;
 use Readonly ;
 use Clone ;
-use utf8 ;
 
 use App::Asciio::String ;
 
@@ -248,13 +248,13 @@ unless (defined $self->{CONNECTORS})
 	for my $connector 
 		(
 		# X   SCALE_X OFFSET_X    Y   SCALE_Y  OFFSET_Y   NAME
-		[ 0,  50,     0 ,         -1, -1,      0 ,        'top_center'    ],
-		[ 0,  50,     0 ,         0,  100,     0 ,        'bottom_center' ],
-		[ -1, -1,     0 ,         0,  50,      0 ,        'left_center'   ],
-		[ 0,  100,    0 ,         0,  50,      0 ,        'right_center'  ],
+		[ 0  , 5000  , 0 , -1 , -1    , 0 , 'top_center'    ] ,
+		[ 0  , 5000  , 0 , 0  , 10000 , 0 , 'bottom_center' ] ,
+		[ -1 , -1    , 0 , 0  , 5000  , 0 , 'left_center'   ] ,
+		[ 0  , 10000 , 0 , 0  , 5000  , 0 , 'right_center'  ] ,
 		)
 		{
-		$self->add_connector($connector) ;
+		$self->add_connector($connector, $end_x, $end_y) ;
 		}
 	}
 
@@ -288,11 +288,28 @@ my ($self, $connectors, $width, $height) = @_ ;
 
 for my $connector ($connectors->@*)
 	{
-	$connector->{X} = int($width  * $connector->{SCALE_X} / 100) + $connector->{OFFSET_X} if ($connector->{SCALE_X} >= 0) ;
-	$connector->{Y} = int($height * $connector->{SCALE_Y} / 100) + $connector->{OFFSET_Y} if ($connector->{SCALE_Y} >= 0) ;
+	$self->scale_connector($connector, $width, $height) ;
 	}
 
 return $connectors ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub scale_connector
+{
+my ($self, $connector, $width, $height) = @_ ;
+
+# the default connector uses int for rounding is better.
+# But the numeric connector we defined needs to use round(round half up) for rounding
+my $round = ($connector->{NAME} =~ /^\d+$/)
+	? sub { int(sprintf("%.0f", shift)) }
+	: sub { int(shift) } ;
+
+$connector->{X} = $round->($width  * $connector->{SCALE_X} / 10000) + $connector->{OFFSET_X} if ($connector->{SCALE_X} >= 0) ;
+$connector->{Y} = $round->($height * $connector->{SCALE_Y} / 10000) + $connector->{OFFSET_Y} if ($connector->{SCALE_Y} >= 0) ;
+
+return $connector ;
 }
 
 #-----------------------------------------------------------------------------
@@ -402,19 +419,47 @@ return($action) ;
 
 #-----------------------------------------------------------------------------
 
-sub add_connector
+sub build_connector
 {
-my ($self, $connector) = @_ ;
+my ($self, $connector, $end_x, $end_y) = @_ ;
+
 my ($x, $scale_x, $offset_x, $y, $scale_y, $offset_y, $name) = $connector->@* ;
 
-$self->remove_connector($name) ;
-
-push $self->{CONNECTORS}->@*, 
+my $connector_obj =
 	{
 	X => $x, SCALE_X => $scale_x, OFFSET_X => $offset_x,
 	Y => $y, SCALE_Y => $scale_y, OFFSET_Y => $offset_y,
-	NAME => $name
+	NAME => $name 
 	} ;
+
+return $self->scale_connector($connector_obj, $end_x, $end_y) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub add_connector
+{
+my ($self, $connector, $end_x, $end_y) = @_ ;
+
+my $scaled_connector = $self->build_connector($connector, $end_x, $end_y) ;
+
+unless($self->is_connector_conflict($scaled_connector))
+	{
+	push $self->{CONNECTORS}->@*, $scaled_connector ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub is_connector_conflict
+{
+my ($self, $scaled_connector) = @_ ;
+
+return any
+	{
+	$_->{NAME} eq $scaled_connector->{NAME}
+	|| ($_->{X} == $scaled_connector->{X} && $_->{Y} == $scaled_connector->{Y})
+	} $self->{CONNECTORS}->@* ;
 }
 
 #-----------------------------------------------------------------------------
