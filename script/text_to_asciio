@@ -5,6 +5,7 @@ use strict; use warnings;
 use File::Slurper qw(read_text) ;
 use App::Asciio::Scripting ;
 
+use open qw( :std :encoding(UTF-8) ) ;
 binmode(STDOUT) ;
 my $pos = -1 ;
 

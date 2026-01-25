@@ -6,7 +6,7 @@
 
 ## asciio_to_text
 
-Converts an existing '.asciio' file to ASCII and display it in the terminal
+Converts an existing '.asciio' file/project to ASCII and display it in the terminal
 
 ## text_to_asciio
 

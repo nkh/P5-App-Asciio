@@ -11,7 +11,6 @@ use App::Asciio::GTK::Asciio::TabManager ;
 my $window = Gtk3::Window->new('toplevel') ;
 $window->set_title('Asciio') ;
 $window->set_default_size(600, 400) ;
-
 my $tab_manager =  App::Asciio::GTK::Asciio::TabManager->new() ;
 
 $window->add($tab_manager->get_widget()) ;

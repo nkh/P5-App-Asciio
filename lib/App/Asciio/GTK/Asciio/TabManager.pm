@@ -872,7 +872,6 @@ if($tar)
 		}
 	else
 		{
-		print "loaded tar\n" ;
 		for my $document_name ($asciio_project->{documents}->@*) 
 			{
 			my ($config, $asciio) = $self->create_tab({serialized => $tar->get_content($document_name)}) ;

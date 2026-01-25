@@ -4,11 +4,109 @@ use strict;
 use warnings;
 use utf8 ;
 
-use App::Asciio ;
-
 use Module::Util qw(find_installed) ;
 use File::Basename ;
+use Archive::Tar ;
 
+use open qw( :std :encoding(UTF-8) ) ;
+binmode(STDOUT) ;
+binmode(STDIN) ;
+
+use App::Asciio ;
+my $ASCIIO_MIME_TYPE = "application/x-asciio" ;
+
+# ------------------------------------------------------------------------------ 
+
+asciio_to_text() ;
+
+# ------------------------------------------------------------------------------ 
+
+sub asciio_to_text
+{
+my ($asciio_config, $asciio) = get_asciio() ;
+
+if (-p STDIN || -f STDIN) 
+	{
+	print STDERR "document_name: reading from STDIN\n" ;
+	
+	undef $/ ;
+	$asciio->load_self($asciio->get_decompressed_asciio(<STDIN>)) ;
+	
+	print $asciio->transform_elements_to_ascii_buffer() ;
+	}
+else
+	{
+	for my $project_name ($asciio_config->{TARGETS}->@*)
+		{
+		process_file($asciio, $project_name) ;
+		}
+	
+	# if(defined $asciio_config->{SCRIPT})
+	# 	{
+	# 	require App::Asciio::Scripting ;
+			
+	# 	App::Asciio::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
+	# 	}
+	}
+
+}
+
+# ------------------------------------------------------------------------------ 
+
+sub process_file
+{
+my ($asciio, $project_name) = @_ ;
+
+# save original settings. You could also use lexical typeglobs.
+*OLD_STDOUT = *STDOUT;
+*OLD_STDERR = *STDERR;
+
+# reassign STDOUT, STDERR
+open my $log_fh, '>>', 'asciio_io.log' ;
+*STDOUT = $log_fh;
+*STDERR = $log_fh;
+
+my $tar = Archive::Tar->new($project_name) ; 
+
+# restore STDOUT/STDERR
+*STDOUT = *OLD_STDOUT;
+*STDERR = *OLD_STDERR;
+
+if($tar)
+	{
+	my %documents = map { $_ => 1 } grep { $_ ne 'asciio_project' } $tar->list_files ;
+	
+	my $serialized_asciio_project = $tar->get_content('asciio_project') ;
+	my $asciio_project            = eval { Sereal::Decoder->new->decode($serialized_asciio_project) } ;
+	
+	if ($@)
+		{
+		print STDERR "Error: deserializing '$project_name': $@" 
+		}
+	else
+		{
+		for my $document_name ($asciio_project->{documents}->@*) 
+			{
+			$asciio->load_serialized_self($tar->get_content($document_name)) ;
+			print STDERR "document_name: $document_name\n" ;
+			print $asciio->transform_elements_to_ascii_buffer() ;
+			}
+		}
+	}
+else
+	{
+	print STDERR "document_name: $project_name\n" ;
+	
+	my $document_name = $asciio->load_file($project_name) ;
+	
+	print $asciio->transform_elements_to_ascii_buffer() ;
+	}
+}
+
+# ------------------------------------------------------------------------------ 
+
+sub get_asciio
+{
 my $asciio = new App::Asciio() ;
 
 $asciio->{UI} = 'TUI' ;
@@ -50,20 +148,6 @@ else
 	$asciio->setup($setup_paths, { %object_override, DISPLAY_SETUP_INFORMATION_ACTION => 0 }) ;
 	}
 
-if(defined $asciio_config->{TARGETS}[0])
-	{
-	local $asciio->{ACTION_VERBOSE} = sub { ; } ;
-	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
-	}
-	
-
-if(defined $asciio_config->{SCRIPT})
-	{
-	require App::Asciio::Scripting ;
-	
-	App::Asciio::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
-	}
-
-use open qw( :std :encoding(UTF-8) ) ;
-print $asciio->transform_elements_to_ascii_buffer() ;
+return $asciio_config, $asciio ;
+}
 

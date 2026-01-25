@@ -149,7 +149,7 @@ Readonly my  @ELEMENTS_TO_KEEP_AWAY_FROM_CURRENT_OBJECT =>
 
 sub load_serialized_self 
 {
-my ($self, $serialized_self)  = @_;
+my ($self, $serialized_self) = @_;
 
 return unless defined $serialized_self ;
 
