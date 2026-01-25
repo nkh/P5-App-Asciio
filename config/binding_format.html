@@ -35,7 +35,7 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-69d314d1.js";
+            window.path_to_searchindex_js = "../searchindex-8a9b039e.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="../toc-62db257a.js"></script>
@@ -297,7 +297,59 @@ register_action_handlers
         
 'group_other_group_name' =&gt; GROUP ( ...), # note that 'group_' is needed in the declaration of groups referred to by USE_GROUP
 </code></pre>
-<h4 id="macros"><a class="header" href="#macros">Macros</a></h4>
+<h3 id="navigating-groups-programatically"><a class="header" href="#navigating-groups-programatically">Navigating groups programatically</a></h3>
+<p>There are two possibilities:</p>
+<ul>
+<li>run_actions</li>
+<li>run_actions_by name</li>
+</ul>
+<p><em>run_actions</em> runs actions in the current binding (it is used by <em>Asciio</em> to handle keyboard events).</p>
+<p><em>run_actions_by_name</em> executes one of more named functions (with optional arguments); the functions are registered in the default config.</p>
+<p><em>Asciio</em> looks up keyboard events and run the correxponding function in the current binding group.</p>
+<p>Groups are also registered functions, functions that manipulates the current binding group.</p>
+<p>We can programmatically manipulate the current bindings but it’s much easier to define a group of bindings that we can make the active binding group; that’s exactly what GROUP does.</p>
+<p>To change the current keyboard bindings, we just need to run the right GROUP.</p>
+<pre><code class="language-perl">$self-&gt;run_actions_by_name("the GROUP name") ;
+</code></pre>
+<p>That’s available anywhere but the right way to do it is in the config so we get a keyboard driven flow rather than a code driven flow with if-then-else.</p>
+<p>The configuration below is to get in group ‘x’ from group ‘Insert -&gt;’ and back.</p>
+<p>Two solutions are presented, the difference is explained below.</p>
+<p>Note: the normal behavior when exiting a GROUP, is to reset to the default keyboard bindings.</p>
+<pre><code class="language-perl">
+'Insert -&gt;' =&gt; GROUP
+	(
+	SHORTCUTS =&gt; '000-i',
+	'X -&gt;'    =&gt; ['000-x', USE_GROUP('x')] ,
+	),
+
+	'group_x' =&gt; GROUP
+		(
+		SHORTCUTS    =&gt; 'group_x',
+		ESCAPE_KEYS  =&gt; '000-Escape',
+		        
+		# solution 1
+		ESCAPE_GROUP =&gt; sub { $_[0]-&gt;run_actions_by_name("Insert -&gt;") ;},
+		
+		#solution 2
+		'return to Insert'   =&gt; ['000-Escape', sub{ $_[0]-&gt;run_actions_by_name("Insert -&gt;") ; }, undef , {HIDE =&gt; 1}], 
+		),
+</code></pre>
+<ul>
+<li>if you decide to use <em>solution 1</em>, the code for <em>solution 2</em> is not needed</li>
+<li>if you decide to use <em>solution 2</em>, the code for <em>solution 1</em> is not needed</li>
+<li>you can use <em>solution 1</em> and <em>solution 2</em> together but in this case there is no gain</li>
+</ul>
+<p>Difference:</p>
+<ul>
+<li><em>solution 1</em> will change the current bindings but the bindings help</li>
+<li><em>solution 2</em> will change the current bindings and display the bindings help</li>
+</ul>
+<p>Note:</p>
+<ul>
+<li>we stop capturing keyboard input to GROUP(X) bindings because both solutions use ‘000-Escape’.</li>
+<li>we’re not forced to jump “back” to the previous group, we could jump anywhere, that’s what USE_GROUP does.</li>
+</ul>
+<h3 id="macros"><a class="header" href="#macros">Macros</a></h3>
 <p>Macros allows <em><strong>Single Action Definition</strong></em> to run multiple commands.</p>
 <p>The commands can be:</p>
 <ul>
