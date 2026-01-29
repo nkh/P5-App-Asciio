@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8a9b039e.js";
+            window.path_to_searchindex_js = "searchindex-21cded25.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-62db257a.js"></script>
+        <script src="toc-9e1c8313.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -187,7 +187,7 @@
 </thead>
 <tbody>
 <tr><td>Exit pen mode</td><td>«Escape»</td><td>Return to normal mode</td></tr>
-<tr><td>Switch pen/eraser</td><td>«Ctrl+Shift+Tab»</td><td>Toggle between pen and eraser</td></tr>
+<tr><td>Switch eraser sub mode</td><td>«Ctrl+e»</td><td>delete element</td></tr>
 </tbody>
 </table>
 </div>
@@ -210,10 +210,10 @@
 <tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>Move left</td><td>«Left» or «Ctrl+h»</td><td>Move cursor one character left</td></tr>
+<tr><td>Move left</td><td>«Left»  or «Ctrl+h»</td><td>Move cursor one character left</td></tr>
 <tr><td>Move right</td><td>«Right» or «Ctrl+l»</td><td>Move cursor one character right</td></tr>
-<tr><td>Move up</td><td>«Up» or «Ctrl+k»</td><td>Move cursor one character up</td></tr>
-<tr><td>Move down</td><td>«Down» or «Ctrl+j»</td><td>Move cursor one character down</td></tr>
+<tr><td>Move up</td><td>«Up»    or «Ctrl+k»</td><td>Move cursor one character up</td></tr>
+<tr><td>Move down</td><td>«Down»  or «Ctrl+j»</td><td>Move cursor one character down</td></tr>
 <tr><td>Move left (fast)</td><td>«Alt+h»</td><td>Move cursor multiple characters left</td></tr>
 <tr><td>Move right (fast)</td><td>«Alt+l»</td><td>Move cursor multiple characters right</td></tr>
 <tr><td>Move up (fast)</td><td>«Alt+k»</td><td>Move cursor multiple characters up</td></tr>
@@ -232,7 +232,7 @@
 <tr><td>Left tab</td><td>«Shift+Tab»</td><td>Move to previous tab stop</td></tr>
 <tr><td>Right tab</td><td>«Tab»</td><td>Move to next tab stop</td></tr>
 <tr><td>Enter</td><td>«Shift+Return»</td><td>Move to beginning of next line</td></tr>
-<tr><td>Toggle direction</td><td>«Ctrl+Tab»</td><td>Change auto-movement direction</td></tr>
+<tr><td>Toggle direction</td><td>«Ctrl+d»</td><td>Change auto-movement direction</td></tr>
 </tbody>
 </table>
 </div>
@@ -255,21 +255,22 @@
 <tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
 </thead>
 <tbody>
-<tr><td>Next character set</td><td>«Ctrl+Return»</td><td>Switch to next character mapping</td></tr>
-<tr><td>Previous character set</td><td>«Alt+Return»</td><td>Switch to previous character mapping</td></tr>
-<tr><td>Toggle help location</td><td>«Ctrl+Shift+Return»</td><td>Change where character set help is displayed</td></tr>
+<tr><td>Next character set</td><td>«Ctrl+n»</td><td>Switch to next character mapping</td></tr>
+<tr><td>Previous character set</td><td>«Ctrl+p»</td><td>Switch to previous character mapping</td></tr>
+<tr><td>Toggle help location</td><td>«Ctrl+c»</td><td>Change where character set help is displayed</td></tr>
 </tbody>
 </table>
 </div>
 <h2 id="direct-character-input"><a class="header" href="#direct-character-input">Direct Character Input</a></h2>
 <p>Pen mode allows direct entry of alphanumeric and special characters. Simply type the character to place it at the cursor position.</p>
 <h3 id="lowercase-letters"><a class="header" href="#lowercase-letters">Lowercase Letters</a></h3>
-<p>Type «a» through «z» to insert lowercase letters.</p>
+<p>When in draw sub mode, Type «a» through «z» to insert lowercase letters.</p>
 <h3 id="uppercase-letters"><a class="header" href="#uppercase-letters">Uppercase Letters</a></h3>
-<p>Type «Shift+A» through «Shift+Z» to insert uppercase letters.</p>
+<p>When in draw sub mode, Type «Shift+A» through «Shift+Z» to insert uppercase letters.</p>
 <h3 id="numbers"><a class="header" href="#numbers">Numbers</a></h3>
-<p>Type «0» through «9» to insert digits.</p>
+<p>When in draw sub mode, Type «0» through «9» to insert digits.</p>
 <h3 id="special-characters-shifted"><a class="header" href="#special-characters-shifted">Special Characters (Shifted)</a></h3>
+<p>When in draw sub mode:</p>
 <ul>
 <li>«Shift+Å» - Å</li>
 <li>«Shift+Ä» - Ä</li>
@@ -297,6 +298,7 @@
 <li>«Shift+&gt;» - &gt;</li>
 </ul>
 <h3 id="special-characters-unshifted"><a class="header" href="#special-characters-unshifted">Special Characters (Unshifted)</a></h3>
+<p>When in draw sub mode:</p>
 <ul>
 <li>«å» - å</li>
 <li>«ä» - ä</li>
@@ -313,17 +315,6 @@
 <li>«,» - ,</li>
 <li>«.» - .</li>
 </ul>
-<h2 id="mouse-operations"><a class="header" href="#mouse-operations">Mouse Operations</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>Operation</th><th>Binding</th><th>Description</th></tr>
-</thead>
-<tbody>
-<tr><td>Pen motion</td><td>«motion»</td><td>Track mouse position in pen mode</td></tr>
-</tbody>
-</table>
-</div>
 
                     </main>
 

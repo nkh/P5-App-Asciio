@@ -3,7 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Box connectors - Asciio</title>
+        <title>Connectors - Asciio</title>
 
 
         <!-- Custom HTML head -->
@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8a9b039e.js";
+            window.path_to_searchindex_js = "../searchindex-21cded25.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-62db257a.js"></script>
+        <script src="../toc-9e1c8313.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -174,8 +174,8 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="box-connectors"><a class="header" href="#box-connectors">Box connectors</a></h1>
-<p>It is possible to add custom connectors when creating a box stencil, see <em>setup/Asciio</em> for the default stencils.</p>
+                        <h1 id="element-connectors"><a class="header" href="#element-connectors">Element connectors</a></h1>
+<p>It is possible to add custom connectors when creating an element stencil, see <em>setup/Asciio</em> for the default stencils.</p>
 <pre><code class="language-perl">create_box
 	(
 	NAME               =&gt; 'rabbit paw',
@@ -208,13 +208,35 @@ TEXT
 	],
 ]
 </code></pre>
-<p>The box element class also has these functions:</p>
+<p>The class also has these functions:</p>
 <ul>
 <li>add_connector, dynamically add connector</li>
 <li>remove_connector, by name</li>
 </ul>
 <h2 id="example"><a class="header" href="#example">Example</a></h2>
 <p><img src="box_connector.png" alt="box_connector"></p>
+<h2 id="interactive-connector-operations"><a class="header" href="#interactive-connector-operations">Interactive Connector Operations</a></h2>
+<p><img src="2026_01_22_box_connector_interactive.gif" alt="box_connector_interactive"></p>
+<h3 id="adding-connectors"><a class="header" href="#adding-connectors">Adding connectors</a></h3>
+<ul>
+<li>Select a single element</li>
+<li>Enter element group with <em><strong>«e»</strong></em></li>
+<li>Enter element add connectors sub group whie <em><strong>«C»</strong></em></li>
+<li>Move the mouse to where you want to add a connector</li>
+<li>Press the <strong>left</strong> mouse button to add a connector</li>
+<li>Press <em><strong>«Escape»</strong></em> to exit group</li>
+</ul>
+<p>Connectors can be added up to on character outside the element.</p>
+<h3 id="removing-connectors"><a class="header" href="#removing-connectors">Removing connectors</a></h3>
+<ul>
+<li>start with the same steps as “Add connectors” above</li>
+<li>Press the <strong>right</strong> mouse button to delete the connector</li>
+</ul>
+<p>Some connectors can’t be delete.</p>
+<ul>
+<li>The default 4 connectors of the box element</li>
+<li>Connectors that are connected to another element</li>
+</ul>
 
                     </main>
 
