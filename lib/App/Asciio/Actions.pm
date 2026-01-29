@@ -38,7 +38,8 @@ if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 				'ARRAY' eq ref($self->{CURRENT_ACTIONS}{$_}{SHORTCUTS})
 						?  join(', ', $self->{CURRENT_ACTIONS}{$_}{SHORTCUTS}->@*)
 						: $_
-				} grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
+				} grep { ! $self->{CURRENT_ACTIONS}{$_}{OPTIONS}{HIDE} }
+					grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
 	
 	my $max_length = 0 ;
 	my @actions ;
