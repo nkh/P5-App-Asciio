@@ -1,0 +1,3 @@
+#!/bin/bash
+
+./gtk3_example "$1" <(<"$1" ./bin/libavoid-server-linux) 

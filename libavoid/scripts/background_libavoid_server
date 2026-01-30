@@ -1,0 +1,60 @@
+#!/usr/bin/perl
+
+use strict ;
+use warnings ;
+use IPC::Open3 ;
+use Symbol qw(gensym) ;
+use File::Slurper qw(read_text) ;
+
+my $child_err = gensym ;
+
+my $pid = open3(my $child_in, my $child_out, $child_err, 'bin/libavoid-server-linux') ;
+
+if (!defined $pid)
+	{
+	die "Failed to start external program: $!" ;
+	}
+
+$child_in->autoflush(1) ;
+
+my @files = @ARGV ;
+
+my $index = 0 ;
+for my $input_file (@files)
+	{
+	print "#$index ($input_file)\n" ; $index++ ;
+	print get_route($child_in, $child_out, read_text($input_file)) ;
+	}
+
+print "done with files\n" ;
+while (my $error = <$child_err>)
+	{
+	chomp $error ;
+	print "Stderr: $error\n" ;
+	
+	last if $error =~ /YOUR_END_MARKER/ ;
+	}
+
+close $child_in ;
+close $child_out ;
+close $child_err ;
+
+waitpid($pid, 0) ;
+
+sub get_route
+{
+my ($child_in, $child_out, $graph) = @_ ;
+
+print $child_in $graph . "\n" ;
+print $child_in "[CHUNK]\n" ;
+
+my $route = '' ;
+while (my $result = <$child_out>)
+	{
+	$route .= $result ;
+	last if $result =~ /DONE/ ;
+	}
+
+$route
+}
+
