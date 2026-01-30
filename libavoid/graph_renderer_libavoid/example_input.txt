@@ -1,0 +1,32 @@
+OPTION edgeRouting ORTHOGONAL
+PENALTY segmentPenalty 10.0
+PENALTY anglePenalty 0.0
+PENALTY crossingPenalty 0.0
+PENALTY clusterCrossingPenalty 4000.0
+PENALTY fixedSharedPathPenalty 0.0
+PENALTY portDirectionPenalty 100.0
+PENALTY shapeBufferDistance 4.0
+PENALTY idealNudgingDistance 0.0
+PENALTY reverseDirectionPenalty 0.0
+ROUTINGOPTION nudgeOrthogonalSegmentsConnectedToShapes false
+ROUTINGOPTION improveHyperedgeRoutesMovingJunctions true
+ROUTINGOPTION penaliseOrthogonalSharedPathsAtConnEnds false
+ROUTINGOPTION nudgeOrthogonalTouchingColinearSegments false
+ROUTINGOPTION performUnifyingNudgingPreprocessingStep true
+ROUTINGOPTION improveHyperedgeRoutesMovingAddingAndDeletingJunctions true
+ROUTINGOPTION nudgeSharedPathsWithCommonEndPoint true
+GRAPH
+NODE 1 0.0 0.0 0.0 0.0 0 0
+NODE 2 0.0 0.0 0.0 0.0 0 0
+NODE 3 0.0 0.0 0.0 0.0 0 0
+NODE 4 0.0 0.0 0.0 0.0 0 0
+NODE 5 20.0 20.0 50.0 50.0 0 0
+PORT 5 5 EAST 32.5 12.5
+PORT 6 5 EAST 32.5 22.5
+NODE 6 80.0 20.0 110.0 50.0 0 0
+PORT 7 6 WEST -2.5 14.5
+NODE 7 150.0 30.0 180.0 60.0 0 0
+PORT 8 7 WEST -2.5 14.5
+PEDGEP 1 5 6 5 7
+PEDGEP 2 5 7 6 8
+GRAPHEND

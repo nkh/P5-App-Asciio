@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="200">
+<rect width="560" height="200" fill="rgb(255,255,255)"/>
+<rect x="70" y="70" width="90" height="90" fill="rgb(178,130,219)" stroke="black" stroke-width="3"/>
+<rect x="460" y="100" width="90" height="90" fill="rgb(140,229,104)" stroke="black" stroke-width="3"/>
+<rect x="250" y="70" width="90" height="90" fill="rgb(96,193,252)" stroke="black" stroke-width="3"/>
+<rect x="10" y="10" width="0" height="0" fill="rgb(252,140,96)" stroke="black" stroke-width="3"/>
+<rect x="10" y="10" width="0" height="0" fill="rgb(255,188,135)" stroke="black" stroke-width="3"/>
+<rect x="10" y="10" width="0" height="0" fill="rgb(102,193,165)" stroke="black" stroke-width="3"/>
+<rect x="10" y="10" width="0" height="0" fill="rgb(229,137,193)" stroke="black" stroke-width="3"/>
+<rect x="236.5" y="107.5" width="12" height="12" fill="rgb(229,76,76)"/>
+<rect x="161.5" y="131.5" width="12" height="12" fill="rgb(229,76,76)"/>
+<rect x="161.5" y="101.5" width="12" height="12" fill="rgb(229,76,76)"/>
+<rect x="446.5" y="137.5" width="12" height="12" fill="rgb(229,76,76)"/>
+<path d="M 160 137.5 L 205 137.5 L 205 172 L 400 172 L 400 143.5 L 460 143.5 " fill="none" stroke="rgb(51,127,204)" stroke-width="3"/>
+<path d="M 460 143.5 L 445 151 M 460 143.5 L 445 136" fill="none" stroke="rgb(51,127,204)" stroke-width="3"/>
+<path d="M 160 107.5 L 205 107.5 L 205 113.5 L 250 113.5 " fill="none" stroke="rgb(51,127,204)" stroke-width="3"/>
+<path d="M 250 113.5 L 235 121 M 250 113.5 L 235 106" fill="none" stroke="rgb(51,127,204)" stroke-width="3"/>
+</svg>
