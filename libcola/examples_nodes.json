@@ -1,0 +1,111 @@
+
+{
+  "id": "ex1",
+  "nodes": [
+    { "id": "N1" }, { "id": "N2" }, { "id": "N3" }, { "id": "N4" },
+    { "id": "N5" }, { "id": "N6" }, { "id": "N7" }, { "id": "N8" },
+    { "id": "N9" }, { "id": "N10" }
+  ],
+  "edges": [
+    { "source": "N1", "target": "N2" },
+    { "source": "N2", "target": "N3" },
+    { "source": "N3", "target": "N4" },
+    { "source": "N4", "target": "N5" },
+    { "source": "N6", "target": "N7" },
+    { "source": "N7", "target": "N8" },
+    { "source": "N8", "target": "N9" },
+    { "source": "N9", "target": "N10" }
+  ],
+  "constraints": {
+    "layout": true,
+    "grid_mode": "snap",
+    "grid": 50,
+    "routing": "orthogonal",
+    "routing_grid": 20
+  }
+}
+
+
+
+{
+  "id": "ex2",
+  "nodes": [
+    { "id": "A1" }, { "id": "A2" }, { "id": "A3" }, { "id": "A4" }, { "id": "A5" },
+    { "id": "A6" }, { "id": "A7" }, { "id": "A8" }, { "id": "A9" }, { "id": "A10" },
+    { "id": "A11" }, { "id": "A12" }, { "id": "A13" }, { "id": "A14" }, { "id": "A15" }
+  ],
+  "edges": [
+    { "source": "A1", "target": "A5" },
+    { "source": "A2", "target": "A6" },
+    { "source": "A3", "target": "A7" },
+    { "source": "A4", "target": "A8" },
+    { "source": "A9", "target": "A10" },
+    { "source": "A11", "target": "A12" },
+    { "source": "A13", "target": "A14" },
+    { "source": "A14", "target": "A15" }
+  ],
+  "constraints": {
+    "layout": true,
+    "order_left_to_right": ["A1","A2","A3","A4","A5","A6","A7","A8","A9","A10","A11","A12","A13","A14","A15"],
+    "routing": "polyline",
+    "routing_padding": 10
+  }
+}
+
+
+
+{
+  "id": "ex3",
+  "nodes": [
+    { "id": "N1" }, { "id": "N2" }, { "id": "N3" }, { "id": "N4" }, { "id": "N5" },
+    { "id": "N6" }, { "id": "N7" }, { "id": "N8" }, { "id": "N9" }, { "id": "N10" },
+    { "id": "N11" }, { "id": "N12" }, { "id": "N13" }, { "id": "N14" }, { "id": "N15" },
+    { "id": "N16" }, { "id": "N17" }, { "id": "N18" }, { "id": "N19" }, { "id": "N20" }
+  ],
+  "edges": [
+    { "source": "N1", "target": "N11" },
+    { "source": "N2", "target": "N12" },
+    { "source": "N3", "target": "N13" },
+    { "source": "N4", "target": "N14" },
+    { "source": "N5", "target": "N15" },
+    { "source": "N6", "target": "N16" },
+    { "source": "N7", "target": "N17" },
+    { "source": "N8", "target": "N18" },
+    { "source": "N9", "target": "N19" },
+    { "source": "N10", "target": "N20" }
+  ],
+  "constraints": {
+    "layout": true,
+    "align_vertical": ["N1","N2","N3","N4","N5"],
+    "routing": "orthogonal_compact",
+    "routing_grid": 15
+  }
+}
+
+
+
+{
+  "id": "ex4",
+  "nodes": [
+    { "id": "A", "x": 100, "y": 100 },
+    { "id": "B", "x": 400, "y": 100 },
+    { "id": "C", "x": 250, "y": 300 },
+    { "id": "D" }, { "id": "E" }, { "id": "F" },
+    { "id": "G" }, { "id": "H" }, { "id": "I" },
+    { "id": "J" }, { "id": "K" }, { "id": "L" }
+  ],
+  "edges": [
+    { "source": "A", "target": "C" },
+    { "source": "B", "target": "C" },
+    { "source": "D", "target": "E" },
+    { "source": "F", "target": "G" },
+    { "source": "H", "target": "I" },
+    { "source": "J", "target": "K" }
+  ],
+  "constraints": {
+    "layout": false,
+    "fixed": ["A","B","C"],
+    "routing": "polyline",
+    "avoid_overlaps": true
+  }
+}

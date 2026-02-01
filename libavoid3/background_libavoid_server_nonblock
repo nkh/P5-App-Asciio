@@ -1,0 +1,125 @@
+#!/usr/bin/perl
+
+use strict ;
+use warnings ;
+use IPC::Open3 ;
+use Symbol qw(gensym) ;
+use File::Slurper qw(read_text) ;
+use IO::Select ;
+use Fcntl ;
+
+my $child_err = gensym ;
+
+my $pid = open3(my $child_in, my $child_out, $child_err, 'bin/libavoid-server-linux') ;
+
+if (!defined $pid)
+	{
+	die "Failed to start external program: $!" ;
+	}
+
+$child_in->autoflush(1) ;
+
+my $flags = fcntl($child_out, F_GETFL, 0) or die "Can't get flags: $!" ;
+fcntl($child_out, F_SETFL, $flags | O_NONBLOCK) or die "Can't set non-blocking: $!" ;
+
+$flags = fcntl($child_err, F_GETFL, 0) or die "Can't get flags: $!" ;
+fcntl($child_err, F_SETFL, $flags | O_NONBLOCK) or die "Can't set non-blocking: $!" ;
+
+my $selector = IO::Select->new ;
+$selector->add($child_out, $child_err) ;
+
+my @files = @ARGV ;
+
+my $stdout_buffer = '' ;
+my $stderr_buffer = '' ;
+
+my $index = 0 ;
+for my $input_file (@files)
+	{
+	my $file_contents = read_text($input_file) ;
+	
+	print $child_in $file_contents ;
+	print $child_in "[CHUNK]\n" ;
+	
+	print "#$index ($input_file)\n" ;
+	$index++ ;
+	
+	my $done = 0 ;
+	my $last_activity = time ;
+	
+	while (!$done && $selector->count)
+		{
+		my @ready = $selector->can_read(1) ;
+		
+		if (!@ready)
+			{
+			if ((time - $last_activity) > 1)
+				{
+				print "Timeout: no data received for 1 second\n" ;
+				last ;
+				}
+			
+			next ;
+			}
+		
+		$last_activity = time ;
+		
+		for my $fh (@ready)
+			{
+			my $buf ;
+			my $n = sysread($fh, $buf, 4096) ;
+			
+			if ($n)
+				{
+				if ($fh == $child_out)
+					{
+					$stdout_buffer .= $buf ;
+					
+					while ($stdout_buffer =~ s/^(.*?\n)//)
+						{
+						my $line = $1 ;
+						print $line ;
+						
+						if ($line =~ /^DONE/)
+							{
+							$done = 1 ;
+							}
+						}
+					}
+				else
+					{
+					$stderr_buffer .= $buf ;
+					
+					while ($stderr_buffer =~ s/^(.*?\n)//)
+						{
+						my $line = $1 ;
+						chomp $line ;
+						print "Stderr: $line\n" ;
+						}
+					}
+				}
+			elsif (defined $n)
+				{
+				$selector->remove($fh) ;
+				}
+			}
+		}
+	}
+
+if ($stdout_buffer)
+	{
+	print $stdout_buffer ;
+	}
+
+if ($stderr_buffer)
+	{
+	chomp $stderr_buffer ;
+	print "Stderr: $stderr_buffer\n" ;
+	}
+
+print "done with files\n" ;
+close $child_in ;
+close $child_out ;
+close $child_err ;
+
+waitpid($pid, 0) ;

@@ -1,0 +1,139 @@
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+#toolbar {
+  padding: 6px 8px;
+  background: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+
+#toolbar .left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#toolbar .right {
+  margin-left: auto;
+  font-size: 12px;
+  color: #555;
+}
+
+#toolbar button {
+  padding: 2px 6px;
+  font-size: 13px;
+}
+
+#container {
+  flex: 1;
+  overflow: auto;
+  background: #ffffff;
+}
+
+svg {
+  background: #ffffff;
+}
+
+/* Layers */
+.layer-grid line {
+  stroke: #cccccc;
+  stroke-width: 0.5;
+  stroke-opacity: 0.08;
+}
+
+.layer-bbox rect {
+  fill: none;
+  stroke: #000000;
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.layer-clusters rect {
+  fill: #ff00ff;
+  fill-opacity: 0.15;
+  stroke: #ff00ff;
+  stroke-width: 1;
+}
+
+/* Nodes */
+.node-rect {
+  fill: #f5f5ff;
+  stroke: #333333;
+  stroke-width: 1;
+}
+
+.node-label {
+  fill: #000000;
+  font-size: 12px;
+}
+
+/* Constraint-based classes (colors overridden by JS if config.colors set) */
+.node-align-vertical .node-rect {
+  fill: #d0e0ff;
+}
+
+.node-align-horizontal .node-rect {
+  fill: #d0ffd0;
+}
+
+.node-order-left-right .node-rect {
+  fill: #ffe0b0;
+}
+
+.node-order-top-bottom .node-rect {
+  fill: #e0b0ff;
+}
+
+/* Fixed / source / sink (colors overridden by JS if config.colors set) */
+.node-fixed .node-rect {
+  stroke: #ff0000;
+  stroke-width: 2;
+}
+
+.node-source:not(.node-fixed) .node-rect {
+  stroke: #00aa00;
+  stroke-width: 2;
+}
+
+.node-sink:not(.node-fixed) .node-rect {
+  stroke: #0000aa;
+  stroke-width: 2;
+}
+
+/* Edge labels */
+.edge-label {
+  font-size: 11px;
+}
+
+/* Hidden layers */
+.hidden {
+  display: none;
+}
+
+/* Tooltip */
+#tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: rgba(0,0,0,0.85);
+  color: #ffffff;
+  padding: 4px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  z-index: 1000;
+  display: none;
+  max-width: 320px;
+  white-space: pre;
+}

@@ -1,0 +1,175 @@
+
+# Generate a random request in JSON
+./gen.pl --json > req.json
+
+# Run it through the layout engine (using your Perl wrapper or CLI)
+cat req.json | ./cli-layout.pl > resp.json
+
+# Visualize the response as SVG
+cat resp.json | ./visualize_svg.pl > graph.svg
+
+
+
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use JSON::MaybeXS;
+use List::Util qw(min max);
+
+# ------------------------------------------------------------
+# Read JSON response from STDIN
+# ------------------------------------------------------------
+my $json_text = do { local $/; <STDIN> };
+die "No input\n" unless defined $json_text && length $json_text;
+
+my $json = JSON::MaybeXS->new(utf8 => 1);
+my $resp = eval { $json->decode($json_text) };
+die "Invalid JSON on STDIN: $@\n" if $@ || ref $resp ne 'HASH';
+
+my $nodes = $resp->{nodes}  || [];
+my $edges = $resp->{edges}  || [];
+my $bbox  = $resp->{metadata}{bbox};
+
+# ------------------------------------------------------------
+# Compute bounds if bbox is missing
+# ------------------------------------------------------------
+my ($min_x, $min_y, $max_x, $max_y);
+
+if ($bbox) {
+    $min_x = $bbox->{x};
+    $min_y = $bbox->{y};
+    $max_x = $bbox->{x} + $bbox->{width};
+    $max_y = $bbox->{y} + $bbox->{height};
+} else {
+    # derive from nodes and edges
+    for my $n (@$nodes) {
+        my $x = $n->{x} // 0;
+        my $y = $n->{y} // 0;
+        my $w = $n->{width}  // 60;
+        my $h = $n->{height} // 40;
+
+        $min_x = defined $min_x ? min($min_x, $x)       : $x;
+        $min_y = defined $min_y ? min($min_y, $y)       : $y;
+        $max_x = defined $max_x ? max($max_x, $x + $w)  : $x + $w;
+        $max_y = defined $max_y ? max($max_y, $y + $h)  : $y + $h;
+    }
+
+    for my $e (@$edges) {
+        if (my $route = $e->{route}) {
+            for my $p (@$route) {
+                my $x = $p->{x} // 0;
+                my $y = $p->{y} // 0;
+                $min_x = defined $min_x ? min($min_x, $x) : $x;
+                $min_y = defined $min_y ? min($min_y, $y) : $y;
+                $max_x = defined $max_x ? max($max_x, $x) : $x;
+                $max_y = defined $max_y ? max($max_y, $y) : $y;
+            }
+        }
+    }
+}
+
+$min_x //= 0;
+$min_y //= 0;
+$max_x //= 800;
+$max_y //= 600;
+
+my $width  = $max_x - $min_x || 800;
+my $height = $max_y - $min_y || 600;
+
+# Add a bit of padding
+my $pad = 20;
+$min_x -= $pad;
+$min_y -= $pad;
+$width  += 2 * $pad;
+$height += 2 * $pad;
+
+# ------------------------------------------------------------
+# Build lookup for nodes by id
+# ------------------------------------------------------------
+my %node_by_id = map { $_->{id} => $_ } @$nodes;
+
+# ------------------------------------------------------------
+# SVG helpers
+# ------------------------------------------------------------
+sub esc {
+    my ($s) = @_;
+    return '' unless defined $s;
+    $s =~ s/&/&amp;/g;
+    $s =~ s/</&lt;/g;
+    $s =~ s/>/&gt;/g;
+    $s =~ s/"/&quot;/g;
+    return $s;
+}
+
+# ------------------------------------------------------------
+# Emit SVG
+# ------------------------------------------------------------
+print <<"SVG_HEADER";
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="$width"
+     height="$height"
+     viewBox="$min_x $min_y $width $height"
+     font-family="sans-serif"
+     font-size="12">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="10" refY="5"
+            markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#333" />
+    </marker>
+  </defs>
+
+  <rect x="$min_x" y="$min_y" width="$width" height="$height"
+        fill="#ffffff" stroke="#dddddd" stroke-width="1"/>
+SVG_HEADER
+
+# ------------------------------------------------------------
+# Draw edges
+# ------------------------------------------------------------
+for my $e (@$edges) {
+    my $src_id = $e->{source};
+    my $dst_id = $e->{target};
+    my $src = $node_by_id{$src_id};
+    my $dst = $node_by_id{$dst_id};
+
+    my @points;
+
+    if ($e->{route} && @{$e->{route}}) {
+        @points = map { [ $_->{x}, $_->{y} ] } @{$e->{route}};
+    } elsif ($src && $dst) {
+        my $sx = ($src->{x} // 0) + ($src->{width}  // 60) / 2;
+        my $sy = ($src->{y} // 0) + ($src->{height} // 40) / 2;
+        my $dx = ($dst->{x} // 0) + ($dst->{width}  // 60) / 2;
+        my $dy = ($dst->{y} // 0) + ($dst->{height} // 40) / 2;
+        @points = ( [ $sx, $sy ], [ $dx, $dy ] );
+    } else {
+        next;
+    }
+
+    my $d = "M $points[0]->[0] $points[0]->[1]";
+    for my $i (1 .. $#points) {
+        $d .= " L $points[$i]->[0] $points[$i]->[1]";
+    }
+
+    print qq{  <path d="$d" fill="none" stroke="#333" stroke-width="1.5" marker-end="url(#arrow)"/>\n};
+}
+
+# ------------------------------------------------------------
+# Draw nodes
+# ------------------------------------------------------------
+for my $n (@$nodes) {
+    my $id = $n->{id};
+    my $x  = $n->{x} // 0;
+    my $y  = $n->{y} // 0;
+    my $w  = $n->{width}  // 60;
+    my $h  = $n->{height} // 40;
+
+    my $label = esc($id);
+
+    print qq{  <rect x="$x" y="$y" width="$w" height="$h" rx="4" ry="4" fill="#f5f5ff" stroke="#333" stroke-width="1"/>\n};
+    print qq{  <text x="@{[$x + $w/2]}" y="@{[$y + $h/2 + 4]}" text-anchor="middle" fill="#000">$label</text>\n};
+}
+
+print "</svg>\n";
+
+exit 0;

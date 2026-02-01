@@ -1,0 +1,35 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use JSON;
+
+my $separator = $ENV{LAYOUT_SEPARATOR} // '---END---';
+my $json = JSON->new->canonical;
+
+my $buf = '';
+while (defined(my $line = <STDIN>)) {
+    chomp $line;
+
+    if ($line eq $separator) {
+        if ($buf =~ /\S/) {
+            my $perl = eval $buf;
+            if ($@) {
+                # Invalid Perl, skip or warn
+            } else {
+                print $json->encode($perl), "\n";
+            }
+            $buf = '';
+        }
+        print $separator, "\n";
+        next;
+    }
+
+    $buf .= $line . "\n";
+}
+
+if ($buf =~ /\S/) {
+    my $perl = eval $buf;
+    if (!$@) {
+        print $json->encode($perl), "\n";
+    }
+}
