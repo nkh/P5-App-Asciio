@@ -29,7 +29,7 @@ my ($self, $keep_visible) = @_ ;
 
 if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 	{
-	my %reserved = map { $_ => 1 } qw(HIDE IS_GROUP ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
+	my %reserved = map { $_ => 1 } qw(HIDE IS_GROUP DESCRIPTION ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
 	
 	my $binding_max_length =
 		max map { length }
@@ -68,6 +68,7 @@ if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 				} @actions
 			] ;
 	
+
 	$self->{BINDINGS_COMPLETION_LENGTH} = $max_length ;
 	$self->update_display() ;
 	}

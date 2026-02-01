@@ -8,15 +8,16 @@ These files are valid Perl scripts, you can defined code to bind to in the files
 
 Use the following commands to define commands:
 
-| Subroutine Name                        | Purpose                                                             | Data Format Expected          |
-| ---                                    | ---                                                                 | ---                           |
-| register_action_handlers               | Defines actions, and multi-level action groups.                     |                               |
-| register_action_handlers_with_override | As above but also **deletes** old shortcuts                         | list of key-value pairs       |
-| TOP_LEVEL_GROUP                        | Defines the content of the top-level grouping used for menu display | shortcut and a list of action |
-| GROUP                                  | Used to declare a nested, ordered, action group.                    |                               |
-| USE_GROUP                              | binds a shortcut with a group                                       |                               |
-| CONTEXT_MENU                           | Defines actions that are only accessible via a context menu         |                               |
-| MACRO                                  | associate a action to set of commands                               |                               |
+| Subroutine Name                        | Purpose                                                             | Data Format Expected              |
+| ---                                    | ---                                                                 | ---                               |
+| register_action_handlers               | Defines actions, and multi-level action groups.                     |                                   |
+| register_action_handlers_with_override | As above but also **deletes** old shortcuts                         | list of key-value pairs           |
+| PROXY_GROUP                            | Defines the content of the top-level grouping used for menu display | shortcut and a list of action     |
+| ROOT_GROUP                             | Defines actions that are registered in the default group            | information and a list of actions |
+| GROUP                                  | Used to declare a nested, ordered, action group.                    |                                   |
+| USE_GROUP                              | binds a shortcut with a group                                       |                                   |
+| CONTEXT_MENU                           | Defines actions that are only accessible via a context menu         |                                   |
+| MACRO                                  | associate a action to set of commands                               |                                   |
 
 ## Action Definition Formats
 

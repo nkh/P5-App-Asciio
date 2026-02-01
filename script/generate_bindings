@@ -1,0 +1,486 @@
+#!/usr/bin/env perl
+
+use strict ;
+use warnings ;
+
+use Module::Util qw(find_installed) ;
+use File::Basename ;
+use Archive::Tar ;
+use Data::TreeDumper ;
+use Data::Dumper ;
+use File::Path qw(make_path) ;
+use open qw( :std :encoding(UTF-8) ) ;
+use utf8 ;
+
+use App::Asciio ;
+
+# --------------------------------------------------------------------------------------------
+
+generate_bindings_docs() ;
+
+# --------------------------------------------------------------------------------------------
+
+sub generate_bindings_docs
+{
+
+my $output_dir = $ARGV[0] || die "Error: pass destination directory as argument\n" ;
+make_path($output_dir) ;
+
+my ($asciio_config, $asciio, $bindings) = get_asciio() ;
+
+my $stats   = init_stats() ;
+my $groups  = extract_groups ($bindings, $stats) ;
+my $actions = build_action_lookup($groups, $stats) ;
+my $paths   = resolve_paths($groups, $stats) ;
+
+render_docs($output_dir, $groups, $actions, $paths, $stats) ;
+write_index($output_dir, 'bindings_index.md', $groups) ;
+
+print DumpTree $stats if @{$stats->{errors}} || @{$stats->{warnings}} ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub extract_groups
+{
+my ($bindings, $stats) = @_ ;
+
+my %groups ;
+
+for my $ini_file (@{$bindings})
+	{
+	for my $file_path (keys %{$ini_file})
+		{
+		my $file_bindings = $ini_file->{$file_path} ;
+		
+		parse_root_groups (\%groups, $file_bindings->{root_groups},  $file_path, $stats) ;
+		parse_groups      (\%groups, $file_bindings->{groups},       $file_path, $stats) ;
+		parse_proxy_groups(\%groups, $file_bindings->{proxy_groups}, $file_path, $stats) ;
+		}
+	}
+
+return \%groups ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub parse_root_groups
+{
+my ($groups, $roots, $file_path, $stats) = @_ ;
+
+my $index = 0 ;
+for my $root (@{$roots // []})
+	{
+	$index++ ;
+	my @elements = @{$root} ;
+	my $config   = shift @elements ;
+	my $title    = $config->{NAME} // handle_missing_id($stats, "ROOT", $file_path, $index) ;
+	
+	$groups->{$title} =
+		{
+		type    => 'ROOT',
+		title   => $title,
+		file    => sanitize_filename("ROOT_$title"),
+		config  => $config,
+		actions => \@elements
+		} ;
+	
+	$stats->{counts}{ROOT}++ ;
+	}
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub parse_groups
+{
+my ($groups, $entries, $file_path, $stats) = @_ ;
+
+my %attributes = map { $_ => 1 } qw(NAME SHORTCUTS DESCRIPTION ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP) ;
+
+my $index = 0 ;
+for my $entry (@{$entries // []})
+	{
+	$index++ ;
+	
+	my (%config, @ops) ;
+	my @elements = $entry->@* ;
+	
+	while (@elements)
+		{
+		my ($k, $v) = (shift @elements, shift @elements) ;
+		
+		if (exists $attributes{$k})
+			{
+			$config{$k} = $v ;
+			}
+		else
+			{
+			push @ops, $k, $v ;
+			}
+		}
+	
+	my $title = $config{NAME} // handle_missing_id($stats, "GROUP", $file_path, $index) ;
+	
+	$groups->{$title} =
+		{
+		type    => 'GROUP',
+		title   => $title,
+		file    => sanitize_filename("GROUP_$title"),
+		config  => \%config,
+		actions => \@ops
+		} ;
+	
+	$stats->{counts}{GROUP}++ ;
+	}
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub parse_proxy_groups
+{
+my ($groups, $proxies, $file_path, $stats) = @_ ;
+
+my $index = 0 ;
+for my $proxy (@{$proxies // []})
+	{
+	$index++ ;
+	
+	my @elements = @{$proxy} ;
+	my $config   = shift @elements ;
+	my $title    = $config->{NAME} // handle_missing_id($stats, "PROXY", $file_path, $index) ;
+	
+	$groups->{$title} =
+		{
+		type    => 'PROXY',
+		title   => $title,
+		file    => sanitize_filename("PROXY_$title"),
+		config  => $config,
+		targets => \@elements
+		} ;
+	
+	$stats->{counts}{PROXY}++ ;
+	}
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub resolve_paths
+{
+my ($groups, $stats) = @_ ;
+
+my ($changed, %path_map) = (1) ;
+
+for my $id (keys %$groups)
+	{
+	my $group = $groups->{$id} ;
+	
+	next if $group->{type} eq 'PROXY' ; # proxy groups only use names as proxy and have no actions
+	
+	my @actions = @{$group->{actions}} ;
+	
+	while (@actions)
+		{
+		my ($actions, $handler) = (shift @actions, shift @actions) ;
+		
+		if (ref $handler->[1] && $handler->[1] =~ /use_(group_.+)=/)
+			{
+			my $target_id = $1 ;
+			push @{$path_map{$target_id}}, $id ;
+			}
+		}
+	}
+
+return \%path_map ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub render_docs
+{
+my ($dir, $groups, $ops, $paths, $stats) = @_ ;
+
+for my $id (sort keys %$groups)
+	{
+	my $group = $groups->{$id} ;
+	my $path  = "$dir/$group->{file}" ;
+	my $desc  = $group->{config}{DESCRIPTION} // 'Missing description!' ;
+	my $sc    = $group->{config}{SHORTCUTS}   // 'Missing shortcuts!' ;
+	
+	open my $fh, '>', $path or die "Cannot write $path : $!" ;
+	# binmode($fh, ':utf8') ;
+	
+	print $fh "# $group->{title}\n\n" ;
+	print $fh render_nav($paths, $id, $groups) ;
+	print $fh "$desc\n\n" if $desc ;
+	print $fh "- Shortcut: «$sc»\n\n" if $sc ;
+	print $fh render_table(get_table_data($group, $groups, $ops, $stats)) ;
+	
+	close $fh ;
+	}
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub render_nav
+{
+my ($graph, $target, $groups) = @_;
+
+my @results;
+
+my $walk ;
+   $walk = 
+	sub
+		{
+		my ($node, $path) = @_;
+		
+		my $anc = $graph->{$node} || [];
+		
+		if (!@$anc)
+			{
+			push @results, [ @$path, $node ];
+			return;
+			}
+		
+		for my $a (@$anc)
+			{
+			if (!exists $graph->{$a})
+				{
+				push @results, [ @$path, $node, $a];
+				next;
+				}
+			
+			$walk->($a, [ @$path, $node ]);
+			}
+		};
+
+$walk->($target, []) ;
+
+my $paths = '' ;
+for my $p (@results)
+	{
+	$paths .= "\t- " ;
+	$paths .= join " ... ", map { "[$_]($groups->{$target}{file})" } reverse @$p ;
+	$paths .= "\n" ;
+	}
+
+return "Navigation:\n$paths\n" ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub get_table_data
+{
+my ($group, $groups, $op_lookup, $stats) = @_ ;
+
+my (@rows, @headers) ;
+
+if ($group->{type} eq 'PROXY')
+	{
+	@headers = ('Operation', 'Link') ;
+	
+	for my $target (@{$group->{targets}})
+		{
+		my $link = exists $groups->{$target} 
+			? "group [$groups->{$target}{title}]($groups->{$target}{file})" 
+			: exists $op_lookup->{$target} 
+				? "[$target]($op_lookup->{$target})" 
+				: do { push @{$stats->{warnings}}, "No link for '$target'" ; ''} ;
+		
+		push @rows, [$target, $link] ;
+		}
+	}
+else
+	{
+	@headers = ('Operation', 'Binding', 'Description') ;
+	
+	my @action = @{$group->{actions}} ;
+	
+	while (@action)
+		{
+		my ($action, $handler) = (shift @action, shift @action) ;
+		# next if ref $handler->[3] && $handler->[3]{HIDE} ;
+		
+		my $shortcuts = ref $handler->[0] eq 'ARRAY' ? join(', ', map { "«$_»" } @{$handler->[0]}) : "«$handler->[0]»" ;
+		my $info      = '' ;
+		
+		if (ref $handler->[1] && $handler->[1] =~ /use_(group_.+)=/)
+			{
+			my $target_id = $1 ;
+			my $title     = exists $groups->{$target_id} ? $groups->{$target_id}{title} : $target_id ;
+			my $file      = exists $groups->{$target_id} ? $groups->{$target_id}{file} : '#' ;
+			   $info      = "group [$title]($file)" ;
+			}
+		elsif (ref $handler->[3] && $handler->[3]{DESCRIPTION})
+			{
+			$info = $handler->[3]{DESCRIPTION} ;
+			}
+		
+		push @rows, [$action, $shortcuts, $info] ;
+		}
+	}
+
+return \@rows, \@headers ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub render_table
+{
+my ($rows, $hdrs) = @_ ;
+return unless @$rows ;
+
+my @widths = map { length($_) } @$hdrs ;
+
+for my $r (@$rows)
+	{
+	for (0..$#$r)
+		{
+		my $l = length($r->[$_] // '') ;
+		$widths[$_] = $l if $l > ($widths[$_] // 0) ;
+		}
+	}
+
+my $ft = '' ;
+my $format = "| " . join(' | ', map { "%-${_}s" } @widths) . " |\n" ;
+
+$ft .= sprintf($format, @$hdrs) ;
+$ft .= "| " . join(' | ', map { '-' . " " x ($_ - 1) } @widths) . " |\n" ;
+
+for my $r (@$rows)
+	{
+	$ft .= sprintf($format, (map { $_ // '' } @$r)) ;
+	}
+
+return $ft
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub build_action_lookup
+{
+my ($groups, $stats) = @_ ;
+
+my %lookup ;
+
+for my $id (keys %$groups)
+	{
+	my $group = $groups->{$id} ;
+	next unless $group->{actions} ;
+	
+	my @copy = @{$group->{actions}} ;
+	
+	while (@copy)
+		{
+		my $op = shift @copy ;
+		
+		shift @copy ;
+		
+		$lookup{$op} = $group->{file} ;
+		$stats->{counts}{total_operations}++ ;
+		}
+	}
+
+return \%lookup ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub init_stats
+{
+	{
+	counts   => { ROOT => 0, GROUP => 0, PROXY => 0, total_operations => 0 },
+	rankings => { top_groups => [] },
+	errors   => [],
+	warnings => []
+	} ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub handle_missing_id
+{
+my ($stats, $type, $file, $index) = @_ ;
+
+my $id = "MISSING_${type}_NAME_${file}_" . int(rand(10000)) ;
+push @{$stats->{errors}}, "$type at index $index in $file missing NAME. Assigned $id" ;
+
+return $id ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub sanitize_filename
+{
+my ($n) = @_ ;
+
+$n =~ s/[^a-zA-Z0-9_]/_/g ;
+
+return "$n.md" ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub write_index
+{
+my ($dir, $name, $groups) = @_ ;
+
+open my $fh, '>', "$dir/$name" or die "Cannot create index : $!" ;
+
+print $fh "# Bindings Index\n\n" ;
+
+for 
+	(
+	[ ROOT  => "## Root groups" ],
+	[ GROUP => "## Groups" ],
+	[ PROXY => "## Proxy groups" ],
+	)
+	{
+	my ($type, $header) = $_->@* ;
+	
+	print $fh "$header\n" ;
+	for my $id (sort grep { $groups->{$_}{type} eq $type } keys %$groups)
+		{
+		print $fh "- [$groups->{$id}{title}]($groups->{$id}{file})\n" ;
+		}
+	print $fh "\n" ;
+	}
+
+close $fh ;
+}
+
+# --------------------------------------------------------------------------------------------
+
+sub get_asciio
+{
+my $asciio = new App::Asciio() ;
+$asciio->{UI} = 'TUI' ;
+my ($ok, $msg, $config) = $asciio->ParseSwitches([@ARGV], 0) ;
+die "Error: '$msg'!" unless $ok ;
+
+my $log_sub = sub
+	{
+	print { defined $config->{DEBUG_FD} ? \*$config->{DEBUG_FD} : \*STDERR } "@_\n" ;
+	} ;
+
+my %override = (WARN => $log_sub, ACTION_VERBOSE => $log_sub) ;
+my $bindings ;
+
+if (@{$config->{SETUP_PATHS}})
+	{
+	$bindings = $asciio->setup($config->{SETUP_PATHS}, \%override) ;
+	}
+else
+	{
+	my ($base, $path) = fileparse(find_installed('App::Asciio'), ('\..*')) ;
+	my $paths =
+		[
+		$path . $base . '/setup/setup.ini',
+		$ENV{HOME} . '/.config/Asciio/Asciio.ini'
+		] ;
+	
+	$bindings = $asciio->setup($paths, { %override, DISPLAY_SETUP_INFORMATION_ACTION => 0 }) ;
+	}
+
+return $config, $asciio, $bindings ;
+}
+

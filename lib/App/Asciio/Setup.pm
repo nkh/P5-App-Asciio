@@ -33,6 +33,8 @@ if (defined $object_overrides)
 		}
 	}
 
+my @bindings ;
+
 for my $setup_file (@{$setup_ini_files})
 	{
 	$self->{WARN}("Initializing with '$setup_file'\n") if $self->{DISPLAY_SETUP_INFORMATION} ;
@@ -68,9 +70,11 @@ for my $setup_file (@{$setup_ini_files})
 	
 	$self->setup_stencils($setup_path, $ini_files->{STENCILS} || []) ;
 	$self->setup_hooks($setup_path, $ini_files->{HOOK_FILES} || []) ;
-	$self->setup_action_handlers($setup_path, $ini_files->{ACTION_FILES} || []) ;
+	push @bindings, $self->setup_action_handlers($setup_path, $ini_files->{ACTION_FILES} || []) ;
 	$self->setup_import_export_handlers($setup_path, $ini_files->{IMPORT_EXPORT} || []) ;
 	}
+
+return \@bindings ;
 }
 
 #------------------------------------------------------------------------------------------------------
@@ -150,13 +154,14 @@ my $installed = find_installed('App::Asciio') ;
 my ($basename, $path, $ext) = File::Basename::fileparse($installed, ('\..*')) ;
 my $asciio_setup_path = $path . $basename . '/setup/' ;
 
-my @top_level_groups ;
+my %bindings_by_file ;
 
 for my $action_file (@{ $action_files })
 	{
 	my $context = new Eval::Context() ;
 	
 	my (%action_handlers, @context_menues, $remove_old_shortcuts) ;
+	my (@root_groups, @proxy_groups, @groups) ;
 	
 	if($action_file =~ /^\Q$asciio_setup_path\E/)
 		{
@@ -171,11 +176,12 @@ for my $action_file (@{ $action_files })
 		{ 
 		my $group = shift ;
 		my $sub = sub { $_[0]->use_action_group("group_$group") ; } ;
+		bless $sub, "use_group_$group" ;
 		set_subname( "App::Asciio::Actions::Group::$group", $sub ) ;
 		return $sub ;
 		} ;
 	
-	my $group_sub = sub { return bless [@_], 'action_group' ; } ;
+	my $group_sub = sub { my $group = [@_] ; push @groups, $group ; return bless $group, 'action_group' ; } ;
 	
 	my $set_macro = 
 		sub 
@@ -192,9 +198,10 @@ for my $action_file (@{ $action_files })
 		INSTALL_SUBS => {
 				register_action_handlers               => sub { %action_handlers = @_ ; },
 				register_action_handlers_with_override => sub { %action_handlers = @_ ; $remove_old_shortcuts++ ; },
-				TOP_LEVEL_GROUP                        => sub { push @top_level_groups, [@_] ; return () ; },
-				USE_GROUP                              => $use_group_sub,
+				PROXY_GROUP                            => sub { push @proxy_groups, [@_] ; return () ; },
+				ROOT_GROUP                             => sub { push @root_groups, [@_]  ; return () ; },
 				GROUP                                  => $group_sub, 
+				USE_GROUP                              => $use_group_sub,
 				CONTEXT_MENU                           => sub { push @context_menues, [@_] ; return () ; },
 				CAPTURE_KEYS                           => sub { return sub {} ; },
 				MACRO                                  => $set_macro,
@@ -205,114 +212,36 @@ for my $action_file (@{ $action_files })
 	
 	die "Asciio: can't load setup file '$action_file': $! $@\n" if $@ ;
 	
-	my %reserved = map {$_ => 1} qw(SHORTCUT HIDE ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP) ;
+	$bindings_by_file{$action_file} =
+		{
+		root_groups  => \@root_groups,
+		proxy_groups => \@proxy_groups,
+		groups       => \@groups,
+		} ;
+	
+	my %reserved = map {$_ => 1} qw(SHORTCUTS HIDE ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP DESCRIPTION) ;
 	
 	for my $name (grep { ! exists $reserved{$_}} keys %action_handlers)
 		{
-		my $action_handler_definition = $action_handlers{$name} ;
-		my $action_handler ;
-		
-		my $shortcuts_definition ;
-		
-		if('action_group' eq ref $action_handler_definition || 'HASH' eq ref $action_handler_definition)
+		if('action_group' eq ref $action_handlers{$name})
 			{
-			($shortcuts_definition, $action_handler) = $self->get_group_action_handler($setup_path, $action_file, $name, $action_handler_definition) ;
-			}
-		elsif('ARRAY' eq ref $action_handler_definition)
-			{
-			my %action_handler_hash ; # transform the definition from array into hash
-			@action_handler_hash{'SHORTCUTS', 'CODE', 'ARGUMENTS', 'OPTIONS', 'NAME', 'ORIGIN'}
-				 = @$action_handler_definition ;
-			$action_handler_hash{OPTIONS} //= {} ;
-			
-			$shortcuts_definition = $action_handler_hash{SHORTCUTS}  ;
-			$action_handler_hash{NAME} = $name ;
-			$action_handler_hash{ORIGIN} = $action_file ;
-			
-			$self->check_action_by_name($setup_path, $action_file, \%action_handler_hash) ;
-			
-			$action_handler = \%action_handler_hash ;
-			}
-		else
-			{
-			# $self->{ACTION_VERBOSE}("ignoring '$name'\n") ;
-			next ;
-			}
-			
-		$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
-		$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} = $action_file ;
-		
-		if($remove_old_shortcuts)
-			{
-			for my $shortcut (keys %{$self->{ACTIONS}})
-				{
-				my $action = $self->{ACTIONS}{$shortcut} ;
-				
-				if($action->{IS_GROUP})
-					{
-					for my $group_shortcut (grep {'HASH' eq ref $action->{$_} } keys %$action)
-						{
-						if($action_handler->{IS_GROUP})
-							{
-							for my $group_action (grep {'HASH' eq ref $action_handler->{$_} } keys %$action_handler )
-								{
-								delete $action->{$group_shortcut} 
-									if exists $action->{$group_shortcut} &&
-										$action->{$group_shortcut}{NAME} eq $action_handler->{$group_action}{NAME} ;
-								}
-							}
-						else
-							{
-							delete $action->{$group_shortcut} 
-								if exists $action->{$group_shortcut} &&
-									 $action->{$group_shortcut}{NAME} eq $action_handler->{NAME} ;
-							}
-						}
-					}
-				else
-					{
-					if($action_handler->{IS_GROUP})
-						{
-						for my $group_action (grep {'HASH' eq ref $action_handler->{$_} } keys %$action_handler )
-							{
-							delete $self->{ACTIONS}{$shortcut} 
-								if exists $self->{ACTIONS}{$shortcut} &&
-									$self->{ACTIONS}{$shortcut}{NAME} eq $action_handler->{$group_action}{NAME} ;
-							}
-						}
-					else
-						{
-						delete $self->{ACTIONS}{$shortcut} 
-							if $action->{NAME} eq $action_handler->{NAME} ;
-						}
-					}
-				}
+			unshift $action_handlers{$name}->@*, 'NAME' => $name ;
 			}
 		
-		for my $shortcut ('ARRAY' eq ref $shortcuts_definition ? @$shortcuts_definition : ($shortcuts_definition))
-			{
-			if(exists $self->{ACTIONS}{$shortcut})
-				{
-				$self->{ACTION_VERBOSE}("4 Overriding shortcut '$shortcut'\n") ;
-				$self->{ACTION_VERBOSE}("\tnew is '$name' defined in file '$setup_path/$action_file'\n") ;
-				$self->{ACTION_VERBOSE}( "\told was '$self->{ACTIONS}{$shortcut}{NAME}' defined in file '$self->{ACTIONS}{$shortcut}{ORIGIN}'\n") ;
-				}
-				
-			$self->{ACTIONS}{$shortcut} = $action_handler ;
-			
-			if (! defined $action_handler->{CODE} && ! defined $action_handler->{CONTEXT_MENU_SUB})
-				{
-				$self->{ACTION_VERBOSE}("\e[33mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[0m\n") ;
-				delete $self->{ACTIONS}{$shortcut} ;
-				}
-			}
+		# print DumpTree $action_handlers{$name} ;
+		$self->register_action($setup_path, $action_file, $remove_old_shortcuts, $name, $action_handlers{$name}) ;
 		}
 	
 	$self->register_separator_group() ;
 	
-	for my $top_level_group ( @top_level_groups )
+	for my $root_group ( @root_groups )
 		{
-		$self->register_top_level_group($top_level_group->@*) ;
+		$self->register_root_group($setup_path, $action_file, $remove_old_shortcuts, $root_group->@*) ;
+		}
+	
+	for my $proxy_group ( @proxy_groups )
+		{
+		$self->register_proxy_group($setup_path, $action_file, $proxy_group->@*) ;
 		}
 	
 	for my $context_menu ( @context_menues )
@@ -320,13 +249,134 @@ for my $action_file (@{ $action_files })
 		$self->register_context_menu($context_menu) ;
 		}
 	}
+
+return \%bindings_by_file ;
 }
 
 #------------------------------------------------------------------------------------------------------
 
-sub register_top_level_group
+sub register_root_group
 {
-my ($self, $options, @group_definition) = @_ ;
+my ($self, $setup_path, $action_file, $remove_old_shortcuts, $options, @group_definition) = @_ ;
+
+my ($name, $description) = 'HASH' eq ref $options ? @{$options}{'NAME', 'DESCRIPTION'} : ($options, '') ;
+
+my $i = 0 ;
+while( ( my($name, $definition) = @group_definition[$i++,$i++] ), $i <= @group_definition)
+	{
+	$self->register_action($setup_path, $action_file, $remove_old_shortcuts, $name, $definition) ;
+	}
+}
+
+#------------------------------------------------------------------------------------------------------
+
+sub register_action
+{
+my ($self, $setup_path, $action_file, $remove_old_shortcuts, $name, $action_handler_definition) = @_ ;
+
+my $action_handler ;
+
+my $shortcuts_definition ;
+
+if('action_group' eq ref $action_handler_definition || 'HASH' eq ref $action_handler_definition)
+	{
+	($shortcuts_definition, $action_handler) = $self->get_group_action_handler($setup_path, $action_file, $name, $action_handler_definition) ;
+	}
+elsif('ARRAY' eq ref $action_handler_definition)
+	{
+	my %action_handler_hash ; # transform the definition from array into hash
+	@action_handler_hash{'SHORTCUTS', 'CODE', 'ARGUMENTS', 'OPTIONS', 'NAME', 'ORIGIN'}
+		 = @$action_handler_definition ;
+	$action_handler_hash{OPTIONS} //= {} ;
+	
+	$shortcuts_definition = $action_handler_hash{SHORTCUTS}  ;
+	$action_handler_hash{NAME} = $name ;
+	$action_handler_hash{ORIGIN} = $action_file ;
+	
+	$self->check_action_by_name($setup_path, $action_file, \%action_handler_hash) ;
+	
+	$action_handler = \%action_handler_hash ;
+	}
+else
+	{
+	$self->{ACTION_VERBOSE}("register_action: ignoring '$name'\n") ;
+	next ;
+	}
+	
+$self->{ACTIONS_BY_NAME}{$name} = $action_handler  ;
+$self->{ACTIONS_BY_NAME}{ORIGINS}{$name}{ORIGIN} = $action_file ;
+
+if($remove_old_shortcuts)
+	{
+	for my $shortcut (keys %{$self->{ACTIONS}})
+		{
+		my $action = $self->{ACTIONS}{$shortcut} ;
+		
+		if($action->{IS_GROUP})
+			{
+			for my $group_shortcut (grep {'HASH' eq ref $action->{$_} } keys %$action)
+				{
+				if($action_handler->{IS_GROUP})
+					{
+					for my $group_action (grep {'HASH' eq ref $action_handler->{$_} } keys %$action_handler )
+						{
+						delete $action->{$group_shortcut} 
+							if exists $action->{$group_shortcut} &&
+								$action->{$group_shortcut}{NAME} eq $action_handler->{$group_action}{NAME} ;
+						}
+					}
+				else
+					{
+					delete $action->{$group_shortcut} 
+						if exists $action->{$group_shortcut} &&
+							 $action->{$group_shortcut}{NAME} eq $action_handler->{NAME} ;
+					}
+				}
+			}
+		else
+			{
+			if($action_handler->{IS_GROUP})
+				{
+				for my $group_action (grep {'HASH' eq ref $action_handler->{$_} } keys %$action_handler )
+					{
+					delete $self->{ACTIONS}{$shortcut} 
+						if exists $self->{ACTIONS}{$shortcut} &&
+							$self->{ACTIONS}{$shortcut}{NAME} eq $action_handler->{$group_action}{NAME} ;
+					}
+				}
+			else
+				{
+				delete $self->{ACTIONS}{$shortcut} 
+					if $action->{NAME} eq $action_handler->{NAME} ;
+				}
+			}
+		}
+	}
+
+for my $shortcut ('ARRAY' eq ref $shortcuts_definition ? @$shortcuts_definition : ($shortcuts_definition))
+	{
+	if(exists $self->{ACTIONS}{$shortcut})
+		{
+		$self->{ACTION_VERBOSE}("Overriding shortcut '$shortcut'\n") ;
+		$self->{ACTION_VERBOSE}("\tnew is '$name' defined in file '$setup_path/$action_file'\n") ;
+		$self->{ACTION_VERBOSE}( "\told was '$self->{ACTIONS}{$shortcut}{NAME}' defined in file '$self->{ACTIONS}{$shortcut}{ORIGIN}'\n") ;
+		}
+		
+	$self->{ACTIONS}{$shortcut} = $action_handler ;
+	
+	if (! defined $action_handler->{CODE} && ! defined $action_handler->{CONTEXT_MENU_SUB})
+		{
+		$self->{ACTION_VERBOSE}("\e[33mNo action for action_handler: '$name', file: '$setup_path/$action_file'\e[0m\n") ;
+		delete $self->{ACTIONS}{$shortcut} ;
+		}
+	}
+}
+
+#------------------------------------------------------------------------------------------------------
+
+sub register_proxy_group
+{
+my ($self, $setup_path, $action_file, $options, @group_definition) = @_ ;
 
 my ($shortcuts, $hide) = 'HASH' eq ref $options ? @{$options}{'SHORTCUTS', 'HIDE'} : ($options, 0) ;
 
@@ -338,7 +388,7 @@ for my $name ( @group_definition )
 	
 	my $handler = $self->{ACTIONS_BY_NAME}{$name} ;
 	
-	push $self->{ACTIONS_ORDERED}{"top_level_group_$shortcuts"}->@*, $handler ;
+	push $self->{ACTIONS_ORDERED}{"proxy_$shortcuts"}->@*, $handler ;
 	
 	for my $shortcut ('ARRAY' eq ref $handler->{SHORTCUTS} ? $handler->{SHORTCUTS}->@* : $handler->{SHORTCUTS}) 
 		{
@@ -357,8 +407,8 @@ set_subname( "App::Asciio::Actions::Group::top_level", $group_handler ) ;
 	undef,
 	('ARRAY' eq ref $shortcuts  ? $shortcuts  : [$shortcuts]),
 	$group_handler,
-	"top_level_group_$shortcuts",
-	'action_file'
+	"proxy_$shortcuts",
+	$action_file,
 	) ;
 
 $self->{ACTIONS}{$_} = \%group_handler for $group_handler{SHORTCUTS}->@* ;
@@ -425,7 +475,7 @@ my ($self, $setup_path, $action_file, $group_name, $group_definition) = @_ ;
 
 my %handler ;
 
-my ($shortcuts, $enter_group, $escape_keys, $escape_group, $hide) ;
+my ($shortcuts, $enter_group, $escape_keys, $escape_group, $hide, $description) ;
 
 if('action_group' eq ref $group_definition)
 	{
@@ -441,12 +491,14 @@ if('action_group' eq ref $group_definition)
 	$escape_group = $group_definition{ESCAPE_GROUP} ;
 	$shortcuts    = $group_definition{SHORTCUTS} ;
 	$hide         = $group_definition{HIDE} ;
+	$description  = $group_definition{DESCRIPTION} ;
 	
 	$self->{ACTIONS_ORDERED}{$group_name} = [] ; # reset if overridden 
 	
-	my %reserved = map {$_ => 1} qw(SHORTCUT HIDE ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP) ;
+	my %reserved = map {$_ => 1} qw(NAME SHORTCUTS HIDE ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP DESCRIPTION) ;
 	
-	while(my ($name, $setup) = splice($group_definition->@*, 0, 2))
+	my $i = 0 ;
+	while( ( my($name, $setup) = ($group_definition->[$i++], $group_definition->[$i++])), $i <= $group_definition->@*)
 		{
 		next if exists $reserved{$name} ;
 		
@@ -476,7 +528,7 @@ if('action_group' eq ref $group_definition)
 			}
 		else
 			{
-			# $self->{ACTION_VERBOSE}("ignoring '$name'\n") ;
+			$self->{ACTION_VERBOSE}("get_group_action_handler: ignoring '$name'\n") ;
 			next ;
 			}
 		
@@ -503,9 +555,10 @@ if('action_group' eq ref $group_definition)
 my $group_handler = sub { $_[0]->{CURRENT_ACTIONS} = \%handler ; } ;
 set_subname( "App::Asciio::Actions::Group::$group_name", $group_handler ) ;
 
-@handler{'IS_GROUP', 'HIDE', 'ENTER_GROUP', 'ESCAPE_KEYS', 'ESCAPE_GROUP', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
+@handler{'IS_GROUP', 'DESCRIPTION', 'HIDE', 'ENTER_GROUP', 'ESCAPE_KEYS', 'ESCAPE_GROUP', 'SHORTCUTS', 'CODE', 'NAME', 'ORIGIN'} = 
 	(
 	1,
+	$description,
 	$hide,
 	$enter_group,
 	$escape_keys,
@@ -544,9 +597,22 @@ $self->{ACTIONS}{$context_menu->[0]} =
 
 sub register_separator_group
 {
-$_[0]->{ACTIONS_BY_NAME}{' '} =
+$_[0]->register_action
+	(
+	'',
+	'',
+	0,
+	' ', 
+	[
+	NAME  => 'separator',
+	SHORTCUTS  => '',
+	DESCRIPTION  => 'group separator',
+	]) ;
+
+$_[0]->{ACTIONS_BY_NAME}{' '} = 
 	{
 	IS_GROUP     => 1,
+	DESCRIPTION  => '',
 	ENTER_GROUP  => undef,
 	ESCAPE_KEYS  => undef,
 	ESCAPE_GROUP => undef,
@@ -554,7 +620,7 @@ $_[0]->{ACTIONS_BY_NAME}{' '} =
 	CODE         => sub {},
 	NAME         => ' ',
 	ORIGIN       => 'internal',
-	}
+	} ;
 }
 
 #------------------------------------------------------------------------------------------------------

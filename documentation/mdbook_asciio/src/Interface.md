@@ -15,5 +15,3 @@ Although work can mostly be done using the keyboard, the mouse is still useful a
 ## popup menus
 
 My least favorite way of using Asciio, it's slow and cumbersome for most actions. I try to limit the amount of menu and sub menus.
-
-
