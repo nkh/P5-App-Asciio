@@ -289,6 +289,7 @@ my $build = $class->new
 	requires => 
 		{
 		'Archive::Tar'                    => 0,
+		'Capture::Tiny'                   => 0,
 		'Clone'                           => 0,
 		'Compress::Bzip2'                 => 0,
 		'Cwd'                             => 0,

@@ -843,21 +843,13 @@ sub read_asciio_file
 {
 my ($self, $project_name) = @_  ;
 
+use Capture::Tiny qw/capture_merged/ ;
 
-# save original settings. You could also use lexical typeglobs.
-*OLD_STDOUT = *STDOUT;
-*OLD_STDERR = *STDERR;
-
-# reassign STDOUT, STDERR
-open my $log_fh, '>>', 'asciio_io.log' ;
-*STDOUT = $log_fh;
-*STDERR = $log_fh;
-
-my $tar = Archive::Tar->new($project_name) ; 
-
-# restore STDOUT/STDERR
-*STDOUT = *OLD_STDOUT;
-*STDERR = *OLD_STDERR;
+my $tar ;
+my ($merged,  @result) = capture_merged
+				{ 
+				$tar = Archive::Tar->new($project_name) ; 
+				} ;
 
 if($tar)
 	{

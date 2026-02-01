@@ -57,20 +57,13 @@ sub process_file
 {
 my ($asciio, $project_name) = @_ ;
 
-# save original settings. You could also use lexical typeglobs.
-*OLD_STDOUT = *STDOUT;
-*OLD_STDERR = *STDERR;
+use Capture::Tiny qw/capture_merged/ ;
 
-# reassign STDOUT, STDERR
-open my $log_fh, '>>', 'asciio_io.log' ;
-*STDOUT = $log_fh;
-*STDERR = $log_fh;
-
-my $tar = Archive::Tar->new($project_name) ; 
-
-# restore STDOUT/STDERR
-*STDOUT = *OLD_STDOUT;
-*STDERR = *OLD_STDERR;
+my $tar ;
+my ($merged,  @result) = capture_merged
+				{ 
+				$tar = Archive::Tar->new($project_name) ; 
+				} ;
 
 if($tar)
 	{
