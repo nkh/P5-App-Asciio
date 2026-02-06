@@ -2,180 +2,196 @@
 package App::Asciio::Actions::Animation ;
 
 use strict ; use warnings ;
-use File::Slurper qw(read_text) ;
+
+use File::Slurper qw(read_text write_text) ;
+use List::Util qw(max) ;
+use File::Path qw(make_path);
+use Data::TreeDumper ;
 
 #----------------------------------------------------------------------------------------------
 
-{
-my @stack ;
+use App::Asciio::Utils::Animation ;
 
-sub load_slides
+#----------------------------------------------------------------------------------------------
+
+sub reset_slide
+{
+# needs undo snapshot that can be tagged as scripts call APIs that also call undo_snapshot
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub set_snapshot_directory
+{
+# per slide, can be shared with other slides
+# sub start_automatic_slideshow_once
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub take_snapshot
 {
 my ($self, $file_name) = @_ ;
 
-# get file name for slides definitions
-$file_name = $self->get_file_name('open') unless defined $file_name ;
+my $now = localtime ;
+   $now =~ s/\s+/_/g ;
 
-if(defined $file_name && $file_name ne q{})
-	{
-	my $slides = do $file_name or die $@ ;
-	
-	return unless  defined $slides and 'ARRAY' eq ref $slides ;
-	
-	@stack = [0, $slides] ;
-	run_slide($self, $slides) ;
-	}
+$file_name //= "asciio_snapshot_" . $now . ".png" ;
+
+$self->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
+$self->update_display() ;
 }
 
 #----------------------------------------------------------------------------------------------
 
-sub run_slide
+sub get_scripts
 {
-my ($self, $slide) = @_ ;
+my ($self, $search) = @_ ;
 
-# use Data::TreeDumper ;
-# print STDERR DumpTree \@stack, 'stack:' ;
-
-if(defined $slide and 'ARRAY' eq ref $slide)
-	{
-	for my $element ($slide->@*)
-		{
-		# print STDERR "running element: $element '" . ref($element) . "' $slide\n" ;
-		
-		if('' eq ref($element))
-			{
-			clear_all()->($self),
-			box(0, 0, '', $element, 1)->($self),
-			$self->update_display() ;
-			}
-		
-		if('CODE' eq ref($element))
-			{
-			$element->($self) ;
-			$self->update_display() ;
-			}
-		
-		if('ARRAY' eq ref($element))
-			{
-			# print STDERR "PUSH $element\n" ;
-			
-			push @stack, [0, $element] ;
-			run_slide($self, $element) ;
-			
-			last ;
-			}
-		
-		if('HASH' eq ref($element))
-			{
-			$stack[-1][2] = $element ;
-			print STDERR "Asciio: slide has scripts\n" ;
-			}
-		
-		$stack[-1][0]++ ;
-		}
-	}
+my $tries = scan_script_directory($self, $self->{ANIMATION}{SLIDE_DIRECTORY}) ;
+return $tries->{tries_per_file}->lookup($search) ;
 }
-
-#----------------------------------------------------------------------------------------------
-
-sub next_slide
-{
-my ($self) = @_ ;
-
-if(@stack)
-	{
-	my ($index, $slide) = $stack[-1]->@* ;
-	
-	# print STDERR "$index < " . $slide->@* . "\n" ;
-	
-	if($index < $slide->@*)
-		{
-		# print STDERR "NEXT\n" ;
-		$stack[-1][0]++ ;
-		
-		my $next_slide = $slide->[$index + 1] ;
-		
-		if('ARRAY' eq ref($next_slide))
-			{
-			# print STDERR "PUSH $next_slide\n" ;
-			push @stack, [0, $next_slide] ;
-			}
-		
-		run_slide($self, $next_slide) ;
-		}
-	else
-		{
-		if(@stack > 1)
-			{
-			# print STDERR "POP\n" ;
-			pop @stack ;
-			
-			next_slide($self) ;
-			}
-		}
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub previous_slide
-{
-my ($self) = @_ ;
-
-# use Data::TreeDumper ;
-# print STDERR DumpTree \@stack, 'stack:' ;
-
-if(@stack)
-	{
-	@stack = [ $stack[0]->@* ] ;
-
-	
-	my $slides = $stack[0][1] ;
-	my $index  = $stack[0][0] >= $stack[0][1]->@* ? $stack[0][0] - 2 : $stack[0][0] - 1 ; 
-	
-	# print STDERR "new index: $index\n" ;
-	
-	if($index >= 0)
-		{
-		$stack[0][0] = $index ; 
-		
-		push @stack, [0, $slides->[$index]] ;
-		run_slide($self, $slides->[$index]) 
-		}
-	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub first_slide
-{
-my ($self) = @_ ;
-
-if(@stack)
-	{
-	@stack = [0, $stack[0][1]] ;
-	run_slide($self, $stack[0][1]) ;
-	}
-}
-
-#----------------------------------------------------------------------------------------------
 
 sub run_script
 {
-my ($self, $script_args) = @_ ;
+my ($self, $file) = @_ ;
 
-if(@stack && defined $stack[-1][2])
+my $tries = scan_script_directory($self, $self->{ANIMATION}{SLIDE_DIRECTORY}) ;
+my %found = $tries->{tries_per_file}->lookup_data($file) ;
+
+if(1 == $found{$file}->@*)
 	{
-	my $scripts = $stack[-1][2] ;
+	use App::Asciio::Utils::Scripting ;
 	
-	if(exists $scripts->{$script_args->[0]})
+	App::Asciio::Utils::Scripting::run_external_script($self, "./$found{$file}[0]/$file") ;
+	}
+else
+	{
+	print DumpTree \%found, 'Error: multiple directories:' ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub scan_script_directory
+{
+my ($self, $directory) = @_ ;
+$self->update_display(1) ; # called in ENTER_GROUP and the group has HIDE => 1, update over previous bindings help
+
+$directory //= $self->{ANIMATION}{SLIDE_DIRECTORY} // $self->{ANIMATION}{TOP_DIRECTORY} // $self->{SCRIPTS_PATHS} // '.' ;
+
+return App::Asciio::Utils::Animation::scan_directories([$directory], 1) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub run_first
+{
+my ($self) = @_ ;
+
+my $tries = scan_script_directory($self, $self->{ANIMATION}{SLIDE_DIRECTORY}) ;
+my @found = sort grep { $_ !~ /^00/ } grep { $_ =~ /^\d\d/ } $tries->{tries_per_file}->lookup('') ;
+
+$self->{ANIMATION}{NUMBERED_SCRIPTS}       = \@found ;
+$self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX} = 0 ;
+
+if(@found)
+	{
+	App::Asciio::Utils::Scripting::run_external_script($self, "./$self->{ANIMATION}{SLIDE_DIRECTORY}/$found[0]") ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub run_next
+{
+my ($self) = @_ ;
+
+unless(defined $self->{ANIMATION}{NUMBERED_SCRIPTS} and $self->{ANIMATION}{NUMBERED_SCRIPTS}->@*)
+	{
+	run_first($self) ;
+	return ;
+	}
+
+my $script = $self->{ANIMATION}{NUMBERED_SCRIPTS}[$self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX} + 1] ;
+
+if($script)
+	{
+	App::Asciio::Utils::Scripting::run_external_script($self, "./$self->{ANIMATION}{SLIDE_DIRECTORY}/$script") ;
+	$self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX}++ ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub run_previous
+{
+my ($self) = @_ ;
+
+unless(defined $self->{ANIMATION}{NUMBERED_SCRIPTS} and $self->{ANIMATION}{NUMBERED_SCRIPTS}->@*)
+	{
+	run_first($self) ;
+	return ;
+	}
+
+if($self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX} > 0)
+	{
+	my $script = $self->{ANIMATION}{NUMBERED_SCRIPTS}[$self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX} - 1] ;
+	
+	App::Asciio::Utils::Scripting::run_external_script($self, "./$self->{ANIMATION}{SLIDE_DIRECTORY}/$script") ;
+	
+	$self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX}-- ;
+	}
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub rerun
+{
+my ($self) = @_ ;
+
+unless(defined $self->{ANIMATION}{NUMBERED_SCRIPTS} and $self->{ANIMATION}{NUMBERED_SCRIPTS}->@*)
+	{
+	run_first($self) ;
+	return ;
+	}
+
+my $script = $self->{ANIMATION}{NUMBERED_SCRIPTS}[$self->{ANIMATION}{NUMBERED_SCRIPTS_INDEX}] ;
+
+App::Asciio::Utils::Scripting::run_external_script($self, "./$self->{ANIMATION}{SLIDE_DIRECTORY}/$script") ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub set_slide_directory
+{
+my ($self, $directory) = @_ ;
+
+unless ($directory)
+	{
+	$directory = $self->get_user_text('Slide directory') ;
+	}
+
+if (defined $directory and $ directory ne '')
+	{
+	my $slide_directory = "$self->{ANIMATION}{TOP_DIRECTORY}/$directory" ;
+	
+	$self->{ANIMATION}{SLIDE_DIRECTORY} = $slide_directory ;
+	
+	unless(-e $slide_directory)
 		{
-		$scripts->{$script_args->[0]}($self, $script_args) ;
-		# $self->use_action_group('slides ->') ;
+		mkpath $slide_directory
+		write_text("$slide_directory/animation_example", "use strict ; use warnings ;\n") ;
 		}
 	}
 }
 
+#----------------------------------------------------------------------------------------------
+
+sub set_on_load_script
+{
+my ($self, $file_name) = @_ ;
+$self->{ANIMATION}{ON_LOAD} = $file_name ;
 }
 
 #----------------------------------------------------------------------------------------------

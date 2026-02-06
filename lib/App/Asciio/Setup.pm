@@ -74,6 +74,17 @@ for my $setup_file (@{$setup_ini_files})
 	$self->setup_import_export_handlers($setup_path, $ini_files->{IMPORT_EXPORT} || []) ;
 	}
 
+
+$self->{ANIMATION}{TOP_DIRECTORY}     = "animations" if -e "animations" and -d "animations" ;
+$self->{ANIMATION}{TOP_DIRECTORY}     = $self->{SCRIPTS_PATHS} if defined $self->{SCRIPTS_PATHS} ;
+$self->{SCRIPTS_PATHS}              //= '.' ;
+$self->{ANIMATION}{TOP_DIRECTORY}   //= $self->{SCRIPTS_PATHS} ;
+
+my $slide_directory = "$self->{ANIMATION}{TOP_DIRECTORY}/" . ($self->{TITLE} // '') ;
+
+$self->{ANIMATION}{SLIDE_DIRECTORY}   = $slide_directory if -e $slide_directory and -d $slide_directory ;
+$self->{ANIMATION}{SLIDE_DIRECTORY} //= $self->{ANIMATION}{TOP_DIRECTORY} ;
+
 return \@bindings ;
 }
 
@@ -527,6 +538,11 @@ if('action_group' eq ref $group_definition)
 				 = @$setup ;
 			
 			$action_handler_hash{OPTIONS} //= {} ;
+			
+			if($hide)
+				{
+				$action_handler_hash{OPTIONS}{HIDE} = $hide unless exists $action_handler_hash{OPTIONS}{HIDE} ;
+				}
 			
 			$shortcuts_definition = $action_handler_hash{SHORTCUTS}  ;
 			$action_handler_hash{NAME} = $name ;

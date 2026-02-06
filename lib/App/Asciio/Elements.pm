@@ -127,7 +127,22 @@ if(defined $element_index)
 	}
 else
 	{
-	croak "add_new_element_named: can't create element named '$element_name'!\n" ;
+	$element_index = $self->{ELEMENT_TYPES_BY_NAME}{'Asciio/text'} ;
+	my $element    = add_new_element_of_type($self, $self->{ELEMENT_TYPES}[$element_index], $x, $y) ;
+	
+	$element->setup
+		(
+		$element_name,
+		$element->{TITLE},
+		$element->{BOX_TYPE},
+		$element->{WIDTH},
+		$element->{HEIGHT},
+		$element->{RESIZABLE},
+		$element->{EDITABLE},
+		$element->{AUTO_SHRINK},
+		) ;
+	
+	return $element ;
 	}
 }
 
@@ -547,6 +562,38 @@ $self->{MODIFIED }++ ;
 
 #-----------------------------------------------------------------------------
 
+sub get_id_filtered_elements
+{
+my ($self, @regexes) = @_ ;
+
+my @bins ;
+
+for my $element (@{$self->{ELEMENTS}})
+	{
+	my $id     = $element->get_id() ;
+	my $index  = -1 ;
+	my $sorted = 0 ;
+	
+	for my $regex (@regexes) 
+		{
+		$index++ ;
+		
+		if($id =~ $regex)
+			{
+			push $bins[$index]->@*, $element ;
+			$sorted++ ;
+			}
+		}
+	
+	$index++ ;
+	push $bins[$index]->@*, $element unless $sorted ;
+	}
+
+return \@bins ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub get_selected_elements
 {
 my ($self, $state) = @_ ;
@@ -624,6 +671,15 @@ for my $element (@{$self->{ELEMENTS}})
 	}
 
 delete $self->{SELECTION_INDEX} unless $self->get_selected_elements(1) ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub deselect_elements
+{
+my ($self, @elements) = @_ ;
+
+$self->select_elements(0, @elements) ;
 }
 
 #-----------------------------------------------------------------------------

@@ -22,9 +22,12 @@ use Glib::Object::Subclass Gtk3::DrawingArea::,
 		close_tab_no_save      => { param_types => ['Glib::Scalar'],                 return_type => undef          },
 		copy_tab               => { param_types => ['Glib::Scalar'],                 return_type => undef          },
 		rename_tab             => { param_types => ['Glib::String'],                 return_type => undef          },
+		rename_asciio_tab      => { param_types => ['Glib::Scalar', 'Glib::String'], return_type => undef          },
 		# navigation and order
 		next_tab               => { param_types => [],                               return_type => undef          },
+		next_tagged_tab        => { param_types => ['Glib::String'],                 return_type => 'Glib::Scalar' },
 		previous_tab           => { param_types => [],                               return_type => undef          },
+		previous_tagged_tab    => { param_types => ['Glib::String'],                 return_type => undef          },
 		last_tab               => { param_types => [],                               return_type => undef          },
 		focus_tab              => { param_types => ['Glib::Int'],                    return_type => undef          },
 		move_tab_left          => { param_types => [],                               return_type => undef          },
@@ -248,7 +251,7 @@ sub set_title
 my ($self, $title) = @_;
 
 $self->SUPER::set_title($title) ;
-$self->signal_emit('rename_tab', $title ) ;
+$self->signal_emit('rename_tab', $title) ;
 }
 
 # ----------------------------------------------------------------------------

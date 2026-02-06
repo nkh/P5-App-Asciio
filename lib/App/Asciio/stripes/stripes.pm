@@ -57,10 +57,7 @@ sub get_stripes { my ($self) = @_ ; return $self->{STRIPES} ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_size { my ($self) = @_ ; return($self->{WIDTH}, $self->{HEIGHT}) ; }
-
-#-----------------------------------------------------------------------------
-
+sub get_size    { my ($self) = @_ ; return($self->{WIDTH}, $self->{HEIGHT}) ; }
 sub get_extents { my ($self) = @_ ; return($self->{EXTENTS}) ; }
 
 #-----------------------------------------------------------------------------
@@ -77,18 +74,12 @@ sub get_selection_action { 'move' ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_colors { my ($self) = @_ ; return  $self->{COLORS}{BACKGROUND}, $self->{COLORS}{FOREGROUND} ; }
-
-#-----------------------------------------------------------------------------
-
 sub set_background_color { my ($self, $background_color) = @_ ; $self->{COLORS}{BACKGROUND} = $background_color ; }
-
-#-----------------------------------------------------------------------------
-
 sub set_foreground_color { my ($self, $foreground_color) = @_ ; $self->{COLORS}{FOREGROUND} = $foreground_color ; }
 
 #-----------------------------------------------------------------------------
 
+sub get_colors           { my ($self) = @_ ; return  $self->{COLORS}{BACKGROUND}, $self->{COLORS}{FOREGROUND} ; }
 sub set_colors
 {
 my ($self, $background_color, $foreground_color) = @_ ;
@@ -99,11 +90,14 @@ $self->{COLORS}{FOREGROUND} = $foreground_color ;
 
 #-----------------------------------------------------------------------------
 
+sub set_text { ; }
 sub get_text { ; }
 
 #-----------------------------------------------------------------------------
 
-sub set_text { ; }
+sub set_id    {  my ($self, $id) = @_ ; $self->{ID} = $id // '?' ; }
+sub get_id    {  my ($self) = @_      ; $self->{ID} // '?' ;       }
+sub remove_id {  my ($self) = @_      ; delete $self->{ID} ;       }
 
 #-----------------------------------------------------------------------------
 
@@ -115,11 +109,9 @@ sub match_connector { ; }
 
 #-----------------------------------------------------------------------------
 
-sub get_connector_points { ; }
-
+sub get_connector_points  { ; }
 sub get_connection_points { ; }
-
-sub get_extra_points { ; }
+sub get_extra_points      { ; }
 
 #-----------------------------------------------------------------------------
 
@@ -132,26 +124,23 @@ sub move_connector { ; }
 #-----------------------------------------------------------------------------
 
 sub allow_border_connection { ; }
-
 sub is_border_connection_allowed { 0 }
 
 #-----------------------------------------------------------------------------
 
 sub is_autoconnect_enabled { my ($self) = @_ ; return ! $self->{AUTOCONNECT_DISABLED} ; }
-
-sub enable_autoconnect { my ($self, $enable) = @_ ; $self->{AUTOCONNECT_DISABLED} = !$enable ; }
+sub enable_autoconnect     { my ($self, $enable) = @_ ; $self->{AUTOCONNECT_DISABLED} = !$enable ; }
 
 #-----------------------------------------------------------------------------
 
 sub is_optimize_enabled { my ($self) = @_ ; return ! $self->{OPTIMIZE_DISABLED} ; }
-
-sub enable_optimize { my ($self, $enable) = @_ ; $self->{OPTIMIZE_DISABLED} = !$enable ; }
+sub enable_optimize     { my ($self, $enable) = @_ ; $self->{OPTIMIZE_DISABLED} = !$enable ; }
 
 #-----------------------------------------------------------------------------
 
 sub set
 {
-# set fields in the hash
+# set fields in the object's hash
 
 my ($self, %key_values) = @_ ;
 
@@ -172,8 +161,6 @@ my ($self, $key, $value) = @_ ;
 $self->{USER_DATA}{$key} = $value ;
 }
 
-#-----------------------------------------------------------------------------
-
 sub get_user_data
 {
 my ($self, $key) = @_ ;
@@ -190,16 +177,11 @@ my ($self) = @_ ;
 return ;
 }
 
-#-----------------------------------------------------------------------------
-
 sub change_attributes { ; }
 
 #-----------------------------------------------------------------------------
 
 sub is_crossover_enabled { my ($self) = @_ ; return !($self->{CROSSOVER_DISABLED} // 1) ; }
-
-#-----------------------------------------------------------------------------
-
 sub enable_crossover { my ($self, $enable) = @_ ; $self->{CROSSOVER_DISABLED} = !$enable ; }
 
 #-----------------------------------------------------------------------------
@@ -211,7 +193,6 @@ my ($self, $freeze) = @_ ;
 $self->{FROZEN}++ ;
 $self->{RESIZABLE} = 0 ;
 }
-
 
 sub thaw
 {
@@ -250,7 +231,8 @@ sub get_control_attributes
 {
 my ($self) = @_ ;
 
-my @control_attributes_keys = (
+my @control_attributes_keys = 
+	(
 	'AUTOCONNECT_DISABLED',
 	'OPTIMIZE_DISABLED',
 	'CROSSOVER_DISABLED',
@@ -260,18 +242,19 @@ my @control_attributes_keys = (
 	'AUTO_SHRINK',
 	'RESIZABLE',
 	'EDITABLE',
-	'FROZEN') ;
+	'FROZEN'
+	) ;
 	
-	my %control_attributes ;
-	for my $key (@control_attributes_keys)
+my %control_attributes ;
+for my $key (@control_attributes_keys)
+	{
+	if (exists $self->{$key})
 		{
-		if (exists $self->{$key})
-			{
-			$control_attributes{$key} = $self->{$key} ;
-			}
+		$control_attributes{$key} = $self->{$key} ;
 		}
-	
-	return (ref($self), \%control_attributes) ;
+	}
+
+return (ref($self), \%control_attributes) ;
 }
 
 #-----------------------------------------------------------------------------

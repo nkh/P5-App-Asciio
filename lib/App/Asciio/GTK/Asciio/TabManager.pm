@@ -186,30 +186,33 @@ $asciio->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{
 
 my %signal_handlers =
 	(
-	close_tab              => sub { my ($w, $asciio) = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 1, 1) ; },
-	close_tab_no_save      => sub { my ($w, $asciio) = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 0, 1) ; },
-	copy_tab               => sub { my ($w, $data)   = @_ ; $self->{MODIFIED}++ ; $self->create_tab($data) ;                 },
-	focus_tab              => sub { my ($w, $index)  = @_ ;                       $self->focus_tab($index) ;                 },
-	# get_all_asciios 
-	# get_keys         
-	# get_kv           
-	last_tab               => sub { my ($w)          = @_ ; $self->last_tab() ;                                              },
-	move_tab_left          => sub { my ($w)          = @_ ; $self->{MODIFIED}++ ; $self->move_tab_left() ;                   },
-	move_tab_right         => sub { my ($w)          = @_ ; $self->{MODIFIED}++ ; $self->move_tab_right() ;                  },
-	new_tab                => sub { my ($w, $data)   = @_ ; $self->{MODIFIED}++ ; $self->create_tab() ;                      },
-	next_tab               => sub { my ($w)          = @_ ;                       $self->next_tab() ;                        },
-	open_project           => sub { my ($w, $data)   = @_ ;                       $self->open_project($data, 1) ;            },
-	previous_tab           => sub { my ($w)          = @_ ;                       $self->previous_tab() ;                    },
-	quit_app               => sub { my ($w)          = @_ ;                       $self->quit_application(1) ;               },
-	quit_app_no_save       => sub { my ($w)          = @_ ;                       $self->quit_application(0) ;               },
-	hide_all_bindings_help => sub { my ($w)          = @_ ;                       $self->hide_all_bindings_help() ;          },
-	show_all_bindings_help => sub { my ($w)          = @_ ;                       $self->show_all_bindings_help() ;          },
-	rename_tab             => sub { my ($w, $name)   = @_ ; $self->{MODIFIED}++ ; $self->rename_tab($name) ;                 },
+	close_tab              => sub { my ($w, $asciio)        = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 1, 1) ; },
+	close_tab_no_save      => sub { my ($w, $asciio)        = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 0, 1) ; },
+	copy_tab               => sub { my ($w, $data)          = @_ ; $self->{MODIFIED}++ ; $self->create_tab($data) ;                 },
+	focus_tab              => sub { my ($w, $index)         = @_ ;                       $self->focus_tab($index) ;                 },
+	get_all_asciios        => sub { my ($w)                 = @_ ;                       $self->get_all_asciios() ;                 },
+	last_tab               => sub { my ($w)                 = @_ ; $self->last_tab() ;                                              },
+	move_tab_left          => sub { my ($w)                 = @_ ; $self->{MODIFIED}++ ; $self->move_tab_left() ;                   },
+	move_tab_right         => sub { my ($w)                 = @_ ; $self->{MODIFIED}++ ; $self->move_tab_right() ;                  },
+	new_tab                => sub { my ($w, $data)          = @_ ; $self->{MODIFIED}++ ; $self->create_tab() ;                      },
+	next_tab               => sub { my ($w)                 = @_ ;                       $self->next_tab() ;                        },
+	next_tagged_tab        => sub { my ($w, $data)          = @_ ;                       $self->next_tagged_tab($data) ;            },
+	open_project           => sub { my ($w, $data)          = @_ ;                       $self->open_project($data, 1) ;            },
+	previous_tab           => sub { my ($w)                 = @_ ;                       $self->previous_tab() ;                    },
+	previous_tagged_tab    => sub { my ($w, $data)          = @_ ;                       $self->previous_tagged_tab($data) ;        },
+	quit_app               => sub { my ($w)                 = @_ ;                       $self->quit_application(1) ;               },
+	quit_app_no_save       => sub { my ($w)                 = @_ ;                       $self->quit_application(0) ;               },
+	hide_all_bindings_help => sub { my ($w)                 = @_ ;                       $self->hide_all_bindings_help() ;          },
+	show_all_bindings_help => sub { my ($w)                 = @_ ;                       $self->show_all_bindings_help() ;          },
+	rename_tab             => sub { my ($w, $name)          = @_ ; $self->{MODIFIED}++ ; $self->rename_tab($name) ;                 },
+	rename_asciio_tab      => sub { my ($w, $asciio, $name) = @_ ; $self->{MODIFIED}++ ; $self->rename_asciio_tab($asciio, $name) ; },
 	# send_to_asciio  
+	# get_keys         
 	# set_kv           
+	# get_kv           
 	read                   => sub { my ($w, $file)   = @_ ;                       $self->read($file) ;                       },
 	save_project           => sub { my ($w, $as)     = @_ ;                       $self->save_project($as) ;                 },
-	show_help_tab          => sub { my ($w)          = @_ ;                       $self->show_help_tab() ;                   },
+	# show_help_tab          => sub { my ($w)          = @_ ;                       $self->show_help_tab() ;                   },
 	toggle_tab_labels      => sub { my ($w)          = @_ ;                       $self->toggle_tab_labels() ;               },
 	# event management
 	redirect_events        => sub { my ($w, $on)     = @_ ;                       $self->redirect_events($on) ;              },
@@ -220,7 +223,10 @@ while (my ($signal, $sub) = each %signal_handlers)
 	$asciio->signal_connect($signal, $sub) 
 	}
 
-my $label = $self->create_tab_label($asciio->get_title() // 'untitled_' . $self->{tab_counter}) ;
+my $title = $asciio->get_title() // 'untitled_' . $self->{tab_counter} ;
+$asciio->set_title($title) ;
+
+my $label = $self->create_tab_label($title) ;
 
 my $scroller = Gtk3::ScrolledWindow->new() ;
 $scroller->set_policy('automatic', 'automatic') ;  # show scrollbars as needed
@@ -482,6 +488,28 @@ $self->{notebook}->set_current_page($next) ;
 
 # ----------------------------------------------------------------------------
 
+sub next_tagged_tab
+{
+my ($self, $tag) = @_ ;
+
+my $current = $self->{notebook}->get_current_page() ;
+my $n_pages = $self->{notebook}->get_n_pages() ;
+my $next    = ($current + 1) % $n_pages ;
+
+for my $page ($next .. $self->{asciios}->@* - 1, 0 .. $next) 
+	{
+	if(keys $self->{asciios}[$page]{TAGS}{$tag}->%*)
+		{
+		$self->{notebook}->set_current_page($page) ;
+		return $self->{asciios}[$page] ;
+		}
+	}
+
+return undef ;
+}
+
+# ----------------------------------------------------------------------------
+
 sub previous_tab
 {
 my ($self) = @_ ;
@@ -491,6 +519,26 @@ my $n_pages = $self->{notebook}->get_n_pages() ;
 my $prev    = ($current - 1 + $n_pages) % $n_pages ;
 
 $self->{notebook}->set_current_page($prev) ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub previous_tagged_tab
+{
+my ($self, $tag) = @_ ;
+
+my $current = $self->{notebook}->get_current_page() ;
+my $n_pages = $self->{notebook}->get_n_pages() ;
+my $prev    = ($current - 1 + $n_pages) % $n_pages ;
+
+for my $page (reverse 0 .. $prev) 
+	{
+	if(keys $self->{asciios}[$page]{TAGS}{$tag}->%*)
+		{
+		$self->{notebook}->set_current_page($page) ;
+		last ;
+		}
+	}
 }
 
 # ----------------------------------------------------------------------------
@@ -514,9 +562,6 @@ my $n_pages = $self->{notebook}->get_n_pages() ;
 if ($index < $n_pages)
 	{
 	$self->{notebook}->set_current_page($index) ;
-	}
-else
-	{
 	}
 }
 
@@ -611,6 +656,50 @@ $_->set_use_bindings_completion(1) for $self->{asciios}->@* ;
 
 # ----------------------------------------------------------------------------
 
+sub get_asciio_page
+{
+my ($self, $asciio) = @_ ;
+
+my $index = -1 ;
+
+for ($self->{asciios}->@*)
+	{
+	$index++ ;
+	return $index if $_ == $asciio ;
+	}
+
+return -1 ;
+}
+
+# ----------------------------------------------------------------------------
+
+sub rename_asciio_tab
+{
+my ($self, $asciio, $name) = @_ ;
+
+my $page = $self->get_asciio_page($asciio) ;
+my $tab  = $self->{notebook}->get_nth_page($page) ;
+
+return if $page < 0 ;
+
+my $new_label = $self->create_tab_label($name) ;
+
+if ($self->{asciios}[$page]{TAGS}{SLIDE}{IS_SLIDE})
+	{
+	$new_label->set_markup("<span background='" . ($self->{asciios}[$page]{TAGS}{SLIDE}{BG_COLOR} // 'orange'). "'>$name</span>");
+	}
+else
+	{
+	$new_label->set_text($name);
+	}
+
+
+$self->{notebook}->set_tab_label($tab, $new_label) ;
+$new_label->show() ;
+}
+
+# ----------------------------------------------------------------------------
+
 sub rename_tab
 {
 my ($self, $name) = @_ ;
@@ -618,12 +707,22 @@ my ($self, $name) = @_ ;
 my $current = $self->{notebook}->get_current_page() ;
 my $tab     = $self->{notebook}->get_nth_page($current) ;
 
+return if $current < 0 ;
+
 my $new_label = $self->create_tab_label($name) ;
+
+if ($self->{asciios}[$current]{TAGS}{SLIDE}{IS_SLIDE})
+	{
+	$new_label->set_markup("<span background='" . ($self->{asciios}[$current]{TAGS}{SLIDE}{BG_COLOR} // 'orange'). "'>$name</span>");
+	}
+else
+	{
+	$new_label->set_text($name);
+	}
+
+
 $self->{notebook}->set_tab_label($tab, $new_label) ;
 $new_label->show() ;
-
-# my $asciio = $self->{asciios}[$current] ;
-# $asciio->set_title($name) ;
 }
 
 # ----------------------------------------------------------------------------

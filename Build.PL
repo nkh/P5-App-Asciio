@@ -39,6 +39,7 @@ lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Clone.pm
 lib/App/Asciio/Actions/Colors.pm
+lib/App/Asciio/Actions/Completion.pm
 lib/App/Asciio/Actions/Debug.pm
 lib/App/Asciio/Actions/ElementAttributes.pm
 lib/App/Asciio/Actions/ElementSelection.pm
@@ -294,19 +295,23 @@ my $build = $class->new
 		'Compress::Bzip2'                 => 0,
 		'Cwd'                             => 0,
 		'Data::Compare'                   => 0,
-		'Data::TreeDumper'                => 0.41,
+		'Data::TreeDumper'                => 0.43,
+		'Data::UUID'                      => 0,
 		'Digest::MD5'                     => 0,
 		'Eval::Context'                   => 0,
 		'ExtUtils::PkgConfig'             => 0,
+		'Image::APNG'                     => 0,
 		'Image::ExifTool'                 => 0,
 		'File::Basename'                  => 0,
 		'File::Copy'                      => 0,
 		'File::HomeDir'                   => 0,
+		'File::Path'                      => 0,
 		'File::Slurper'                   => 0,
 		'File::Spec'                      => 0,
 		'Glib'                            => 0,
 		'Gtk3'                            => 0,
 		'Data::TreeDumper::Renderer::GTK' => 0,
+		'Data::UUID'                      => 0,
 		'IO::Prompter'                    => 0,
 		'List::MoreUtils'                 => 0,
 		'List::Util'                      => 0,
@@ -322,6 +327,7 @@ my $build = $class->new
 		'Term::Size::Any'                 => 0,
 		'Term::TermKey'                   => 0,
 		'Test::Block'                     => 0,
+		'Tree::Trie'                      => 0,
 		'Gtk3::Helper'                    => 0,
 		'HTTP::Request::Params'           => 0,
 		'Module::Install'                 => 0,

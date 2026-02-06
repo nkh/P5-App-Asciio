@@ -135,6 +135,13 @@ return $result ;
 
 sub get_user_text
 {
+my ($self, @arguments) = @_ ;
+
+return static_get_user_text(@arguments) ;
+}
+
+sub static_get_user_text
+{
 my ($title, $text) = @_ ;
 
 my $window = Gtk3::Window->new() ;

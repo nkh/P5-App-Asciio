@@ -40,9 +40,12 @@ PROXY_GROUP
 	
 	# you can override the  shortcut too, note that we now have 3 bindings to 'add box', i + b +b, space + b, space + space 
 	['Add box' => '000-space'],
-
+	['find and run animation' => '000-space'],
+	
 	# we can run macros using their shortcut
 	'Add diagonal arrow',
+	
+	['take snapshot' => '000-s'],
 	),
 
 ROOT_GROUP
@@ -338,7 +341,7 @@ ROOT_GROUP
 	'clone emulation down'  => ['C00-Down',             \&App::Asciio::Actions::Mouse::mouse_move, [ 0,  1]                         ],
 	),
 
-'Insert ->' =>  GROUP
+'Insert ->' => GROUP
 	(
 	SHORTCUTS   => '000-i',
 	DESCRIPTION => 'Insert asciio elements',
@@ -358,9 +361,20 @@ ROOT_GROUP
 					# [\&App::Asciio::Actions::Arrow::allow_diagonals, 1],
 					)
 				],
-	'Add connector'      => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]   ],
+	'Add connector'      => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector', 0]],
 	
-	# 'Unicode ->'       => ['000-u', USE_GROUP('insert_unicode')  ] ,
+	'Add pointer'        => [
+				'000-p', 
+				MACRO
+					(
+					[\&App::Asciio::Actions::Elements::add_element, ['🡴', 0 ]                       ],
+					[\&App::Asciio::Actions::Elements::flip_autoconnect                             ],
+					[\&App::Asciio::Actions::Elements::set_id, 'pointer'                            ],
+					[\&App::Asciio::Actions::Colors::change_elements_colors, [0, [0.80, 0.10, 1.00]]],
+					),
+				],
+
+	'Unicode ->'         => ['000-u', USE_GROUP('insert_unicode')  ] ,
 	'Multiple ->'        => ['000-m', USE_GROUP('insert_multiple') ] ,
 	'Connected ->'       => ['000-k', USE_GROUP('insert_connected')] ,
 	'Stencil ->'         => ['000-s', USE_GROUP('insert_stencil')  ] ,
@@ -369,7 +383,7 @@ ROOT_GROUP
 	'Line ->'            => ['000-l', USE_GROUP('insert_line')     ] ,
 	),
 	
-	'group_insert_stencil' =>  GROUP
+	'group_insert_stencil' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_stencil',
 		DESCRIPTION => 'Insert elements from stencils',
@@ -384,7 +398,7 @@ ROOT_GROUP
 		'From user buildings'  => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio' ], 
 		),
 	
-	'group_insert_multiple' =>  GROUP
+	'group_insert_multiple' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_multiple',
 		DESCRIPTION => 'Insert multilpe elements at once',
@@ -395,7 +409,7 @@ ROOT_GROUP
 		'Add multiple texts connected' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]],
 		),
 	
-	'group_insert_ruler' =>  GROUP
+	'group_insert_ruler' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_ruler',
 		DESCRIPTION => 'Insert rules in the canvas',
@@ -405,7 +419,7 @@ ROOT_GROUP
 		'delete rulers'        => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                     ],
 		),
 	
-	'group_insert_line' =>  GROUP
+	'group_insert_line' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_line',
 		DESCRIPTION => 'Insert line elements',
@@ -414,7 +428,7 @@ ROOT_GROUP
 		'Add ascii no-connect line' => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0], 
 		),
 	
-	'group_insert_connected' =>  GROUP
+	'group_insert_connected' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_connected',
 		DESCRIPTION => 'Insert element and connect them automatically',
@@ -425,7 +439,7 @@ ROOT_GROUP
 		'Add multiple texts connected' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]], 
 		),
 	
-	'group_insert_element' =>  GROUP
+	'group_insert_element' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_element',
 		DESCRIPTION => 'Insert divers asciio elements',
@@ -438,7 +452,7 @@ ROOT_GROUP
 		'Add ellipse'                     => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]],
 		),
 	
-	'group_insert_box' =>  GROUP
+	'group_insert_box' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_box',
 		DESCRIPTION => 'Insert Asciio boxes ad exec-boxes',
@@ -452,7 +466,7 @@ ROOT_GROUP
 		'Add line numbered box'      => ['000-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]    ],
 		),
 	
-	'group_insert_unicode' =>  GROUP
+	'group_insert_unicode' => GROUP
 		(
 		SHORTCUTS   => 'group_insert_unicode',
 		DESCRIPTION => 'Insert unicode elements',
@@ -475,6 +489,8 @@ ROOT_GROUP
 	SHORTCUTS   => '000-e',
 	DESCRIPTION => 'Modify connectors',
 	
+	'set id'                  => ['000-i', \&App::Asciio::Actions::Elements::set_id],
+	'remove id'               => ['00S-I', \&App::Asciio::Actions::Elements::remove_id],
 	'cross ->'                => ['000-x', USE_GROUP('cross')],
 	'attributes ->'           => ['000-a', USE_GROUP('attributes')],
 	'element modification ->' => ['000-m', USE_GROUP('modification')],
@@ -974,23 +990,33 @@ ROOT_GROUP
 
 'slides ->' => GROUP
 	(
-	SHORTCUTS   => '0A0-s',
-	DESCRIPTION => 'Slides mode',
+	SHORTCUTS    => '0A0-s',
+	DESCRIPTION  => 'Slides mode',
 	ENTER_GROUP  => \&App::Asciio::Actions::Presentation::start_manual_slideshow,
-	ESCAPE_KEYS => '000-Escape',
+	ESCAPE_KEYS  => '000-Escape',
 	ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
 	
-	'previous slide' => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide],
-	'next slide'     => ['000-n', \&App::Asciio::Actions::Presentation::next_slide    ],
-	'first slide'    => ['000-g', \&App::Asciio::Actions::Presentation::first_slide   ],
+	'previous slide'         => ['000-p', \&App::Asciio::Actions::Presentation::previous_slide                                                ] ,
+	'previous slide2'        => ['00S-N', \&App::Asciio::Actions::Presentation::previous_slide                                                ] ,
+	'next slide'             => ['000-n', \&App::Asciio::Actions::Presentation::next_slide                                                    ] ,
+	'first slide'            => ['000-g', \&App::Asciio::Actions::Presentation::first_slide                                                   ] ,
+	'first slide2'           => ['000-0', \&App::Asciio::Actions::Presentation::first_slide                                                   ] ,
 	
-	'run slideshow'  => ['000-s', USE_GROUP('slideshow_run')] ,
-	# 'animation ->' => ['000-a', USE_GROUP('animation')] ,
+	'tag as slide'           => ['000-s', \&App::Asciio::Actions::Presentation::tag,                   { IS_SLIDE => 1, BG_COLOR => 'yellow' }] ,
+	'tag all as slide'       => ['C00-s', \&App::Asciio::Actions::Presentation::tag_all,               { IS_SLIDE => 1, BG_COLOR => 'yellow' }] ,
+	'untag as slide'         => ['00S-S', \&App::Asciio::Actions::Presentation::tag,                   undef                                  ] ,
+	'set slide time'         => ['000-t', \&App::Asciio::Actions::Presentation::set_slide_time                                                ] ,
+	'set default slide time' => ['00S-T', \&App::Asciio::Actions::Presentation::set_default_slide_time                                        ] ,
+	'run slideshow ->'       => ['000-r', USE_GROUP('slideshow_run')                                                                          ] ,
+	'run slideshow once ->'  => ['00S-R', USE_GROUP('slideshow_run_once')                                                                     ] ,
+	'set slide directory'    => ['000-d', \&App::Asciio::Actions::Animation::set_slide_directory                                              ] ,
+	
+	'animation ->'           => ['000-a', USE_GROUP('animation')                                                                              ] ,
 	),
 	
 	'group_slideshow_run'    => GROUP
 		(
-		SHORTCUTS    => 'group_slideshow',
+		SHORTCUTS    => 'group_slideshow_run',
 		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow, 1000],
 		ESCAPE_KEYS  => '000-Escape',
 		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
@@ -1003,28 +1029,60 @@ ROOT_GROUP
 		
 		'next slideshow slide' => ['next_slideshow_slide', \&App::Asciio::Actions::Presentation::next_slideshow_slide],
 		),
-
-'animation ->' => GROUP
-	(
-	SHORTCUTS   => 'group_animation',
-	DESCRIPTION => 'Animation mode',
-	ESCAPE_KEYS => '000-Escape',
 	
-	'Load animation'     => ['000-l', \&App::Asciio::Actions::Animation::load_animation_slide ],
-	'previous animation' => ['00S-N', \&App::Asciio::Actions::Animation::previous_animation   ],
-	'next animation'     => ['000-n', \&App::Asciio::Actions::Animation::next_animation       ],
-	'first animation'    => ['000-g', \&App::Asciio::Actions::Animation::first_animation      ],
-	
-	'script ->' => ['000-s', USE_GROUP('animation_script')] ,
-	),
-	
-	'group_animation_script' => GROUP
+	'group_slideshow_run_once' => GROUP
 		(
-		SHORTCUTS   => 'group_slides_script',
-		DESCRIPTION => '',
-		ESCAPE_KEYS => '000-Escape',
+		SHORTCUTS    => 'group_slideshow_un_once',
+		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow_once, [1000, 1]],
+		ESCAPE_KEYS  => '000-Escape',
+		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
 		
-		# map { "slides script $_" => ["000-$_", \&App::Asciio::Actions::Animation::run_script, [$_], undef, { HIDE => 1 } ] } ('a'..'f', '0'..'9'),
+		'next slideshow slide' => ['next_slideshow_slide', \&App::Asciio::Actions::Presentation::next_slideshow_slide],
+		),
+	
+	'group_animation ->' => GROUP
+		(
+		SHORTCUTS   => 'group_animation',
+		DESCRIPTION => 'Animation scripts',
+		ENTER_GROUP => \&App::Asciio::Actions::Animation::scan_script_directory,
+		ESCAPE_KEYS => '000-Escape',
+		HIDE        => 1,
+		
+		'show animation bindings'     => ['00S-question', sub { $_[0]->show_binding_completions(1, 1) ; } ],
+		
+		'previous numbered animation' => ['000-p',        \&App::Asciio::Actions::Animation::run_previous ],
+		'previous numbered animation' => ['00S-N',        \&App::Asciio::Actions::Animation::run_previous ],
+		'next numbered animation'     => ['000-n',        \&App::Asciio::Actions::Animation::run_next     ],
+		'first numbered animation'    => ['000-g',        \&App::Asciio::Actions::Animation::run_first    ],
+		're-run animation'            => ['000-r',        \&App::Asciio::Actions::Animation::rerun        ],
+		'take snapshot'               => ['000-s',        \&App::Asciio::Actions::Animation::take_snapshot],
+		# 'save document'      => ['000-s', \&App::Asciio::Actions::Animation::],
+		# 'reset document'     => ['000-0', \&App::Asciio::Actions::Animation::],
+		
+		'find and run animation' => ['000-Tab', USE_GROUP('animation_complete')],
+		),
+	
+	'group_animation_complete ->' => GROUP
+		(
+		SHORTCUTS    => 'group_animation_complete',
+		DESCRIPTION  => 'Animation script competion',
+		ENTER_GROUP  => [
+				\&App::Asciio::Actions::Completion::enter,
+					[
+					\&App::Asciio::Actions::Animation::get_scripts,
+					\&App::Asciio::Actions::Animation::run_script,
+					]
+				],
+		ESCAPE_KEYS  => '000-Escape',
+		ESCAPE_GROUP => \&App::Asciio::Actions::Completion::escape, 
+		
+		'complete complete'     => ['000-Tab'       , \&App::Asciio::Actions::Completion::key, 'tab',       { HIDE => 1 }],
+		'complete complete all' => ['C00-Tab'       , \&App::Asciio::Actions::Completion::key, 'taball',    { HIDE => 1 }],
+		'complete backspace'    => ['000-BackSpace' , \&App::Asciio::Actions::Completion::key, 'backspace', { HIDE => 1 }],
+		'complete execute'      => ['000-Return'    , \&App::Asciio::Actions::Completion::key, 'return',    { HIDE => 1 }],
+		'complete erase'        => ['C00-l'         , \&App::Asciio::Actions::Completion::key, 'erase',     { HIDE => 1 }],
+		
+		(map { ("complete $_"   => ["000-$_"        , \&App::Asciio::Actions::Completion::key, $_,          { HIDE => 1 }]) }('a'..'z', '0'..'9', '_', '-')),
 		),
 
 'pen ->' => GROUP
@@ -1149,20 +1207,21 @@ ROOT_GROUP
 	'Flip grid display'         => ['000-g', \&App::Asciio::Actions::Unsorted::flip_grid_display                     ],
 	'Flip rulers display'       => ['000-r', \&App::Asciio::Actions::Unsorted::flip_rulers_display                   ],
 	'Flip hint lines'           => ['000-h', \&App::Asciio::Actions::Unsorted::flip_hint_lines                       ],
-	'Flip edit inline'          => ['000-i', \&App::Asciio::Actions::Unsorted::toggle_edit_inline                    ],
+	'Flip edit inline'          => ['000-e', \&App::Asciio::Actions::Unsorted::toggle_edit_inline                    ],
 	'Flip show/hide connectors' => ['000-v', \&App::Asciio::Actions::Unsorted::flip_connector_display                ],
+	'Flip display element id'   => ['000-i', sub { $_[0]->{DISPLAY}{DRAW_ID} ^= 1 ; $_[0]->update_display() }        ],
 	),
 	
 	'group_color' => GROUP
 		(
 		SHORTCUTS => 'group_color',
 		
-		'Flip color scheme'         => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme        ] ,
+		'Flip color scheme'         => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme          ] ,
 		
-		'Elements foreground color' => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, 0] ,
-		'Elements background color' => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, 1] ,
-		'Asciio background color'   => ['00S-B', \&App::Asciio::Actions::Colors::change_background_color  ] ,
-		'grid color'                => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color        ] ,
+		'Elements foreground color' => ['000-f', \&App::Asciio::Actions::Colors::change_elements_colors, [0]] ,
+		'Elements background color' => ['000-b', \&App::Asciio::Actions::Colors::change_elements_colors, [1]] ,
+		'Asciio background color'   => ['00S-B', \&App::Asciio::Actions::Colors::change_background_color    ] ,
+		'grid color'                => ['000-g', \&App::Asciio::Actions::Colors::change_grid_color          ] ,
 		),
 
 'debug ->' =>  GROUP
@@ -1174,6 +1233,7 @@ ROOT_GROUP
 	'Dump self'                     => ['000-s', \&App::Asciio::Actions::Debug::dump_self                        ],
 	'Dump all elements'             => ['000-e', \&App::Asciio::Actions::Debug::dump_all_elements                ],
 	'Dump selected elements'        => ['00S-E', \&App::Asciio::Actions::Debug::dump_selected_elements           ],
+	'Dump animation data'           => ['000-a', \&App::Asciio::Actions::Debug::dump_animation_data              ],
 	'Display numbered objects'      => ['00S-T', sub { $_[0]->{NUMBERED_OBJECTS} ^= 1 ; $_[0]->update_display() }],
 	'Test'                          => ['000-t', \&App::Asciio::Actions::Debug::test                             ],
 	'ZBuffer Test'                  => ['000-z', \&App::Asciio::Actions::ZBuffer::dump_crossings                 ],
@@ -1198,6 +1258,7 @@ use App::Asciio::Actions::Box ;
 use App::Asciio::Actions::Clipboard ;
 use App::Asciio::Actions::Clone ;
 use App::Asciio::Actions::Colors ;
+use App::Asciio::Actions::Completion ;
 use App::Asciio::Actions::Debug ;
 use App::Asciio::Actions::ElementAttributes ;
 use App::Asciio::Actions::ElementSelection ;

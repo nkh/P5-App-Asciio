@@ -9,6 +9,15 @@ use Data::TreeDumper ;
 
 #-----------------------------------------------------------------------------
 
+sub get_user_text
+{
+my ($self) = @_ ;
+
+return 'get_user_text'  ;
+}
+
+#-----------------------------------------------------------------------------
+
 sub get_color_from_user
 {
 my ($self, $previous_color) = @_ ;

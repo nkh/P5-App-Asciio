@@ -120,6 +120,10 @@ my @flags_and_help =
 		'sets the root of the setup directory.',
 		'',
 	
+	'scripts_path=s'            => \$asciio_config->{SCRIPTS_PATH},
+		'location of scripts.',
+		'',
+	
 	's|script=s'                => \$asciio_config->{SCRIPT},
 		'script to be run at Asciio start.',
 		'',

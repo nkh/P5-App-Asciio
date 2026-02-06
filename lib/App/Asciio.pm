@@ -761,6 +761,22 @@ $self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}, $self->get_charac
 
 #-----------------------------------------------------------------------------
 
+sub set_text_overlay
+{
+my ($self, $texts) = @_;
+
+$self->{DISPLAY_TEXTS}{TEXTS} = $texts ; 
+}
+
+sub keep_text_overlay
+{
+my ($self, $keep) = @_;
+
+$self->{DISPLAY_TEXTS}{KEEP} = $keep ; 
+}
+
+#-----------------------------------------------------------------------------
+
 sub flash_display 
 {
 my ($self, $arg) = @_;

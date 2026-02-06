@@ -25,9 +25,9 @@ $self->{CURRENT_ACTIONS} = $self->{ACTIONS}{$action} // $self->{ACTIONS_BY_NAME}
 
 sub show_binding_completions
 {
-my ($self, $keep_visible) = @_ ;
+my ($self, $keep_visible, $force_visible) = @_ ;
 
-if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
+if($self->{USE_BINDINGS_COMPLETION} && (! $self->{CURRENT_ACTIONS}{HIDE} || $force_visible))
 	{
 	my %reserved = map { $_ => 1 } qw(HIDE IS_GROUP DESCRIPTION ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP NAME SHORTCUTS ORIGIN CODE OPTIONS) ;
 	
@@ -38,7 +38,7 @@ if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 				'ARRAY' eq ref($self->{CURRENT_ACTIONS}{$_}{SHORTCUTS})
 						?  join(', ', $self->{CURRENT_ACTIONS}{$_}{SHORTCUTS}->@*)
 						: $_
-				} grep { ! $self->{CURRENT_ACTIONS}{$_}{OPTIONS}{HIDE} }
+				} grep { ! $self->{CURRENT_ACTIONS}{$_}{OPTIONS}{HIDE}  || $force_visible }
 					grep { ! exists $reserved{$_} } keys $self->{CURRENT_ACTIONS}->%* ;
 	
 	my $max_length = 0 ;
@@ -49,7 +49,7 @@ if($self->{USE_BINDINGS_COMPLETION} && ! $self->{CURRENT_ACTIONS}{HIDE})
 				{
 				my $shortcut = $_->{SHORTCUTS} ;
 				
-				! exists $reserved{$shortcut} && ! $_->{OPTIONS}{HIDE}
+				! exists $reserved{$shortcut} && (! $_->{OPTIONS}{HIDE} || $force_visible)
 				} $self->{ACTIONS_ORDERED}{$self->{CURRENT_ACTIONS}{NAME}}->@* ;
 	
 	$self->{BINDINGS_COMPLETION} = 

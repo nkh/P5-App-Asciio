@@ -369,7 +369,7 @@ else
 		}
 		
 	$title = $file_name ;
-
+	
 	eval
 		{
 		write_binary($file_name, $self->get_compressed_asciio) ;

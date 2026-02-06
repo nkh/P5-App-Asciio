@@ -6,11 +6,15 @@ use base qw(App::Asciio) ;
 use strict;
 use warnings;
 
+#-----------------------------------------------------------------------------
+
 use Glib ':constants';
 use Gtk3 -init;
 use Pango ;
 
 use List::Util qw(min) ;
+
+#-----------------------------------------------------------------------------
 
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
@@ -89,7 +93,7 @@ sub start_updating_display { my ($self) = @_ ; $self->{NO_UPDATE_DISPLAY} = 0 ; 
 
 sub update_display 
 {
-my ($self) = @_;
+my ($self, $immediate) = @_;
 
 if (!$self->{NO_UPDATE_DISPLAY})
 	{
@@ -97,6 +101,8 @@ if (!$self->{NO_UPDATE_DISPLAY})
 	
 	my $widget = $self->{widget} ;
 	$widget->queue_draw_area(0, 0, $widget->get_allocated_width, $widget->get_allocated_height);
+	
+	Gtk3::main_iteration() if $immediate ;
 	}
 }
 
@@ -150,10 +156,46 @@ $self->display_mouse_cursor        ($expose_data) if $self->{MOUSE_TOGGLE} ;
 $self->draw_hint_lines             ($expose_data) if $self->{DRAW_HINT_LINES} ;
 $self->draw_pen_mapping_help       ($expose_data) ;
 $self->draw_element_state          ($expose_data) ;
+$self->draw_element_id             ($expose_data) if $self->{DISPLAY}{DRAW_ID} ;
 $self->display_bindings_completion ($expose_data) if $self->{BINDINGS_COMPLETION} ;
 $self->draw_flash                  ($expose_data) if $self->{FLASH_DISPLAY} ;
+$self->draw_text                   ($expose_data) if $self->{DISPLAY_TEXTS} ;
 
 return TRUE ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_text
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $character_width, $character_height)= @{$expose_data}{qw/ gc character_width character_height /} ;
+
+for my $text_data ($self->{DISPLAY_TEXTS}{TEXTS}->@*)
+	{
+	my ($x, $y, $background_color, $foreground_color, $text) = $text_data->@* ;
+	
+	my $surface = Cairo::ImageSurface->create('argb32', length($text) * $character_width, $character_height) ;
+	my $gco = Cairo::Context->create($surface) ;
+	
+	my $layout = Pango::Cairo::create_layout($gco) ;
+	$layout->set_font_description(Pango::FontDescription->from_string($self->get_font_as_string())) ;
+	
+	$gco->set_source_rgb(@{$background_color});
+	$gco->rectangle(0, 0, length($text) * $character_width, $character_height) ;
+	$gco->fill() ;
+	
+	$gco->set_source_rgb(@{$foreground_color}) ;
+	
+	$layout->set_text($text) ;
+	Pango::Cairo::show_layout($gco, $layout) ;
+	
+	$gc->set_source_surface($surface, $x * $character_width, $y * $character_height) ;
+	$gc->paint ;
+	}
+
+delete $self->{DISPLAY_TEXTS} unless $self->{DISPLAY_TEXTS}{KEEP} ;
 }
 
 #-----------------------------------------------------------------------------
@@ -290,9 +332,9 @@ my ($gc, $character_width, $character_height, $widget_width, $widget_height)
 	= @{$expose_data}{qw/ gc character_width character_height widget_width widget_height /} ;
 
 my $surface = Cairo::ImageSurface->create('argb32', $character_width, $character_height) ;
-my $gco = Cairo::Context->create($surface) ;
+my $gco     = Cairo::Context->create($surface) ;
 
-my $layout = Pango::Cairo::create_layout($gco) ;
+my $layout           = Pango::Cairo::create_layout($gco) ;
 my $font_description = Pango::FontDescription->from_string($self->get_font_as_string()) ;
 $layout->set_font_description($font_description) ;
 
@@ -518,9 +560,9 @@ for my $element (
 			$connector_point_rendering,
 			($element->{X} + $connector->{X}) * $character_width, # can be additions
 			($connector->{Y} + $element->{Y}) * $character_height,
-			);
+			) ;
 		
-		$gc->paint;
+		$gc->paint ;
 		}
 	
 	for my $connection_point ($element->get_connection_points())
@@ -533,9 +575,9 @@ for my $element (
 			$connection_point_rendering,
 			(($connection_point->{X} + $element->{X}) * $character_width), # can be additions
 			(($connection_point->{Y} + $element->{Y}) * $character_height),
-			);
+			) ;
 		
-		$gc->paint;
+		$gc->paint ;
 		}
 	
 	unless(defined $self->{DRAGGING} || (exists $element->{GROUP} and defined $element->{GROUP}[-1]))
@@ -547,13 +589,13 @@ for my $element (
 				$extra_point_rendering,
 				(($extra_point->{X}  + $element->{X}) * $character_width), # can be additions
 				(($extra_point->{Y}  + $element->{Y}) * $character_height),
-				);
+				) ;
 			
-			$gc->paint;
+			$gc->paint ;
 			}
 	}
 	
-	$gc->show_page;
+	$gc->show_page ;
 	}
 }
 
@@ -591,7 +633,7 @@ for my $new_connection (@{$self->{NEW_CONNECTIONS}})
 		(
 		($end_connection->{X} + $new_connection->{CONNECTED}{X}) * $character_width , # can be additions
 		($end_connection->{Y} + $new_connection->{CONNECTED}{Y}) * $character_height ,
-		$character_width, $character_height
+		$character_width, $character_height,
 		);
 	}
 
@@ -640,7 +682,7 @@ if ($self->{DRAW_MOUSE_CURSOR})
 		$character_width,
 		$character_height,
 		$start_x,
-		$start_y
+		$start_y,
 		) ;
 	}
 else
@@ -665,21 +707,59 @@ my ($xs, $ys, $xe, $ye, $has_extents) = $self->get_selected_elements_extents() ;
 if($has_extents)
 	{
 	$gc->set_line_width(1);
-	$gc->set_source_rgb(@{$self->get_color('hint_line')});
+	$gc->set_source_rgb(@{$self->get_color('hint_line')}) ;
 	
 	$gc->move_to($xs * $character_width, 0) ;
 	$gc->line_to($xs * $character_width, $widget_height) ;
 	
 	$gc->move_to(0, $ys * $character_height) ;
-	$gc->line_to($widget_width, $ys * $character_height);
+	$gc->line_to($widget_width, $ys * $character_height) ;
 	
 	$gc->move_to($xe * $character_width, 0) ;
 	$gc->line_to($xe * $character_width, $widget_height) ;
 	
 	$gc->move_to(0, $ye * $character_height) ;
-	$gc->line_to($widget_width, $ye * $character_height);
+	$gc->line_to($widget_width, $ye * $character_height) ;
 	
 	$gc->stroke() ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub draw_element_id
+{
+my ($self, $expose_data) = @_ ;
+
+my ($gc, $font_description, $character_width, $character_height)
+	= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
+
+for my $element (@{$expose_data->{viewport}{drawing_order}})
+	{
+	$gc->set_source_rgb(@{$self->get_color('grid_2')});
+	$gc->rectangle
+		(
+		$element->{X} * $character_width,
+		$element->{Y} * $character_height,
+		$element->{WIDTH} * $character_width,
+		$character_height,
+		) ;
+	
+	$gc->fill ;
+	
+	my $surface = Cairo::ImageSurface->create('argb32', $element->{WIDTH} * $character_width, $element->{HEIGHT} * $character_height) ;
+	my $gco     = Cairo::Context->create($surface) ;
+	my $layout  = Pango::Cairo::create_layout($gco) ;
+	
+	$gco->set_source_rgb(@{$self->get_color('element_id')});
+	
+	$layout->set_font_description($font_description) ;
+	$layout->set_text($element->get_id()) ;
+	
+	Pango::Cairo::show_layout($gco, $layout) ;
+	
+	$gc->set_source_surface($surface, $element->{X} * $character_width, $element->{Y} * $character_height) ;
+	$gc->paint ;
 	}
 }
 
@@ -804,7 +884,7 @@ my ($gc, $font_description, $character_width, $character_height)
 	= @{$expose_data}{qw/ gc font_description character_width character_height /} ;
 
 my $is_selected = $element->{SELECTED} // 0 ;
-$is_selected = 1 if $is_selected > 0 ;
+$is_selected    = 1 if $is_selected > 0 ;
 
 my ($background_color, $foreground_color) = $self->get_element_colors($element) ;
 
@@ -930,6 +1010,7 @@ if ($element->{SELECTED})
 	{
 	my $alpha = 0.15 ;
 	my ($background_color, undef) = $self->get_element_colors($element) ;
+	
 	$gc->set_source_rgba(@{$background_color}, $alpha) ;
 	$gc->rectangle
 		(
@@ -985,6 +1066,7 @@ for my $element ($self->{ELEMENTS}->@*)
 sub highlight_characters
 {
 my ($self, $expose_data, $x, $y, $color, $length) = @_ ;
+
 $length //= 1 ;
 
 my ($gc, $character_width, $character_height) = @{$expose_data}{qw/ gc character_width character_height /} ;
@@ -1052,8 +1134,8 @@ my $event_type = $event->type() ;
 
 if
 	(
-	$event_type eq "motion-notify"
-	|| ref $event eq "Gtk3::Gdk::EventButton" 
+	       $event_type eq "motion-notify"
+	|| ref $event      eq "Gtk3::Gdk::EventButton" 
 	)
 	{
 	my $COORDINATES = [$self->closest_character($event->get_coords())]  ;
@@ -1065,7 +1147,7 @@ if
 $self->SUPER::motion_notify_event($self->create_asciio_event($event)) ; 
 }
 
-sub mouse_scroll_event   { my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; }
+sub mouse_scroll_event { my (undef, $event, $self) = @_ ; $self->SUPER::mouse_scroll_event($self->create_mouse_scroll_event($event)) ; }
 
 #-----------------------------------------------------------------------------
 
@@ -1120,9 +1202,11 @@ my ($self, $event) = @_ ;
 my $asciio_mouse_scroll_event = 
 	{
 	MODIFIERS => get_key_modifiers($event),
-	DIRECTION => 'scroll-' . ($event->direction ne 'smooth'
+	DIRECTION => 'scroll-' . (
+				$event->direction ne 'smooth'
 					? $event->direction
-					: ($event->get_scroll_deltas())[1] < 0 ? 'up' : 'down'),
+					: ($event->get_scroll_deltas())[1] < 0 ? 'up' : 'down'
+				),
 	} ;
 
 return $asciio_mouse_scroll_event ;

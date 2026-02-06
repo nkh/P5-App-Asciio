@@ -71,12 +71,14 @@ use App::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::stripes::stripes ;
 use App::Asciio::stripes::wirl_arrow ;
 
+use App::Asciio::Actions::Colors ; 
+
+#--------------------------------------------------------------------------------------------
+
 use Digest::MD5 qw(md5_hex)  ;
 
 use Data::TreeDumper ;
 sub ddt { print STDERR DumpTree @_ ; }
-
-use App::Asciio::Actions::Colors ; 
 
 #--------------------------------------------------------------------------------------------
 

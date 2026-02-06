@@ -15,7 +15,10 @@ use App::Asciio::Actions::ElementsManipulation ;
 
 sub get_regexp
 {
-my $regexp = App::Asciio::GTK::Asciio::get_user_text('regexp') ;
+my ($self) = @_ ;
+
+my $regexp = $self->get_user_text('regexp') ;
+
 return unless defined $regexp && $regexp ne '' ;
 
 eval { qr/$regexp/ } ;
@@ -28,13 +31,6 @@ else
 	{
 	return qr/$regexp/ ;
 	}
-}
-
-#----------------------------------------------------------------------------------------------
-
-sub get_replacement
-{
-return App::Asciio::GTK::Asciio::get_user_text('replacement') ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -69,7 +65,7 @@ my ($self, $all) = @_ ;
 
 $self->update_display() ;
 
-my $regexp = get_regexp() ;
+my $regexp = $self->get_regexp() ;
 
 return unless(defined $regexp && $regexp ne '') ;
 
@@ -84,7 +80,7 @@ sub replace
 {
 my ($self, $all) = @_ ;
 
-my ($regexp, $replacement) = (get_regexp(), get_replacement()) ;
+my ($regexp, $replacement) = ($self->get_regexp(), $self->get_user_text('replacement')) ;
 
 return unless(defined $regexp && $regexp ne '' && defined $replacement && $replacement ne '') ;
 

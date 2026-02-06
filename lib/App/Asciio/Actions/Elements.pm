@@ -41,6 +41,80 @@ return $element ;
 
 #----------------------------------------------------------------------------------------------
 
+sub set_id
+{
+my ($self, $id) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+if(@selected_elements == 1)
+	{
+	$self->create_undo_snapshot() ;
+	
+	if(defined $id)
+		{
+		$selected_elements[0]->set_id($id) ;
+		}
+	else
+		{
+		my $id = $self->get_user_text('Id') ;
+		
+		if(defined $id && $id ne '')
+			{
+			$selected_elements[0]->set_id($id) ;
+			$self->{MODIFIED}++ ;
+			}
+		}
+	}
+else
+	{
+	my $index = -1 ;
+	
+	for my $selected_element (@selected_elements)
+		{
+		$index++ ;
+		$selected_element->set_id($index) ;
+		}
+	}
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub remove_id
+{
+my ($self, $id) = @_ ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $selected_element (@selected_elements)
+	{
+	$selected_element->remove_id() ;
+	}
+
+$self->update_display() ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub flip_autoconnect
+{
+my ($self) = @_ ;
+
+$self->create_undo_snapshot() ;
+
+my @selected_elements = $self->get_selected_elements(1) ;
+
+for my $selected_element (@selected_elements)
+	{
+	$selected_element->enable_autoconnect(! $selected_element->is_autoconnect_enabled()) ;
+	}
+}
+
+
+#----------------------------------------------------------------------------------------------
+
 sub add_element_connected
 {
 my ($self, $name_and_edit) = @_ ;

@@ -72,6 +72,7 @@ lib/App/Asciio/Actions/Box.pm
 lib/App/Asciio/Actions/Clipboard.pm
 lib/App/Asciio/Actions/Clone.pm
 lib/App/Asciio/Actions/Colors.pm
+lib/App/Asciio/Actions/Completion.pm
 lib/App/Asciio/Actions/Debug.pm
 lib/App/Asciio/Actions/Elements.pm
 lib/App/Asciio/Actions/ElementAttributes.pm
@@ -238,7 +239,6 @@ Astar/path_finder
 documentation/generate_mdbook.txt
 documentation/mdbook_asciio/book.toml
 
-documentation/mdbook_asciio/src/Bindings_reference.md
 documentation/mdbook_asciio/src/Interface.md
 documentation/mdbook_asciio/src/matching_elements.png
 documentation/mdbook_asciio/src/README.md
