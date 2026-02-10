@@ -27,8 +27,13 @@
 
 ***Add connectors interactively [22 jan 2026]***
 
-[watch video](stencils/2026_01_22_box_connector_interactive.gif) | [documentation](stencils/box_connectors.html#interactive-connector-operations)  
+[watch video](stencils/2026_01_22_box_connector_interactive.gif) | [documentation](stencils/box_connectors.html#interactive-connector-operations)
 
 ***Slides and Slideshow [18 feb 2026]***
 
 [watch video](modes/slide_animation.gif) | [documentation](modes/slide_and_slideshow.md)
+
+***Multi language support [24 Feb 2026]***
+
+[Multi language support](./multi_language_support.md)
+

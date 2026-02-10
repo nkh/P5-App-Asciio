@@ -255,7 +255,7 @@ my @text_lines = defined $text_only && $text_only ne ''
 	? split("\n", $text_only)
 	: ('') ;
 
-my $text_width = max(map {unicode_length $_} @text_lines);
+my $text_width = max(map {unicode_display_width $_} @text_lines);
 my $text_height = @text_lines;
 
 my ($text_begin_y, $text_begin_x);
@@ -401,7 +401,7 @@ push @final_stripes,
 {
     'HEIGHT' => 1,
     'TEXT' => $strip_text,
-    'WIDTH' => unicode_length($strip_text),
+    'WIDTH' => unicode_display_width($strip_text),
     'X_OFFSET' => $strip->[0],
     'Y_OFFSET' => 0,
 };
@@ -423,7 +423,7 @@ for $strip_index(1..$#sigle_strips-1)
             $fill_line = shift @text_lines;
         }
     }
-    $fill_cnt = unicode_length($fill_line);
+    $fill_cnt = unicode_display_width($fill_line);
 
     $now_strip = $sigle_strips[$strip_index][1];
     if($strip_index < $half_y)
@@ -617,7 +617,7 @@ push @final_stripes,
 {
     'HEIGHT' => 1,
     'TEXT' => $strip_text,
-    'WIDTH' => unicode_length($strip_text),
+    'WIDTH' => unicode_display_width($strip_text),
     'X_OFFSET' => $sigle_strips[$strip_index][0],
     'Y_OFFSET' => $strip_index,
 };
@@ -681,7 +681,7 @@ push @final_stripes,
 {
     'HEIGHT' => 1,
     'TEXT' => $strip_text,
-    'WIDTH' => unicode_length($strip_text),
+    'WIDTH' => unicode_display_width($strip_text),
     'X_OFFSET' => $strip->[0],
     'Y_OFFSET' => $#sigle_strips,
 };

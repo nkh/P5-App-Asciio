@@ -22,7 +22,7 @@ for my $stripe (@{$element_definition->{STRIPES}})
 	{
 	my $text = $stripe->{TEXT} ;
 	
-	my $width = max( map{ unicode_length($_) } split("\n", $text)) ;
+	my $width = max( map{ unicode_display_width($_) } split("\n", $text)) ;
 	
 	my $height = ($text =~ tr[\n][\n]) + 1 ;
 	

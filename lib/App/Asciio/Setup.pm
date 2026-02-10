@@ -58,6 +58,11 @@ for my $setup_file (@{$setup_ini_files})
 	$self->{WARN}("can't load '$setup_file': $! $@\n") if $@ ;
 	}
 	
+	if (exists $ini_files->{UNICODE_WIDTH_OVERRIDES})
+		{
+		$self->setup_unicode_width_overrides($setup_path, $ini_files->{UNICODE_WIDTH_OVERRIDES}) ;
+		}
+	
 	$self->setup_object_options($setup_path, $ini_files->{ASCIIO_OBJECT_SETUP} || []) ;
 	if (defined $object_overrides)
 		{
@@ -766,6 +771,36 @@ if(defined $asciio_config->{DUMP_BINDINGS})
 		
 		print STDERR "Asciio: writing binding '$binding->{NAME}' from $binding->{DATE} to '$binding_dump_file'\n" ;
 		write_text($binding_dump_file, $binding->{CODE}) ;
+		}
+	}
+}
+
+#------------------------------------------------------------------------------------------------------
+
+sub setup_unicode_width_overrides
+{
+my ($self, $path, $files) = @_;
+
+for my $file (@$files)
+	{
+	my $full_path = $path . $file ;
+	
+	my $result = do $full_path ;
+	
+	if (!defined $result)
+		{
+		if ($@)
+			{
+			die "Error compiling $full_path: $@" ;
+			}
+		elsif ($!)
+			{
+			die "Error reading $full_path: $!" ;
+			}
+		else
+			{
+			die "Error: $full_path executed but returned undef" ;
+			}
 		}
 	}
 }

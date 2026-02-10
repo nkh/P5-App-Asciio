@@ -93,6 +93,7 @@ lib/App/Asciio/GTK/Asciio/DnD.pm
 lib/App/Asciio/GTK/Asciio/Menues.pm
 lib/App/Asciio/GTK/Asciio/Pen.pm
 lib/App/Asciio/GTK/Asciio/Selection.pm
+lib/App/Asciio/GTK/Asciio/DisplayWidth.pm
 
 lib/App/Asciio/GTK/Asciio/Actions/File.pm
 
@@ -149,6 +150,8 @@ setup/Stencils/people.asciio
 
 setup/GTK/import_export/png.pl
 setup/GTK/setup.ini
+
+setup/unicode_width_overrides/unicode_width_overrides.pl
 
 setup/Text/setup.ini
 setup/Text/actions/vim_bindings.pl
@@ -341,6 +344,7 @@ my $build = $class->new
 		'HTTP::Request::Params'           => 0,
 		'JSON'                            => 0,
 		'version'                         => 0.50,
+		'Unicode::GCString'               => 0,
 		},
 		
 	pm_files     => \%all_modules,

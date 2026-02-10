@@ -471,18 +471,23 @@ sub change_font
 my ($self) = @_ ;
 
 my ($family, $size) = $self->get_font() ;
-if($family eq 'Monospace')
-	{
-	$self->set_font('sarasa mono sc', 12) ;
-	$self->{FONT_MIN} = 3 ;
-	$self->{ZOOM_STEP} = 3 ;
-	}
-else
-	{
-	$self->set_font('Monospace', 12) ;
-	$self->{FONT_MIN} = 3 ;
-	$self->{ZOOM_STEP} = 1 ;
-	}
+
+my %fonts =
+	(
+	'Monospace'   => { min => 3, zoom_step => 1, next =>'Courier New', describe => 'for Latin'             },
+	'Courier New' => { min => 3, zoom_step => 1, next =>'unifont'    , describe => 'for Arabic and Hebrew' },
+	'unifont'     => { min => 3, zoom_step => 3, next =>'Monospace'  , describe => 'for CJK'               },
+	) ;
+
+my $next = $fonts{$family}{next} ;
+my $step = $fonts{$next}{zoom_step} ;
+# Ensure that the size of the new font is a multiple of the step size and is
+# closest to the size of the old font
+my $new_size = int(($size + $step/2) / $step) * $step ;
+
+$self->set_font($next, $new_size) ;
+$self->{FONT_MIN} = $fonts{$next}{min} ;
+$self->{ZOOM_STEP} = $step ;
 
 $self->invalidate_rendering_cache() ;
 $self->update_display() ;

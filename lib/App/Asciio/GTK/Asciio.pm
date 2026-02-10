@@ -19,6 +19,7 @@ use List::Util qw(min) ;
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
 use App::Asciio::GTK::Asciio::stripes::image_box ;
+use App::Asciio::GTK::Asciio::DisplayWidth ;
 
 use App::Asciio::Cross ;
 use App::Asciio::Markup ;
@@ -63,6 +64,15 @@ $drawing_area->set_events
 		key-press-mask
 		key-release-mask
 		/]);
+
+App::Asciio::String::register_width_backend
+	(
+	sub
+		{
+		my ($text) = @_;
+		return App::Asciio::GTK::Asciio::DisplayWidth::measure($text, $self) ;
+		}
+	) ;
 
 return($self) ;
 }

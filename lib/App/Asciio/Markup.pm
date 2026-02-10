@@ -123,7 +123,7 @@ if(is_markup_string($strip_line))
 	while($strip_line =~ /(<\/?[bius]>)+|<\/span>|<span link="[^<]+">/g)
 		{
 		my $sub_str = substr($strip_line, 0, pos($strip_line));
-		$ori_x = $element_x + $strip_x + App::Asciio::String::unicode_length($sub_str) ;
+		$ori_x = $element_x + $strip_x + App::Asciio::String::unicode_display_width($sub_str) ;
 		my $fit_str = $&;
 		
 		$fit_str =~ s/<\/?b>/\*\*/g;
@@ -168,7 +168,7 @@ for my $row (0 .. $#lines)
 				{
 				$new_lines[$row][$new_col] = [$single_char];
 				# single char
-				$new_col += App::Asciio::String::unicode_length($single_char);
+				$new_col += App::Asciio::String::unicode_display_width($single_char);
 				}
 			}
 		

@@ -27,7 +27,7 @@ sub setup
 my ($self, $text, $name) = @_ ;
 
 my $width = 0 ;
-map {$width  = $width < unicode_length($_) ? unicode_length($_)  : $width} split("\n", $text) ;
+map {$width  = $width < unicode_display_width($_) ? unicode_display_width($_)  : $width} split("\n", $text) ;
 
 my $height = ($text =~ tr[\n][\n]) + 1 ;
 

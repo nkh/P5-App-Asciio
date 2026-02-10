@@ -110,7 +110,7 @@ for my $element (@elements)
 						}
 					}
 				
-				my $character_length = unicode_length($character) ;
+				my $character_length = unicode_display_width($character) ;
 				$character_index += $character_length ;
 				}
 			
@@ -165,7 +165,7 @@ for my $line (@lines)
 			else
 				{
 				# single char
-				$char_len = unicode_length($character) ;
+				$char_len = unicode_display_width($character) ;
 				$write_line .= $character;
 				}
 			}
@@ -228,7 +228,7 @@ for my $y ($min_y .. $max_y)
 	while ($x <= $max_x)
 		{
 		$rectangle[$y - $min_y][$x - $min_x] = $coordinates->{"$y;$x"} // ' ' ;
-		my $char_length                      = unicode_length($coordinates->{"$y;$x"} // ' ') ;
+		my $char_length                      = unicode_display_width($coordinates->{"$y;$x"} // ' ') ;
 		$x                                  += $char_length ;
 		
 		if($char_length == 0)

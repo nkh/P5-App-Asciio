@@ -5,10 +5,11 @@ require Exporter ;
 @ISA = qw(Exporter) ;
 @EXPORT = 
 	qw(
-	unicode_length
+	unicode_display_width
 	make_vertical_text
 	get_keyboard_layout
 	normalize_file_name
+	register_unicode_display_width_overrides
 	) ;
 
 #-----------------------------------------------------------------------------
@@ -16,26 +17,198 @@ require Exporter ;
 use strict ; use warnings ;
 use utf8 ;
 use Encode qw(decode FB_CROAK) ;
+use Unicode::GCString ;
 
 use App::Asciio::Markup ;
 
 #-----------------------------------------------------------------------------
 
 use Memoize ;
-memoize('unicode_length') ;
+memoize('unicode_display_width') ;
 
 #-----------------------------------------------------------------------------
 
-sub unicode_length
+my %WIDTH_OVERRIDES ;
+my $WIDTH_OVERRIDES_REGEX = undef ;
+my $WIDTH_BACKEND = undef ;
+
+my @LANGUAGE_WIDTH_HANDLERS =
+	(
+	\&arabic_width_preprocess,
+	);
+
+#-----------------------------------------------------------------------------
+
+sub register_width_backend
 {
-my ($string) = @_ ;
+my ($backend) = @_ ;
+$WIDTH_BACKEND = $backend ;
+}
+
+#-----------------------------------------------------------------------------
+
+sub register_unicode_display_width_overrides
+{
+my ($overrides) = @_ ;
+
+while (my ($char, $width) = each %$overrides)
+	{
+	$WIDTH_OVERRIDES{$char} = $width ;
+	}
+
+if (%WIDTH_OVERRIDES)
+	{
+	my $chars = join "", map { quotemeta($_) } keys %WIDTH_OVERRIDES ;
+	$WIDTH_OVERRIDES_REGEX = qr/[$chars]/ ;
+	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub unicode_display_width
+{
+my $string = shift ;
 
 $string = $USE_MARKUP_CLASS->delete_markup_characters($string) ;
 
-my $east_asian_double_width_chars_cnt = grep {$_ =~ /\p{EA=W}|\p{EA=F}/} split('', $string) ;
-my $nonspacing_chars_cnt = grep {$_ =~ /\p{gc:Mn}/} split('', $string) ;
+# If there is width calculation backend -> use it directly
+if ($WIDTH_BACKEND)
+	{
+	return $WIDTH_BACKEND->($string) ;
+	}
+else
+	{
+	my ($override_width, $lang_width) = (0, 0) ;
+	my $rest = $string ;
+	
+	if ($WIDTH_OVERRIDES_REGEX)
+		{
+		while ($rest =~ /($WIDTH_OVERRIDES_REGEX)/g)
+			{
+			my $char = $1 ;
+			$override_width += $WIDTH_OVERRIDES{$char} ;
+			}
+		
+		$rest =~ s/$WIDTH_OVERRIDES_REGEX//g ;
+		}
+	
+	# If there is no width calculation backend,
+	# fall back directly to the default calculation method.
+	for my $handler (@LANGUAGE_WIDTH_HANDLERS)
+		{
+		$rest = $handler->($rest) ;
+		}
+	
+	return Unicode::GCString->new($rest, Context => "NONEASTASIAN")->columns + $override_width ;
+	}
+}
 
-return length($string) + $east_asian_double_width_chars_cnt - $nonspacing_chars_cnt ;
+#-----------------------------------------------------------------------------
+
+# الله	U+FDF2	Allah
+# ﷺ	U+FDFA	Sallallahu Alayhi Wasallam
+# ﷻ	U+FDFB	Jallajalaluhu
+sub arabic_width_preprocess
+{
+my ($string) = @_;
+
+# SPECIAL CASE: Allah root ligatures (must run BEFORE Mn removal)
+#
+# Many Arabic fonts render sequences based on the Allah root
+#   لل + marks + ه + marks
+# as a *single visual glyph*.
+#
+# Unicode::GCString does NOT know about these ligatures, so we
+# manually collapse them into a single placeholder "X" to force
+# width = 1.
+#
+# IMPORTANT:
+#   The mark ranges include:
+#     - \p{Mn}                → all combining marks (shadda, vowels, etc.)
+#     - U+06D6–U+06E8         → Quranic annotation marks
+#     - U+06EA–U+06ED         → more Quranic marks
+#
+#   We EXCLUDE U+06E9 (۩) because it is a standalone
+#   symbol that occupies its own cell and must NOT be swallowed
+#   by the Allah rule.
+$string =~ s/
+	\x{0644}\x{0644}                                 # ل + ل
+	(?:[\p{Mn}\x{06D6}-\x{06E8}\x{06EA}-\x{06ED}])*  # optional marks
+	\x{0647}                                         # ه
+	(?:[\p{Mn}\x{06D6}-\x{06E8}\x{06EA}-\x{06ED}])*  # optional marks
+	/X/gx ;
+
+# Allah with leading alif (الل…ه…)
+#
+# Same logic as above, but with an initial alif:
+#   ا + ل + ل + marks + ه + marks
+#
+# This covers forms like:
+#   اللّٰهُ
+#   اللّٰهُۥ
+#   اللّٰهُ۟
+#
+# This rule also must run BEFORE Mn removal.
+$string =~ s/
+	\x{0627}\x{0644}\x{0644}              # ا + ل + ل
+	(?:[\p{Mn}\x{06D6}-\x{06ED}])*        # optional marks
+	\x{0647}                              # ه
+	(?:[\p{Mn}\x{06D6}-\x{06ED}])*        # optional marks
+	/X/gx ;
+
+# REMOVE ALL Mn (Combining Marks)
+#
+# After the Allah rules have collapsed their sequences, we can
+# safely remove Mn characters. They visually stack on the
+# previous base letter and do NOT occupy width in terminals.
+#
+# If we removed Mn earlier, the Allah patterns would break and
+# become impossible to detect.
+$string =~ s/\p{Mn}//g;
+
+# ZWJ-BASED LAM-ALEF LIGATURES → width = 2 ("XX")
+#
+# Pattern:
+#   ل + ZWJ* + ا/أ/إ/آ
+#
+# With ZWJ, many fonts force a *two-cell ligature* for lam-alef.
+# We represent this with "XX" to ensure Unicode::GCString counts
+# it as width 2.
+#
+# Must run BEFORE the normal lam-alef rule.
+$string =~ s/\x{0644}\x{200D}+\x{0627}/XX/g ; # ل + ZWJ* + ا
+$string =~ s/\x{0644}\x{200D}+\x{0623}/XX/g ; # ل + ZWJ* + أ
+$string =~ s/\x{0644}\x{200D}+\x{0625}/XX/g ; # ل + ZWJ* + إ
+$string =~ s/\x{0644}\x{200D}+\x{0622}/XX/g ; # ل + ZWJ* + آ
+
+# NORMAL LAM-ALEF LIGATURES → width = 1 ("X")
+#
+# Pattern:
+#   لا، لأ، لإ، لآ
+#
+# These are standard lam-alef ligatures that most fonts render
+# as a *single-cell glyph*. We collapse them to "X".
+#
+# Must run AFTER the ZWJ version to avoid overriding it.
+$string =~ s/\x{0644}\x{0627}/X/g ; # ل + ا
+$string =~ s/\x{0644}\x{0623}/X/g ; # ل + أ
+$string =~ s/\x{0644}\x{0625}/X/g ; # ل + إ
+$string =~ s/\x{0644}\x{0622}/X/g ; # ل + آ
+
+# single word ligature
+$string =~ s/[\x{FB50}-\x{FDFF}]/X/g;
+
+# FINAL WIDTH CALCULATION
+#
+# After:
+#   - collapsing multi-letter ligatures into X or XX
+#   - removing Mn
+#
+# the string now accurately reflects the *visual* width that
+# your terminal/font will display.
+#
+# Unicode::GCString->columns can now compute the width correctly.
+return $string ;
 }
 
 #-----------------------------------------------------------------------------
@@ -176,7 +349,7 @@ my @keyboard_keys_values =
 		{
 		my $key         = $_ ;
 		my $char        = $keyboard_char_map->{$key} // '' ;
-		my $unicode_len = unicode_length($char);
+		my $unicode_len = unicode_display_width($char);
 		my $mapped      = $unicode_len == 2 ? $char : $unicode_len == 1 ? " $char" : "  $char" ;
 		
 		($key, $mapped) ;

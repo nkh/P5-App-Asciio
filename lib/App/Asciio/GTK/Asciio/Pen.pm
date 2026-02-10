@@ -6,7 +6,7 @@ use utf8;
 
 use App::Asciio::Actions::Elements ;
 use App::Asciio::ZBuffer ;
-use App::Asciio::String qw(unicode_length get_keyboard_layout) ;
+use App::Asciio::String qw(unicode_display_width get_keyboard_layout) ;
 use App::Asciio::stripes::dot ;
 use App::Asciio::Actions::Mouse ;
 use App::Asciio::Geometry qw(interpolate) ;
@@ -107,8 +107,7 @@ if ($asciio->{PEN_STATE}{enable} && (scalar keys %{$asciio->{PEN_STATE}{chars_se
 		my $measure_surface  = Cairo::ImageSurface->create('argb32', 1, 1) ;
 		my $measure_context  = Cairo::Context->create($measure_surface) ;
 		my $layout           = Pango::Cairo::create_layout($measure_context) ;
-		my $font_family      = "sarasa mono sc, $asciio->{FONT_FAMILY}" ;
-		my $font_description = Pango::FontDescription->from_string("$font_family 12") ;
+		my $font_description = Pango::FontDescription->from_string("unifont 12") ;
 		
 		$layout->set_font_description($font_description) ;
 		
@@ -580,7 +579,7 @@ if($event->{STATE} eq 'dragging-button1' && ($asciio->{PREVIOUS_X} != $x || $asc
 				{ 
 				my $len = scalar @{ $asciio->{PEN_STATE}{dot_elements_to_insert} } ;
 				$asciio->{PEN_STATE}{sub_mode} eq 'draw'
-					? unicode_length($asciio->{PEN_STATE}{chars}->[($asciio->{PEN_STATE}{char_index}+shift) % $len - 1])
+					? unicode_display_width($asciio->{PEN_STATE}{chars}->[($asciio->{PEN_STATE}{char_index}+shift) % $len - 1])
 					: 1
 				},
 			1,
@@ -654,7 +653,7 @@ sub pen_add_element
 my ($asciio, $mouse_move_direction) = @_ ;
 
 my $add_dot                    = Clone::clone($asciio->{PEN_STATE}{dot_elements_to_insert}->[$asciio->{PEN_STATE}{char_index}]) ;
-$asciio->{PEN_STATE}{prev_char_length} = unicode_length($asciio->{PEN_STATE}{chars}->[$asciio->{PEN_STATE}{char_index}]) ;
+$asciio->{PEN_STATE}{prev_char_length} = unicode_display_width($asciio->{PEN_STATE}{chars}->[$asciio->{PEN_STATE}{char_index}]) ;
 
 @$add_dot{'X', 'Y', 'SELECTED'} = ($asciio->{MOUSE_X}, $asciio->{MOUSE_Y}, 0) ;
 

@@ -33,6 +33,13 @@ The default configuration is defined in :
 - setup/actions/default_bindings.pl
 - setup/Text/actions/vim_bindings.pl (which overrides default bindings)
 
+### Character display width calculation override script
+
+The display width calculated using the default calculation method for some characters is wrong.
+You can use the configuration script below to specify and correct the default calculated width.
+
+- setup/unicode_width_overrides/unicode_width_overrides.pl
+
 ## User configuration file
 
 Your user configuration file is at `$HOME/.config/Asciio/Asciio.ini`.

@@ -58,6 +58,26 @@ https://perldoc.perl.org/perlunicook
 https://perldoc.perl.org/perlunicode
 
 
+Another simple way to calculate the display width of a character is to use the
+`Unicode::GCString` module directly.
+
+```perl
+Unicode::GCString->new($string, Context => "NONEASTASIAN")->columns
+```
+
+If the display width of some characters does not match the current scene,
+use a mapping to correct it.
+
+```perl
+%WIDTH_OVERRIDES =
+	(
+	"\x{2466}" => 2,
+	"\x{2630}" => 2,
+	"\x{2467}" => 2,
+	"\x{2465}" => 2,
+	) ;
+```
+
 ## Characters of length 0
 
 In some languages, there are special characters whose string length is 1, 
@@ -83,9 +103,4 @@ and then they have the following properties that can be used for programming
 To support Thai, or Arabic, or Hebrew, like East Asian languages, we also need 
 a special font that can be aligned.In general, the system's default monospaced 
 font can align them
-
-
-
-
-
 

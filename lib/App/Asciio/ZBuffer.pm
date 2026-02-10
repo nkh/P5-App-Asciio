@@ -75,7 +75,7 @@ for my $strip (@{$element->get_stripes})
 			my $Y = $element->{Y} + $strip->{Y_OFFSET} + $line_index ;
 			my $X = $element->{X} + $strip->{X_OFFSET} + $character_index ;
 			
-			my $character_length = unicode_length($char) ;
+			my $character_length = unicode_display_width($char) ;
 
 			if($character_length == 0)
 				{

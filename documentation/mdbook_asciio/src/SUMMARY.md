@@ -16,7 +16,7 @@
 		- [TUI](UI/TUI.md)
 		- [CLI](UI/CLI.md)
 
-- [Unicode support](unicode_support.md)
+- [Multi-language support](multi_language_support.md)
 
 - [Stencils](stencils.md)
 	- [Asciio boxes and text](stencils/asciio_boxes.md)

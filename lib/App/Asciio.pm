@@ -12,6 +12,7 @@ use Clone;
 use Data::TreeDumper ;
 use List::Util qw(min max first) ;
 use List::MoreUtils qw(any minmax first_value) ;
+use Memoize ;
 
 use Exporter qw/import/ ;
 our @EXPORT = 
@@ -423,6 +424,8 @@ my ($self, $font_family, $font_size) = @_;
 
 $self->{FONT_FAMILY} = $font_family || 'Monospace';
 $self->{FONT_SIZE} = $font_size || 10 ;
+
+Memoize::flush_cache('unicode_display_width') ;
 }
 
 sub get_font
