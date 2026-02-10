@@ -400,6 +400,8 @@ if($self->{PREVIOUS_X} != $x || $self->{PREVIOUS_Y} != $y)
 	
 	($self->{PREVIOUS_X}, $self->{PREVIOUS_Y}) = ($x, $y) ;
 	}
+
+$self->hide_cursor() ;
 }
 
 #----------------------------------------------------------------------------------------------
