@@ -144,8 +144,10 @@ if ($asciio->{PEN_STATE}{enable} && (scalar keys %{$asciio->{PEN_STATE}{chars_se
 	
 	if ($asciio->{PEN_STATE}{prompt_panel_location} eq 'right')
 		{
-		my $window_width    = $asciio->get_allocated_width() ;
-		$overlay_location_x = max($overlay_location_x, $overlay_location_x + $window_width - $pen_rendering_cache->get_width()) ;
+		my $viewport_width  = $asciio->{hadjustment}->get_page_size() ;
+		$overlay_location_x = $asciio->{hadjustment}->get_value()
+					+ $viewport_width
+					- $pen_rendering_cache->get_width() ;
 		}
 	
 	$gc->set_source_surface($pen_rendering_cache, $overlay_location_x, $overlay_location_y) ;
