@@ -67,6 +67,7 @@ $self->set_events
 	pointer-motion-mask
 	key-press-mask
 	key-release-mask
+	scroll-mask
 	/]);
 
 $self->set_can_focus(TRUE) ;
@@ -123,6 +124,22 @@ $self->signal_connect
 				return TRUE ;
 				}
 	) ;
+
+$self->signal_connect
+	(
+	scroll_event => sub
+				{
+				my ($widget, $event) = @_ ;
+				
+				my $handled = App::Asciio::GTK::Asciio::mouse_scroll_event(undef, $event, $self) ;
+				
+				# If Asciio's binding system handled the event -> return TRUE
+				# If there is no binding to handle this event -> return FALSE
+				#	and let the ScrolledWindow continue to scroll.
+				return $handled ? TRUE : FALSE ;
+				}
+	);
+
 }
 
 # ----------------------------------------------------------------------------
