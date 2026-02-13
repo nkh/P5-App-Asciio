@@ -35,11 +35,14 @@ PROXY_GROUP
 	# bindings will not be shown
 	{ SHORTCUTS => '000-space', NAME => 'leader', DESCRIPTION => 'Shortcuts to bindings', HIDE => 1} ,
 	
-	# will use 'Add box' shortcut, instead of typing i + i + b, we can type 'space' + b
+	# will use 'Add box' shortcut (b), instead of typing i + i + b, we can type 'space' + b
 	'Add box',
 	
+	# you can override the  shortcut too, note that we now have 3 bindings to 'add box', i + b +b, space + b, space + space 
+	['Add box' => '000-space'],
+
 	# we can run macros using their shortcut
-	'Add diagonal arrow'
+	'Add diagonal arrow',
 	),
 
 ROOT_GROUP

@@ -384,13 +384,23 @@ my %group_handler ;
 
 for my $name ( @group_definition )
 	{
+	my $action_shortcuts ;
+	
+	if('ARRAY' eq ref $name)
+		{
+		$action_shortcuts = $name->[1] ;
+		$name             = $name->[0] ;
+		}
+	
 	die "Asciio: Top level group entry '$name' not defined\n" unless exists $self->{ACTIONS_BY_NAME}{$name} ;
 	
 	my $handler = $self->{ACTIONS_BY_NAME}{$name} ;
 	
 	push $self->{ACTIONS_ORDERED}{"proxy_$shortcuts"}->@*, $handler ;
 	
-	for my $shortcut ('ARRAY' eq ref $handler->{SHORTCUTS} ? $handler->{SHORTCUTS}->@* : $handler->{SHORTCUTS}) 
+	$action_shortcuts //= $handler->{SHORTCUTS} ;
+	
+	for my $shortcut ('ARRAY' eq ref $action_shortcuts ? $action_shortcuts->@* : $action_shortcuts) 
 		{
 		$group_handler{$shortcut} = $handler ;
 		}
