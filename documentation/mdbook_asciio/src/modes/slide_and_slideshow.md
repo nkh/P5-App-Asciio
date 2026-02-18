@@ -288,17 +288,34 @@ Create scripts with numeric prefixes:
 
 Execute them manually in order or trigger them from 00_on_load.
 
-### Custom Timing in 00_on_load
+### Custom Timing in scripts (including 00_on_load)
 
 Inside 00_on_load you may:
 
-- control delays
-- trigger other scripts
+- control animation timing
+- run other scripts
 - take snapshots at specific points
+- override the slide delay
+
+**IMPORTANT:** Use ***asciio_sleep*** to control timing (*sleep* will block screen updates)
 
 ### Example Perl Snippet
 
 ```perl
+set_slide_delay 0 ;
+
+add 'box1', new_box(TEXT_ONLY =>'A'),  0,  2 ;
+select_all_script_elements 1 ;
+asciio_sleep 500 ;
+
+add 'box2', new_box(TEXT_ONLY =>'B'), 20, 10 ;
+select_all_script_elements 1 ;
+asciio_sleep 500 ;
+
+add 'box3', new_box(TEXT_ONLY =>'C'), 40,  5 ;
+select_all_script_elements 1 ;
+asciio_sleep 500 ;
+
 flash_selected_elements ;
 take_screenshot ;
 ```

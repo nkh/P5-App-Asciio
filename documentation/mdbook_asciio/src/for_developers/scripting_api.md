@@ -3,6 +3,14 @@
 APIs are defined in **lib/App/Asciio/Scripting.pm**
 
 
+## asciio_sleep 
+
+use to sleep in a script, *sleep* blocks update 
+
+##  set_slide_delay 
+
+override a slide delay from the script
+
 ## stop_updating_display  
 
 Stops updating the display until *start_updating_display* is called; this can be used to reduce flickering.

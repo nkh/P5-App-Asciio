@@ -146,6 +146,8 @@ unless(defined $self->{TAGS}{SLIDE} && scalar(keys $self->{TAGS}{SLIDE}->%*))
 	return  ;
 	} ;
 
+$self->{TAGS}{SLIDE}{UNDO} = [$self, $self->create_undo_snapshot()] ;
+
 if($self->{ANIMATION}{SLIDE_DIRECTORY} ne $self->{ANIMATION}{TOP_DIRECTORY})
 	{
 	if (-e "$self->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load")
@@ -158,11 +160,15 @@ my ($time, $screenshots) = $time_screenshots->@* ;
 
 $slideshow_delay = $time if defined $time ;
 
-$time = $self->{TAGS}{SLIDE}{TIME} ;
+$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
 $time //= $slideshow_delay ;
 
-$current_slide_time = $time ;
-$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+if($time)
+	{
+	$current_slide_time = $time ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	}
+
 $last_slide         = $self ;
 $take_screenshots   = $screenshots ;
 
@@ -178,6 +184,12 @@ if($take_screenshots)
 
 App::Asciio::Actions::Tabs::hide_all_bindings_help($self) ;
 App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
+
+unless($time)
+	{
+	$current_slide_time = $time ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	}
 }
 
 #----------------------------------------------------------------------------------------------
@@ -186,19 +198,40 @@ sub next_slideshow_slide
 {
 my ($self, $time) = @_ ;
 
+if(exists $self->{TAGS}{SLIDE}{UNDO})
+	{
+	my $number_of_steps = $self->{TAGS}{SLIDE}{UNDO}[0]->create_undo_snapshot() - $self->{TAGS}{SLIDE}{UNDO}[1] ;
+	
+	$self->{TAGS}{SLIDE}{UNDO}[0]->undo($number_of_steps + 1) ;
+	}
+
 my $asciio = App::Asciio::Actions::Tabs::next_tagged_tab($self, 'SLIDE') ;
 
 if($asciio == $last_slide)
 	{
 	$self->run_actions(['000-Escape']) ;
+	delete $self->{TAGS}{SLIDE}{UNDO} ;
 	return  ;
 	}
 
-$time //= $asciio->{TAGS}{SLIDE}{TIME} ;
+$self->{TAGS}{SLIDE}{UNDO} = [$asciio, $asciio->create_undo_snapshot()] ;
+
+if($asciio->{ANIMATION}{SLIDE_DIRECTORY} ne $asciio->{ANIMATION}{TOP_DIRECTORY})
+	{
+	if (-e "$asciio->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load")
+		{
+		App::Asciio::Utils::Scripting::run_external_script($asciio, "./$asciio->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load") ;
+		}
+	}
+
+$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
 $time //= $slideshow_delay ;
 
-$current_slide_time = $time ;
-$slideshow_timer    = Glib::Timeout->add ( $time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; } ) ;
+if($time)
+	{
+	$current_slide_time = $time ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	}
 
 if($take_screenshots)
 	{
@@ -206,6 +239,12 @@ if($take_screenshots)
 	
 	$asciio->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
 	$take_screenshots++ ;
+	}
+
+unless($time)
+	{
+	$current_slide_time = $time ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
 	}
 }
 

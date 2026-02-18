@@ -49,6 +49,20 @@ Asciio can also be scripted if you want to generate your diagrams.
 
 Full documentation, including installation and OCI image, are found at [Online Documentation](https://nkh.github.io/P5-App-Asciio/)
 
+## Asciio in 10 points
+
+- Asciio is an open-source app for creating ASCII diagrams with a GUI.
+- You can design flowcharts, and diagrams to place in your code
+- It generates plain text output for easy embedding.
+- It replaces manual text alignment with drag-and-drop editing.
+- A grid canvas keeps elements aligned to character boundaries.
+- It offers built-in shapes like boxes, ellipses, and arrows.
+- It supports undo/redo, grouping, and multi-selection.
+- Connected lines auto-adjust when shapes are moved.
+- You can create custom stencils and shape libraries.
+- It manages ASCII line crossings automatically in *cross mode*.
+- Text can be inserted and edited directly inside shapes.
+
 ## Interface
 
           .-------------------------------------------------------------.

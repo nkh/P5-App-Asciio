@@ -13,8 +13,11 @@ use warnings;
 # ------------------------------------------------------------------------------
 
 use File::Slurper qw(read_lines) ;
-use Time::HiRes qw(sleep) ;
 use Tree::Trie ;
+
+# ------------------------------------------------------------------------------
+
+use App::Asciio::Scripting ;
 
 # ------------------------------------------------------------------------------
 
@@ -30,6 +33,8 @@ sub move_elements_to
 sub flash_selected
 {
 my ($time, $time2, $times) = @_ ;
+
+print "flash_selected\n\n" ;
 
 $time  //= 100 ;
 $time2 //= 200 ;
@@ -64,14 +69,12 @@ for (0 .. $times)
 	{
 	$self->select_elements_flip(@elements) ;
 	$self->update_display(1) ;
-	$self->update_display(1) ;
 	
-	sleep($time) ;
+	asciio_sleep($time) ;
 	
 	$self->select_elements_flip(@elements) ;
 	$self->update_display(1) ;
-	$self->update_display(1) ;
-	sleep($time2) ;
+	asciio_sleep($time2) ;
 	}
 }
 
@@ -100,10 +103,7 @@ for (0 .. $times)
 		$element->set_foreground_color($fg_color) ;
 		}
 	
-	$self->update_display(1) ;
-	$self->update_display(1) ;
-	
-	sleep($time) ;
+	asciio_sleep($time) ;
 	
 	for my $element_color (@elements_colors)
 		{
@@ -112,9 +112,7 @@ for (0 .. $times)
 		$element->set_colors($start_colors{$element}->@*) ;
 		}
 	
-	$self->update_display(1) ;
-	$self->update_display(1) ;
-	sleep($time2) ;
+	asciio_sleep($time2) ;
 	}
 }
 

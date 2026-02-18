@@ -10,31 +10,34 @@ our @EXPORT = qw(
 	update_display
 	start_updating_display  
 	stop_updating_display  
-
+	
+	asciio_sleep
+	set_slide_delay
+	
 	create_undo_snapshot
-
+	
 	add
 	add_type
 	new_box
 	new_text
 	new_wirl_arrow
-
+	
 	select_by_name
 	delete_by_name
-
+	
 	delete_selected_elements
 	move
 	offset
 	change_selected_elements_color
-
+	
 	select_all_elements
 	deselect_all_elements
 	select_all_script_elements
 	deselect_all_script_elements
-
+	
 	connect_elements
 	optimize
-
+	
 	delete_all_ruler_lines
 	add_ruler_line
 	
@@ -48,9 +51,11 @@ our @EXPORT = qw(
 	set_connection
 	add_connection
 	move_named_connector
-
+	
 	generate_keyboard_mapping
 	) ;
+
+#--------------------------------------------------------------------------------------------
 
 use strict ; use warnings ;
 use utf8 ;
@@ -58,6 +63,9 @@ use open qw( :std :encoding(UTF-8) ) ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
+use Time::HiRes qw/ time / ;
+
+#--------------------------------------------------------------------------------------------
 
 use App::Asciio ;
 use App::Asciio::Connections ;
@@ -118,6 +126,8 @@ if(defined $script)
 	}
 }
 
+#--------------------------------------------------------------------------------------------
+
 sub new_script_asciio
 {
 local @ARGV = @ARGV ;
@@ -166,6 +176,11 @@ new_script_asciio() ;
 
 #--------------------------------------------------------------------------------------------
 
+sub update_display
+{
+$script_asciio->update_display(@_) ;
+}
+
 sub stop_updating_display  
 { 
 $script_asciio->stop_updating_display() ;
@@ -175,6 +190,38 @@ sub start_updating_display
 { 
 $script_asciio->start_updating_display() ;
 }
+
+
+#--------------------------------------------------------------------------------------------
+
+sub set_slide_delay 
+{
+my ($ms) = @_ ;
+$script_asciio->{TAGS}{SLIDE}{TIME_OVERRIDE} = $ms ;
+}
+
+#--------------------------------------------------------------------------------------------
+
+sub asciio_sleep 
+{
+my ($ms) = @_ ;
+
+update_display(1) ;
+
+my $end_time = time() + ($ms / 1000) ;
+
+while (time() < $end_time)
+	{
+	while (Gtk3::events_pending())
+		{
+		Gtk3::main_iteration() ;
+		}
+	
+	select(undef, undef, undef, 0.05) ;
+	}
+}
+
+#--------------------------------------------------------------------------------------------
 
 sub create_undo_snapshot
 {
@@ -190,6 +237,8 @@ $element->set_user_data(SCRIPT_OBJECT => 1) ;
 $script_asciio->add_element_at($element, $x, $y) ;
 }
 
+#--------------------------------------------------------------------------------------------
+
 sub move
 {
 my ($name, $x, $y) = @_ ;
@@ -199,6 +248,8 @@ for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_ascii
 	@$element{'X', 'Y'} = ($x, $y) if defined $x && defined $y ;
 	}
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub offset 
 {
@@ -211,6 +262,8 @@ for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_ascii
 	}
 }
 
+#--------------------------------------------------------------------------------------------
+
 sub select_by_name 
 {
 my ($name) = @_ ;
@@ -221,6 +274,8 @@ for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_ascii
 	}
 }
 
+#--------------------------------------------------------------------------------------------
+
 sub delete_by_name 
 {
 my ($name) = @_ ;
@@ -230,6 +285,8 @@ for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_ascii
 	$script_asciio->delete_elements($element) ;
 	}
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub delete_selected_elements
 {
@@ -245,6 +302,8 @@ $color //= [0, 0, 0] ;
 App::Asciio::Actions::Colors::change_elements_colors($script_asciio, $is_background, $color) ;
 }
 
+#--------------------------------------------------------------------------------------------
+
 sub add_type
 {
 my ($name, $type, $x, $y) = @_ ;
@@ -254,6 +313,8 @@ $element->set_user_data(NAME => $name) ;
 
 return $element ;
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub connect_elements
 {
@@ -265,6 +326,8 @@ my ($element2) = grep { ($_->get_user_data('NAME') // '') eq $element2_name } $s
 add_connection($script_asciio, $element1, $element2, @args)
 	if defined $element1 && defined $element2 ;
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub select_elements
 {
@@ -285,6 +348,8 @@ for my $element (grep { $_->get_user_data('SCRIPT_OBJECT') } $script_asciio->get
 	}
 }
 
+#--------------------------------------------------------------------------------------------
+
 sub deselect_all_elements        { $script_asciio->deselect_all_elements() ; }
 sub deselect_all_script_elements
 {
@@ -293,6 +358,8 @@ for my $element (grep { $_->get_user_data('SCRIPT_OBJECT') } $script_asciio->get
 	$script_asciio->select_elements(0, $element) ; 
 	}
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub delete_all_ruler_lines       { delete $script_asciio->{RULER_LINES} ; } ;
 
@@ -313,6 +380,8 @@ else
 
 $script_asciio->add_ruler_lines({NAME => 'from script', %{$data}}) ;
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub save_to                   { $script_asciio->save_with_type(undef, 'asciio', $_[0]) ; }
 sub to_ascii                  { $script_asciio->transform_elements_to_ascii_buffer() ; }

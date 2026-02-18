@@ -28,7 +28,6 @@ ASCII format is easy and universal, many tools exist to manipulate it and even t
 
 I've used it a lot to draw trees and graphs when my hand drawn pictures were not good enough for presentations. Having the possibility to copy and modify the graphs/diagrams makes it possible to present changes in an attractive way.
 
-
 ## History
 
 Asciio was born ... as a dare; the cool name was coined at a conference in Oslo.

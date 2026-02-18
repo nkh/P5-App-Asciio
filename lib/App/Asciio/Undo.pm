@@ -8,14 +8,16 @@ use warnings;
 
 use File::Slurper qw(write_text) ;
 use Compress::Bzip2 qw(:all :utilities :gzip);
-use Sereal qw(
-    get_sereal_decoder
-    get_sereal_encoder
-    clear_sereal_object_cache
- 
-    encode_sereal
-    decode_sereal
-) ;
+
+use Sereal
+	qw(
+	get_sereal_decoder
+	get_sereal_encoder
+	clear_sereal_object_cache
+
+	encode_sereal
+	decode_sereal
+	) ;
 
 #-----------------------------------------------------------------------------
 

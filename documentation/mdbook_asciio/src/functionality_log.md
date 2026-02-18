@@ -31,4 +31,4 @@
 
 ***Slides and Slideshow [18 feb 2026]***
 
-[watch video](lala.apng) | [documentation](modes/slide_and_slideshow.md)
+[watch video](modes/slide_animation.gif) | [documentation](modes/slide_and_slideshow.md)

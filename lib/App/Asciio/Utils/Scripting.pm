@@ -17,7 +17,7 @@ $file //= $asciio->get_file_name() ;
 
 if(defined $file && $file ne '')
 	{
-	print STDERR "Asciio: script file: '$file'\n" ;
+	print STDERR "Asciio: running script file: '$file'\n" ;
 	
 	$App::Asciio::Scripting::script_asciio = $asciio ;
 	
