@@ -284,9 +284,9 @@ ROOT_GROUP
 	'polygon selection ->' => ['000-x', USE_GROUP('polygon')] ,
 	),
 	
-	'group_polygon' => GROUP
+	'polygon' => GROUP
 		(
-		SHORTCUTS    => 'group_polygon',
+		SHORTCUTS    => 'polygon',
 		DESCRIPTION  => 'Plygon selection mode',
 		ENTER_GROUP  => \&App::Asciio::GTK::Asciio::polygon_selection_enter,
 		ESCAPE_KEYS  => ['000-x', '000-Escape'],
@@ -383,9 +383,9 @@ ROOT_GROUP
 	'Line ->'            => ['000-l', USE_GROUP('insert_line')     ] ,
 	),
 	
-	'group_insert_stencil' => GROUP
+	'insert_stencil' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_stencil',
+		SHORTCUTS   => 'insert_stencil',
 		DESCRIPTION => 'Insert elements from stencils',
 		
 		'From user stencils'   => ['000-s', \&App::Asciio::Actions::Elements::open_user_stencil                     ], 
@@ -398,9 +398,9 @@ ROOT_GROUP
 		'From user buildings'  => ['000-3', \&App::Asciio::Actions::Elements::open_user_stencil, 'buildings.asciio' ], 
 		),
 	
-	'group_insert_multiple' => GROUP
+	'insert_multiple' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_multiple',
+		SHORTCUTS   => 'insert_multiple',
 		DESCRIPTION => 'Insert multilpe elements at once',
 		
 		'Add multiple boxes'           => ['000-b', \&App::Asciio::Actions::Elements::add_multiple_elements, 'Asciio/box' ],
@@ -409,9 +409,9 @@ ROOT_GROUP
 		'Add multiple texts connected' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]],
 		),
 	
-	'group_insert_ruler' => GROUP
+	'insert_ruler' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_ruler',
+		SHORTCUTS   => 'insert_ruler',
 		DESCRIPTION => 'Insert rules in the canvas',
 		
 		'Add vertical ruler'   => ['000-v', \&App::Asciio::Actions::Ruler::add_ruler, {TYPE => 'VERTICAL'}  ],
@@ -419,18 +419,18 @@ ROOT_GROUP
 		'delete rulers'        => ['000-d', \&App::Asciio::Actions::Ruler::remove_ruler                     ],
 		),
 	
-	'group_insert_line' => GROUP
+	'insert_line' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_line',
+		SHORTCUTS   => 'insert_line',
 		DESCRIPTION => 'Insert line elements',
 		
 		'Add ascii line'            => ['000-l', \&App::Asciio::Actions::Elements::add_line, 0               ], 
 		'Add ascii no-connect line' => ['000-k', \&App::Asciio::Actions::Elements::add_non_connecting_line, 0], 
 		),
 	
-	'group_insert_connected' => GROUP
+	'insert_connected' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_connected',
+		SHORTCUTS   => 'insert_connected',
 		DESCRIPTION => 'Insert element and connect them automatically',
 		
 		'Add box connected'            => ['000-b', \&App::Asciio::Actions::Elements::add_element_connected,          ['Asciio/box',  1]], 
@@ -439,9 +439,9 @@ ROOT_GROUP
 		'Add multiple texts connected' => ['00S-T', \&App::Asciio::Actions::Elements::add_multiple_element_connected, ['Asciio/text', 1]], 
 		),
 	
-	'group_insert_element' => GROUP
+	'insert_element' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_element',
+		SHORTCUTS   => 'insert_element',
 		DESCRIPTION => 'Insert divers asciio elements',
 		
 		'Add connector type 2'            => ['000-c', \&App::Asciio::Actions::Elements::add_element, ['Asciio/connector2', 0]   ],
@@ -452,9 +452,9 @@ ROOT_GROUP
 		'Add ellipse'                     => ['000-e', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Shape/ellipse', 0]],
 		),
 	
-	'group_insert_box' => GROUP
+	'insert_box' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_box',
+		SHORTCUTS   => 'insert_box',
 		DESCRIPTION => 'Insert Asciio boxes ad exec-boxes',
 		
 		'Add box'                    => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box', 0]                     ],
@@ -466,9 +466,9 @@ ROOT_GROUP
 		'Add line numbered box'      => ['000-l', \&App::Asciio::Actions::Elements::add_element, ['Asciio/Boxes/exec add lines', 1]    ],
 		),
 	
-	'group_insert_unicode' => GROUP
+	'insert_unicode' => GROUP
 		(
-		SHORTCUTS   => 'group_insert_unicode',
+		SHORTCUTS   => 'insert_unicode',
 		DESCRIPTION => 'Insert unicode elements',
 		
 		'Add unicode box'                    => ['000-b', \&App::Asciio::Actions::Elements::add_element, ['Asciio/box unicode', 0]         ],
@@ -500,18 +500,18 @@ ROOT_GROUP
 	'add connectors ->'       => ['000-o', USE_GROUP('element_add_connectors')],
 	),
 	
-	'group_spellcheck' => GROUP
+	'spellcheck' => GROUP
 		(
-		SHORTCUTS   => 'group_spellcheck',
+		SHORTCUTS   => 'spellcheck',
 		DESCRIPTION => 'Spell check selected elements',
 		
 		'spellcheck' => ['000-s', \&App::Asciio::Actions::Unsorted::spellcheck_elements],
 		'clear'      => ['000-c', \&App::Asciio::Actions::Unsorted::clear_spellcheck],
 		),
 	
-	'group_change_type' => GROUP
+	'change_type' => GROUP
 		(
-		SHORTCUTS   => 'group_change_type',
+		SHORTCUTS   => 'change_type',
 		DESCRIPTION => 'Change from one type of element to another',
 		
 		'Box ->'          => ['000-b', USE_GROUP('box_type_change')          ],
@@ -523,9 +523,9 @@ ROOT_GROUP
 		'Triangle Down->' => ['000-d', USE_GROUP('triangle_down_type_change')],
 		),
 		
-		'group_box_type_change' =>  GROUP
+		'box_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_box_type_change',
+			SHORTCUTS   => 'box_type_change',
 			DESCRIPTION => 'Box type change',
 			
 			map { ( "box $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['editable_box2', $_->[0]] ] ) } 
@@ -548,9 +548,9 @@ ROOT_GROUP
 				),
 			),
 		
-		'group_ellipse_type_change' =>  GROUP
+		'ellipse_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_ellipse_type_change',
+			SHORTCUTS   => 'ellipse_type_change',
 			DESCRIPTION => 'Ellipse type change',
 			
 			map { ( "ellipse $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['ellipse', $_->[0]] ] ) } 
@@ -560,9 +560,9 @@ ROOT_GROUP
 				),
 			),
 		
-		'group_rhombus_type_change' =>  GROUP
+		'rhombus_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_rhombus_type_change',
+			SHORTCUTS   => 'rhombus_type_change',
 			DESCRIPTION => 'Rhombus type change',
 			
 			map { ( "rhombus $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['rhombus', $_->[0]] ] ) } 
@@ -574,9 +574,9 @@ ROOT_GROUP
 				)
 			),
 		
-		'group_triangle_up_type_change' =>  GROUP
+		'triangle_up_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_triangle_up_type_change',
+			SHORTCUTS   => 'triangle_up_type_change',
 			DESCRIPTION => 'Triangle up type change',
 			
 			map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_up', $_->[0]] ] ) } 
@@ -586,9 +586,9 @@ ROOT_GROUP
 				),
 			),
 		
-		'group_triangle_down_type_change' =>  GROUP
+		'triangle_down_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_triangle_down_type_change',
+			SHORTCUTS   => 'triangle_down_type_change',
 			DESCRIPTION => 'Triangle down type change',
 			
 			map { ( "triangle $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['triangle_down', $_->[0]] ] ) } 
@@ -598,9 +598,9 @@ ROOT_GROUP
 				),
 			),
 		
-		'group_wirl_arrow_type_change' =>  GROUP
+		'wirl_arrow_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_wirl_arrow_type_change',
+			SHORTCUTS   => 'wirl_arrow_type_change',
 			DESCRIPTION => 'Wirl arrow type change',
 			
 			map { ( "wirl arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['section_wirl_arrow', $_->[0]] ] ) } 
@@ -623,9 +623,9 @@ ROOT_GROUP
 				),
 			),
 		
-		'group_angled_arrow_type_change' =>  GROUP
+		'angled_arrow_type_change' =>  GROUP
 			(
-			SHORTCUTS   => 'group_angled_arrow_type_change',
+			SHORTCUTS   => 'angled_arrow_type_change',
 			DESCRIPTION => 'Angled arrow type change',
 			
 			map { ( "angled arrow $_->[0]" => [ $_->[1], \&App::Asciio::Actions::ElementAttributes::change_attributes, ['angled_arrow', $_->[0]] ] ) } 
@@ -635,9 +635,9 @@ ROOT_GROUP
 				),
 			),
 	
-	'group_element_add_connectors' => GROUP
+	'element_add_connectors' => GROUP
 		(
-		SHORTCUTS          => 'group_element_add_connectors',
+		SHORTCUTS          => 'element_add_connectors',
 		DESCRIPTION        => 'Add and remove connectors to elements',
 		ESCAPE_KEYS        => ['00S-C', '000-Escape'],
 		
@@ -645,9 +645,9 @@ ROOT_GROUP
 		'remove connector' => ['000-button-press-3', \&App::Asciio::Actions::Elements::remove_numbered_connector_in_element],
 		),
 	
-	'group_attributes' => GROUP
+	'attributes' => GROUP
 		(
-		SHORTCUTS   => 'group_attributes',
+		SHORTCUTS   => 'attributes',
 		DESCRIPTION => 'Elements attributes copy/paste',
 		
 		'copy element attributes'          => [['000-c', '000-y'], \&App::Asciio::Actions::ElementAttributes::copy_attributes         ],
@@ -655,9 +655,9 @@ ROOT_GROUP
 		'paste element control attributes' => ['00S-P',            \&App::Asciio::Actions::ElementAttributes::paste_control_attributes],
 		),
 	
-	'group_freeze' => GROUP
+	'freeze' => GROUP
 		(
-		SHORTCUTS   => 'group_freeze',
+		SHORTCUTS   => 'freeze',
 		DESCRIPTION => 'Freeze and thaw elements',
 		
 		'freeze'               => ['000-f', \&App::Asciio::Actions::Elements::freeze_selected_elements              ],
@@ -665,9 +665,9 @@ ROOT_GROUP
 		'thaw'                 => ['000-t', \&App::Asciio::Actions::Elements::thaw_selected_elements                ],
 		),
 	
-	'group_modification' => GROUP
+	'modification' => GROUP
 		(
-		SHORTCUTS   => 'group_modification',
+		SHORTCUTS   => 'modification',
 		DESCRIPTION => 'Element Ascci or Unicode',
 		
 		'Shrink box'                => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
@@ -678,9 +678,9 @@ ROOT_GROUP
 		'convert to dots'           => ['000-d', \&App::Asciio::Actions::Elements::convert_selected_elements_to_dot_elements],
 		),
 
-	'group_cross' => GROUP
+	'cross' => GROUP
 		(
-		SHORTCUTS   => 'group_cross',
+		SHORTCUTS   => 'cross',
 		DESCRIPTION => 'Cross mode enable/disable',
 		
 		'enable elements cross'  => ['000-x', \&App::Asciio::Actions::ElementsManipulation::set_elements_crossover, 1],
@@ -711,18 +711,18 @@ ROOT_GROUP
 	# change_last_section_direction
 	),
 	
-	'group_diagonal' => GROUP
+	'diagonal' => GROUP
 		(
-		SHORTCUTS   => 'group_diagonal',
+		SHORTCUTS   => 'diagonal',
 		DESCRIPTION => 'Enable or disable diaonal arrows',
 		
 		'enable diagonals'  => ['000-d', \&App::Asciio::Actions::Arrow::allow_diagonals, 1],
 		'disable diagonals' => ['00S-D', \&App::Asciio::Actions::Arrow::allow_diagonals, 0],
 		),
 	
-	'group_connectors' => GROUP
+	'connectors' => GROUP
 		(
-		SHORTCUTS   => 'group_connectors',
+		SHORTCUTS   => 'connectors',
 		DESCRIPTION => 'Enable or disable element connectors',
 		
 		'start enable connection'      => ['0A0-s', \&App::Asciio::Actions::Arrow::allow_connection, ['start', 1],],
@@ -738,9 +738,9 @@ ROOT_GROUP
 		'both connectors ->'           => ['000-b', USE_GROUP('both_connectors') ] ,
 		),
 		
-		'group_start_connectors' => GROUP
+		'start_connectors' => GROUP
 			(
-			SHORTCUTS   => 'group_start_connectors',
+			SHORTCUTS   => 'start_connectors',
 			DESCRIPTION => 'Modify start connector look',
 			
 			'fixed start connectors ->' => ['000-f', USE_GROUP('fixed_start_connectors')] ,
@@ -756,9 +756,9 @@ ROOT_GROUP
 				),
 			) ,
 			
-			'group_fixed_start_connectors' => GROUP
+			'fixed_start_connectors' => GROUP
 				(
-				SHORTCUTS   => 'group_fixed_start_connectors',
+				SHORTCUTS   => 'fixed_start_connectors',
 				DESCRIPTION => 'Modify start connector to static',
 				
 				map { ( "both $_->[0]" => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connectors, $_->[2]] ) } 
@@ -772,9 +772,9 @@ ROOT_GROUP
 					),
 				),
 		
-		'group_end_connectors' => GROUP
+		'end_connectors' => GROUP
 			(
-			SHORTCUTS   => 'group_end_connectors',
+			SHORTCUTS   => 'end_connectors',
 			DESCRIPTION => 'Modify end connector look',
 			
 			'fixed end connectors ->' => ['000-f', USE_GROUP('fixed_end_connectors')] ,
@@ -790,9 +790,9 @@ ROOT_GROUP
 				),
 			),
 			
-			'group_fixed_end_connectors' => GROUP
+			'fixed_end_connectors' => GROUP
 				(
-				SHORTCUTS   => 'group_fixed_end_connectors',
+				SHORTCUTS   => 'fixed_end_connectors',
 				DESCRIPTION => 'Modify end connector to static',
 				
 				map { ( "both $_->[0]" => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connectors, $_->[2]] ) } 
@@ -806,9 +806,9 @@ ROOT_GROUP
 					),
 				),
 		
-		'group_both_connectors' => GROUP
+		'both_connectors' => GROUP
 			(
-			SHORTCUTS   => 'group_both_connectors',
+			SHORTCUTS   => 'both_connectors',
 			DESCRIPTION => 'Modify both start and end connectors',
 			
 			'fixed both connectors ->' => ['000-f', USE_GROUP('fixed_both_connectors')] ,
@@ -824,9 +824,9 @@ ROOT_GROUP
 				),
 			),
 			
-			'group_fixed_both_connectors' => GROUP
+			'fixed_both_connectors' => GROUP
 				(
-				SHORTCUTS   => 'group_fixed_both_connectors',
+				SHORTCUTS   => 'fixed_both_connectors',
 				DESCRIPTION => 'Modify both start and end connectors to static',
 				
 				map { ( "both $_->[0]"  => [ $_->[1], \&App::Asciio::Actions::Multiwirl::change_connectors, $_->[2]] ) } 
@@ -876,9 +876,9 @@ ROOT_GROUP
 	'rendering controls ->' => ['000-c', USE_GROUP('image_control')],
 	),
 	
-	'group_image_control' => GROUP
+	'image_control' => GROUP
 		(
-		SHORTCUTS   => 'group_image_control',
+		SHORTCUTS   => 'image_control',
 		DESCRIPTION => 'Control image box',
 		ESCAPE_KEYS => [ '000-c', '000-Escape' ],
 		
@@ -918,8 +918,8 @@ ROOT_GROUP
 	SHORTCUTS   => '000-g',
 	DESCRIPTION => 'Group elements and control their Z position',
 	
-	'Group'                       => ['000-g', \&App::Asciio::Actions::ElementsManipulation::group_selected_elements                 ],
-	'Ungroup'                     => ['000-u', \&App::Asciio::Actions::ElementsManipulation::ungroup_selected_elements               ],
+	'Group'                       => ['000-g', \&App::Asciio::Actions::ElementsManipulation::selected_elements                 ],
+	'Ungroup'                     => ['000-u', \&App::Asciio::Actions::ElementsManipulation::unselected_elements               ],
 	'Move to the front'           => ['000-f', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_front         ],
 	'Move to the back'            => ['000-b', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_back          ],
 	'Temporary move to the front' => ['00S-F', \&App::Asciio::Actions::ElementsManipulation::temporary_move_selected_element_to_front],
@@ -932,7 +932,7 @@ ROOT_GROUP
 	
 	'create stripes group'    => ['000-g', \&App::Asciio::Actions::ElementsManipulation::create_stripes_group, 0],
 	'create one stripe group' => ['000-1', \&App::Asciio::Actions::ElementsManipulation::create_stripes_group, 1],
-	'ungroup stripes group'   => ['000-u', \&App::Asciio::Actions::ElementsManipulation::ungroup_stripes_group  ],
+	'ungroup stripes group'   => ['000-u', \&App::Asciio::Actions::ElementsManipulation::unstripes_group  ],
 	),
 
 'find ->' => GROUP
@@ -1014,9 +1014,9 @@ ROOT_GROUP
 	'animation ->'           => ['000-a', USE_GROUP('animation')                                                                              ] ,
 	),
 	
-	'group_slideshow_run'    => GROUP
+	'slideshow_run'    => GROUP
 		(
-		SHORTCUTS    => 'group_slideshow_run',
+		SHORTCUTS    => 'slideshow_run',
 		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow, 1000],
 		ESCAPE_KEYS  => '000-Escape',
 		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
@@ -1030,9 +1030,9 @@ ROOT_GROUP
 		'next slideshow slide' => ['next_slideshow_slide', \&App::Asciio::Actions::Presentation::next_slideshow_slide],
 		),
 	
-	'group_slideshow_run_once' => GROUP
+	'slideshow_run_once' => GROUP
 		(
-		SHORTCUTS    => 'group_slideshow_un_once',
+		SHORTCUTS    => 'slideshow_un_once',
 		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow_once, [1000, 1]],
 		ESCAPE_KEYS  => '000-Escape',
 		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
@@ -1040,9 +1040,9 @@ ROOT_GROUP
 		'next slideshow slide' => ['next_slideshow_slide', \&App::Asciio::Actions::Presentation::next_slideshow_slide],
 		),
 	
-	'group_animation ->' => GROUP
+	'animation ->' => GROUP
 		(
-		SHORTCUTS   => 'group_animation',
+		SHORTCUTS   => 'animation',
 		DESCRIPTION => 'Animation scripts',
 		ENTER_GROUP => \&App::Asciio::Actions::Animation::scan_script_directory,
 		ESCAPE_KEYS => '000-Escape',
@@ -1062,9 +1062,9 @@ ROOT_GROUP
 		'find and run animation' => ['000-Tab', USE_GROUP('animation_complete')],
 		),
 	
-	'group_animation_complete ->' => GROUP
+	'animation_complete ->' => GROUP
 		(
-		SHORTCUTS    => 'group_animation_complete',
+		SHORTCUTS    => 'animation_complete',
 		DESCRIPTION  => 'Animation script competion',
 		ENTER_GROUP  => [
 				\&App::Asciio::Actions::Completion::enter,
@@ -1176,9 +1176,9 @@ ROOT_GROUP
 	),
 	),
 	
-	'group_pen_eraser' => GROUP
+	'pen_eraser' => GROUP
 		(
-		SHORTCUTS   => 'group_pen_eraser',
+		SHORTCUTS   => 'pen_eraser',
 		DESCRIPTION => 'Pen mode eraser',
 		ENTER_GROUP => [\&App::Asciio::GTK::Asciio::Pen::sub_mode_switch, 'eraser'],
 		ESCAPE_KEYS => '000-Escape',
@@ -1212,9 +1212,9 @@ ROOT_GROUP
 	'Flip display element id'   => ['000-i', sub { $_[0]->{DISPLAY}{DRAW_ID} ^= 1 ; $_[0]->update_display() }        ],
 	),
 	
-	'group_color' => GROUP
+	'color' => GROUP
 		(
-		SHORTCUTS => 'group_color',
+		SHORTCUTS => 'color',
 		
 		'Flip color scheme'         => ['000-s', \&App::Asciio::Actions::Colors::flip_color_scheme          ] ,
 		

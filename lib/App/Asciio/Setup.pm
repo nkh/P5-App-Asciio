@@ -186,7 +186,7 @@ for my $action_file (@{ $action_files })
 		sub 
 		{ 
 		my $group = shift ;
-		my $sub = sub { $_[0]->use_action_group("group_$group") ; } ;
+		my $sub = sub { $_[0]->use_action_group("$group") ; } ;
 		bless $sub, "use_group_$group" ;
 		set_subname( "App::Asciio::Actions::Group::$group", $sub ) ;
 		return $sub ;
