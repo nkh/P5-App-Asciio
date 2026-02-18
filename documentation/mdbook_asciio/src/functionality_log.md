@@ -29,3 +29,6 @@
 
 [watch video](stencils/2026_01_22_box_connector_interactive.gif) | [documentation](stencils/box_connectors.html#interactive-connector-operations)  
 
+***Slides and Slideshow [18 feb 2026]***
+
+[watch video](lala.apng) | [documentation](modes/slide_and_slideshow.md)

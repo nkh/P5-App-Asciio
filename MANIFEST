@@ -252,8 +252,6 @@ documentation/mdbook_asciio/src/UI/tasciio.png
 documentation/mdbook_asciio/src/UI/tui_demo.gif
 documentation/mdbook_asciio/src/UIs.md
 documentation/mdbook_asciio/src/accessing_documentation.md
-documentation/mdbook_asciio/src/animation_mode.md
-documentation/mdbook_asciio/src/animation_script_mode.md
 documentation/mdbook_asciio/src/arrow_mode.md
 documentation/mdbook_asciio/src/arrow_operation.md
 documentation/mdbook_asciio/src/asciio_tabs.png
@@ -388,7 +386,6 @@ documentation/mdbook_asciio/src/insert_operation.md
 documentation/mdbook_asciio/src/misc/contributors.md
 documentation/mdbook_asciio/src/misc/see_also.md
 documentation/mdbook_asciio/src/modes.md
-documentation/mdbook_asciio/src/modes/animations.md
 documentation/mdbook_asciio/src/modes/cross.md
 documentation/mdbook_asciio/src/modes/cross_complex.gif
 documentation/mdbook_asciio/src/modes/cross_effect.gif
@@ -417,7 +414,7 @@ documentation/mdbook_asciio/src/modes/pen_newline_and_wrap.gif
 documentation/mdbook_asciio/src/modes/selection.md
 documentation/mdbook_asciio/src/modes/selection_basic.gif
 documentation/mdbook_asciio/src/modes/selection_polygon.gif
-documentation/mdbook_asciio/src/modes/slides.md
+documentation/mdbook_asciio/src/modes/slide_and_slideshow.md
 documentation/mdbook_asciio/src/modes/split_elements_into_dots.gif
 documentation/mdbook_asciio/src/modes/user_character_set.md
 documentation/mdbook_asciio/src/modes_operation.md
@@ -426,8 +423,6 @@ documentation/mdbook_asciio/src/pen_mode.md
 documentation/mdbook_asciio/src/root_level_bindings.md
 documentation/mdbook_asciio/src/selection_mode_operation.md
 documentation/mdbook_asciio/src/selection_polygon_mode.md
-documentation/mdbook_asciio/src/slide_mode.md
-documentation/mdbook_asciio/src/slide_script_mode.md
 documentation/mdbook_asciio/src/spellcheck.md
 documentation/mdbook_asciio/src/spellcheck_errors.png
 documentation/mdbook_asciio/src/spellchecking_operation.md

@@ -56,15 +56,14 @@
 - [Modes](modes.md)
 	- [Selection](modes/selection.md)
 	- [Pen](modes/pen.md)
-        - [Eraser](modes/pen_eraser.md)
-        - [Merging and splitting to dots](modes/mergin_dots.md)
-        - [User character sets](modes/user_character_set.md)
-        - [ASCII Art and Stencil examples](modes/pen_examples.md)
+	- [Eraser](modes/pen_eraser.md)
+	- [Merging and splitting to dots](modes/mergin_dots.md)
+	- [User character sets](modes/user_character_set.md)
+	- [ASCII Art and Stencil examples](modes/pen_examples.md)
 	- [Find](modes/find.md)
 	- [Git](modes/git.md)
 	- [Cross](modes/cross.md)
-	- [Slide](modes/slides.md)
-	- [Animation](modes/animations.md)
+	- [Slide and Slideshow](modes/slide_and_slideshow.md)
 
 - [Examples](examples.md)
 	- [Class hierarchy](examples/example1.md)
@@ -113,9 +112,7 @@
 		- [Git](git_mode.md)
 		- [Selection](selection_mode_operation.md)
 			- [Selection polygon mode](selection_polygon_mode.md)
-		- [Slide](slide_mode.md)
-		- [Animation](animation_mode.md)
-			- [Animation script](animation_script_mode.md)
+		- [Slide and slideshow](slide_and_slideshow_mode.md)
 
 # Configuration
 
