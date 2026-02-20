@@ -74,7 +74,6 @@ for my $setup_file (@{$setup_ini_files})
 	$self->setup_import_export_handlers($setup_path, $ini_files->{IMPORT_EXPORT} || []) ;
 	}
 
-
 $self->{ANIMATION}{TOP_DIRECTORY}     = "animations" if -e "animations" and -d "animations" ;
 $self->{ANIMATION}{TOP_DIRECTORY}     = $self->{SCRIPTS_PATHS} if defined $self->{SCRIPTS_PATHS} ;
 $self->{SCRIPTS_PATHS}              //= '.' ;

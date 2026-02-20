@@ -2,6 +2,8 @@
 
 use strict ;
 use warnings ;
+use utf8 ;
+use open qw( :std :encoding(UTF-8) ) ;
 
 use Module::Util qw(find_installed) ;
 use File::Basename ;
@@ -9,8 +11,8 @@ use Archive::Tar ;
 use Data::TreeDumper ;
 use Data::Dumper ;
 use File::Path qw(make_path) ;
-use open qw( :std :encoding(UTF-8) ) ;
-use utf8 ;
+
+# --------------------------------------------------------------------------------------------
 
 use App::Asciio ;
 
@@ -23,18 +25,27 @@ generate_bindings_docs() ;
 sub generate_bindings_docs
 {
 
-my $output_dir = $ARGV[0] || die "Error: pass destination directory as argument\n" ;
+my $output_dir    = $ARGV[0] || die "Error: pass destination directory as argument\n" ;
+my $relative_path = $ARGV[1] //  '' ;
+
 make_path($output_dir) ;
 
 my ($asciio_config, $asciio, $bindings) = get_asciio() ;
 
-my $stats   = init_stats() ;
+my $stats   = 
+	{
+	counts   => { ROOT => 0, GROUP => 0, PROXY => 0, total_operations => 0 },
+	rankings => { group_entries => {} },
+	errors   => [],
+	warnings => []
+	} ;
+
 my $groups  = extract_groups ($bindings, $stats) ;
 my $actions = build_action_lookup($groups, $stats) ;
 my $paths   = resolve_paths($groups, $stats) ;
 
 render_docs($output_dir, $groups, $actions, $paths, $stats) ;
-write_index($output_dir, 'bindings_index.md', $groups) ;
+write_index($output_dir, $relative_path, 'bindings_index.md', $groups) ;
 
 print DumpTree $stats if @{$stats->{errors}} || @{$stats->{warnings}} ;
 }
@@ -86,6 +97,7 @@ for my $root (@{$roots // []})
 		} ;
 	
 	$stats->{counts}{ROOT}++ ;
+	push $stats->{rankings}{group_entries}{@elements}->@*, $title ;
 	}
 }
 
@@ -95,7 +107,7 @@ sub parse_groups
 {
 my ($groups, $entries, $file_path, $stats) = @_ ;
 
-my %attributes = map { $_ => 1 } qw(NAME SHORTCUTS DESCRIPTION ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP) ;
+my %attributes = map { $_ => 1 } qw(NAME SHORTCUTS DESCRIPTION ENTER_GROUP ESCAPE_KEYS ESCAPE_GROUP HIDE) ;
 
 my $index = 0 ;
 for my $entry (@{$entries // []})
@@ -118,6 +130,7 @@ for my $entry (@{$entries // []})
 			push @ops, $k, $v ;
 			}
 		}
+	push $stats->{rankings}{group_entries}{@ops / 2}->@*, $config{NAME} ;
 	
 	my $title = $config{NAME} // handle_missing_id($stats, "GROUP", $file_path, $index) ;
 	
@@ -276,17 +289,26 @@ my (@rows, @headers) ;
 
 if ($group->{type} eq 'PROXY')
 	{
-	@headers = ('Operation', 'Link') ;
+	@headers = ('Operation', 'Link', 'shortcut') ;
 	
 	for my $target (@{$group->{targets}})
 		{
+		my $shortcut ;
+		
+		if('ARRAY' eq ref $target)
+			{
+			$shortcut = join(', ', ('ARRAY' eq ref $target->[1] ? $target->[1]->@* : $target->[1])) ;
+			
+			$target = $target->[0] ;
+			}
+		
 		my $link = exists $groups->{$target} 
 			? "group [$groups->{$target}{title}]($groups->{$target}{file})" 
 			: exists $op_lookup->{$target} 
 				? "[$target]($op_lookup->{$target})" 
 				: do { push @{$stats->{warnings}}, "No link for '$target'" ; ''} ;
 		
-		push @rows, [$target, $link] ;
+		push @rows, [$target, $link, $shortcut] ;
 		}
 	}
 else
@@ -385,18 +407,6 @@ return \%lookup ;
 
 # --------------------------------------------------------------------------------------------
 
-sub init_stats
-{
-	{
-	counts   => { ROOT => 0, GROUP => 0, PROXY => 0, total_operations => 0 },
-	rankings => { top_groups => [] },
-	errors   => [],
-	warnings => []
-	} ;
-}
-
-# --------------------------------------------------------------------------------------------
-
 sub handle_missing_id
 {
 my ($stats, $type, $file, $index) = @_ ;
@@ -422,30 +432,34 @@ return "$n.md" ;
 
 sub write_index
 {
-my ($dir, $name, $groups) = @_ ;
+my ($dir, $relative_path, $name, $groups) = @_ ;
 
-open my $fh, '>', "$dir/$name" or die "Cannot create index : $!" ;
+open my $fh,  '>', "$dir/$name"          or die "Cannot create index : $!" ;
+open my $fhr, '>', "$dir/relative_$name" or die "Cannot create relative path index : $!" ;
 
 print $fh "# Bindings Index\n\n" ;
 
 for 
 	(
+	[ PROXY => "## Proxy groups" ],
 	[ ROOT  => "## Root groups" ],
 	[ GROUP => "## Groups" ],
-	[ PROXY => "## Proxy groups" ],
 	)
 	{
 	my ($type, $header) = $_->@* ;
 	
 	print $fh "$header\n" ;
+	
 	for my $id (sort grep { $groups->{$_}{type} eq $type } keys %$groups)
 		{
-		print $fh "- [$groups->{$id}{title}]($groups->{$id}{file})\n" ;
+		print $fh      "- [$groups->{$id}{title}]($groups->{$id}{file})\n" ;
+		print $fhr "\t\t- [$groups->{$id}{title}]($relative_path/$groups->{$id}{file})\n" ;
 		}
-	print $fh "\n" ;
+	print $fh  "\n" ;
 	}
 
 close $fh ;
+close $fhr ;
 }
 
 # --------------------------------------------------------------------------------------------
@@ -454,7 +468,8 @@ sub get_asciio
 {
 my $asciio = new App::Asciio() ;
 $asciio->{UI} = 'TUI' ;
-my ($ok, $msg, $config) = $asciio->ParseSwitches([@ARGV], 0) ;
+
+my ($ok, $msg, $config) = $asciio->ParseSwitches([], 0) ;
 die "Error: '$msg'!" unless $ok ;
 
 my $log_sub = sub

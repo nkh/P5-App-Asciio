@@ -1,0 +1,1 @@
+b install ; perl script/generate_bindings documentation/mdbook_asciio/src/generated_bindings_doc/ generated_bindings_doc

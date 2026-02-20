@@ -1,7 +1,6 @@
 
 register_action_handlers
 (
-
 PROXY_GROUP
 	(
 	{ SHORTCUTS => '00S-question', NAME => 'help', DESCRIPTION => 'Root groups' } ,
@@ -40,7 +39,6 @@ PROXY_GROUP
 	
 	# you can override the  shortcut too, note that we now have 3 bindings to 'add box', i + b +b, space + b, space + space 
 	['Add box' => '000-space'],
-	['find and run animation' => '000-space'],
 	
 	# we can run macros using their shortcut
 	'Add diagonal arrow',
@@ -544,7 +542,7 @@ ROOT_GROUP
 				['unicode_with_filler_type3' , '000-3'],
 				['unicode_with_filler_type4' , '000-4'],
 				['unicode_hollow_dot'        , '000-h'],
-				['unicode_math_paranthesesar', '00S-M']
+				['unicode_math_parantheses'  , '00S-M']
 				),
 			),
 		
@@ -668,7 +666,7 @@ ROOT_GROUP
 	'modification' => GROUP
 		(
 		SHORTCUTS   => 'modification',
-		DESCRIPTION => 'Element Ascci or Unicode',
+		DESCRIPTION => 'Element ASCII or Unicode',
 		
 		'Shrink box'                => ['000-s', \&App::Asciio::Actions::ElementsManipulation::shrink_box                   ],
 		'Make elements Unicode'     => ['000-u', \&App::Asciio::Actions::ElementAttributes::make_selection_unicode, 1       ],

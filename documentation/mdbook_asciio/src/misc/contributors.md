@@ -9,7 +9,6 @@
 ```
     Qin Qing
     northisland2017@gmail.com
-    Unicode support, scroll bar, and rhombus object
 ```
 
 # License and copyright

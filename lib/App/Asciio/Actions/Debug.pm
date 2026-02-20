@@ -81,47 +81,6 @@ $self->run_actions_by_name(['Insert', 0, 0, 'insert_error.asciio']) ;
 $self->update_display() ;
 }
 
-sub test
-{
-my ($self) = @_ ;
-
-$self->create_undo_snapshot() ;
-
-my $bins     = $self->get_id_filtered_elements('la', 'pointer') ;
-my $element  = $bins->[0][0] ;
-my $element2 = $bins->[1][0] ;
-
-use Time::HiRes qw(sleep) ;
-use App::Asciio::Utils::Animation ;
-
-if($element)
-	{
-	my @points = App::Asciio::Utils::Animation::get_line_points($element->{X}, $element->{Y}, 0, 0) ;
-	
-	for my $coordinate (@points)
-		{
-		@{$element}{qw/X Y/} = ($coordinate->@*) ;
-		
-		sleep 0.007 ;
-		$self->update_display(1) ;
-		}
-	}
-
-my @circle_points = App::Asciio::Utils::Animation::get_circle_points($element2->{X} - 5, $element2->{Y} - 5, $element2->{X}, $element2->{Y}) ;
-
-for my $coordinate (@circle_points)
-	{
-	@{$element2}{qw/X Y/} = ($coordinate->@*) ;
-	
-	sleep 0.10 ;
-	$self->update_display(1) ;
-	}
-
-# use Data::TreeDumper ;
-# print DumpTree \@circle_points ;
-# print DumpTree $bins, 'bins:', MAX_DEPTH => 2 ;
-}
-
 #----------------------------------------------------------------------------------------------
 
 1 ;
