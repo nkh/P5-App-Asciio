@@ -83,7 +83,7 @@ else
 		
 		if($@)
 			{
-			write_text("failed_resurection_source.pl", $serialized_self // 'no serialized sefl!') ;
+			# write_text("failed_resurection_source.pl", $serialized_self // 'no serialized sefl!') ;
 			print STDERR "error: load_file: can't load file '$file_name': $! $@\n" ;
 			
 			my $element  = $self->add_new_element_named('Asciio/box', 0, 0) ;

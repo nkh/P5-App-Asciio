@@ -1,0 +1,4 @@
+start_automatic_slideshow [50, 1] ;
+
+asciio_sleep 2000 ; # wait for presentation, which it driven by timer events, to end
+quit ;

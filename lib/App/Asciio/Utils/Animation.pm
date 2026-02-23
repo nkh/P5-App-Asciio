@@ -32,19 +32,14 @@ sub move_elements_to
 
 sub flash_selected
 {
-my ($time, $time2, $times) = @_ ;
-
-print "flash_selected\n\n" ;
-
-$time  //= 100 ;
-$time2 //= 200 ;
-$times //= 3 ;
+my ($take_screenshot, $time, $time2, $times) = @_ ;
 
 my @selected_elements = $App::Asciio::Scripting::script_asciio->get_selected_elements(1) ;
 
 flash_by_selecting
 	(
 	$App::Asciio::Scripting::script_asciio,
+	$take_screenshot,
 	$time,
 	$time2,
 	$times,
@@ -56,10 +51,11 @@ flash_by_selecting
 
 sub flash_by_selecting
 {
-my ($self, $time, $time2, $times, @elements) = @_ ;
+my ($self, $take_screenshot, $time, $time2, $times, @elements) = @_ ;
 
-$time  /= 1000 ;
-$time2 /= 1000 ;
+$time  //= 100 ;
+$time2 //= 200 ;
+$times //= 3 ;
 
 $self //= $App::Asciio::Scripting::script_asciio ;
 
@@ -69,12 +65,15 @@ for (0 .. $times)
 	{
 	$self->select_elements_flip(@elements) ;
 	$self->update_display(1) ;
+	App::Asciio::Actions::Presentation::take_screenshot($self, $time) ;
 	
-	asciio_sleep($time) ;
+	App::Asciio::Scripting::asciio_sleep($time) if $take_screenshot ;
 	
 	$self->select_elements_flip(@elements) ;
 	$self->update_display(1) ;
-	asciio_sleep($time2) ;
+	App::Asciio::Actions::Presentation::take_screenshot($self, $time2) if $take_screenshot ;
+	
+	App::Asciio::Scripting::asciio_sleep($time2) ;
 	}
 }
 

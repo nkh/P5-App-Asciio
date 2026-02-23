@@ -1,0 +1,3 @@
+rm screenshots/*
+A -s ./start_slideshow.pl search_and_replace.asciio 
+./generate_video_from_screenshots

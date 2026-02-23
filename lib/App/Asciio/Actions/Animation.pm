@@ -180,7 +180,7 @@ if (defined $directory and $ directory ne '')
 	
 	unless(-e $slide_directory)
 		{
-		mkpath $slide_directory
+		make_path $slide_directory ;
 		write_text("$slide_directory/animation_example", "use strict ; use warnings ;\n") ;
 		}
 	}

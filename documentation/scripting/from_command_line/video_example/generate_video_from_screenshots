@@ -1,0 +1,1 @@
+generate-apng --force -d 500 --loop 1 -o test_video.png $(fd . ./screenshots | sort | perl -ne 'chomp ; /time_(\d+)_/ ; print "$_:$1\n"')

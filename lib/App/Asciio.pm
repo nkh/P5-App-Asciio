@@ -6,10 +6,20 @@ use strict; use warnings;
 use utf8;
 use Encode;
 
+#-----------------------------------------------------------------------------
+
 use Clone;
 use Data::TreeDumper ;
 use List::Util qw(min max first) ;
 use List::MoreUtils qw(any minmax first_value) ;
+
+use Exporter qw/import/ ;
+our @EXPORT = 
+	qw(
+	ddt
+	) ;
+
+#-----------------------------------------------------------------------------
 
 use App::Asciio::Actions ;
 use App::Asciio::Ascii ;
@@ -609,6 +619,9 @@ You can call Asciio from vim and insert your diagram.
     endfunction
 
 =cut
+
+use Data::TreeDumper ;
+sub ddt { print STDERR DumpTree @_ ; }
 
 sub new
 {

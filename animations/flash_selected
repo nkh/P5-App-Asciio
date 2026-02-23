@@ -1,2 +1,2 @@
-flash_selected(100, 100, 3) ;
+flash_selected(0, 100, 100, 3) ;
 

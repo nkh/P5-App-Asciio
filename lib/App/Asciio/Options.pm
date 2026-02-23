@@ -21,7 +21,7 @@ Getopt::Long::Configure('no_auto_abbrev', 'no_ignore_case', 'require_order') ;
 
 my @flags = Get_GetoptLong_Data($asciio_config) ;
 
-@ARGV = @{$switches_to_parse} ;
+local @ARGV = $switches_to_parse->@* ;
 
 # tweek option parsing so we can mix switches with targets
 my $contains_switch ;
@@ -31,7 +31,6 @@ do
 	{
 	while(@ARGV && $ARGV[0] !~ /^-/)
 		{
-		# print "target => $ARGV[0] \n" ;
 		push @targets, shift @ARGV ;
 		}
 	

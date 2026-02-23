@@ -52,6 +52,12 @@ our @EXPORT = qw(
 	add_connection
 	move_named_connector
 	
+	start_automatic_slideshow
+	reset_screenshot_index
+	take_screenshot
+	take_screenshot_and_sleep
+	
+	quit
 	generate_keyboard_mapping
 	) ;
 
@@ -70,6 +76,7 @@ use Time::HiRes qw/ time / ;
 use App::Asciio ;
 use App::Asciio::Connections ;
 use App::Asciio::Elements ;
+
 use App::Asciio::Io ;
 use App::Asciio::Options ;
 use App::Asciio::Actions::Unsorted ;
@@ -78,15 +85,13 @@ use App::Asciio::stripes::angled_arrow ;
 use App::Asciio::stripes::section_wirl_arrow ;
 use App::Asciio::stripes::stripes ;
 use App::Asciio::stripes::wirl_arrow ;
+use App::Asciio::stripes::editable_box2 ;
 
 use App::Asciio::Actions::Colors ; 
 
 #--------------------------------------------------------------------------------------------
 
 use Digest::MD5 qw(md5_hex)  ;
-
-use Data::TreeDumper ;
-sub ddt { print STDERR DumpTree @_ ; }
 
 #--------------------------------------------------------------------------------------------
 
@@ -124,6 +129,38 @@ if(defined $script)
 	
 	print STDERR "Asciio: error running script: $@ \n" if $@ ;
 	}
+}
+
+#--------------------------------------------------------------------------------------------
+
+sub start_automatic_slideshow
+{
+my ($timing) = @_ ;
+$timing //= [1000, 1] ;
+
+App::Asciio::Actions::Presentation::start_automatic_slideshow_once($script_asciio, $timing) ;
+}
+
+sub reset_screenshot_index
+{
+App::Asciio::Actions::Presentation::reset_screenshot_index(@_) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub take_screenshot
+{
+my ($time) = @_ ;
+App::Asciio::Actions::Presentation::take_screenshot($script_asciio, $time) ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub take_screenshot_and_sleep
+{
+my ($time) = @_ ;
+App::Asciio::Actions::Presentation::take_screenshot($script_asciio, $time) ;
+asciio_sleep($time) if $time ;
 }
 
 #--------------------------------------------------------------------------------------------
@@ -223,10 +260,20 @@ while (time() < $end_time)
 
 #--------------------------------------------------------------------------------------------
 
+sub quit
+{
+App::Asciio::Actions::Tabs::quit_app_no_save($script_asciio) ;
+# App::Asciio::Actions::File::quit_no_save($script_asciio) ;
+}
+
+#--------------------------------------------------------------------------------------------
+
 sub create_undo_snapshot
 {
 $script_asciio->create_undo_snapshot() ;
 }
+
+#--------------------------------------------------------------------------------------------
 
 sub add
 {
@@ -398,8 +445,6 @@ sub generate_keyboard_mapping { App::Asciio::Actions::Unsorted::get_keyboard_map
 sub new_text
 {
 my (@arguments_to_constructor) = @_ ;
-
-use App::Asciio::stripes::editable_box2 ;
 
 my $element = new App::Asciio::stripes::editable_box2
 			({

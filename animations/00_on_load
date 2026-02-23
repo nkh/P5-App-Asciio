@@ -1,17 +1,17 @@
 set_slide_delay 0 ;
+take_screenshot ;
 
 add 'box1', new_box(TEXT_ONLY =>'A'),  0,  2 ;
 select_all_script_elements 1 ;
-asciio_sleep 500 ;
+take_screenshot_and_sleep 400 ;
 
 add 'box2', new_box(TEXT_ONLY =>'B'), 20, 10 ;
 select_all_script_elements 1 ;
-asciio_sleep 500 ;
+take_screenshot_and_sleep 400 ;
 
 add 'box3', new_box(TEXT_ONLY =>'C'), 40,  5 ;
 select_all_script_elements 1 ;
-asciio_sleep 500 ;
+take_screenshot_and_sleep 400 ;
 
-flash_selected ;
+flash_selected 'take_screenshot';
 
-asciio_sleep 500 ;

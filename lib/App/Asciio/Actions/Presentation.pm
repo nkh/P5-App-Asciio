@@ -84,6 +84,36 @@ my ($last_slide, $take_screenshots) ;
 
 #----------------------------------------------------------------------------------------------
 
+sub reset_screenshot_index
+{
+my ($index) = @_ ;
+
+$index //= 0 ;
+
+$take_screenshots  = $index ;
+}
+
+#----------------------------------------------------------------------------------------------
+
+sub take_screenshot
+{
+my ($self, $time) = @_ ;
+$take_screenshots //= 0 ;
+
+make_path('screenshots') unless -e 'screenshots' ;
+
+$time //= 100 ;
+
+my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${time}_screenshot.png" ;
+
+$self->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
+
+print STDERR "APNG: $file_name" . ($time ? ":$time " : ' ') .  "\n" ;
+
+$take_screenshots++ ;
+}
+#----------------------------------------------------------------------------------------------
+
 sub set_default_slide_time
 {
 my ($self, $time) = @_ ;
@@ -148,6 +178,14 @@ unless(defined $self->{TAGS}{SLIDE} && scalar(keys $self->{TAGS}{SLIDE}->%*))
 
 $self->{TAGS}{SLIDE}{UNDO} = [$self, $self->create_undo_snapshot()] ;
 
+my ($time, $screenshots) = $time_screenshots->@* ;
+
+$slideshow_delay  = $time if defined $time ;
+$take_screenshots = $screenshots ;
+
+$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
+$time ||= $slideshow_delay ;
+
 if($self->{ANIMATION}{SLIDE_DIRECTORY} ne $self->{ANIMATION}{TOP_DIRECTORY})
 	{
 	if (-e "$self->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load")
@@ -156,27 +194,19 @@ if($self->{ANIMATION}{SLIDE_DIRECTORY} ne $self->{ANIMATION}{TOP_DIRECTORY})
 		}
 	}
 
-my ($time, $screenshots) = $time_screenshots->@* ;
-
-$slideshow_delay = $time if defined $time ;
-
-$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
-$time //= $slideshow_delay ;
-
 if($time)
 	{
 	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
 	}
 
-$last_slide         = $self ;
-$take_screenshots   = $screenshots ;
+$last_slide       = $self ;
 
 if($take_screenshots)
 	{
-	mkpath('snapshots') unless -e 'snapshots' ;
+	make_path('screenshots') unless -e 'screenshots' ;
 	
-	my $file_name = "snapshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
+	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
 	
 	$self->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
 	$take_screenshots++ ;
@@ -188,7 +218,7 @@ App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
 unless($time)
 	{
 	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
 	}
 }
 
@@ -230,12 +260,12 @@ $time //= $slideshow_delay ;
 if($time)
 	{
 	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
 	}
 
 if($take_screenshots)
 	{
-	my $file_name = "snapshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
+	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
 	
 	$asciio->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
 	$take_screenshots++ ;
@@ -244,7 +274,7 @@ if($take_screenshots)
 unless($time)
 	{
 	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
 	}
 }
 

@@ -27,6 +27,7 @@ setup/actions/default_bindings.pl
 setup/asciio_object/basic.pl
 setup/hooks/canonize_connections.pl
 
+setup/import_export/apl.pl
 setup/import_export/ascii.pl
 setup/import_export/json.pl
 setup/import_export/perl.pl
@@ -131,16 +132,12 @@ documentation/scripting/from_command_line/three_boxes.pl
 documentation/scripting/web_interface/stdin_to_asciio_web_example
 documentation/scripting/web_interface/asciio_web_example
 documentation/scripting/web_interface/asciio_web_tab_example
-documentation/simple_presentation.pl
 
 documentation/scripting/from_within_asciio/asciio_script.pl
 documentation/scripting/README.md
 
 documentation/text/depend_and_build.txt
 documentation/text/permissions.txt
-
-documentation/presentation.pl
-
 
 
 # GTK
@@ -365,6 +362,8 @@ documentation/mdbook_asciio/src/for_developers/scripting.md
 documentation/mdbook_asciio/src/for_developers/scripting_api.md
 documentation/mdbook_asciio/src/for_developers/scripting_execute.md
 documentation/mdbook_asciio/src/for_developers/unicode_support.md
+documentation/mdbook_asciio/src/for_developers/scripting_api/how_to
+documentation/mdbook_asciio/src/for_developers/scripting_api/scripting_api_header.md
 documentation/mdbook_asciio/src/functionality_log.md
 documentation/mdbook_asciio/src/functionality_log/2025_12_20_freeze_elements.gif
 documentation/mdbook_asciio/src/functionality_log/2026_01_01_graph_selection.gif

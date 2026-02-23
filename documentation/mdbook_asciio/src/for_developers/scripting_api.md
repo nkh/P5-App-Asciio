@@ -3,37 +3,6 @@
 APIs are defined in **lib/App/Asciio/Scripting.pm**
 
 
-## asciio_sleep 
-
-use to sleep in a script, *sleep* blocks update 
-
-##  set_slide_delay 
-
-override a slide delay from the script
-
-## stop_updating_display  
-
-Stops updating the display until *start_updating_display* is called; this can be used to reduce flickering.
-
-```
-stop_updating_display
-```
-
-## start_updating_display  
-
-Start updating the display; display will automatically be updated from when this is called. An update is also made.
-
-```
-start_updating_display
-```
-
-## create_undo_snapshot
-
-Creates an undo snapshot.
-
-```
-create_undo_snapshot ;
-```
 
 ## add
 
@@ -45,6 +14,85 @@ Adds a named element:
 
 ```
 add 'text1', new_text(TEXT_ONLY =>'text'),  22,  20 ;
+```
+
+## add_connection
+
+Create an arrow and connects two named elements with it, you can pass a routing hint.
+
+```perl
+add 'box1', new_box(TEXT_ONLY =>'box1'),  0,  2 ;
+add 'box2', new_box(TEXT_ONLY =>'box2'), 20, 10 ;
+
+connect_elements 'box1', 'box2', 'down' ;
+```
+## add_ruler_line
+
+Adds a ruler line.
+
+- axis: 'vertical' or 'horizontal'
+- position
+
+```
+add_ruler_line 'vertical, 10 ;
+```
+
+## add_type
+
+Adds a named element:
+- element_name
+- element_type
+- x coordinate
+- y coordinate
+
+Returns the element.
+
+```
+my $process = add_type 'process', 'Asciio/Boxes/process', 5, 15 ;
+```
+
+## asciio_sleep 
+
+use to sleep in a script, *sleep* blocks update 
+
+## ascii_out
+
+Prints the diagram, as ASCII, to stdout.
+
+```
+ascii_out ;
+```
+
+## change_selected_elements_color
+
+Changes selected elements background or foreground color.
+
+```
+change_selected_elements_color 1, [1, 0, 0] ; # foreground color to red
+```
+
+## connect_elements
+
+Connects named elements with a *wirl-arrow*.
+
+```
+connect_elements 'box2', 'text1' ;
+```
+
+## create_undo_snapshot
+
+Creates an undo snapshot.
+
+```
+create_undo_snapshot ;
+```
+
+## delete_all_ruler_lines
+
+Deletes all ruler lines.
+
+```
+delete_all_ruler_lines ;
 ```
 
 ## delete_by_name
@@ -63,20 +111,62 @@ Deletes selected elements
 delete_selected_elements ;
 ```
 
-## add_type
+## deselect_all_elements
 
-Adds a named element:
-- element_name
-- element_type
-- x coordinate
-- y coordinate
-
-Returns the element.
+Deselects all the elements in Asciio.
 
 ```
-my $process = add_type 'process', 'Asciio/Boxes/process', 5, 15 ;
+deselect_all_elements ;
 ```
 
+## deselect_all_script_elements
+
+Deselects all the elements added by the script.
+
+```
+deselect_all_script_elements ;
+```
+
+## generate_keyboard_mapping
+
+Writes the current keyboard bindings to a file
+
+## get_canonizer
+
+Canonizes a connection.
+
+```perl
+my $box1  = add 'box1',  new_box(TEXT_ONLY =>'box1'), 0, 2 ;
+my $box2  = add 'box2',  new_box(TEXT_ONLY =>'box2'), 20, 10 ;
+my $arrow = add 'arrow', new_wirl_arrow (), 0,  0 ;
+
+my $start_connection = move_named_connector($arrow, 'startsection_0', $box1, 'bottom_center');
+my $end_connection = move_named_connector($arrow, 'endsection_0', $box2, 'bottom_center') ;
+
+die "missing connection!" unless defined $start_connection && defined $end_connection ;
+
+set_connection($start_connection, $end_connection) ;
+
+get_canonizer()->([$start_connection, $end_connection]) ;
+```
+## get_option
+
+Get one of the options passes as arguments to *asciio*. Used in *text_toasciio*.
+
+## move
+
+Moves a namex element to a new coordinate:
+- element name
+- x position
+- y position
+
+```
+move 'text1', 22,  20 ;
+```
+
+## move_named_connector
+
+Arrows and text elements are created separately in scripts, this allows you to connect elements together.
 ## new_box
 
 Creates a new box element. Use it with **add**.
@@ -85,6 +175,12 @@ Creates a new box element. Use it with **add**.
 new_box() ; # default box text
 new_box(TEXT_ONLY =>'text') ;
 ```
+
+## new_script_asciio
+
+Internal function used to create an asciio object for running scripts.
+
+
 
 ## new_text
 
@@ -104,17 +200,6 @@ Pass wirl arrow section coordinates and directions as arguments.
 new_wirl_arrow([5, 5, 'downright'], [10, 7, 'downright'], [7, 14, 'downleft']) ;
 ```
 
-## move
-
-Moves a namex element to a new coordinate:
-- element name
-- x position
-- y position
-
-```
-move 'text1', 22,  20 ;
-```
-
 ## offset
 
 Offsets a named element:
@@ -126,20 +211,42 @@ Offsets a named element:
 offset 'text1', 22,  20 ;
 ```
 
-## change_selected_elements_color
+## optimize
 
-Changes selected elements background or foreground color.
-
-```
-change_selected_elements_color 1, [1, 0, 0] ; # foreground color to red
-```
-
-## select_by_name
-
-Selects an elements by name.
+Optimizes the connections.
 
 ```
-select_by_name 'A' ;
+optimize
+```
+
+## optimize_connections
+
+Calls *asciio* routing hook.
+
+## quit
+
+Closes *Asciio*
+
+```perl
+asciio_sleep 2000 ; # wait for slideshow which it driven by timer events, to end
+quit ;
+```
+## reset_screenshot_index
+
+Screenshot index are incremented for each screenshot taken, you can set the start index with this function.
+## run_external_script_text
+
+Will run the passed script (text not file name)
+
+Running scripts passed as text is how the *asciio* web server works, allowing other processes to use *asciio* for display 
+
+
+## save_to
+
+Saves the diagram to a file in Asciio's native format.
+
+```
+save_to 'diagram.asciio' ;
 ```
 
 ## select_all_elements
@@ -150,14 +257,6 @@ Selects all the elements in Asciio.
 select_all_elements ;
 ```
 
-## deselect_all_elements
-
-Deselects all the elements in Asciio.
-
-```
-deselect_all_elements ;
-```
-
 ## select_all_script_elements
 
 Selects all the elements added by the script.
@@ -166,56 +265,66 @@ Selects all the elements added by the script.
 select_all_script_elements ;
 ```
 
-## deselect_all_script_elements
+## select_by_name
 
-Deselects all the elements added by the script.
-
-```
-deselect_all_script_elements ;
-```
-
-## connect_elements
-
-Connects named elements with a *wirl-arrow*.
+Selects an elements by name.
 
 ```
-connect_elements 'box2', 'text1' ;
+select_by_name 'A' ;
 ```
 
-## optimize
+## select_elements
 
-Optimizes the connections.
+Select or deselects the passed elements
 
+```perl
+select_elements 1, $element, $element ... # 1 to select, 0 to deselect
 ```
-optimize
-```
+##  set_slide_delay 
 
-## delete_all_ruler_lines
+override a slide delay from the script
 
-Deletes all ruler lines.
+## start_automatic_slideshow
 
-```
-delete_all_ruler_lines ;
-```
+Runs the slideshow once
 
-## add_ruler_line
+By default the slide lay is set to 1000 ms and screenshots are taken, you can pass arguments to change the defaults
 
-Adds a ruler line.
-
-- axis: 'vertical' or 'horizontal'
-- position
-
-```
-add_ruler_line 'vertical, 10 ;
+```perl
+start_automatic_slideshow [1000, 1] ; 
 ```
 
-## save_to
+## start_updating_display  
 
-Saves the diagram to a file in Asciio's native format.
+Start updating the display; display will automatically be updated from when this is called. An update is also made.
 
 ```
-save_to 'diagram.asciio' ;
+start_updating_display
 ```
+
+## stop_updating_display  
+
+Stops updating the display until *start_updating_display* is called; this can be used to reduce flickering.
+
+```
+stop_updating_display
+```
+
+## take_screenshot
+
+Takes a screenshot of the slide.
+
+file_name is: "screenshots/". sprintf("%03d", $index) . "_time_${slide_time}_screenshot.png" ;
+
+terminal output: "APNG: $file_name" . ($time ? ":$time " : ' ') ;
+## take_screenshot_and_sleep
+
+takes a screenshot of the slide and calls asciio_sleep
+
+file_name is: "screenshots/". sprintf("%03d", $index) . "_time_${slide_time}_screenshot.png" ;
+
+terminal output: "APNG: $file_name" . ($time ? ":$time " : ' ') ;
+ 
 
 ## to_ascii
 
@@ -225,11 +334,9 @@ Returns the diagram as ASCII.
 to_ascii ;
 ```
 
-## ascii_out
+## to_asciio
 
-Prints the diagram, as ASCII, to stdout.
+Returns an asciio document, used in *text_to_asciio* 
+## update_display
 
-```
-ascii_out ;
-```
-
+Force a display update, API functions usually do it automatically.

@@ -1,0 +1,9 @@
+
+rg '^##' documentation/mdbook_asciio/src/for_developers/scripting_api.md | perl -ne '/##\s+([^\s]+)/ ; print "$1\n"' > documented_api
+rg '^sub' lib/App/Asciio/Scripting.pm | perl -ne '/sub\s+([^\s]+)/ ; print "$1\n"' > scripting_api
+
+perl -ne 'if(/^##\s+(.+)/){ $f=lc($1); $f=~s/\s+/_/g; $f.=".md"; open($fh,">",$f); } print $fh $_ if $fh' 
+
+comm -23 <(sort scripting_api) <(sort documented_api)
+
+cat scripting_api_header.md  $(ls -I how_to -I scripting_api_header.md) > my_file

@@ -147,19 +147,27 @@ my ($command_line_switch_parse_ok, $command_line_parse_message, $config)
 
 die "Asciio Error: '$command_line_parse_message'!" unless $command_line_switch_parse_ok ;
 
+my @asciios ;
+
 if($config->{TARGETS}->@*)
 	{
 	for my $target ($config->{TARGETS}->@*)
 		{
-		$self->read_asciio_file($target) ;
+		push @asciios, $self->read_asciio_file($target) ;
 		}
 	
+	$self->focus_tab(0) ;
+	 
 	if (1 == $config->{TARGETS}->@*)
 		{
 		$self->set_title($config->{TARGETS}[0]) ;
 		}
 	
-	$self->focus_tab(0) ;
+	if(defined $config->{SCRIPT})
+		{
+		require App::Asciio::Scripting ;
+		Glib::Timeout->add(50, sub { App::Asciio::Utils::Scripting::run_external_script($asciios[0], $config->{SCRIPT}) ; return 0 ; }) ;
+		}
 	}
 else
 	{
@@ -950,6 +958,8 @@ my ($merged,  @result) = capture_merged
 				$tar = Archive::Tar->new($project_name) ; 
 				} ;
 
+my @asciios ;
+
 if($tar)
 	{
 	my %documents = map { $_ => 1 } grep { $_ ne 'asciio_project' } $tar->list_files ;
@@ -966,6 +976,7 @@ if($tar)
 		for my $document_name ($asciio_project->{documents}->@*) 
 			{
 			my ($config, $asciio) = $self->create_tab({serialized => $tar->get_content($document_name)}) ;
+			push @asciios, $asciio ;
 			
 			while (exists $self->{LOADED_DOCUMENTS}{$document_name})
 				{
@@ -984,8 +995,10 @@ if($tar)
 else
 	{
 	print STDERR "Asciio: can't open project '$project_name', trying as asciio document\n";
-
+	
 	my ($config, $asciio) = $self->create_tab() ;
+	push @asciios, $asciio ;
+	
 	my $document_name     = $asciio->load_file($project_name) ;
 	
 	while (exists $self->{LOADED_DOCUMENTS}{$document_name})
@@ -1000,6 +1013,8 @@ else
 	$asciio->set_title($document_name) ;
 	$asciio->set_modified_state(0) ;
 	}
+
+return @asciios ;
 }
 
 #-----------------------------------------------------------------------------

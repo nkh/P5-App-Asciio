@@ -131,6 +131,7 @@ setup/actions/default_bindings.pl
 setup/asciio_object/basic.pl
 setup/hooks/canonize_connections.pl
 
+setup/import_export/apl.pl
 setup/import_export/ascii.pl
 setup/import_export/json.pl
 setup/import_export/perl.pl

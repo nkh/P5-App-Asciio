@@ -11,7 +11,6 @@ use Glib qw(TRUE FALSE);
 use Pango ;
 
 use parent qw/ App::Asciio::GTK::Asciio / ;
-use Data::TreeDumper ;
 
 use Glib::Object::Subclass Gtk3::DrawingArea::,
 	signals =>
@@ -216,12 +215,12 @@ $asciio->setup($setup_paths, \%object_override) ;
 $asciio->{ACTION_VERBOSE} = $action_verbose ;
 }
 
-if(defined $asciio_config->{TARGETS}[0])
-	{
-	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
+# if(defined $asciio_config->{TARGETS}[0])
+# 	{
+# 	$asciio->run_actions_by_name(['Open', $asciio_config->{TARGETS}[0]]) ;
 	
-	delete $asciio->{BINDINGS_COMPLETION} ;
-	}
+# 	delete $asciio->{BINDINGS_COMPLETION} ;
+# 	}
 
 App::Asciio::setup_embedded_bindings($asciio, $asciio_config) ;
 
@@ -232,12 +231,11 @@ my ($character_width, $character_height) = $asciio->get_character_size() ;
 $self->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{CANVAS_HEIGHT} * $character_height);
 $asciio->set_modified_state(0) ;
 
-if(defined $asciio_config->{SCRIPT})
-	{
-	require App::Asciio::Scripting ;
-	
-	App::Asciio::Utils::Scripting::run_external_script($asciio, $asciio_config->{SCRIPT}) ;
-	}
+# if(defined $asciio_config->{SCRIPT})
+# 	{
+# 	require App::Asciio::Scripting ;
+# 	Glib::Timeout->add(50, sub { App::Asciio::Utils::Scripting::run_external_script($self, $asciio_config->{SCRIPT}) ; return 0 ; }) ;
+# 	}
 
 $self->{$_} = $asciio->{$_} for keys %{$asciio} ;
 
@@ -251,7 +249,7 @@ sub set_title
 my ($self, $title) = @_;
 
 $self->SUPER::set_title($title) ;
-$self->signal_emit('rename_tab', $title) ;
+# $self->signal_emit('rename_tab', $title) ;
 }
 
 # ----------------------------------------------------------------------------
