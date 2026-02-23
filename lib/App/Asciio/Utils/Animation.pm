@@ -65,9 +65,9 @@ for (0 .. $times)
 	{
 	$self->select_elements_flip(@elements) ;
 	$self->update_display(1) ;
-	App::Asciio::Actions::Presentation::take_screenshot($self, $time) ;
+	App::Asciio::Actions::Presentation::take_screenshot($self, $time) if $take_screenshot ;
 	
-	App::Asciio::Scripting::asciio_sleep($time) if $take_screenshot ;
+	App::Asciio::Scripting::asciio_sleep($time) ;
 	
 	$self->select_elements_flip(@elements) ;
 	$self->update_display(1) ;

@@ -59,12 +59,12 @@ Snapshots are saved to a configurable directory, the default directory is snapsh
 
 File naming format:
 
-`snapshots/NNN_time_<timestamp>_screenshot.png`
+`snapshots/NNN_time_<time>_screenshot.png`
 
 Where:
 
 - NNN is a zero padded index
-- timestamp is the current date and time
+- time is the slide time
 
 The slideshow can be interrupted by the user.
 
@@ -297,7 +297,7 @@ Inside 00_on_load you may:
 - take snapshots at specific points
 - override the slide delay
 
-**IMPORTANT:** Use ***asciio_sleep*** to control timing (*sleep* will block screen updates)
+**IMPORTANT:** Use ***asciio_sleep*** to control timing (*sleep* would block screen updates)
 
 ### Example Perl Snippet
 

@@ -279,7 +279,7 @@ sub add
 {
 my ($name, $element, $x, $y) = @_ ;
 
-$element->set_user_data(NAME => $name) ;
+$element->set_id($name) ;
 $element->set_user_data(SCRIPT_OBJECT => 1) ;
 $script_asciio->add_element_at($element, $x, $y) ;
 }
@@ -290,7 +290,7 @@ sub move
 {
 my ($name, $x, $y) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_id() eq $name } $script_asciio->get_elements())
 	{
 	@$element{'X', 'Y'} = ($x, $y) if defined $x && defined $y ;
 	}
@@ -302,7 +302,7 @@ sub offset
 {
 my ($name, $x_offset, $y_offset) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_id() eq $name } $script_asciio->get_elements())
 	{
 	@$element{'X', 'Y'} = ($element->{X} + $x_offset, $element->{Y} + $y_offset)
 		if defined $x_offset && defined $y_offset ;
@@ -315,7 +315,7 @@ sub select_by_name
 {
 my ($name) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_id() eq $name } $script_asciio->get_elements())
 	{
 	$script_asciio->select_elements(1, $element) ;
 	}
@@ -327,7 +327,7 @@ sub delete_by_name
 {
 my ($name) = @_ ;
 
-for my $element (grep { $_->get_user_data('NAME') // '' eq $name } $script_asciio->get_elements())
+for my $element (grep { $_->get_id() eq $name } $script_asciio->get_elements())
 	{
 	$script_asciio->delete_elements($element) ;
 	}
@@ -356,7 +356,7 @@ sub add_type
 my ($name, $type, $x, $y) = @_ ;
 
 my $element = $script_asciio->add_new_element_named($type, $x, $y) ;
-$element->set_user_data(NAME => $name) ;
+$element->set_id($name) ;
 
 return $element ;
 }
@@ -367,8 +367,8 @@ sub connect_elements
 {
 my ($element1_name, $element2_name, @args) = @_ ;
 
-my ($element1) = grep { ($_->get_user_data('NAME') // '') eq $element1_name } $script_asciio->get_elements() ;
-my ($element2) = grep { ($_->get_user_data('NAME') // '') eq $element2_name } $script_asciio->get_elements() ;
+my ($element1) = grep { $_->get_id() eq $element1_name } $script_asciio->get_elements() ;
+my ($element2) = grep { $_->get_id() eq $element2_name } $script_asciio->get_elements() ;
 
 add_connection($script_asciio, $element1, $element2, @args)
 	if defined $element1 && defined $element2 ;
@@ -438,6 +438,17 @@ sub ascii_out                 { print $script_asciio->transform_elements_to_asci
 sub optimize                  { $script_asciio->call_hook('CANONIZE_CONNECTIONS', $script_asciio->{CONNECTIONS}) ; }
 
 sub generate_keyboard_mapping { App::Asciio::Actions::Unsorted::get_keyboard_mapping_file($script_asciio, @_) ; }
+
+#-----------------------------------------------------------------------------------------------------------
+
+sub optimize_connections
+{
+my ($self) = @_;
+$self //= $script_asciio ;
+
+$self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}) ;
+}
+
 }
 
 #--------------------------------------------------------------------------------------------
@@ -598,14 +609,6 @@ else
 	{
 	return ;
 	}
-}
-
-#-----------------------------------------------------------------------------------------------------------
-
-sub optimize_connections
-{
-my ($self) = @_;
-$self->call_hook('CANONIZE_CONNECTIONS', $self->{CONNECTIONS}) ;
 }
 
 #--------------------------------------------------------------------------------------------

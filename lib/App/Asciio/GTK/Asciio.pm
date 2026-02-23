@@ -1,4 +1,4 @@
-
+#
 package App::Asciio::GTK::Asciio ;
 
 use base qw(App::Asciio) ;
