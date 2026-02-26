@@ -153,7 +153,7 @@ if($config->{TARGETS}->@*)
 	{
 	for my $target ($config->{TARGETS}->@*)
 		{
-		push @asciios, $self->read_asciio_file($target) ;
+		push @asciios, App::Asciio::Actions::File::read_asciio_file($self, $target) ;
 		}
 	
 	$self->focus_tab(0) ;
@@ -194,36 +194,35 @@ $asciio->set_size_request($asciio->{CANVAS_WIDTH} * $character_width, $asciio->{
 
 my %signal_handlers =
 	(
-	close_tab              => sub { my ($w, $asciio)        = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 1, 1) ; },
-	close_tab_no_save      => sub { my ($w, $asciio)        = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 0, 1) ; },
-	copy_tab               => sub { my ($w, $data)          = @_ ; $self->{MODIFIED}++ ; $self->create_tab($data) ;                 },
-	focus_tab              => sub { my ($w, $index)         = @_ ;                       $self->focus_tab($index) ;                 },
-	get_all_asciios        => sub { my ($w)                 = @_ ;                       $self->get_all_asciios() ;                 },
-	last_tab               => sub { my ($w)                 = @_ ; $self->last_tab() ;                                              },
-	move_tab_left          => sub { my ($w)                 = @_ ; $self->{MODIFIED}++ ; $self->move_tab_left() ;                   },
-	move_tab_right         => sub { my ($w)                 = @_ ; $self->{MODIFIED}++ ; $self->move_tab_right() ;                  },
-	new_tab                => sub { my ($w, $data)          = @_ ; $self->{MODIFIED}++ ; $self->create_tab() ;                      },
-	next_tab               => sub { my ($w)                 = @_ ;                       $self->next_tab() ;                        },
-	next_tagged_tab        => sub { my ($w, $data)          = @_ ;                       $self->next_tagged_tab($data) ;            },
-	open_project           => sub { my ($w, $data)          = @_ ;                       $self->open_project($data, 1) ;            },
-	previous_tab           => sub { my ($w)                 = @_ ;                       $self->previous_tab() ;                    },
-	previous_tagged_tab    => sub { my ($w, $data)          = @_ ;                       $self->previous_tagged_tab($data) ;        },
-	quit_app               => sub { my ($w)                 = @_ ;                       $self->quit_application(1) ;               },
-	quit_app_no_save       => sub { my ($w)                 = @_ ;                       $self->quit_application(0) ;               },
-	hide_all_bindings_help => sub { my ($w)                 = @_ ;                       $self->hide_all_bindings_help() ;          },
-	show_all_bindings_help => sub { my ($w)                 = @_ ;                       $self->show_all_bindings_help() ;          },
-	rename_tab             => sub { my ($w, $name)          = @_ ; $self->{MODIFIED}++ ; $self->rename_tab($name) ;                 },
-	rename_asciio_tab      => sub { my ($w, $asciio, $name) = @_ ; $self->{MODIFIED}++ ; $self->rename_asciio_tab($asciio, $name) ; },
+	close_tab              => sub { my ($w, $asciio)        = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 1, 1) ;                },
+	close_tab_no_save      => sub { my ($w, $asciio)        = @_ ; $self->{MODIFIED}++ ; $self->delete_current_tab($asciio, 0, 1) ;                },
+	copy_tab               => sub { my ($w, $data)          = @_ ; $self->{MODIFIED}++ ; $self->create_tab($data) ;                                },
+	focus_tab              => sub { my ($w, $index)         = @_ ;                       $self->focus_tab($index) ;                                },
+	get_all_asciios        => sub { my ($w)                 = @_ ;                       $self->get_all_asciios() ;                                },
+	last_tab               => sub { my ($w)                 = @_ ; $self->last_tab() ;                                                             },
+	move_tab_left          => sub { my ($w)                 = @_ ; $self->{MODIFIED}++ ; $self->move_tab_left() ;                                  },
+	move_tab_right         => sub { my ($w)                 = @_ ; $self->{MODIFIED}++ ; $self->move_tab_right() ;                                 },
+	new_tab                => sub { my ($w, $data)          = @_ ; $self->{MODIFIED}++ ; $self->create_tab() ;                                     },
+	next_tab               => sub { my ($w)                 = @_ ;                       $self->next_tab() ;                                       },
+	next_tagged_tab        => sub { my ($w, $data)          = @_ ;                       $self->next_tagged_tab($data) ;                           },
+	open_project           => sub { my ($w, $data)          = @_ ;                       App::Asciio::Actions::File::open_project($self, $data, 1) ; },
+	previous_tab           => sub { my ($w)                 = @_ ;                       $self->previous_tab() ;                                   },
+	previous_tagged_tab    => sub { my ($w, $data)          = @_ ;                       $self->previous_tagged_tab($data) ;                       },
+	quit_app               => sub { my ($w)                 = @_ ;                       $self->quit_application(1) ;                              },
+	quit_app_no_save       => sub { my ($w)                 = @_ ;                       $self->quit_application(0) ;                              },
+	hide_all_bindings_help => sub { my ($w)                 = @_ ;                       $self->hide_all_bindings_help() ;                         },
+	show_all_bindings_help => sub { my ($w)                 = @_ ;                       $self->show_all_bindings_help() ;                         },
+	rename_tab             => sub { my ($w, $name)          = @_ ; $self->{MODIFIED}++ ; $self->rename_tab($name) ;                                },
+	rename_asciio_tab      => sub { my ($w, $asciio, $name) = @_ ; $self->{MODIFIED}++ ; $self->rename_asciio_tab($asciio, $name) ;                },
 	# send_to_asciio  
 	# get_keys         
 	# set_kv           
 	# get_kv           
 	read                   => sub { my ($w, $file)   = @_ ;                       $self->read($file) ;                       },
-	save_project           => sub { my ($w, $as)     = @_ ;                       $self->save_project($as) ;                 },
-	# show_help_tab          => sub { my ($w)          = @_ ;                       $self->show_help_tab() ;                   },
-	toggle_tab_labels      => sub { my ($w)          = @_ ;                       $self->toggle_tab_labels() ;               },
+	save_project           => sub { my ($w, $as)     = @_ ;                       App::Asciio::Actions::File::save_project($self, $as) ;           },
+	toggle_tab_labels      => sub { my ($w)          = @_ ;                       $self->toggle_tab_labels() ;                                     },
 	# event management
-	redirect_events        => sub { my ($w, $on)     = @_ ;                       $self->redirect_events($on) ;              },
+	redirect_events        => sub { my ($w, $on)     = @_ ;                       $self->redirect_events($on) ;                                    },
 	) ;
 
 while (my ($signal, $sub) = each %signal_handlers)
@@ -416,7 +415,7 @@ if ($save_documents)
 				
 				if(defined $project_name && $project_name ne q[])
 					{
-					my $saved = $self->write_asciio_project($project_name) ;
+					my $saved = App::Asciio::Actions::File::write_asciio_project($self, $project_name) ;
 					$user_answer = 'ok' if defined $saved ;
 					}
 				}
@@ -438,47 +437,14 @@ else
 	}
 }
 
+# ----------------------------------------------------------------------------
+
 sub exit
 {
 my ($self) = @_ ;
 
 kill 'HUP', $self->{web_server_pid} ;
 Gtk3::main_quit() ;
-}
-
-# ----------------------------------------------------------------------------
-
-sub show_help_tab
-{
-my ($self) = @_ ;
-
-if ($self->{help_page_num} >= 0)
-	{
-	my $n_pages = $self->{notebook}->get_n_pages() ;
-	
-	if ($self->{help_page_num} < $n_pages)
-		{
-		$self->{notebook}->set_current_page($self->{help_page_num}) ;
-		$self->{help_widget}->grab_focus() if $self->{help_widget} ;
-		return ;
-		}
-	else
-		{
-		$self->{help_page_num} = -1 ;
-		$self->{help_widget}   = undef ;
-		}
-	}
-
-my $help_widget = App::Asciio::GTK::Asciio::HelpWidget->new($self) ;
-$self->{help_widget} = $help_widget ;
-my $label = Gtk3::Label->new('Help') ;
-
-my $page_num = $self->{notebook}->append_page($help_widget->get_widget(), $label) ;
-$self->{help_page_num} = $page_num ;
-
-$help_widget->get_widget()->show_all() ;
-$self->{notebook}->set_current_page($page_num) ;
-$help_widget->grab_focus() ;
 }
 
 # ----------------------------------------------------------------------------
@@ -786,235 +752,7 @@ else
 sub read
 {
 my ($self, $file) = @_ ;
-$self->open_project($file, 0) ;
-}
-
-# ----------------------------------------------------------------------------
-
-sub open_project
-{
-my ($self, $project_name, $delete_tabs) = @_ ;
-
-if(! $delete_tabs || $self->save_project(undef))
-	{
-	$project_name = App::Asciio::GTK::Asciio::get_file_name($self, 'open') unless (defined $project_name && $project_name ne q[]) ;
-	
-	if(defined $project_name && $project_name ne q[] && -e $project_name)
-		{
-		if($delete_tabs)
-			{
-			$self->delete_current_tab(undef, 0, 0) for $self->{notebook}->get_n_pages() ;
-			}
-		
-		$self->read_asciio_file($project_name) ;
-		
-		$self->set_title($project_name) if $delete_tabs ;
-		$self->{MODIFIED} = 0 if $delete_tabs ;
-		}
-	}
-}
-
-# ----------------------------------------------------------------------------
-
-sub save_project
-{
-my ($self, $as) = @_ ;
-
-my $asciio_modified = 0 ;
-
-for my $asciio ($self->{asciios}->@*)
-	{
-	if($asciio->get_modified_state())
-		{
-		$asciio_modified++ ;
-		last ;
-		}
-	}
-
-return(1) unless $self->{MODIFIED} || $asciio_modified ;
-
-my $project_name  ;
-
-if(! defined $as )
-	{
-	$project_name = $self->get_title() // App::Asciio::GTK::Asciio::get_file_name(undef, 'save as') ;
-	}
-elsif( '' eq $as )
-	{
-	$project_name = App::Asciio::GTK::Asciio::get_file_name(undef, 'save as') ;
-	}
-else
-	{
-	$project_name = $as ;
-	}
-
-my $saved ;
-
-if(defined $project_name && $project_name ne q[])
-	{
-	if(-e $project_name)
-		{
-		my $override = App::Asciio::GTK::Asciio::display_yes_no_cancel_dialog
-					(
-					undef,
-					"Override file!",
-					"File '$project_name' exists!\nOverride file?"
-					) ;
-		
-		$project_name = undef unless $override eq 'yes' ;
-		}
-	
-	if(defined $project_name && $project_name ne q[])
-		{
-		$saved = $self->write_asciio_project($project_name) ;
-		
-		if ($saved)
-			{
-			$self->set_title($project_name) ;
-			$self->{MODIFIED} = 0 ;
-			}
-		}
-	}
-
-return $saved ;
-}
-
-# ----------------------------------------------------------------------------
-
-sub write_asciio_project
-{
-my ($self, $project_name) = @_ ;
-
-$self->set_title($project_name) ;
-
-my $saved = 1 ;
-my $tar = Archive::Tar->new ;
-
-my $project_data = { tabs => scalar($self->{asciios}->@*), documents => [], } ; 
-my $index = -1 ;
-my %seen_titles ;
-
-for my $asciio ($self->{asciios}->@*)
-	{
-	$index++ ;
-	my $serialized_asciio = $asciio->serialize_self() ;
-	
-	my $title = $asciio->get_title() // ('untitled_' . $index) ;
-	
-	while ($seen_titles{$title})
-		{
-		$title .= int(rand(100)) ;
-		}
-	
-	$seen_titles{$title}++ ;
-	
-	push $project_data->{documents}->@*, $title ;
-	$asciio->set_modified_state(0) ;
-	
-	$tar->add_data
-		(
-		$title,
-		$serialized_asciio,
-		{
-		mode  => 0644,   mtime => time,
-		uid   => 0,      gid => 0,
-		uname => 'root', gname => 'root',
-		}) or do { $saved = 0 ; print STDERR "asciio: add_data error at entry index: $index" . $tar->error ; }  ;
-	}
-
-$tar->add_data
-	(
-	'asciio_project',
-	Sereal::Encoder->new->encode($project_data),
-	{
-	mode  => 0644,   mtime => time,
-	uid   => 0,      gid => 0,
-	uname => 'root', gname => 'root',
-	},
-	) or do { $saved = 0 ; print STDERR "asciio: add_data error: " . $tar->error ; } ;
-
-$tar->write($project_name) or do { $saved = 0 ; print STDERR "asciio: write error: " . $tar->error ; } ;
-
-open(my $fh, '>>', $project_name) or do { $saved = 0 ; print STDERR  "Could not open file '$project_name' for appending magic: $!" ; } ;
-print $fh 'application/x-asciio-project' ;
-close $fh ;
-
-$self->{MODIFIED} = 0 if $saved ;
-
-return $saved ;
-}
-
-# ----------------------------------------------------------------------------
-
-sub read_asciio_file
-{
-my ($self, $project_name) = @_  ;
-
-use Capture::Tiny qw/capture_merged/ ;
-
-my $tar ;
-my ($merged,  @result) = capture_merged
-				{ 
-				$tar = Archive::Tar->new($project_name) ; 
-				} ;
-
-my @asciios ;
-
-if($tar)
-	{
-	my %documents = map { $_ => 1 } grep { $_ ne 'asciio_project' } $tar->list_files ;
-	
-	my $serialized_asciio_project = $tar->get_content('asciio_project') ;
-	my $asciio_project            = eval { Sereal::Decoder->new->decode($serialized_asciio_project) } ;
-	
-	if ($@)
-		{
-		print STDERR "Error: deserializing '$project_name': $@" 
-		}
-	else
-		{
-		for my $document_name ($asciio_project->{documents}->@*) 
-			{
-			my ($config, $asciio) = $self->create_tab({serialized => $tar->get_content($document_name)}) ;
-			push @asciios, $asciio ;
-			
-			while (exists $self->{LOADED_DOCUMENTS}{$document_name})
-				{
-				$document_name .= '_' . int(rand(100)) ;
-				}
-			
-			$self->{LOADED_DOCUMENTS}{$document_name}++ ;
-			
-			$self->rename_tab($document_name) ;
-			
-			$asciio->set_title($document_name) ;
-			$asciio->set_modified_state(0) ;
-			}
-		}
-	}
-else
-	{
-	print STDERR "Asciio: can't open project '$project_name', trying as asciio document\n";
-	
-	my ($config, $asciio) = $self->create_tab() ;
-	push @asciios, $asciio ;
-	
-	my $document_name     = $asciio->load_file($project_name) ;
-	
-	while (exists $self->{LOADED_DOCUMENTS}{$document_name})
-		{
-		$document_name .= '_' . int(rand(100)) ;
-		}
-	
-	$self->{LOADED_DOCUMENTS}{$document_name}++ ;
-	
-	$self->rename_tab($document_name) ;
-	
-	$asciio->set_title($document_name) ;
-	$asciio->set_modified_state(0) ;
-	}
-
-return @asciios ;
+App::Asciio::Actions::File::open_project($self, $file, 0) ;
 }
 
 #-----------------------------------------------------------------------------

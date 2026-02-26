@@ -18,7 +18,6 @@ use List::Util qw(min) ;
 
 use App::Asciio::GTK::Asciio::Selection ;
 use App::Asciio::GTK::Asciio::Pen ;
-use App::Asciio::GTK::Asciio::Find ;
 use App::Asciio::GTK::Asciio::stripes::image_box ;
 
 use App::Asciio::Cross ;

@@ -92,7 +92,10 @@ else
 	
 	my $document_name = $asciio->load_file($project_name) ;
 	
-	print $asciio->transform_elements_to_ascii_buffer() ;
+	if($document_name)
+		{
+		print $asciio->transform_elements_to_ascii_buffer() ;
+		}
 	}
 }
 

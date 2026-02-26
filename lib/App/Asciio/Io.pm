@@ -75,10 +75,15 @@ else
 		
 		eval
 			{
-			   $serialized_self = decompress($diagram) ;
-			my $decoder         = get_sereal_decoder() ;
+			use Capture::Tiny qw/capture_merged/ ;
 			
-			$saved_self = $serialized_self = $decoder->decode($serialized_self) ; 
+			my $tar ;
+			my ($merged,  @result) = capture_merged
+							{ 
+							   $serialized_self = decompress($diagram) ;
+							my $decoder         = get_sereal_decoder() ;
+							$saved_self = $serialized_self = $decoder->decode($serialized_self) ; 
+							} ;
 			} ;
 		
 		if($@)
@@ -86,17 +91,7 @@ else
 			# write_text("failed_resurection_source.pl", $serialized_self // 'no serialized sefl!') ;
 			print STDERR "error: load_file: can't load file '$file_name': $! $@\n" ;
 			
-			my $element  = $self->add_new_element_named('Asciio/box', 0, 0) ;
-			my $box_type = $element->get_box_type() ;
-			$box_type->[1][0] = 1 ; # title separator
-			$element->set_box_type($box_type) ;
-			$element->set_background_color([1, 0.4, 0.4]) ;
-			
-			$element->set_text('Warning!', "'$file_name' isn't a valid asciio file.");
-			
-			$self->update_display() ;
-			
-			$title = $file_name ;
+			$title = undef ;
 			}
 		else
 			{

@@ -62,7 +62,7 @@ my ($x_offset, $y_offset) ;
 
 if(@args)
 	{
-	($x_offset, $y_offset) = 'ARRAY' eq $args[0] ? $args[0]->@* : @args ;
+	($x_offset, $y_offset) = 'ARRAY' eq ref $args[0] ? $args[0]->@* : @args ;
 	}
 
 if(defined $self->{CLIPBOARD}{ELEMENTS} && @{$self->{CLIPBOARD}{ELEMENTS}})

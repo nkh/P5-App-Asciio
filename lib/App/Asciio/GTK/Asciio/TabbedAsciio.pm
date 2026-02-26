@@ -34,7 +34,7 @@ use Glib::Object::Subclass Gtk3::DrawingArea::,
 		# tab manager
 		show_help_tab          => { param_types => [],                               return_type => undef          },
 		toggle_tab_labels      => { param_types => [],                               return_type => undef          },
-		open_project           => { param_types => ['Glib::String'],                 return_type => undef          },
+		open_project           => { param_types => ['Glib::String', 'Glib::Int'],    return_type => undef          },
 		save_project           => { param_types => ['Glib::String'],                 return_type => undef          },
 		read                   => { param_types => ['Glib::String'],                 return_type => undef          },
 		quit_app               => { param_types => [],                               return_type => undef          },
