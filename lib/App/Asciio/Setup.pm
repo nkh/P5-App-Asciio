@@ -75,9 +75,9 @@ for my $setup_file (@{$setup_ini_files})
 	}
 
 $self->{ANIMATION}{TOP_DIRECTORY}     = "animations" if -e "animations" and -d "animations" ;
-$self->{ANIMATION}{TOP_DIRECTORY}     = $self->{SCRIPTS_PATHS} if defined $self->{SCRIPTS_PATHS} ;
-$self->{SCRIPTS_PATHS}              //= '.' ;
-$self->{ANIMATION}{TOP_DIRECTORY}   //= $self->{SCRIPTS_PATHS} ;
+$self->{ANIMATION}{TOP_DIRECTORY}     = $self->{SCRIPTS_PATH} if defined $self->{SCRIPTS_PATH} ;
+$self->{SCRIPTS_PATH}               //= '.' ;
+$self->{ANIMATION}{TOP_DIRECTORY}   //= $self->{SCRIPTS_PATH} ;
 
 my $slide_directory = "$self->{ANIMATION}{TOP_DIRECTORY}/" . ($self->{TITLE} // '') ;
 

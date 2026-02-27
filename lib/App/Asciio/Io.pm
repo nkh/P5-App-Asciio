@@ -315,6 +315,8 @@ local $self->{COPIED_CONTROL_ATTRIBUTES}  = undef ;
 local $self->{DRAW_MOUSE_CURSOR}          = undef ;
 local $self->{PEN_STATE}                  = undef ;
 
+local $self->{TAGS}{SLIDE}{UNDO}          = undef ;
+
 my @elements_cache ;
 for my $element (@{$self->{ELEMENTS}}) 
 	{
@@ -327,6 +329,69 @@ local $self->{CACHE} = undef ;
 
 my $on_exit = $self->{ON_EXIT} ;
 delete $self->{ON_EXIT} ;
+
+# ------------------------------------------------------------------------------
+
+# sub trace_sereal_blocker
+# {
+# 	my ($node, $path, $seen) = @_ ;
+# 	my ($addr, $type, $k, $v, $i) ;
+# 	$path //= "root" ;
+# 	$seen //= {} ;
+
+# 	if (ref $node)
+# 	{
+# 		$addr = "$node" ;
+# 		return if $seen->{$addr}++ ;
+# 		$type = ref $node ;
+
+# 		if ($type eq "CODE")
+# 		{
+# 			print "Found CODE reference at: $path\n" ;
+# 		}
+# 		elsif ($type eq "HASH")
+# 		{
+# 			while (($k, $v) = each %$node)
+# 			{
+# 				trace_sereal_blocker($v, "${path}{$k}", $seen) ;
+# 			}
+# 		}
+# 		elsif ($type eq "ARRAY")
+# 		{
+# 			for $i (0 .. $#$node)
+# 			{
+# 				trace_sereal_blocker($node->[$i], "${path}[$i]", $seen) ;
+# 			}
+# 		}
+# 		elsif ($type eq "SCALAR" || $type eq "REF")
+# 		{
+# 			trace_sereal_blocker($$node, "$path(deref)", $seen) ;
+# 		}
+# 		else
+# 		{
+# 			if (UNIVERSAL::isa($node, "HASH"))
+# 			{
+# 				while (($k, $v) = each %$node)
+# 				{
+# 					trace_sereal_blocker($v, "$path ($type){$k}", $seen) ;
+# 				}
+# 			}
+# 			elsif (UNIVERSAL::isa($node, "ARRAY"))
+# 			{
+# 				for $i (0 .. $#$node)
+# 				{
+# 					trace_sereal_blocker($node->[$i], "$path ($type)[$i]", $seen) ;
+# 				}
+# 			}
+# 			elsif (UNIVERSAL::isa($node, "SCALAR") || UNIVERSAL::isa($node, "REF"))
+# 			{
+# 				trace_sereal_blocker($$node, "$path ($type)(deref)", $seen) ;
+# 			}
+# 		}
+# 	}
+# }
+#
+# trace_sereal_blocker($self) ;
 
 my $serialized = $encoder->encode($self) ;
 

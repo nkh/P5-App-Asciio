@@ -5,6 +5,7 @@ use strict ; use warnings ;
 
 use Data::UUID;
 use File::Path qw(make_path);
+use Data::TreeDumper ;
 
 #----------------------------------------------------------------------------------------------
 
@@ -152,16 +153,15 @@ unless(defined $self->{TAGS}{SLIDE} && scalar(keys $self->{TAGS}{SLIDE}->%*))
 	return  ;
 	} ;
 
-$slideshow_delay = $time if defined $time ;
-
-$time = $self->{TAGS}{SLIDE}{TIME} ;
-$time //= $slideshow_delay ;
-
-$current_slide_time = $time ;
-$slideshow_timer = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
+$slideshow_delay      = $time if defined $time ;
+$time                 = $self->{TAGS}{SLIDE}{TIME} ;
+$time               //= $slideshow_delay ;
+$current_slide_time   = $time ;
 
 App::Asciio::Actions::Tabs::hide_all_bindings_help($self) ;
 App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
+
+$slideshow_timer = Glib::Timeout->add ($time, sub { $self->run_actions('next_slideshow_slide') ; return 0 ; }) ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -180,8 +180,9 @@ $self->{TAGS}{SLIDE}{UNDO} = [$self, $self->create_undo_snapshot()] ;
 
 my ($time, $screenshots) = $time_screenshots->@* ;
 
-$slideshow_delay  = $time if defined $time ;
-$take_screenshots = $screenshots ;
+$slideshow_delay    = $time if defined $time ;
+$current_slide_time = $time ;
+$take_screenshots   = $screenshots ;
 
 $time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
 $time ||= $slideshow_delay ;
@@ -193,14 +194,6 @@ if($self->{ANIMATION}{SLIDE_DIRECTORY} ne $self->{ANIMATION}{TOP_DIRECTORY})
 		App::Asciio::Utils::Scripting::run_external_script($self, "./$self->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load") ;
 		}
 	}
-
-if($time)
-	{
-	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
-	}
-
-$last_slide       = $self ;
 
 if($take_screenshots)
 	{
@@ -215,10 +208,11 @@ if($take_screenshots)
 App::Asciio::Actions::Tabs::hide_all_bindings_help($self) ;
 App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
 
-unless($time)
+$last_slide = $self ;
+
+if($time)
 	{
-	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
+	$slideshow_timer = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
 	}
 }
 
@@ -230,40 +224,36 @@ my ($self, $time) = @_ ;
 
 if(exists $self->{TAGS}{SLIDE}{UNDO})
 	{
-	my $number_of_steps = $self->{TAGS}{SLIDE}{UNDO}[0]->create_undo_snapshot() - $self->{TAGS}{SLIDE}{UNDO}[1] ;
+	my $undo_stack_pointer = $self->{TAGS}{SLIDE}{UNDO}[0]->get_undo_stack_pointer() ;
+	my $number_of_steps = $undo_stack_pointer - $self->{TAGS}{SLIDE}{UNDO}[1] + 1 ;
 	
-	$self->{TAGS}{SLIDE}{UNDO}[0]->undo($number_of_steps + 1) ;
+	$self->{TAGS}{SLIDE}{UNDO}[0]->undo($number_of_steps) ;
 	}
 
 my $asciio = App::Asciio::Actions::Tabs::next_tagged_tab($self, 'SLIDE') ;
 
-if($asciio == $last_slide)
+if(defined $last_slide)
 	{
-	$self->run_actions(['000-Escape']) ;
-	delete $self->{TAGS}{SLIDE}{UNDO} ;
-	return  ;
-	}
-
-$self->{TAGS}{SLIDE}{UNDO} = [$asciio, $asciio->create_undo_snapshot()] ;
-
-if($asciio->{ANIMATION}{SLIDE_DIRECTORY} ne $asciio->{ANIMATION}{TOP_DIRECTORY})
-	{
-	if (-e "$asciio->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load")
+	if($asciio == $last_slide)
 		{
-		App::Asciio::Utils::Scripting::run_external_script($asciio, "./$asciio->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load") ;
+		$self->run_actions(['000-Escape']) ;
+		delete $self->{TAGS}{SLIDE}{UNDO} ;
+		$last_slide = undef ;
+		return ;
+		}
+	
+	$self->{TAGS}{SLIDE}{UNDO} = [$asciio, $asciio->create_undo_snapshot()] ;
+	
+	if($asciio->{ANIMATION}{SLIDE_DIRECTORY} ne $asciio->{ANIMATION}{TOP_DIRECTORY})
+		{
+		if (-e "$asciio->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load")
+			{
+			App::Asciio::Utils::Scripting::run_external_script($asciio, "./$asciio->{ANIMATION}{SLIDE_DIRECTORY}/00_on_load") ;
+			}
 		}
 	}
 
-$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
-$time //= $slideshow_delay ;
-
-if($time)
-	{
-	$current_slide_time = $time ;
-	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
-	}
-
-if($take_screenshots)
+if(defined $last_slide && $take_screenshots)
 	{
 	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
 	
@@ -271,7 +261,10 @@ if($take_screenshots)
 	$take_screenshots++ ;
 	}
 
-unless($time)
+$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
+$time //= $slideshow_delay ;
+
+if($time)
 	{
 	$current_slide_time = $time ;
 	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
@@ -319,7 +312,7 @@ sub slower_speed
 {
 my ($self) = @_ ;
 $slideshow_delay *= 1.5 unless $slideshow_delay > 10_000 ;
-print "delay: $slideshow_delay\n" ;
+print STDERR "Asciio: delay: $slideshow_delay\n" ;
 }
 
 #----------------------------------------------------------------------------------------------
@@ -328,7 +321,7 @@ sub faster_speed
 {
 my ($self) = @_ ;
 $slideshow_delay /= 1.5 unless $slideshow_delay < 2 ;
-print "delay: $slideshow_delay\n" ;
+print STDERR "Asciio: delay: $slideshow_delay\n" ;
 }
 
 #----------------------------------------------------------------------------------------------

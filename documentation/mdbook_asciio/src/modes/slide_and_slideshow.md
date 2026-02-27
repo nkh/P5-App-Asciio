@@ -102,7 +102,7 @@ When executing a script, directories are searched in this order:
 - scripts paths
 - current directory
 
-$directory //= $self->{ANIMATION}{SLIDE_DIRECTORY} // $self->{ANIMATION}{TOP_DIRECTORY} // $self->{SCRIPTS_PATHS} // '.' ;
+$directory //= $self->{ANIMATION}{SLIDE_DIRECTORY} // $self->{ANIMATION}{TOP_DIRECTORY} // $self->{SCRIPTS_PATH} // '.' ;
 
 The top directory can be defined on the command line, if not set, the current directory is used.
 

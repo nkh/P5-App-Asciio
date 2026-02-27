@@ -50,6 +50,8 @@ sub undo
 {
 my ($self, $number_of_steps) = @_;
 
+return unless $number_of_steps ;
+
 (my $new_stack_pointer = $self->{DO_STACK_POINTER}) -= $number_of_steps ;
 
 $new_stack_pointer = 0 if $new_stack_pointer < 0 ;
@@ -100,6 +102,14 @@ else
 	{
 	$self->set_modified_state(0) ;
 	}
+}
+
+#-----------------------------------------------------------------------------
+
+sub get_undo_stack_pointer
+{
+my ($self) = @_;
+$self->{DO_STACK_POINTER} ;
 }
 
 #-----------------------------------------------------------------------------

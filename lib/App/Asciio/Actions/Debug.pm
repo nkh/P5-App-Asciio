@@ -57,7 +57,7 @@ $self->{ANIMATION}{SLIDE_DIRECTORY} //= $self->{ANIMATION}{TOP_DIRECTORY} ;
 my $scriptignore = -e "$self->{ANIMATION}{TOP_DIRECTORY}/.scriptignorex" // 0 ;
 
 print STDERR <<EOP ;
-scripts paths: $self->{SCRIPTS_PATHS}             
+scripts paths: $self->{SCRIPTS_PATH}             
 animation directory: $self->{ANIMATION}{TOP_DIRECTORY}
 slide directory: $self->{ANIMATION}{SLIDE_DIRECTORY} 
 .scriptignore : $scriptignore

@@ -78,7 +78,7 @@ sub scan_script_directory
 my ($self, $directory) = @_ ;
 $self->update_display(1) ; # called in ENTER_GROUP and the group has HIDE => 1, update over previous bindings help
 
-$directory //= $self->{ANIMATION}{SLIDE_DIRECTORY} // $self->{ANIMATION}{TOP_DIRECTORY} // $self->{SCRIPTS_PATHS} // '.' ;
+$directory //= $self->{ANIMATION}{SLIDE_DIRECTORY} // $self->{ANIMATION}{TOP_DIRECTORY} // $self->{SCRIPTS_PATH} // '.' ;
 
 return App::Asciio::Utils::Animation::scan_directories([$directory], 1) ;
 }

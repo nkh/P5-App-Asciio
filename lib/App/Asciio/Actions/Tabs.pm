@@ -41,7 +41,11 @@ my ($self, $tab_name) = @_  ;
 
 $tab_name = $self->get_user_text('Rename tab')  unless defined $tab_name ;
 
-$self->set_title($tab_name) if defined $tab_name && $tab_name ne '' ;
+if(defined $tab_name && $tab_name ne '')
+	{
+	$self->signal_emit('rename_asciio_tab', $self, $tab_name) ;
+	$self->set_title($tab_name)
+	}
 }
 
 #-----------------------------------------------------------------------------

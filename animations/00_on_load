@@ -1,4 +1,5 @@
 set_slide_delay 0 ;
+
 take_screenshot ;
 
 add 'box1', new_box(TEXT_ONLY =>'A'),  0,  2 ;
@@ -14,4 +15,7 @@ select_all_script_elements 1 ;
 take_screenshot_and_sleep 400 ;
 
 flash_selected 'take_screenshot';
+
+# vim: set ft=perl:
+
 
