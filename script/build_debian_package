@@ -1,0 +1,11 @@
+rm -rf _build Build MYMETA.* debian/asciio
+unset PERL5LIB PERL_MM_OPT PERL_MB_OPT PERL_LOCAL_LIB_ROOT
+perl Build.PL --installdirs vendor --install_base /usr
+dpkg-buildpackage -us -uc -tc
+
+mkdir debian/build
+mv ../asciio_1.97.0_* ./debian/build
+rm ../asciio_1.97.0.tar.gz
+
+# to verify which files have been added
+# dpkg -c asciio_1.97.0_all.deb

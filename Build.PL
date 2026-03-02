@@ -142,8 +142,13 @@ setup/Stencils/Computer
 setup/Stencils/Divers
 setup/Stencils/People
 
-setup/GTK/setup.ini
+setup/Stencils/buildings.asciio
+setup/Stencils/computer.asciio
+setup/Stencils/elements.asciio
+setup/Stencils/people.asciio
+
 setup/GTK/import_export/png.pl
+setup/GTK/setup.ini
 
 setup/Text/setup.ini
 setup/Text/actions/vim_bindings.pl
