@@ -1,0 +1,11 @@
+asciio (1.97.0) UNRELEASED; urgency=medium
+
+  * Initial Debian package release
+  * Interactive ASCII diagram drawing tool
+  * Supports both GUI (GTK3) and TUI interfaces
+  * Vim-like keybindings for efficient editing
+  * Export to ASCII text format
+  * Unicode support for international characters
+  * Customizable stencils and templates
+
+ -- Khemir Nadim ibn Hamouda <nkh@cpan.org>  Mon, 02 Mar 2026 12:00:00 +0000
