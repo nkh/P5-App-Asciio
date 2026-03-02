@@ -242,7 +242,7 @@ if(defined $file_name)
 else
 	{
 	# pick a file
-	$file_name = $self->get_file_name('', 'save', $user_stencils_path) ;
+	$file_name = $self->get_file_name('', 'open', $user_stencils_path) ;
 	}
 
 if(defined $file_name && $file_name ne '')

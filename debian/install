@@ -1,0 +1,9 @@
+# Configuration and template files
+default_stencil.asciio              usr/share/asciio/
+asciio.magic                        usr/share/asciio/
+
+# Documentation
+README.md                           usr/share/asciio/doc/
+documentation/scripting/*           usr/share/asciio/doc/documentation/scripting/
+#documentation/mdbook_asciio/src/*   usr/share/asciio/doc/documentation/mdbook_asciio/
+examples/*                          usr/share/asciio/doc/examples/

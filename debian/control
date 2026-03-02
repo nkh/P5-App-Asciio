@@ -1,0 +1,77 @@
+Source: asciio
+Section: graphics
+Priority: optional
+Maintainer: Khemir Nadim ibn Hamouda <nkh@cpan.org>
+Build-Depends: debhelper-compat (= 13),
+               perl,
+               libmodule-build-perl
+Standards-Version: 4.6.0
+Homepage: https://github.com/nkh/P5-App-Asciio
+Vcs-Browser: https://github.com/nkh/P5-App-Asciio
+Vcs-Git: https://github.com/nkh/P5-App-Asciio.git
+Rules-Requires-Root: no
+
+Package: asciio
+Architecture: all
+Depends: ${perl:Depends},
+         ${misc:Depends},
+         cpanminus,
+         libdata-uuid-perl,
+         libdata-compare-perl,
+         libdirectory-scratch-structured-perl,
+         libeval-context-perl,
+         libextutils-pkgconfig-perl,
+         libfile-homedir-perl,
+         libgtk3-perl,
+         libio-prompter-perl,
+         libterm-size-any-perl,
+         libterm-termkey-perl,
+         libtest-block-perl,
+         libtermkey-dev,
+         libsereal-perl,
+         libcompress-bzip2-perl,
+         libpango-perl,
+         libcarp-clan-perl,
+         libtest-deep-perl,
+         libtest-most-perl,
+         libdevel-stacktrace-perl,
+         libexception-class-perl,
+         libcapture-tiny-perl,
+         libtest-differences-perl,
+         libmodule-util-perl,
+         libtest-nowarnings-perl,
+         libemail-address-xs-perl,
+         libfile-slurper-perl,
+         libdata-treedumper-perl,
+         libclone-perl,
+         libimage-exiftool-perl,
+         libglib-perl,
+         liblist-moreutils-perl,
+         libnumber-compare-perl,
+         libreadonly-perl,
+         libsub-exporter-perl,
+         libterm-readkey-perl,
+         libhttp-daemon-perl,
+         libjson-perl,
+         libimage-magick-perl,
+Description: Interactive ASCII diagram and drawing tool
+ Asciio allows you to draw ASCII (or Unicode) diagrams in a GTK3 GUI or TUI.
+ The diagrams can be saved as ASCII text or in a format that allows you to
+ modify them later.
+ .
+ Asciio is especially useful if you want diagrams under version control with
+ the rest of your code and prefer keyboard editing over mouse-heavy drawing
+ tools.
+ .
+ Both GUI and TUI have vim-like bindings (shortcuts), which can be customized.
+ Diagrams consist of boxes and text elements connected by arrows. Boxes stay
+ connected when moved around.
+ .
+ Features:
+  * Interactive GUI (asciio) and TUI (tasciio) interfaces
+  * Create flowcharts, architecture diagrams, and ASCII art
+  * Export to ASCII text format
+  * Vim-like keybindings
+  * Elements stay connected when moved
+  * Unicode support
+  * Customizable stencils and templates

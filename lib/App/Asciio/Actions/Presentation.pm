@@ -223,7 +223,6 @@ my ($self, $time) = @_ ;
 
 if(exists $self->{TAGS}{SLIDE}{UNDO} && defined $self->{TAGS}{SLIDE}{UNDO}[0])
 	{
-	ddt $self->{TAGS}{SLIDE}{UNDO} ;
 	my $undo_stack_pointer = $self->{TAGS}{SLIDE}{UNDO}[0]->get_undo_stack_pointer() ;
 	my $number_of_steps = $undo_stack_pointer - $self->{TAGS}{SLIDE}{UNDO}[1] + 1 ;
 	

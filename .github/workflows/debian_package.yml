@@ -1,0 +1,34 @@
+name: Generate and Publish Debian Package
+
+on:
+    push:
+        branches: ['main']
+
+jobs:
+    build-and-publish:
+        runs-on: ubuntu-latest
+        container: debian:stable
+        
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+            
+            - name: Install dependencies
+              run: |
+                apt-get update ;
+                                apt-get install -y debhelper devscripts build-essential libmodule-build-perl perl cpanminus
+            - name: Run debian generation script
+              run: |
+                ./script/build_debian_package ;
+            
+            - name: Publish to GitHub Releases
+              uses: softprops/action-gh-release@v1
+              if: success()
+              with:
+                files: "./debian/build/*.deb"
+                tag_name: "debian_package_${{ github.run_number }}"
+                name: "Debian package ${{ github.run_number }}"
+                body: "Debian package generated from commit ${{ github.sha }}"
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

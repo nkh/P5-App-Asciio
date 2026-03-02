@@ -7,6 +7,8 @@ use strict ; use warnings ;
 
 use List::Util qw(min max sum) ;
 use Tree::Trie ;
+use Data::TreeDumper ;
+sub ddt { print STDERR DumpTree @_ ; }
 
 #----------------------------------------------------------------------------------------------
 
@@ -18,7 +20,7 @@ my $size = sum(map { length } @{$self->{DO_STACK}}) || 0 ;
 
 local $self->{DO_STACK} = scalar(@{$self->{DO_STACK}})  . " [$size]";
 
-#~ print STDERR Data::TreeDumper::DumpTree $self ;
+# ddt $self, 'asciio:', MAX_DEPTH => 1 ;
 $self->show_dump_window($self, 'asciio') ;
 }
 
@@ -45,7 +47,6 @@ $self->show_dump_window($self->{ELEMENTS}, 'asciio elements') ;
 #----------------------------------------------------------------------------------------------
 
 use App::Asciio::Utils::Animation ;
-use Data::TreeDumper ;
 
 sub dump_animation_data
 {
