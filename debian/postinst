@@ -1,0 +1,35 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+	configure)
+	
+	unset PERL5LIB PERL_MM_OPT PERL_MB_OPT
+	
+	for m in Data::TreeDumper::Renderer::GTK Gtk3::Helper Image::APNG HTTP::Request::Params Hash::Slice Tree::Trie
+		do
+			if ! perl -M$m -e 1 2>/dev/null; then
+				echo "Installing $m from CPAN..."
+				cpanm --notest --quiet $m || true
+			fi
+		done 
+	
+	mkdir -p ~/.config/Asciio/stencils
+	cp /usr/share/perl5/App/Asciio/setup/Stencils/*.asciio ~/.config/Asciio/stencils
+	
+	echo "Fill '~/.config/Asciio/help_box' with your help text" > ~/.config/Asciio/help_box
+	
+	;;
+	
+	abort-upgrade|abort-remove|abort-deconfigure)
+	;;
+	
+	*)
+	echo "postinst called with unknown argument \`$1'" >&2
+	exit 1
+	;;
+esac
+
+#DEBHELPER#
+
+exit 0

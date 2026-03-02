@@ -1,7 +1,3 @@
-- binding to show bindings help
-	- I will add an API and an example
-
-- I noticed that even if marked as hidden they are still visible, I'll fix that
 
 issue: after box text is changed, connected elements are not properly reconnected
 
