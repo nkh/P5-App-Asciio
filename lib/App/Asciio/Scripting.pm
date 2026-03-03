@@ -234,7 +234,7 @@ $script_asciio->start_updating_display() ;
 sub set_slide_delay 
 {
 my ($ms) = @_ ;
-$script_asciio->{TAGS}{SLIDE}{TIME_OVERRIDE} = $ms ;
+$script_asciio->{TAGS}{SLIDE}{TIME} = $ms ;
 }
 
 #--------------------------------------------------------------------------------------------

@@ -6,6 +6,7 @@ use strict ; use warnings ;
 use Data::UUID;
 use File::Path qw(make_path);
 use Data::TreeDumper ;
+sub ddt { print STDERR DumpTree @_ ; }
 
 #----------------------------------------------------------------------------------------------
 
@@ -72,7 +73,7 @@ my ($self, $time) = @_ ;
 if(defined $self->{TAGS}{SLIDE})
 	{
 	$time   = $self->get_user_text('Slide time')  unless defined $time ;
-	$time //= 1 ;
+	$time //= 200 ;
 	
 	$self->{TAGS}{SLIDE}{TIME} = $time 
 	}
@@ -80,7 +81,7 @@ if(defined $self->{TAGS}{SLIDE})
 
 #----------------------------------------------------------------------------------------------
 
-my ($slideshow_delay, $slideshow_timer, $current_slide_time) = (500, undef) ;
+my ($slideshow_delay, $slideshow_timer) ;
 my ($last_slide, $take_screenshots) ;
 
 #----------------------------------------------------------------------------------------------
@@ -120,8 +121,8 @@ sub set_default_slide_time
 my ($self, $time) = @_ ;
 
 $time   = $self->get_user_text('Default_slide time') unless defined $time ;
-$time //= 500 ;
-$time   = 500 if $time < 0 or $time > 10_000 ;
+$time //= 200 ;
+$time   = 200 if $time < 0 or $time > 10_000 ;
 
 $slideshow_delay = $time ;
 }
@@ -153,10 +154,9 @@ unless(defined $self->{TAGS}{SLIDE} && scalar(keys $self->{TAGS}{SLIDE}->%*))
 	return  ;
 	} ;
 
-$slideshow_delay      = $time if defined $time ;
-$time                 = $self->{TAGS}{SLIDE}{TIME} ;
-$time               //= $slideshow_delay ;
-$current_slide_time   = $time ;
+$time   = $slideshow_delay           if defined $slideshow_delay ;
+$time   = $self->{TAGS}{SLIDE}{TIME} if defined $self->{TAGS}{SLIDE}{TIME} ;
+$time //= 200 ;
 
 App::Asciio::Actions::Tabs::hide_all_bindings_help($self) ;
 App::Asciio::Actions::Tabs::redirect_events($self, 1) ;
@@ -180,12 +180,11 @@ $self->{TAGS}{SLIDE}{UNDO} = [$self, $self->create_undo_snapshot()] ;
 
 my ($time, $screenshots) = $time_screenshots->@* ;
 
-$slideshow_delay    = $time if defined $time ;
-$current_slide_time = $time ;
 $take_screenshots   = $screenshots ;
 
-$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
-$time ||= $slideshow_delay ;
+$time = $slideshow_delay           if defined $slideshow_delay ;
+$time = $self->{TAGS}{SLIDE}{TIME} if defined $self->{TAGS}{SLIDE}{TIME} ;
+$time //= 200 ;
 
 if($self->{ANIMATION}{SLIDE_DIRECTORY} ne $self->{ANIMATION}{TOP_DIRECTORY})
 	{
@@ -199,7 +198,7 @@ if($take_screenshots)
 	{
 	make_path('screenshots') unless -e 'screenshots' ;
 	
-	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
+	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${time}_screenshot.png" ;
 	
 	$self->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
 	$take_screenshots++ ;
@@ -222,8 +221,9 @@ sub next_slideshow_slide
 {
 my ($self, $time) = @_ ;
 
-if(exists $self->{TAGS}{SLIDE}{UNDO})
+if(exists $self->{TAGS}{SLIDE}{UNDO} && defined $self->{TAGS}{SLIDE}{UNDO}[0])
 	{
+	ddt $self->{TAGS}{SLIDE}{UNDO} ;
 	my $undo_stack_pointer = $self->{TAGS}{SLIDE}{UNDO}[0]->get_undo_stack_pointer() ;
 	my $number_of_steps = $undo_stack_pointer - $self->{TAGS}{SLIDE}{UNDO}[1] + 1 ;
 	
@@ -255,18 +255,18 @@ if(defined $last_slide)
 
 if(defined $last_slide && $take_screenshots)
 	{
-	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${current_slide_time}_screenshot.png" ;
+	my $file_name = "screenshots/". sprintf("%03d", $take_screenshots) . "_time_${time}_screenshot.png" ;
 	
 	$asciio->save_with_type($self->{ELEMENTS}, 'png', $file_name) ;
 	$take_screenshots++ ;
 	}
 
-$time = $self->{TAGS}{SLIDE}{TIME_OVERRIDE} // $self->{TAGS}{SLIDE}{TIME} ;
-$time //= $slideshow_delay ;
+$time = $slideshow_delay           if defined $slideshow_delay ;
+$time = $self->{TAGS}{SLIDE}{TIME} if defined $self->{TAGS}{SLIDE}{TIME} ;
+$time //= 200 ;
 
 if($time)
 	{
-	$current_slide_time = $time ;
 	$slideshow_timer    = Glib::Timeout->add ($time, sub { $self->run_actions_by_name('next slideshow slide') ; return 0 ; }) ;
 	}
 }

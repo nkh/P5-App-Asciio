@@ -1015,7 +1015,7 @@ ROOT_GROUP
 	'slideshow_run'    => GROUP
 		(
 		SHORTCUTS    => 'slideshow_run',
-		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow, 1000],
+		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow, 300],
 		ESCAPE_KEYS  => '000-Escape',
 		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
 		
@@ -1031,7 +1031,7 @@ ROOT_GROUP
 	'slideshow_run_once' => GROUP
 		(
 		SHORTCUTS    => 'slideshow_run_once',
-		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow_once, [1000, 1]],
+		ENTER_GROUP  => [\&App::Asciio::Actions::Presentation::start_automatic_slideshow_once, [500, 1]],
 		ESCAPE_KEYS  => '000-Escape',
 		ESCAPE_GROUP => \&App::Asciio::Actions::Presentation::escape_slideshow,
 		
