@@ -1,6 +1,6 @@
 # Installation
 
-*Asciio* is hosted in [github](https://github.com/nkh/P5-App-Asciio)
+Asciio is hosted on [github](https://github.com/nkh/P5-App-Asciio)
 
 ## Debian/Ubuntu package
 
