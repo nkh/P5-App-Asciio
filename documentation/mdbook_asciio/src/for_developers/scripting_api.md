@@ -317,6 +317,7 @@ Takes a screenshot of the slide.
 file_name is: "screenshots/". sprintf("%03d", $index) . "_time_${slide_time}_screenshot.png" ;
 
 terminal output: "APNG: $file_name" . ($time ? ":$time " : ' ') ;
+
 ## take_screenshot_and_sleep
 
 takes a screenshot of the slide and calls asciio_sleep

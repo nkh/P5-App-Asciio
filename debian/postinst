@@ -6,7 +6,7 @@ case "$1" in
 	
 	unset PERL5LIB PERL_MM_OPT PERL_MB_OPT
 	
-	for m in Data::TreeDumper::Renderer::GTK Gtk3::Helper Image::APNG HTTP::Request::Params Hash::Slice Tree::Trie
+	for m in Data::TreeDumper::Renderer::GTK Gtk3::Helper HTTP::Request::Params Hash::Slice Tree::Trie
 		do
 			if ! perl -M$m -e 1 2>/dev/null; then
 				echo "Installing $m from CPAN..."

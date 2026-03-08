@@ -306,7 +306,6 @@ my $build = $class->new
 		'Digest::MD5'                     => 0,
 		'Eval::Context'                   => 0,
 		'ExtUtils::PkgConfig'             => 0,
-		'Image::APNG'                     => 0,
 		'Image::ExifTool'                 => 0,
 		'File::Basename'                  => 0,
 		'File::Copy'                      => 0,
