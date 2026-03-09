@@ -916,7 +916,7 @@ ROOT_GROUP
 	SHORTCUTS   => '000-g',
 	DESCRIPTION => 'Group elements and control their Z position',
 	
-	'Group'                       => ['000-g', \&App::Asciio::Actions::ElementsManipulation::selected_elements                 ],
+	'Group'                       => ['000-g', \&App::Asciio::Actions::ElementsManipulation::group_selected_elements                 ],
 	'Ungroup'                     => ['000-u', \&App::Asciio::Actions::ElementsManipulation::unselected_elements               ],
 	'Move to the front'           => ['000-f', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_front         ],
 	'Move to the back'            => ['000-b', \&App::Asciio::Actions::ElementsManipulation::move_selected_elements_to_back          ],
