@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8bdac35b.js";
+            window.path_to_searchindex_js = "searchindex-3b87b916.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-87d12374.js"></script>
+        <script src="toc-af9fe2a1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -774,34 +774,47 @@ asciio
 </ul>
 <p>See the <a href="#scripting">Scripting</a> section for detailed information.</p>
 <div style="break-before: page; page-break-before: always;"></div>
-<h1 id="unicode-support"><a class="header" href="#unicode-support">Unicode support</a></h1>
-<p>Asciio supports Unicode is a work under progress; including support for Asian languages, thanks to the co-developer who writes in these languages, but you may need a font that supports them.</p>
-<p>https://github.com/be5invis/Sarasa-Gothic/</p>
+<h1 id="multi-language-support"><a class="header" href="#multi-language-support">Multi-language support</a></h1>
+<h2 id="support-status"><a class="header" href="#support-status">Support status</a></h2>
+<p>Asciio supports Unicode and supports some specific languages. But if you need to
+align them, you need to install specific fonts first.</p>
+<p>Supported language families and fonts that need to be installed:</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Language combination types</th><th>Fonts that need to be installed</th></tr>
+</thead>
+<tbody>
+<tr><td>CJK(Chinese/Japanese/Korean)</td><td><a href="https://github.com/multitheftauto/unifont/releases/">unifont</a> Download: unifont-*.ttf</td></tr>
+<tr><td>Arabic and Hebrew</td><td>Courier New(This font most systems built in)</td></tr>
+</tbody>
+</table>
+</div>
+<p>After installing a specific font, just press <code>«z-f»</code> to switch to the specific font alignment in the chart.</p>
+<p><img src="multi_language_support_arabic.png" alt="multi language support arabic"></p>
 <p><img src="asciio_unicode.png" alt="unicode in Asciio"></p>
 <p><img src="asciio_unicode_cat.png" alt="unicode exported"></p>
 <p>In the examples above the box is drawn with unicode characters, the box is oversized by design, it shrinks and expands properly.</p>
 <p><img src="asciio_unicode_shrunk.png" alt="unicode in Asciioshrunk box"></p>
-<p>If you want to align Thai, or Arabic, or Hebrew, under normal circumstances,
-the default monospaced font of the system is fine. If you find that it cannot
-be aligned, you can download a font that can align them.</p>
-<p><img src="unicode_thai_alabo_hebrew.png" alt="unicode_thai_alabo_hebrew"></p>
 <p>When displayed in exported software, you also need a font that aligns them.</p>
-<pre><code class="language-txt">      .-----.      .----------------.
-      | abc |-----&gt;| สวัสดีเราเคยพบกัน |
-      '-----'      '----------------'
-                            |
-                            |
-                            |
-                            |   .---------------.
-                            '--&gt;| שלום, נפגשנו  |
-                                '---------------'
-                                        |
-                                        |
-      .------------------.              |
-      | مرحبا هل التقينا |&lt;-------------'
-      '------------------'
-
+<pre><code class="language-txt">.----------------------------------.
+| שָׁלוֹם שָׁלוֹם שָׂרָה                    |
+| בְּרֵאשִׁית בָּרָא אֱלֹהִים                 |
+| יִשְׂרָאֵל יְרוּשָׁלַיִם                    |
+| אב אב אב (ZWJ / ZWNJ variations) |
+| מַה־שְּׁלוֹמְךָ                         |
+| לְשׁוֹן־הַקֹּדֶשׁ                        |
+'----------------------------------'
 </code></pre>
+<p>The following example files in the <code>examples</code> directory are about multi-language support.</p>
+<ul>
+<li>examples/chinese_test.asciio</li>
+<li>examples/arabic_test.asciio</li>
+</ul>
+<h2 id="limitation"><a class="header" href="#limitation">Limitation</a></h2>
+<p>Currently, mixing CJK with Arabic or Hebrew is not supported.</p>
+<p>No existing monospace font provides correct alignment for both CJK full-width
+characters and Arabic/Hebrew shaping at the same time.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="stencils"><a class="header" href="#stencils">Stencils</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
@@ -3024,6 +3037,12 @@ to convert text files to SVG.</p>
 <ul>
 <li>setup/actions/default_bindings.pl</li>
 <li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
+</ul>
+<h3 id="character-display-width-calculation-override-script"><a class="header" href="#character-display-width-calculation-override-script">Character display width calculation override script</a></h3>
+<p>The display width calculated using the default calculation method for some characters is wrong.
+You can use the configuration script below to specify and correct the default calculated width.</p>
+<ul>
+<li>setup/unicode_width_overrides/unicode_width_overrides.pl</li>
 </ul>
 <h2 id="user-configuration-file"><a class="header" href="#user-configuration-file">User configuration file</a></h2>
 <p>Your user configuration file is at <code>$HOME/.config/Asciio/Asciio.ini</code>.</p>
@@ -6234,6 +6253,20 @@ provided to use.</p>
 <p>The above information can be found here:</p>
 <p>https://perldoc.perl.org/perlunicook</p>
 <p>https://perldoc.perl.org/perlunicode</p>
+<p>Another simple way to calculate the display width of a character is to use the
+<code>Unicode::GCString</code> module directly.</p>
+<pre><code class="language-perl">Unicode::GCString-&gt;new($string, Context =&gt; "NONEASTASIAN")-&gt;columns
+</code></pre>
+<p>If the display width of some characters does not match the current scene,
+use a mapping to correct it.</p>
+<pre><code class="language-perl">%WIDTH_OVERRIDES =
+	(
+	"\x{2466}" =&gt; 2,
+	"\x{2630}" =&gt; 2,
+	"\x{2467}" =&gt; 2,
+	"\x{2465}" =&gt; 2,
+	) ;
+</code></pre>
 <h2 id="characters-of-length-0"><a class="header" href="#characters-of-length-0">Characters of length 0</a></h2>
 <p>In some languages, there are special characters whose string length is 1,
 but they do not occupy physical space on the interface, they will be attached
@@ -6356,6 +6389,8 @@ sub callback_escape { my ($asciio) = @_ ; $asciio-&gt;show_cursor ; ... }
 <p><a href="stencils/2026_01_22_box_connector_interactive.gif">watch video</a> | <a href="#interactive-connector-operations">documentation</a></p>
 <p><em><strong>Slides and Slideshow [18 feb 2026]</strong></em></p>
 <p><a href="modes/slide_animation.gif">watch video</a> | <a href="#slides-and-slideshows">documentation</a></p>
+<p><em><strong>Multi language support [24 Feb 2026]</strong></em></p>
+<p><a href="#multi-language-support">Multi language support</a></p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="contributors"><a class="header" href="#contributors">Contributors</a></h1>
 <pre><code>    Khemir Nadim ibn Hamouda

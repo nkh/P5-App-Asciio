@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-8bdac35b.js";
+            window.path_to_searchindex_js = "../searchindex-3b87b916.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-87d12374.js"></script>
+        <script src="../toc-af9fe2a1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -217,6 +217,20 @@ provided to use.</p>
 <p>The above information can be found here:</p>
 <p>https://perldoc.perl.org/perlunicook</p>
 <p>https://perldoc.perl.org/perlunicode</p>
+<p>Another simple way to calculate the display width of a character is to use the
+<code>Unicode::GCString</code> module directly.</p>
+<pre><code class="language-perl">Unicode::GCString-&gt;new($string, Context =&gt; "NONEASTASIAN")-&gt;columns
+</code></pre>
+<p>If the display width of some characters does not match the current scene,
+use a mapping to correct it.</p>
+<pre><code class="language-perl">%WIDTH_OVERRIDES =
+	(
+	"\x{2466}" =&gt; 2,
+	"\x{2630}" =&gt; 2,
+	"\x{2467}" =&gt; 2,
+	"\x{2465}" =&gt; 2,
+	) ;
+</code></pre>
 <h2 id="characters-of-length-0"><a class="header" href="#characters-of-length-0">Characters of length 0</a></h2>
 <p>In some languages, there are special characters whose string length is 1,
 but they do not occupy physical space on the interface, they will be attached

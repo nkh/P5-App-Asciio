@@ -35,10 +35,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-8bdac35b.js";
+            window.path_to_searchindex_js = "searchindex-3b87b916.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-87d12374.js"></script>
+        <script src="toc-af9fe2a1.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -199,6 +199,12 @@
 <ul>
 <li>setup/actions/default_bindings.pl</li>
 <li>setup/Text/actions/vim_bindings.pl (which overrides default bindings)</li>
+</ul>
+<h3 id="character-display-width-calculation-override-script"><a class="header" href="#character-display-width-calculation-override-script">Character display width calculation override script</a></h3>
+<p>The display width calculated using the default calculation method for some characters is wrong.
+You can use the configuration script below to specify and correct the default calculated width.</p>
+<ul>
+<li>setup/unicode_width_overrides/unicode_width_overrides.pl</li>
 </ul>
 <h2 id="user-configuration-file"><a class="header" href="#user-configuration-file">User configuration file</a></h2>
 <p>Your user configuration file is at <code>$HOME/.config/Asciio/Asciio.ini</code>.</p>
